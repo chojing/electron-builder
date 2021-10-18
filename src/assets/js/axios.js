@@ -1,10 +1,12 @@
 import axios from 'axios'
 
 const config = {
-  baseUrl: properties.server,
+  baseUrl: '',
   apiKey: ''
 }
-
+function setBaseUrl (url) {
+  config.baseUrl = url
+}
 function getAPIKey () {
   return config.apiKey
 }
@@ -210,6 +212,7 @@ function checkJsonString (str) {
 }
 
 export {
+  setBaseUrl,
   getAPIKey,
   login,
   getSyncAxios,
