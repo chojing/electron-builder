@@ -1,7 +1,15 @@
 import { createApp } from 'vue'
-import App from './App.vue'
+import App from './Index.vue'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
 
-createApp(App).use(store).use(router).mount('#app')
+import fontawesomecss from '@fortawesome/fontawesome-free/css/all.min.css'
+import fontawesomejs from '@fortawesome/fontawesome-free/js/fontawesome.min'
+
+createApp(App)
+  .use(store)
+  .use(router)
+  .use(fontawesomecss)
+  .use(fontawesomejs)
+  .mount('#app')
