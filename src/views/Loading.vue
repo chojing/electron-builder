@@ -37,7 +37,7 @@ export default {
       const apikey = axios.login(id, password)
       // Result
       if (apikey !== undefined) {
-        this.$router.push('/mian')
+        this.$router.push('/main')
       } else {
         this.$router.push('/login?error')
       }

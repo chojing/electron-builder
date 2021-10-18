@@ -2,7 +2,7 @@
 
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
+//import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 const { Menu, Tray, MenuItem } = require('electron')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -58,7 +58,8 @@ async function createWindow () {
       // nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       // contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
       nodeIntegration: true, // api 접근 허용 여부
-      contextIsolation: false
+      contextIsolation: false,
+      webSecurity: false // false로 지정하면 same-origin 정책을 비활성화
     }
   })
 
@@ -618,7 +619,7 @@ ipcMain.on('login-write', (event, _loginInfo) => {
   // eslint-disable-next-line camelcase
   g_curUserInfo = _loginInfo
   const path = getUserHome() + KONAN_ROOT_FOLDER
-  g_JSON.WriteUser_JSON(path, g_loginInfo)
+  g_JSON.WriteUserJSON(path, g_loginInfo)
   // g_NotificationPopUp.show('Config Save', 'Login Info Save Success')
   event.sender.send('login-write-result', true)
 })
