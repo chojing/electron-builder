@@ -36,10 +36,10 @@ export default {
       // const apikey = await restApiInfo.login(id, password)
       axios.login(id, password)
       const apikey = axios.getAPIKey()
-      console.log(apikey)
+      console.log('apikey : ', apikey)
       // Result
       if (apikey !== undefined) {
-        this.$router.push('/mian')
+        this.$router.push('/main')
       } else {
         this.$router.push('/login?error')
       }
