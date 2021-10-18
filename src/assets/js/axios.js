@@ -1,19 +1,22 @@
 import axios from 'axios'
+import store from '@/store/index'
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 function setBaseUrl (url) {
   axios.defaults.baseURL = url
 }
 function getAPIKey () {
-  return axios.defaults.headers.common.Authorization
+  return store.state.apikey
 }
 async function login (id, password) {
   const response = await axios.post('/v1/users/apikey', null, {
     params: {
-      id: id,
+      username: id,
       password: password
     }
   })
-  axios.defaults.headers.common.Authorization = response.result.apikey
+  store.state.apikey = response.data.result.apikey
+  axios.defaults.headers.common.Authorization = response.data.result.apikey
+  return response.data.result.apikey
 }
 async function getSyncAxios (url, param, callback, fail) {
   await axios.get(url, {

@@ -34,9 +34,7 @@ export default {
       // SearchAPI
       // const restApiInfo = new RESTAPIInfo()
       // const apikey = await restApiInfo.login(id, password)
-      axios.login(id, password)
-      const apikey = axios.getAPIKey()
-      console.log(apikey)
+      const apikey = axios.login(id, password)
       // Result
       if (apikey !== undefined) {
         this.$router.push('/mian')

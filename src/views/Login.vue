@@ -92,9 +92,7 @@ export default {
       // //SearchAPI
       // const restApiInfo = new RESTAPIInfo()
       // const apikey = await restApiInfo.login(ID.value, PW.value)
-
-      axios.login(ID.value, PW.value)
-      const apikey = axios.getAPIKey()
+      const apikey = axios.login(ID.value, PW.value)
       console.log(apikey)
 
       // Result
