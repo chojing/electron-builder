@@ -46,7 +46,6 @@ protocol.registerSchemesAsPrivileged([
 
 async function createWindow () {
   console.log('createWindow')
-  console.trace()
   // eslint-disable-next-line camelcase
   gWin = new BrowserWindow({
     width: 700,

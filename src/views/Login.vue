@@ -41,7 +41,13 @@ export default {
   name: 'Loading',
   created () {
     // auto login check
-    ipcRenderer.on('login-read-result', function (event, _loginData) {
+    ipcRenderer.on('login-read-result', this.init)
+    // JSON Test
+    // 로그인 버튼
+    ipcRenderer.send('login-read') // 로그인 데이터를 받아옴
+  },
+  methods: {
+    init: function (event, _loginData) {
       console.log('read-result', _loginData)
       const ID = document.getElementById('id-id')
       const PW = document.getElementById('pw-id')
@@ -55,7 +61,7 @@ export default {
 
         if (_loginData.pw !== undefined) {
           PW.type = 'password'
-          // PW.value = _loginData.pw;
+          PW.value = _loginData.pw
         }
       }
       if (_loginData.autologin !== undefined) {
@@ -69,12 +75,7 @@ export default {
           // 자동로그인 비체크시
         }
       }
-    })
-    // JSON Test
-    // 로그인 버튼
-    ipcRenderer.send('login-read') // 로그인 데이터를 받아옴
-  },
-  methods: {
+    },
     LoginInfo: function (_id, _pw, _autologin) {
       this.id = _id || ''
       this.pw = _pw || ''

@@ -1,30 +1,23 @@
 import axios from 'axios'
-
-const config = {
-  baseUrl: '',
-  apiKey: ''
-}
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 function setBaseUrl (url) {
-  config.baseUrl = url
+  axios.defaults.baseURL = url
 }
 function getAPIKey () {
-  return config.apiKey
+  return axios.defaults.headers.common.Authorization
 }
 async function login (id, password) {
-  const response = await axios.get(config.baseUrl + '/v1/users/apikey', {
+  const response = await axios.post('/v1/users/apikey', null, {
     params: {
       id: id,
       password: password
     }
   })
-  config.apiKey = response.result.apikey
+  axios.defaults.headers.common.Authorization = response.result.apikey
 }
 async function getSyncAxios (url, param, callback, fail) {
-  await axios.get(config.baseUrl + url, {
-    params: param,
-    headers: {
-      Authorization: config.apiKey
-    }
+  await axios.get(url, {
+    params: param
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
     else alert(response)
@@ -34,11 +27,8 @@ async function getSyncAxios (url, param, callback, fail) {
   })
 }
 function getAsyncAxios (url, param, callback, fail) {
-  axios.get(config.baseUrl + url, {
-    params: param,
-    headers: {
-      Authorization: config.apiKey
-    }
+  axios.get(url, {
+    params: param
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
     else alert(response)
@@ -53,11 +43,10 @@ async function postSyncAxios (url, body, param, callback, fail) {
   if (body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
-  await axios.post(config.baseUrl + url, body, {
+  await axios.post(url, body, {
     params: param,
     headers: {
-      'Content-Type': contentType,
-      Authorization: config.apiKey
+      'Content-Type': contentType
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
@@ -72,11 +61,10 @@ function postAsyncAxios (url, body, param, callback, fail) {
   if (body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
-  axios.post(config.baseUrl + url, body, {
+  axios.post(url, body, {
     params: param,
     headers: {
-      'Content-Type': contentType,
-      Authorization: config.apiKey
+      'Content-Type': contentType
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
@@ -92,11 +80,10 @@ async function putSyncAxios (url, body, param, callback, fail) {
   if (body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
-  await axios.put(config.baseUrl + url, body, {
+  await axios.put(url, body, {
     params: param,
     headers: {
-      'Content-Type': contentType,
-      Authorization: config.apiKey
+      'Content-Type': contentType
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
@@ -111,11 +98,10 @@ function putAsyncAxios (url, body, param, callback, fail) {
   if (body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
-  axios.put(config.baseUrl + url, body, {
+  axios.put(url, body, {
     params: param,
     headers: {
-      'Content-Type': contentType,
-      Authorization: config.apiKey
+      'Content-Type': contentType
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
@@ -131,11 +117,10 @@ async function deleteSyncAxios (url, body, param, callback, fail) {
   if (body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
-  await axios.delete(config.baseUrl + url, body, {
+  await axios.delete(url, body, {
     params: param,
     headers: {
-      'Content-Type': contentType,
-      Authorization: config.apiKey
+      'Content-Type': contentType
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
@@ -150,11 +135,10 @@ function deleteAsyncAxios (url, body, param, callback, fail) {
   if (body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
-  axios.delete(config.baseUrl + url, body, {
+  axios.delete(url, body, {
     params: param,
     headers: {
-      'Content-Type': contentType,
-      Authorization: config.apiKey
+      'Content-Type': contentType
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
