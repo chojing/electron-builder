@@ -27,14 +27,8 @@
         </div>
         <div class="target-list mt40">
           <ul class="one-list" id="targetContainer">
-            <li v-for="item in oneDepth" v-bind:key="item.nodeid">
-              <p class="one-depth" v-bind:data-parentid="item.parentid" v-bind:data-nodeid="item.nodeid" v-bind:data-favorites="item.isfavorite" v-bind:data-isparent="item.isparent">{{item.namevalue}}</p>
-              <ul class="two-list">
-                <li>
-                  <p class="two-depth"></p>
-                </li>
-              </ul>
-            </li>
+<!--            <templateTree v-bind:nodeList="nodeList"></templateTree>-->
+            <templateTree v-bind:nodeList="oneDepth"/>
           </ul>
         </div>
       </article>
@@ -47,11 +41,18 @@
 
 </template>
 <script>
+import templateTree from '@/components/main/template_tree'
+const axios = require('@/assets/js/axios.js')
+
 export default {
   name: 'Main',
   el: '#mainView',
+  components: {
+    templateTree
+  },
   data () {
     return {
+      nodeList: [],
       oneDepth: [
         { nodeid: 1, parentid: 0, isfavorite: 0, isparent: 1, namevalue: '교양' },
         { nodeid: 2, parentid: 0, isfavorite: 0, isparent: 1, namevalue: '예능' },
@@ -81,9 +82,22 @@ export default {
       active: false
     }
   },
+  mounted () {
+    this.getTree()
+  },
   methods: {
     loginPage: async function () {
       this.$router.push('/login')
+    },
+    getTree: function () {
+      axios.getSyncAxios('/v1/trees/treename', null, function (response) {
+        axios.getSyncAxios('/v1/trees/treename/' + response.data.result.rootnodeid, null, function (response) {
+          this.nodeList = response.data.results
+        })
+      }, function (error) {
+        this.nodeList = []
+        axios.setError(error.response.data)
+      })
     }
   }
 }

@@ -214,5 +214,6 @@ export {
   putSyncAxios,
   putAsyncAxios,
   deleteSyncAxios,
-  deleteAsyncAxios
+  deleteAsyncAxios,
+  setError
 }
