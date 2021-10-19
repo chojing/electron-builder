@@ -1,13 +1,10 @@
 import axios from 'axios'
 import store from '@/store/index'
-axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
-function setBaseUrl (url) {
-  axios.defaults.baseURL = url
-}
-function getAPIKey () {
-  return store.state.apikey
-}
 async function login (id, password) {
+  axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
+  axios.defaults.baseURL = store.state.server
+  console.log(store.state.server)
+  console.log(axios.defaults.baseURL)
   const response = await axios.post('/v1/users/apikey', null, {
     params: {
       username: id,
@@ -199,8 +196,6 @@ function checkJsonString (str) {
 }
 
 export {
-  setBaseUrl,
-  getAPIKey,
   login,
   getSyncAxios,
   getAsyncAxios,

@@ -18,7 +18,8 @@ export default {
   },
   methods: {
     init: function (event, _loginData) {
-      axios.setBaseUrl(_loginData.server)
+      this.$store.state.server = _loginData.server
+      // axios.setBaseUrl(_loginData.server)
       if (_loginData === undefined || _loginData.autologin === false) {
         setTimeout(() => {
           this.goTo('Login')
