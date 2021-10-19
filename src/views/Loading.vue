@@ -19,16 +19,19 @@ export default {
   methods: {
     init: function (event, _loginData) {
       this.$store.commit('commitServer', _loginData.server)
+      this.$store.commit('commitUsername', _loginData.id)
+      this.$store.commit('commitAutologin', _loginData.autologin)
       axios.init()
       // axios.setBaseUrl(_loginData.server)
-      if (_loginData === undefined || _loginData.autologin === false) {
-        setTimeout(() => {
-          this.goTo('Login')
-        }, 3000)
-      } else {
+      console.log('loading init', _loginData)
+      if (_loginData !== undefined && _loginData.autologin) {
         // 자동로그인 체크시
         setTimeout(() => {
           this.login(_loginData.id, _loginData.pw)
+        }, 3000)
+      } else {
+        setTimeout(() => {
+          this.goTo('Login')
         }, 3000)
       }
     },
@@ -39,7 +42,7 @@ export default {
       await axios.login(id, password)
       const apikey = this.$store.state.apikey
       // Result
-      if (apikey !== undefined) {
+      if (apikey !== null) {
         this.$router.push('/main')
       } else {
         this.$router.push('/login?error')

@@ -2,36 +2,48 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    server: null,
     username: null,
-    apikey: null,
-    server: null
+    autologin: false,
+    apikey: null
   },
   mutations: {
     commitServer (state, server) {
-      console.log('commitServer', server)
       state.server = server
     },
     commitUsername (state, username) {
-      console.log('commitUsername', username)
       state.username = username
     },
+    commitAutologin (state, autologin) {
+      state.autologin = autologin
+    },
     commitApikey (state, apikey) {
-      console.log('commitApikey', apikey)
       state.apikey = apikey
+    },
+    clear (state) {
+      state = {
+        server: null,
+        username: null,
+        autologin: false,
+        apikey: null
+      }
     }
   },
   actions: {
     setServer (context, server) {
-      console.log('setServer', server)
       context.commit('commitServer', server)
     },
     setUsername (context, username) {
-      console.log('setUsername', username)
       context.commit('commitUsername', username)
     },
+    setAutologin (context, autologin) {
+      context.commit('commitAutologin', autologin)
+    },
     setApikey (context, apikey) {
-      console.log('setApikey', apikey)
       context.commit('commitApikey', apikey)
+    },
+    clearStore (context) {
+      context.commit('crear')
     }
   },
   modules: {

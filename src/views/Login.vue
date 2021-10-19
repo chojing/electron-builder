@@ -39,20 +39,13 @@ const axios = require('../assets/js/axios.js')
 
 export default {
   name: 'Login',
-  created () {
-    // auto login check
-    ipcRenderer.once('login-read-result', this.init)
-    // JSON Test
-    // 로그인 버튼
-    ipcRenderer.send('login-read') // 로그인 데이터를 받아옴
+  mounted () {
+    this.init()
   },
   methods: {
-    init: function (event, _loginData) {
+    init: function () {
       const ID = document.getElementById('username')
       const PW = document.getElementById('password')
-      if (_loginData === undefined) {
-        return
-      }
       // 로그인 데이터정보값이 있으면 아이디의 value값으로 들어간다(?)
       const ERROR_TEXT = document.getElementById('errorText')
       const urlsp = window.location.search.split('?')
@@ -68,24 +61,13 @@ export default {
         ERROR_TEXT.style.display = 'block'
         ERROR_TEXT.innerHTML = '로그아웃 되었습니다.'
       }
-      if (_loginData.id !== undefined) {
-        ID.value = _loginData.id
-
-        if (_loginData.pw !== undefined) {
-          PW.type = 'password'
-          PW.value = _loginData.pw
-        }
+      if (this.$store.state.username !== null) {
+        ID.value = this.$store.state.username
       }
-      if (_loginData.autologin !== undefined) {
+      if (this.$store.state.autologin !== null) {
         // 자동로그인기록이 있으면 true로 받아와서 checked에 true값을 준다 (?) => autologin체크박스가 체크됨
         // false일 경우 자동체크가 되지않음.
-        document.getElementById('autologin-checkbox-id').checked = _loginData.autologin
-        if (_loginData.autologin) {
-          // 자동로그인 체크시
-          this.login()
-        } else if (!_loginData.autologin) {
-          // 자동로그인 비체크시
-        }
+        document.getElementById('autologin-checkbox-id').checked = this.$store.state.autologin
       }
     },
     login: async function () {
