@@ -21,7 +21,6 @@ const FTPInfo_Type1 = require('./assets/main/ftpinfo.js').FTPInfoType1
 const FTPInfo_Type2 = require('./assets/main/ftpinfo.js').FTPInfoType2
 const FileData = require('./assets/main/globalFunk.js').FileData // #cjy testCode 2021.07.08
 const _path = require('path')
-
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
 // const MAIN_PAGE = 'test_index.html'
@@ -604,14 +603,8 @@ ipcMain.on('login-read', (event) => {
   if (data !== undefined) {
     lastloginInfo = data
   }
-
-  let profile = 'default'
-  for (const data of process.argv) {
-    if (data.startsWith('profiles')) {
-      profile = data.replace('profiles=', '')
-    }
-  }
-  const properties = g_JSON.ReadUserJSON(_path.resolve(__dirname, '../src/assets/properties/' + profile + '.json'))
+  console.log('NODE_ENV', process.env.NODE_ENV)
+  const properties = g_JSON.ReadUserJSON(_path.resolve(__dirname, '../src/assets/properties/' + process.env.NODE_ENV + '.json'))
   lastloginInfo.server = properties.server
 
   event.sender.send('login-read-result', lastloginInfo)
