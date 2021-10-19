@@ -2,7 +2,7 @@
 
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-//import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
+// import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 const { Menu, Tray, MenuItem } = require('electron')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -598,6 +598,7 @@ ipcMain.on('login-read', (event) => {
   // let data = g_JSON.ReadUserJSON('./UserData.json')
   const path = getUserHome() + KONAN_ROOT_FOLDER + '//UserData.json'
   const data = g_JSON.ReadUserJSON(path)
+  console.log('login-read', data)
   let lastloginInfo = {}
 
   if (data !== undefined) {
@@ -605,9 +606,12 @@ ipcMain.on('login-read', (event) => {
   }
 
   let profile = 'default'
-  if (process.argv) profile = process.argv.slice(2)
-  const properties = g_JSON.ReadUserJSON(_path.resolve(__dirname, '../src/assets/properties/' + profile[0] + '.json'))
-
+  for (const data of process.argv) {
+    if (data.startsWith('profiles')) {
+      profile = data.replace('profiles=', '')
+    }
+  }
+  const properties = g_JSON.ReadUserJSON(_path.resolve(__dirname, '../src/assets/properties/' + profile + '.json'))
   lastloginInfo.server = properties.server
 
   event.sender.send('login-read-result', lastloginInfo)
@@ -619,7 +623,8 @@ ipcMain.on('login-write', (event, _loginInfo) => {
   // eslint-disable-next-line camelcase
   g_curUserInfo = _loginInfo
   const path = getUserHome() + KONAN_ROOT_FOLDER
-  g_JSON.WriteUserJSON(path, g_loginInfo)
+  // g_JSON.WriteUserJSON(path, g_loginInfo)
+  g_JSON.WriteUserJSON(path, _loginInfo)
   // g_NotificationPopUp.show('Config Save', 'Login Info Save Success')
   event.sender.send('login-write-result', true)
 })

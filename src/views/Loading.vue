@@ -18,7 +18,9 @@ export default {
   },
   methods: {
     init: function (event, _loginData) {
-      axios.setBaseUrl(_loginData.server)
+      this.$store.commit('commitServer', _loginData.server)
+      axios.init()
+      // axios.setBaseUrl(_loginData.server)
       if (_loginData === undefined || _loginData.autologin === false) {
         setTimeout(() => {
           this.goTo('Login')
@@ -34,7 +36,8 @@ export default {
       // SearchAPI
       // const restApiInfo = new RESTAPIInfo()
       // const apikey = await restApiInfo.login(id, password)
-      const apikey = axios.login(id, password)
+      await axios.login(id, password)
+      const apikey = this.$store.state.apikey
       // Result
       if (apikey !== undefined) {
         this.$router.push('/main')
@@ -43,8 +46,6 @@ export default {
       }
     },
     goTo: function (page) {
-      console.log(this)
-      console.log(this.$router)
       this.$router.push(page)
     }
   }
