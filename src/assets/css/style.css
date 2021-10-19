@@ -81,6 +81,7 @@ header .logo{text-align: center;}
 .search-form h4{padding: 0; color: #0086c1;}
 .search-form .search-btn button{padding: 10px;border-radius: 5px; border:1px solid #333;background-color: #fff;}
 .search-form .search-box{display: none;}
+.search-form .search-box.show{display: block;}
 .search-form .search-box input{padding: 0 5px;width: 100%;height: 30px;border:1px solid #b8b8b8;border-radius: 5px;}
 
 /** main **/
@@ -104,7 +105,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fb
 .target-list ul li p.active{color: #0073a5;font-weight: bold;}
 .target-list > ul p{padding-left: 20px;}
 .target-list > ul p::after{position: absolute;content: '-';left:0;top:0;width: 15px;height: 15px;}
-.target-list > ul li p[data-isparent='1']::after{position: absolute;content: '';left:0;top:0;width: 12px;height: 15px; background: url('/src/assets/images/folder-solid.svg') no-repeat center 0/100% auto;}
+.target-list > ul li p[data-isparent='1']::after{position: absolute;content: '';left:0;top:0;width: 12px;height: 15px; background: url('../images/folder-solid.svg') no-repeat center 0/100% auto;}
 
 /** login **/
 .login{width: 100%;height:100vh;padding-top: 100px;background-color:#0073a5;}
