@@ -27,14 +27,16 @@
         </div>
         <div class="target-list mt40">
           <ul class="one-list" id="targetContainer">
-            <li v-for="item in oneDepth" v-bind:key="item.nodeid">
-              <p class="one-depth" v-bind:data-parentid="item.parentid" v-bind:data-nodeid="item.nodeid" v-bind:data-favorites="item.isfavorite" v-bind:data-isparent="item.isparent">{{item.namevalue}}</p>
-              <ul class="two-list">
-                <li>
-                  <p class="two-depth"></p>
-                </li>
-              </ul>
-            </li>
+            <template v-for="item in oneDepth" v-bind:key="item.nodeid">
+              <li @click="select(item)" v-if="item.isparent == 1">
+                <p class="one-depth" v-bind:data-parentid="item.parentid" v-bind:data-nodeid="item.nodeid" v-bind:data-favorites="item.isfavorite" v-bind:data-isparent="item.isparent">{{item.namevalue}}</p>
+                <ul class="two-list">
+                  <li v-for="item in twoDepth" v-bind:key="item.nodeid">
+                    <p class="two-depth">{{item.namevalue}}</p>
+                  </li>
+                </ul>
+              </li>
+            </template>
           </ul>
         </div>
       </article>
@@ -82,6 +84,11 @@ export default {
     }
   },
   methods: {
+    select: function (item) {
+      // use bar...
+      // const targetId = event.currentTarget.id
+      console.log('nodeId : ', item.isparent) // returns 'foo'
+    },
     loginPage: async function () {
       this.$router.push('/login')
     }
