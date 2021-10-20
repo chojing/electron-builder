@@ -11,7 +11,7 @@
           <router-link to=""> <i class="fas fa-exclamation-triangle"></i></router-link>
       </span>
       <span>
-          <router-link to=""> <i class="fas fa-file-upload"></i> </router-link>
+          <router-link to="/manual"> <i class="fas fa-file-upload"></i> </router-link>
       </span>
     </div>
   </div>

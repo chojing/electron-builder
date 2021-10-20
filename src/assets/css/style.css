@@ -55,7 +55,7 @@ header .logo{text-align: center;}
 .check{position: relative;}
 .check input[type=checkbox]{position: absolute;top: 0;left: 0; width: 1px;height: 1px;padding: 0;margin: -1px;overflow: hidden;clip:rect(0,0,0,0);border: 0;}
 .check input[type=checkbox] + label{cursor: pointer; display: inline-block;vertical-align: baseline;width: 14px;height: 14px;border: 1px solid #333;background: #fff;}
-.check input[type=checkbox]:checked + label{background: url('/src/assets/images/check-box.svg') no-repeat center 0/auto 100%;border: none;}
+.check input[type=checkbox]:checked + label{background: url('../images/check-box.svg') no-repeat center 0/auto 100%;border: none;}
 
 .fixed-bar{position: fixed;bottom: 0;left: 0;right: 0;z-index: 9000;height: 70px;background-color: #fff;box-shadow: 0px 1px 6px 0px rgb(0 0 0 / 20%);}
 .fixed-bar .wrap{height: 100%;}
@@ -95,7 +95,7 @@ main .target-list{max-height: 400px;overflow-y: auto;}
 .favorite-list span{display: inline-block;vertical-align: middle; margin: 0 5px;font-size: 14px;}
 .favorite-list span::after{content: '>';display: inline-block;vertical-align: middle;margin-left: 5px; font-size: 12px;color: #0073a5;font-weight: 500;}
 .favorite-list span:last-of-type:after{display: none;}
-.favorite-list span:last-of-type::before{content: '';display: inline-block;vertical-align: baseline;width: 10px;height: 10px;margin-right: 2px;background:url('/src/assets/images/star-solid.svg') no-repeat center 0/100% auto;}
+.favorite-list span:last-of-type::before{content: '';display: inline-block;vertical-align: baseline;width: 10px;height: 10px;margin-right: 2px;background:url('../images/star-solid.svg') no-repeat center 0/100% auto;}
 main .favorite-list .fa-item{margin: 0 0 10px;}
 main .favorite-list button:hover{border-color: #0073a5;}
 main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fbff;}

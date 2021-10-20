@@ -12,7 +12,13 @@
       <div class="user-favorite">
         <h4>즐겨찾기</h4>
         <div class="favorite-list">
-          <div class="fa-item-link fa-item flex-column"></div>
+          <div class="fa-item-link fa-item flex-column">
+            <button>
+              <span>1뎁스</span>
+              <span>2뎁스</span>
+              <span>3뎁스</span>
+            </button>
+          </div>
         </div>
       </div>
       <article class="mt20">
