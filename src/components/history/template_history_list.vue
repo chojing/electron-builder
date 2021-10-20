@@ -6,7 +6,7 @@
     <td>
       <div>
         <div class="pro-bar">
-          <span  ></span>
+          <span :style="{width: dataPer + '%'}"></span>
           <b>{{ dataPer }}%</b>
         </div>
       </div>
