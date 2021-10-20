@@ -28,6 +28,7 @@ header{padding: 25px 4%;}
 header .logo{text-align: center;}
 
 /** 공통 **/
+#app{padding-top:20px;}
 /*input*/
 .input-box{padding: 0 5px;display: inline-block;vertical-align: top;width: calc(100% - 60px);height: 100%;border: 1px solid #eee;border-radius: 10px;}
 .input-box::placeholder{color: #b8b8b8;}
@@ -36,6 +37,7 @@ header .logo{text-align: center;}
 .btn:hover{background-color: #222;color: #fff;}
 .btn.blue{background-color: #9dc1d1;}
 .btn.blue:hover{background-color: #2d4b58;}
+.backBtn{cursor: pointer;position: absolute;left:4%;top:10px;z-index: 999;}
 /*margin*/
 .m-auto{display: block; margin: 0 auto;}
 .mt10{margin-top:10px;}.mt20{margin-top:20px;}.mt30{margin-top:30px;}.mt40{margin-top:40px;}.mb20{margin-bottom: 20px;}.mb30{margin-bottom: 30px;}.mb40{margin-bottom: 40px;}
