@@ -5,7 +5,7 @@
       <div class="head-top mt20">
         <div>
           <div class="user-name">
-            <p><i class="fas fa-user"></i> Master</p>
+            <p><i class="fas fa-user"></i> {{username}}</p>
           </div>
         </div>
       </div>
@@ -35,6 +35,8 @@
     </div>
   </main>
 
+  <templateMenu/>
+
   <div class="main">
     <button id="login-btn" @click="this.loginPage">로그인페이지확인용</button>
   </div>
@@ -42,16 +44,19 @@
 </template>
 <script>
 import templateTree from '@/components/main/template_tree'
+import templateMenu from '@/components/menu/template_menu'
 const axios = require('@/assets/js/axios.js')
 
 export default {
   name: 'Main',
   el: '#mainView',
   components: {
-    templateTree
+    templateTree,
+    templateMenu
   },
   data () {
     return {
+      username: this.$store.state.username,
       nodeList: [],
       oneDepth: [
         { nodeid: 1, parentid: 0, isfavorite: 0, isparent: 1, namevalue: '교양' },
