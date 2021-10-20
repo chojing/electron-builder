@@ -5,7 +5,7 @@
         <router-link to="/main"> <i class="fas fa-folder"></i></router-link>
       </span>
       <span>
-         <router-link to=""> <i class="fas fa-exchange-alt"></i> </router-link>
+         <router-link to="/history"> <i class="fas fa-exchange-alt"></i> </router-link>
       </span>
       <span>
           <router-link to=""> <i class="fas fa-exclamation-triangle"></i></router-link>
