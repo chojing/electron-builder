@@ -5,8 +5,8 @@
       <h4 class="tti">수동 FTP</h4>
       <div class="ftp-info mt20">
         <div class="btn-box right">
-          <button class="btn h30">등록</button>
-          <button @click="active = !active" :aria-pressed="active ? 'true' : 'false'" id="modify-btn" class="btn blue h30">수정</button>
+          <button @click="terms = false" class="btn h30">등록</button>
+          <button @click="terms = !terms" :aria-pressed="terms ? 'true' : 'false'" id="modify-btn" class="btn blue h30">수정</button>
         </div>
         <select name="" id="selectFtp">
           <option value="FTP정보1">FTP정보1</option>
@@ -17,43 +17,43 @@
         <div class="list flex-center">
           <b>이름</b>
           <div class="flex-1">
-            <input type="text" class="input-box name" value="홍길동" :disabled="active ? disabled : ''">
+            <input type="text" class="input-box name" value="홍길동" :disabled='isDisabled'>
           </div>
         </div>
         <div class="list flex-center">
           <b>HOST</b>
           <div class="flex-1">
-            <input type="text" class="input-box" value="hostText" :disabled="active ? disabled : ''" >
+            <input type="text" class="input-box" value="hostText" :disabled='isDisabled' >
           </div>
         </div>
         <div class="list flex-center">
           <b>PORT</b>
           <div class="flex-1">
-            <input type="text" class="input-box" value="portText" :disabled="active ? disabled : ''" >
+            <input type="text" class="input-box" value="portText" :disabled='isDisabled' >
           </div>
         </div>
         <div class="list flex-center">
           <b>ID</b>
           <div class="flex-1">
-            <input type="text" class="input-box" value="idText" :disabled="active ? disabled : ''" >
+            <input type="text" class="input-box" value="idText" :disabled='isDisabled' >
           </div>
         </div>
         <div class="list flex-center">
           <b>PW</b>
           <div class="flex-1">
-            <input type="text" class="input-box" value="pwText" :disabled="active ? disabled : ''" >
+            <input type="text" class="input-box" value="pwText" :disabled='isDisabled' >
           </div>
         </div>
         <div class="list flex-center">
           <b>DIR</b>
           <div class="flex-1">
-            <input type="text" class="input-box" value="dirText" :disabled="active ? disabled : ''" >
+            <input type="text" class="input-box" value="dirText" :disabled='isDisabled' >
           </div>
         </div>
         <div class="list flex-center">
           <b>Proxy</b>
           <div class="flex-1">
-            <input type="text" class="input-box" value="proxyText" :disabled="active ? disabled : ''" >
+            <input type="text" class="input-box" value="proxyText" :disabled='isDisabled' >
           </div>
         </div>
         <div class="list flex-center mode">
@@ -64,11 +64,11 @@
               <label for="basicVal">기본</label>
             </div>
             <div class="radio-input">
-              <input type="radio" name="mode" id="activeVal" :disabled="active ? disabled : ''" >
+              <input type="radio" name="mode" id="activeVal" :disabled='isDisabled' >
               <label for="activeVal">능동형</label>
             </div>
             <div class="radio-input">
-              <input type="radio" name="mode" id="passiveVal" :disabled="active ? disabled : ''" >
+              <input type="radio" name="mode" id="passiveVal" :disabled='isDisabled' >
               <label for="passiveVal">수동형</label>
             </div>
           </div>
@@ -89,7 +89,12 @@
 export default {
   data () {
     return {
-      active: false
+      terms: false
+    }
+  },
+  computed: {
+    isDisabled: function () {
+      return !this.terms
     }
   }
 }
