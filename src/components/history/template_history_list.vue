@@ -5,9 +5,9 @@
     <td>test.mp4</td>
     <td>
       <div>
-        <div class="+'pro-bar'+" data-per="+'50'+">
-          <span></span>
-          <b></b>
+        <div class="pro-bar">
+          <span  ></span>
+          <b>{{ dataPer }}%</b>
         </div>
       </div>
     </td>
@@ -15,5 +15,11 @@
 </template>
 
 <script>
-
+export default {
+  data () {
+    return {
+      dataPer: 50
+    }
+  }
+}
 </script>
