@@ -1,19 +1,24 @@
-import axios from 'axios'
 import store from '@/store/index'
-async function login (id, password) {
-  axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
+import router from '@/router/index'
+import axios from 'axios'
+
+function init () {
   axios.defaults.baseURL = store.state.server
-  console.log(store.state.server)
-  console.log(axios.defaults.baseURL)
-  const response = await axios.post('/v1/users/apikey', null, {
+  axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
+}
+async function login (id, password) {
+  // axios.defaults.baseURL = store.state.server
+  await axios.post('/v1/users/apikey', null, {
     params: {
       username: id,
       password: password
     }
+  }).then(function (response) {
+    store.commit('commitUsername', response.data.result.username)
+    store.commit('commitApikey', response.data.result.apikey)
+  }).catch(function (error) {
+    setError(error.response.data)
   })
-  store.state.apikey = response.data.result.apikey
-  axios.defaults.headers.common.Authorization = response.data.result.apikey
-  return response.data.result.apikey
 }
 async function getSyncAxios (url, param, callback, fail) {
   await axios.get(url, {
@@ -23,7 +28,7 @@ async function getSyncAxios (url, param, callback, fail) {
     else alert(response)
   }).catch(function (error) {
     if (typeof fail === 'function') fail(error)
-    else setError(error)
+    else setError(error.response.data)
   })
 }
 function getAsyncAxios (url, param, callback, fail) {
@@ -34,7 +39,7 @@ function getAsyncAxios (url, param, callback, fail) {
     else alert(response)
   }).catch(function (error) {
     if (typeof fail === 'function') fail(error)
-    else setError(error)
+    else setError(error.response.data)
   })
 }
 
@@ -53,7 +58,7 @@ async function postSyncAxios (url, body, param, callback, fail) {
     else alert(response)
   }).catch(function (error) {
     if (typeof fail === 'function') fail(error)
-    else setError(error)
+    else setError(error.response.data)
   })
 }
 function postAsyncAxios (url, body, param, callback, fail) {
@@ -71,7 +76,7 @@ function postAsyncAxios (url, body, param, callback, fail) {
     else alert(response)
   }).catch(function (error) {
     if (typeof fail === 'function') fail(error)
-    else setError(error)
+    else setError(error.response.data)
   })
 }
 
@@ -90,7 +95,7 @@ async function putSyncAxios (url, body, param, callback, fail) {
     else alert(response)
   }).catch(function (error) {
     if (typeof fail === 'function') fail(error)
-    else setError(error)
+    else setError(error.response.data)
   })
 }
 function putAsyncAxios (url, body, param, callback, fail) {
@@ -108,7 +113,7 @@ function putAsyncAxios (url, body, param, callback, fail) {
     else alert(response)
   }).catch(function (error) {
     if (typeof fail === 'function') fail(error)
-    else setError(error)
+    else setError(error.response.data)
   })
 }
 
@@ -127,7 +132,7 @@ async function deleteSyncAxios (url, body, param, callback, fail) {
     else alert(response)
   }).catch(function (error) {
     if (typeof fail === 'function') fail(error)
-    else setError(error)
+    else setError(error.response.data)
   })
 }
 function deleteAsyncAxios (url, body, param, callback, fail) {
@@ -145,14 +150,18 @@ function deleteAsyncAxios (url, body, param, callback, fail) {
     else alert(response)
   }).catch(function (error) {
     if (typeof fail === 'function') fail(error)
-    else setError(error)
+    else setError(error.response.data)
   })
 }
 
 function setError (xhr) {
   if (xhr.status === 401 || (xhr.status === 400 && xhr.responseJSON.code === 401)) {
-    alert('에러 \n세션이 끊겼습니다.\n로그인 페이지로 이동합니다.')
-    this.$router.push('/login')
+    let msg = '에러 \n세션이 끊겼습니다.\n로그인 페이지로 이동합니다.'
+    if (xhr.message !== null) {
+      msg = xhr.message
+    }
+    alert(msg)
+    router.push({ name: 'Login' })
     return false
   } else {
     let errorCode = '[ ERROR CODE : ' + xhr.status + ' ]<br/>'
@@ -196,6 +205,7 @@ function checkJsonString (str) {
 }
 
 export {
+  init,
   login,
   getSyncAxios,
   getAsyncAxios,
@@ -204,5 +214,6 @@ export {
   putSyncAxios,
   putAsyncAxios,
   deleteSyncAxios,
-  deleteAsyncAxios
+  deleteAsyncAxios,
+  setError
 }

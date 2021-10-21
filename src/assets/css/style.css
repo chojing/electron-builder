@@ -28,6 +28,7 @@ header{padding: 25px 4%;}
 header .logo{text-align: center;}
 
 /** 공통 **/
+#app{padding-top:20px;}
 /*input*/
 .input-box{padding: 0 5px;display: inline-block;vertical-align: top;width: calc(100% - 60px);height: 100%;border: 1px solid #eee;border-radius: 10px;}
 .input-box::placeholder{color: #b8b8b8;}
@@ -36,6 +37,7 @@ header .logo{text-align: center;}
 .btn:hover{background-color: #222;color: #fff;}
 .btn.blue{background-color: #9dc1d1;}
 .btn.blue:hover{background-color: #2d4b58;}
+.backBtn{cursor: pointer;position: absolute;left:4%;top:10px;z-index: 999;}
 /*margin*/
 .m-auto{display: block; margin: 0 auto;}
 .mt10{margin-top:10px;}.mt20{margin-top:20px;}.mt30{margin-top:30px;}.mt40{margin-top:40px;}.mb20{margin-bottom: 20px;}.mb30{margin-bottom: 30px;}.mb40{margin-bottom: 40px;}
@@ -55,18 +57,18 @@ header .logo{text-align: center;}
 .check{position: relative;}
 .check input[type=checkbox]{position: absolute;top: 0;left: 0; width: 1px;height: 1px;padding: 0;margin: -1px;overflow: hidden;clip:rect(0,0,0,0);border: 0;}
 .check input[type=checkbox] + label{cursor: pointer; display: inline-block;vertical-align: baseline;width: 14px;height: 14px;border: 1px solid #333;background: #fff;}
-.check input[type=checkbox]:checked + label{background: url('/src/assets/images/check-box.svg') no-repeat center 0/auto 100%;border: none;}
+.check input[type=checkbox]:checked + label{background: url('../images/check-box.svg') no-repeat center 0/auto 100%;border: none;}
 
 .fixed-bar{position: fixed;bottom: 0;left: 0;right: 0;z-index: 9000;height: 70px;background-color: #fff;box-shadow: 0px 1px 6px 0px rgb(0 0 0 / 20%);}
 .fixed-bar .wrap{height: 100%;}
 .fixed-bar span{width: 50px;height: 50px;line-height: 50px;border-radius: 50%;overflow: hidden;background-color: #fff;text-align: center;box-shadow: 3px 3px 4px 0px rgb(0 0 0 / 6%);}
-.fixed-bar span button{width: 100%;height: 100%;}
-.fixed-bar span button svg{font-size: 22px;}
-.fixed-bar span button .fa-folder path{fill:rgb(2, 121, 95);}
-.fixed-bar span button .fa-exchange-alt path{fill:#0073a5;}
-.fixed-bar span button .fa-exclamation-triangle path{fill:red;}
-.fixed-bar span button .fa-user-edit path{fill:navy;}
-.fixed-bar span button .fa-star path{fill:rgb(22, 124, 219);}
+.fixed-bar span a{width: 100%;height: 100%;}
+.fixed-bar span a svg{font-size: 22px;}
+.fixed-bar span a .fa-folder{color:rgb(2, 121, 95);}
+.fixed-bar span a .fa-exchange-alt{color:#0073a5;}
+.fixed-bar span a .fa-exclamation-triangle{color:red;}
+.fixed-bar span a .fa-user-edit{color:navy;}
+.fixed-bar span a .fa-star{color:rgb(22, 124, 219);}
 
 .tti{padding: 20px 0 10px; font-size: 20px !important;font-weight: 800 !important;border-bottom: 2px solid #0082bb;color: #0073a5;}
 
@@ -81,6 +83,7 @@ header .logo{text-align: center;}
 .search-form h4{padding: 0; color: #0086c1;}
 .search-form .search-btn button{padding: 10px;border-radius: 5px; border:1px solid #333;background-color: #fff;}
 .search-form .search-box{display: none;}
+.search-form .search-box.show{display: block;}
 .search-form .search-box input{padding: 0 5px;width: 100%;height: 30px;border:1px solid #b8b8b8;border-radius: 5px;}
 
 /** main **/
@@ -94,7 +97,7 @@ main .target-list{max-height: 400px;overflow-y: auto;}
 .favorite-list span{display: inline-block;vertical-align: middle; margin: 0 5px;font-size: 14px;}
 .favorite-list span::after{content: '>';display: inline-block;vertical-align: middle;margin-left: 5px; font-size: 12px;color: #0073a5;font-weight: 500;}
 .favorite-list span:last-of-type:after{display: none;}
-.favorite-list span:last-of-type::before{content: '';display: inline-block;vertical-align: baseline;width: 10px;height: 10px;margin-right: 2px;background:url('/src/assets/images/star-solid.svg') no-repeat center 0/100% auto;}
+.favorite-list span:last-of-type::before{content: '';display: inline-block;vertical-align: baseline;width: 10px;height: 10px;margin-right: 2px;background:url('../images/star-solid.svg') no-repeat center 0/100% auto;}
 main .favorite-list .fa-item{margin: 0 0 10px;}
 main .favorite-list button:hover{border-color: #0073a5;}
 main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fbff;}
@@ -104,7 +107,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fb
 .target-list ul li p.active{color: #0073a5;font-weight: bold;}
 .target-list > ul p{padding-left: 20px;}
 .target-list > ul p::after{position: absolute;content: '-';left:0;top:0;width: 15px;height: 15px;}
-.target-list > ul li p[data-isparent='1']::after{position: absolute;content: '';left:0;top:0;width: 12px;height: 15px; background: url('/src/assets/images/folder-solid.svg') no-repeat center 0/100% auto;}
+.target-list > ul li p[data-isparent='1']::after{position: absolute;content: '';left:0;top:0;width: 12px;height: 15px; background: url('../images/folder-solid.svg') no-repeat center 0/100% auto;}
 
 /** login **/
 .login{width: 100%;height:100vh;padding-top: 100px;background-color:#0073a5;}
