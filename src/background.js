@@ -2,7 +2,6 @@
 
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-// import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 const { Menu, Tray, MenuItem } = require('electron')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -11,32 +10,22 @@ const FileCopyInfo = require('./assets/main/fileinfo.js').FileCopyInfo
 const FTPStream = require('./assets/main/ftp.js').FTPStream
 const globalFunk = require('./assets/main/globalFunk.js')
 const FTPConnectTypeInfo = require('./assets/main/ftp.js').FTPConnectTypeInfo
-// eslint-disable-next-line camelcase
+
 const g_JSON = require('./assets/main/json.js')
-const NotificationPopUp = require('./assets/main/globalFunk.js').NotificationPopUp
+const NotificationPopUp = require('./assets/main/globalFunk.js')
+  .NotificationPopUp
 // test
-// eslint-disable-next-line camelcase
 const FTPInfo_Type1 = require('./assets/main/ftpinfo.js').FTPInfoType1
-// eslint-disable-next-line camelcase
 const FTPInfo_Type2 = require('./assets/main/ftpinfo.js').FTPInfoType2
 const FileData = require('./assets/main/globalFunk.js').FileData // #cjy testCode 2021.07.08
 const _path = require('path')
 
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
-// const MAIN_PAGE = 'test_index.html'
-const MAIN_PAGE = 'loading.html'
-// eslint-disable-next-line camelcase
 const gWindows = []
-// eslint-disable-next-line camelcase
 let gWin = null
-// eslint-disable-next-line camelcase
 const g_NotificationPopUp = new NotificationPopUp()
-// eslint-disable-next-line camelcase
 let g_DOWNLOAD_FOLDER_PATH = ''
-// eslint-disable-next-line camelcase
-const g_loginInfo = {}
-// eslint-disable-next-line camelcase
 let g_curUserInfo
 
 // Scheme must be registered before the app is ready
@@ -46,7 +35,6 @@ protocol.registerSchemesAsPrivileged([
 
 async function createWindow () {
   console.log('createWindow')
-  // eslint-disable-next-line camelcase
   gWin = new BrowserWindow({
     width: 700,
     height: 700,
@@ -75,11 +63,6 @@ async function createWindow () {
     return false
   })
   gWin.isShow = true
-  // 브라우저창이 읽어 올 파일 위치
-  gWin.loadFile('loading.html')
-  gWin.loadFile(MAIN_PAGE)
-  gWin.webContents.openDevTools()
-  gWin.setMenu(null)
 
   // StartFolder Create
   const fileInfo = new FileInfo()
@@ -99,7 +82,9 @@ async function createWindow () {
 }
 
 function RunTray () {
-  const tray = new Tray(_path.resolve(__dirname, '../public/img/icons/mac/16x16.png')) // 현재 애플리케이션 디렉터리를 기준으로 하려면 `__dirname + '/images/tray.png'` 형식으로 입력해야 합니다.
+  const tray = new Tray(
+    _path.resolve(__dirname, '../public/img/icons/mac/16x16.png')
+  ) // 현재 애플리케이션 디렉터리를 기준으로 하려면 `__dirname + '/images/tray.png'` 형식으로 입력해야 합니다.
   tray.on('double-click', function () {
     if (!gWin.isShow) {
       windowShow(gWin)
@@ -109,31 +94,37 @@ function RunTray () {
   })
 
   const menu = new Menu()
-  menu.append(new MenuItem(
-    {
+  menu.append(
+    new MenuItem({
       label: 'Window Show',
-      click () { windowShow(gWin) }
-    }))
-  menu.append(new MenuItem(
-    {
+      click () {
+        windowShow(gWin)
+      }
+    })
+  )
+  menu.append(
+    new MenuItem({
       label: 'Window Hide',
-      click () { WindowHide(gWin) }
-    }))
-  menu.append(new MenuItem(
-    {
+      click () {
+        WindowHide(gWin)
+      }
+    })
+  )
+  menu.append(
+    new MenuItem({
       label: 'Window Exit',
       click () {
         Exit(tray)
       }
-    }))
+    })
+  )
 
   tray.setToolTip('Test ToolTip')
   tray.setContextMenu(menu)
 }
 
 function getUserHome () {
-  // eslint-disable-next-line eqeqeq
-  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']
+  return process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME']
 }
 function Exit (_tray) {
   app.isQuiting = true
@@ -165,12 +156,12 @@ app.whenReady().then(() => {
 // #endregion
 // #region Print File Path & Copy
 // getPath
-ipcMain.on('open-file-dialog', (event) => {
+ipcMain.on('open-file-dialog', event => {
   const resultPaths = requestGetFilePaths(gWin, false)
   requetGetFileInfoResult(event, resultPaths)
 })
 
-ipcMain.on('open-directory-dialog', (event) => {
+ipcMain.on('open-directory-dialog', event => {
   const resultPaths = requestGetFilePaths(gWin, true)
   requetGetFileInfoResult(event, resultPaths)
 })
@@ -256,13 +247,15 @@ const g_FTPInfoDic = {}
 // eslint-disable-next-line camelcase
 const g_FTPWorkQueue = []
 let statusWindow = null
-ipcMain.on('ftp-file-upload', async (event, _selectFiles, _ftpConnectTypeInfo) => {
-  let ftpConnectTypeInfo
-  if (_ftpConnectTypeInfo === undefined) {
-  // #region testCode FTPConnectTypeInfo
-    ftpConnectTypeInfo = new FTPConnectTypeInfo()
-    ftpConnectTypeInfo.connectionType = '2'
-    /*
+ipcMain.on(
+  'ftp-file-upload',
+  async (event, _selectFiles, _ftpConnectTypeInfo) => {
+    let ftpConnectTypeInfo
+    if (_ftpConnectTypeInfo === undefined) {
+      // #region testCode FTPConnectTypeInfo
+      ftpConnectTypeInfo = new FTPConnectTypeInfo()
+      ftpConnectTypeInfo.connectionType = '2'
+      /*
   let connectObject = {
     host: '10.10.18.28',
     port:'21',
@@ -271,14 +264,14 @@ ipcMain.on('ftp-file-upload', async (event, _selectFiles, _ftpConnectTypeInfo) =
   }
   ftpConnectTypeInfo.ftpSiteList.push(connectObject)
   */
-    const connectObject2 = {
-      host: '10.10.18.29',
-      port: '21',
-      user: 'konan',
-      password: 'konan415'
-    }
-    ftpConnectTypeInfo.ftpSiteList.push(connectObject2)
-  /*
+      const connectObject2 = {
+        host: '10.10.18.29',
+        port: '21',
+        user: 'konan',
+        password: 'konan415'
+      }
+      ftpConnectTypeInfo.ftpSiteList.push(connectObject2)
+      /*
     let connectObject3 = {
     host: '10.10.18.28',
     port:'21',
@@ -287,35 +280,42 @@ ipcMain.on('ftp-file-upload', async (event, _selectFiles, _ftpConnectTypeInfo) =
     }
     ftpConnectTypeInfo.ftpSiteList.push(connectObject3)
     */
-  // #endregion
-  } else {
-    ftpConnectTypeInfo = _ftpConnectTypeInfo
+      // #endregion
+    } else {
+      ftpConnectTypeInfo = _ftpConnectTypeInfo
 
-    statusWindow = new BrowserWindow({
-      width: 400,
-      height: 500,
-      parent: gWin,
-      modal: true,
-      webPreferences: {
-        nodeIntegration: true, // api 접근 허용 여부
-        contextIsolation: false
-        // preload: g_path.join(app.getAppPath(), 'preload.js')
-      }
-    })
-    statusWindow.isShow = true
-    // 브라우저창이 읽어 올 파일 위치
-    statusWindow.loadFile('./renderer/statusWindow.html')
-    // 브라우저창과 웹사이트 연결
-    // gWin.loadURL('https://www.naver.com')
-    statusWindow.webContents.openDevTools()
-    statusWindow.setMenu(null)
-  }
+      statusWindow = new BrowserWindow({
+        width: 400,
+        height: 500,
+        parent: gWin,
+        modal: true,
+        webPreferences: {
+          nodeIntegration: true, // api 접근 허용 여부
+          contextIsolation: false
+          // preload: g_path.join(app.getAppPath(), 'preload.js')
+        }
+      })
+      statusWindow.isShow = true
+      // 브라우저창이 읽어 올 파일 위치
+      statusWindow.loadFile('./renderer/statusWindow.html')
+      // 브라우저창과 웹사이트 연결
+      // gWin.loadURL('https://www.naver.com')
+      statusWindow.webContents.openDevTools()
+      statusWindow.setMenu(null)
+    }
 
-  if (ftpConnectTypeInfo) {
-    const desFolderPath = '/konan/electron_test/'
-    FTPConnectTypeBranch('upload', event, ftpConnectTypeInfo, _selectFiles, desFolderPath)
+    if (ftpConnectTypeInfo) {
+      const desFolderPath = '/konan/electron_test/'
+      FTPConnectTypeBranch(
+        'upload',
+        event,
+        ftpConnectTypeInfo,
+        _selectFiles,
+        desFolderPath
+      )
+    }
   }
-})
+)
 
 ipcMain.on('ftp-file-upload_new', async (event, _ftpSendData) => {
   const parentEvent = event
@@ -338,7 +338,7 @@ ipcMain.on('ftp-file-upload_new', async (event, _ftpSendData) => {
     })
     statusWindow.on('close', function (event) {
       delete gWindows.statusWindow
-      // eslint-disable-next-line no-undef
+      const key = undefined
       parentEvent.sender.send('windowClose', key, true, 'Success')
     })
     statusWindow.on('show', () => {
@@ -427,13 +427,29 @@ ipcMain.on('ftp-file-download', (event, _selectFiles) => {
   // eslint-disable-next-line camelcase
   g_DOWNLOAD_FOLDER_PATH = desFolderPath
 
-  FTPConnectTypeBranch('download', event, ftpConnectTypeInfo, _selectFiles, desFolderPath)
+  FTPConnectTypeBranch(
+    'download',
+    event,
+    ftpConnectTypeInfo,
+    _selectFiles,
+    desFolderPath
+  )
 })
-function FTPConnectTypeBranch (_FTPType, event, _FTPConnectTypeInfo, _selectFiles, _desFolderPath) {
+function FTPConnectTypeBranch (
+  _FTPType,
+  event,
+  _FTPConnectTypeInfo,
+  _selectFiles,
+  _desFolderPath
+) {
   const curType = _FTPConnectTypeInfo.connectionType
   const tempDic = {}
   if (curType === '1') {
-    const ftpInfo = new FTPInfo_Type1('admin', event, _FTPConnectTypeInfo.ftpSiteList)
+    const ftpInfo = new FTPInfo_Type1(
+      'admin',
+      event,
+      _FTPConnectTypeInfo.ftpSiteList
+    )
     tempDic[_FTPConnectTypeInfo.ftpSiteList[0].host] = ftpInfo
     g_FTPInfoDic.admin = tempDic
     g_FTPInfoDic.admin.connectionType = '1'
@@ -444,21 +460,25 @@ function FTPConnectTypeBranch (_FTPType, event, _FTPConnectTypeInfo, _selectFile
     let i = 0
     while (i >= 0) {
       let result
-      const ftpInfo = new FTPInfo_Type2('admin', event, _FTPConnectTypeInfo.ftpSiteList)
+      const ftpInfo = new FTPInfo_Type2(
+        'admin',
+        event,
+        _FTPConnectTypeInfo.ftpSiteList
+      )
       ftpInfo.m_DES_FOLDER_PATH = _desFolderPath
       tempDic[_FTPConnectTypeInfo.ftpSiteList[i].host] = ftpInfo // dic[10.10.18.29] = ftpInfo
-      result = ftpInfo.RequestFTPWork(_FTPType, _selectFiles, i).catch(
-        function (error) {
+      result = ftpInfo
+        .RequestFTPWork(_FTPType, _selectFiles, i)
+        .catch(function (error) {
           console.log(`FTPInfo_Type2_${_FTPType} Error!!!` + error)
           result = error
-        }
-      ) // end catch
+        }) // end catch
       PromiseResult.push(result)
       i++
       if (i === _FTPConnectTypeInfo.ftpSiteList.length) {
         break
       }
-    }// end while
+    } // end while
 
     g_FTPInfoDic.admin = tempDic
     g_FTPInfoDic.admin.connectionType = '2'
@@ -486,7 +506,12 @@ function FTPConnectTypeBranchNew (_FTPType, ftpSendData) {
   const curType = ftpSendData.ftpConnectTypeInfo.connectionType
   const tempDic = {}
   if (curType === '1') {
-    const ftpInfo = new FTPInfo_Type1('admin', ftpSendData.event, ftpSendData.ftpConnectTypeInfo.ftpSiteList, gWindows.statusWindow)
+    const ftpInfo = new FTPInfo_Type1(
+      'admin',
+      ftpSendData.event,
+      ftpSendData.ftpConnectTypeInfo.ftpSiteList,
+      gWindows.statusWindow
+    )
     tempDic[ftpSendData.ftpConnectTypeInfo.ftpSiteList[0].host] = ftpInfo
     g_FTPInfoDic.admin = tempDic
     g_FTPInfoDic.admin.connectionType = '1'
@@ -497,21 +522,26 @@ function FTPConnectTypeBranchNew (_FTPType, ftpSendData) {
     let i = 0
     while (i >= 0) {
       let result
-      const ftpInfo = new FTPInfo_Type2('admin', ftpSendData.event, ftpSendData.ftpConnectTypeInfo.ftpSiteList, gWindows.statusWindow)
+      const ftpInfo = new FTPInfo_Type2(
+        'admin',
+        ftpSendData.event,
+        ftpSendData.ftpConnectTypeInfo.ftpSiteList,
+        gWindows.statusWindow
+      )
       ftpInfo.m_DES_FOLDER_PATH = ftpSendData.desFolderPath
       tempDic[ftpSendData.ftpConnectTypeInfo.ftpSiteList[i].host] = ftpInfo // dic[10.10.18.29] = ftpInfo
-      result = ftpInfo.RequestFTPWork(_FTPType, ftpSendData, i).catch(
-        function (error) {
+      result = ftpInfo
+        .RequestFTPWork(_FTPType, ftpSendData, i)
+        .catch(function (error) {
           console.log(`FTPInfo_Type2_${_FTPType} Error!!!` + error)
           result = error
-        }
-      ) // end catch
+        }) // end catch
       PromiseResult.push(result)
       i++
       if (i === ftpSendData.ftpConnectTypeInfo.ftpSiteList.length) {
         break
       }
-    }// end while
+    } // end while
 
     g_FTPInfoDic.admin = tempDic
     g_FTPInfoDic.admin.connectionType = '2'
@@ -535,7 +565,7 @@ function FTPConnectTypeBranchNew (_FTPType, ftpSendData) {
     */
   }
 }
-ipcMain.on('open-file-explore', (event) => {
+ipcMain.on('open-file-explore', event => {
   // eslint-disable-next-line camelcase
   if (g_DOWNLOAD_FOLDER_PATH === undefined) {
     return
@@ -577,11 +607,15 @@ function ftpCancelBranch (cancelInfo) {
     ftpCancel(cancelInfo, cnt, FTPInfoList)
   } else if (g_FTPInfoDic[DicKey].connectionType === '2') {
     for (let i = 0; i < cancelInfo.cancelConnectionList.length; i++) {
-      const cnt = g_FTPInfoDic[DicKey][cancelInfo.cancelConnectionList[i]].m_FTPInfoManager.m_FTPStreamList.length
+      const cnt =
+        g_FTPInfoDic[DicKey][cancelInfo.cancelConnectionList[i]]
+          .m_FTPInfoManager.m_FTPStreamList.length
       if (cnt === undefined) {
         return
       }
-      FTPInfoList = g_FTPInfoDic[DicKey][cancelInfo.cancelConnectionList[i]].m_FTPInfoManager.m_FTPStreamList
+      FTPInfoList =
+        g_FTPInfoDic[DicKey][cancelInfo.cancelConnectionList[i]]
+          .m_FTPInfoManager.m_FTPStreamList
       ftpCancel(cancelInfo, cnt, FTPInfoList)
     }
   }
@@ -594,7 +628,7 @@ function ftpCancel (_cancelInfo, cnt, FTPInfoList) {
 // #endregion
 // #region Login
 // JSON Test
-ipcMain.on('login-read', (event) => {
+ipcMain.on('login-read', event => {
   // let data = g_JSON.ReadUserJSON('./UserData.json')
   const path = getUserHome() + KONAN_ROOT_FOLDER + '//UserData.json'
   const data = g_JSON.ReadUserJSON(path)
@@ -605,9 +639,12 @@ ipcMain.on('login-read', (event) => {
   }
 
   let profile = 'default'
-  if (process.argv) profile = process.argv.slice(2)
-  const properties = g_JSON.ReadUserJSON(_path.resolve(__dirname, '../src/assets/properties/' + profile[0] + '.json'))
-
+  if (isDevelopment === true) {
+    profile = 'developer'
+  }
+  const properties = g_JSON.ReadUserJSON(
+    _path.resolve(__dirname, '../src/assets/properties/' + profile + '.json')
+  )
   lastloginInfo.server = properties.server
 
   event.sender.send('login-read-result', lastloginInfo)
@@ -615,16 +652,14 @@ ipcMain.on('login-read', (event) => {
 
 ipcMain.on('login-write', (event, _loginInfo) => {
   _loginInfo.lastTime = globalFunk.getNowyyyymmddhhiiss()
-  g_loginInfo[_loginInfo.id] = _loginInfo
-  // eslint-disable-next-line camelcase
   g_curUserInfo = _loginInfo
   const path = getUserHome() + KONAN_ROOT_FOLDER
-  g_JSON.WriteUserJSON(path, g_loginInfo)
+  g_JSON.WriteUserJSON(path, _loginInfo)
   // g_NotificationPopUp.show('Config Save', 'Login Info Save Success')
   event.sender.send('login-write-result', true)
 })
 
-ipcMain.on('getUserInfo', (event) => {
+ipcMain.on('getUserInfo', event => {
   event.sender.send('getUserInfo_result', g_curUserInfo)
 })
 // #endregion
@@ -636,18 +671,33 @@ function WindowCreate (event, windowInfo) {
   const key = windowInfo.key
   // eslint-disable-next-line no-prototype-builtins
   if (gWindows.hasOwnProperty(key)) {
-    event.sender.send('openWindow_result', key, windowInfo.data, false, 'Key exsist already!')
+    event.sender.send(
+      'openWindow_result',
+      key,
+      windowInfo.data,
+      false,
+      'Key exsist already!'
+    )
     return
   }
   if (windowInfo.url === '') {
-    event.sender.send('openWindow_result', key, windowInfo.data, false, 'url is not exist!')
+    event.sender.send(
+      'openWindow_result',
+      key,
+      windowInfo.data,
+      false,
+      'url is not exist!'
+    )
     return
   }
 
   const url = windowInfo.url
   let parentWindow
-  if (windowInfo.parent === '' || windowInfo.parent === undefined || windowInfo.parent === '') {
-    // eslint-disable-next-line camelcase
+  if (
+    windowInfo.parent === '' ||
+    windowInfo.parent === undefined ||
+    windowInfo.parent === ''
+  ) {
     parentWindow = gWin
   } else {
     parentWindow = gWindows[windowInfo.parent]
@@ -672,7 +722,7 @@ function WindowCreate (event, windowInfo) {
   if (windowInfo.isUseDevTool) {
     window.webContents.openDevTools()
   }
-  window.webContents.on('did-finish-load', (evt) => {
+  window.webContents.on('did-finish-load', evt => {
     // onWebcontentsValue 이벤트 송신
     window.webContents.send('receiveData', key, windowInfo.data, 'init')
   })
@@ -743,7 +793,7 @@ app.on('window-all-closed', () => {
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
   if (process.platform === 'win32') {
-    process.on('message', (data) => {
+    process.on('message', data => {
       if (data === 'graceful-exit') {
         app.quit()
       }
