@@ -25,6 +25,7 @@
         </div>
         <div>
           <button id="json-id" @click="this.login">Login</button>
+          <button id="popup" @click="this.popup">Popup</button>
         </div>
       </div>
     </section>
@@ -34,11 +35,15 @@
 <script>
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
-// const RESTAPIInfo = require('../assets/js/restapi.js').RESTAPIInfo
 const axios = require('../assets/js/axios.js')
 
 export default {
   name: 'Login',
+  data () {
+    return {
+      g_windowIndex: 0
+    }
+  },
   mounted () {
     this.init()
   },
@@ -82,8 +87,6 @@ export default {
       }
 
       // //SearchAPI
-      // const restApiInfo = new RESTAPIInfo()
-      // const apikey = await restApiInfo.login(ID.value, PW.value)
       await axios.login(ID.value, PW.value)
       const apikey = this.$store.state.apikey
       // Result
@@ -91,6 +94,21 @@ export default {
         ipcRenderer.send('login-write', lginInfo)
         await this.$router.push('/main')
       }
+    },
+    popup: function () {
+      const name = 'test'
+      const data = {
+        value: name
+      }
+      ipcRenderer.send('openWindow', {
+        key: ++this.g_windowIndex,
+        url: 'manual',
+        data: data,
+        width: 700,
+        height: 700,
+        parent: '',
+        modal: false
+      })
     }
   }
 }

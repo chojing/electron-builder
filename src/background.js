@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 // import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 const { Menu, Tray, MenuItem } = require('electron')
@@ -24,7 +24,7 @@ const _path = require('path')
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
 // const MAIN_PAGE = 'test_index.html'
-const MAIN_PAGE = 'loading.html'
+// const MAIN_PAGE = 'loading.html'
 // eslint-disable-next-line camelcase
 const gWindows = []
 // eslint-disable-next-line camelcase
@@ -74,11 +74,6 @@ async function createWindow () {
     return false
   })
   gWin.isShow = true
-  // 브라우저창이 읽어 올 파일 위치
-  gWin.loadFile('loading.html')
-  gWin.loadFile(MAIN_PAGE)
-  gWin.webContents.openDevTools()
-  gWin.setMenu(null)
 
   // StartFolder Create
   const fileInfo = new FileInfo()
@@ -151,6 +146,9 @@ function windowShow (_win) {
 }
 
 app.whenReady().then(() => {
+  globalShortcut.register('CommandOrControl+R', () => {
+    console.log('CommandOrControl+R is pressed: Shortcut Disabled')
+  });
   RunTray()
   g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
   createWindow()
@@ -303,10 +301,17 @@ ipcMain.on('ftp-file-upload', async (event, _selectFiles, _ftpConnectTypeInfo) =
     })
     statusWindow.isShow = true
     // 브라우저창이 읽어 올 파일 위치
-    statusWindow.loadFile('./renderer/statusWindow.html')
     // 브라우저창과 웹사이트 연결
     // gWin.loadURL('https://www.naver.com')
-    statusWindow.webContents.openDevTools()
+
+    if (process.env.WEBPACK_DEV_SERVER_URL) {
+      // Load the url of the dev server if in development mode
+      await statusWindow.loadFile('./renderer/statusWindow.html')
+      if (!process.env.IS_TEST) statusWindow.webContents.openDevTools()
+    } else {
+      // Load the index.html when not in development
+      await statusWindow.loadURL('app://./renderer/statusWindow.html')
+    }
     statusWindow.setMenu(null)
   }
 
@@ -347,9 +352,14 @@ ipcMain.on('ftp-file-upload_new', async (event, _ftpSendData) => {
     })
 
     statusWindow.isShow = true
-    statusWindow.loadFile('./renderer/statusWindow.html')
-    // gWin.loadURL('https://www.naver.com')
-    statusWindow.webContents.openDevTools()
+    if (process.env.WEBPACK_DEV_SERVER_URL) {
+      // Load the url of the dev server if in development mode
+      await statusWindow.loadFile('./renderer/statusWindow.html')
+      if (!process.env.IS_TEST) statusWindow.webContents.openDevTools()
+    } else {
+      // Load the index.html when not in development
+      await statusWindow.loadURL('app://./renderer/statusWindow.html')
+    }
     statusWindow.setMenu(null)
     gWindows.statusWindow = statusWindow
     _ftpSendData.popUpWindow = statusWindow
@@ -650,12 +660,18 @@ function WindowCreate (event, windowInfo) {
   } else {
     parentWindow = gWindows[windowInfo.parent]
   }
-
+  const position = parentWindow.getPosition()
+  const size = parentWindow.getSize()
   const window = new BrowserWindow({
     width: windowInfo.width,
     height: windowInfo.height,
     parent: parentWindow,
+    x: position[0] + size[0] + (gWindows.length * 20),
+    y: position[1] + (gWindows.length * 20),
     modal: windowInfo.modal,
+    resizable: false,
+    minimizable: false,
+    maximizable: false,
     webPreferences: {
       nodeIntegration: true, // api 접근 허용 여부
       contextIsolation: false
@@ -665,11 +681,16 @@ function WindowCreate (event, windowInfo) {
   window.on('close', function (event) {
     delete gWindows[key]
   })
-  window.loadFile(url)
-  window.setMenu(null)
-  if (windowInfo.isUseDevTool) {
-    window.webContents.openDevTools()
+  if (process.env.WEBPACK_DEV_SERVER_URL) {
+    // Load the url of the dev server if in development mode
+    window.loadURL(process.env.WEBPACK_DEV_SERVER_URL + url)
+    if (!process.env.IS_TEST) window.webContents.openDevTools()
+  } else {
+    createProtocol('app')
+    // Load the index.html when not in development
+    window.loadURL('app://./index.html#/' + url)
   }
+  window.setMenu(null)
   window.webContents.on('did-finish-load', (evt) => {
     // onWebcontentsValue 이벤트 송신
     window.webContents.send('receiveData', key, windowInfo.data, 'init')
