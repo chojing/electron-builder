@@ -24,6 +24,16 @@ const routes = [
     path: '/manual',
     name: 'Manual',
     component: () => import('../views/Manual.vue')
+  },
+  {
+    path: '/manualFtp',
+    name: 'ManualFtp',
+    component: () => import('../views/ManualFtp.vue')
+  },
+  {
+    path: '/history',
+    name: 'History',
+    component: () => import('../views/History.vue')
   }
 ]
 

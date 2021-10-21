@@ -5,14 +5,20 @@
       <div class="head-top mt20">
         <div>
           <div class="user-name">
-            <p><i class="fas fa-user"></i> Master</p>
+            <p><i class="fas fa-user"></i> {{username}}</p>
           </div>
         </div>
       </div>
       <div class="user-favorite">
         <h4>즐겨찾기</h4>
         <div class="favorite-list">
-          <div class="fa-item-link fa-item flex-column"></div>
+          <div class="fa-item-link fa-item flex-column">
+            <button>
+              <span>1뎁스</span>
+              <span>2뎁스</span>
+              <span>3뎁스</span>
+            </button>
+          </div>
         </div>
       </div>
       <article class="mt20">
@@ -35,6 +41,8 @@
     </div>
   </main>
 
+  <templateMenu/>
+
   <div class="main">
     <button id="login-btn" @click="this.loginPage">로그인페이지확인용</button>
   </div>
@@ -42,16 +50,19 @@
 </template>
 <script>
 import templateTree from '@/components/main/template_tree'
+import templateMenu from '@/components/menu/template_menu'
 const axios = require('@/assets/js/axios.js')
 
 export default {
   name: 'Main',
   el: '#mainView',
   components: {
-    templateTree
+    templateTree,
+    templateMenu
   },
   data () {
     return {
+      username: this.$store.state.username,
       nodeList: [],
       oneDepth: [
         { nodeid: 1, parentid: 0, isfavorite: 0, isparent: 1, namevalue: '교양' },
