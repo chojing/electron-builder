@@ -1,3 +1,4 @@
+/* eslint-disable no-tabs */
 'use strict'
 
 import { app, protocol, BrowserWindow, ipcMain, globalShortcut } from 'electron'
@@ -7,25 +8,29 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 
 const FileInfo = require('./assets/main/fileinfo.js').FileInfo
 const FileCopyInfo = require('./assets/main/fileinfo.js').FileCopyInfo
-const FTPStream = require('./assets/main/ftp.js').FTPStream
+const FTPStream = require('./assets/main/ftpStream.js').FTPStream
 const globalFunk = require('./assets/main/globalFunk.js')
-const FTPConnectTypeInfo = require('./assets/main/ftp.js').FTPConnectTypeInfo
 
 const g_JSON = require('./assets/main/json.js')
 const NotificationPopUp = require('./assets/main/globalFunk.js')
   .NotificationPopUp
+const WindowInfo = require('./assets/main/windows.js').WindowInfo
 // test
 const FTPInfo_Type1 = require('./assets/main/ftpinfo.js').FTPInfoType1
 const FTPInfo_Type2 = require('./assets/main/ftpinfo.js').FTPInfoType2
-const FileData = require('./assets/main/globalFunk.js').FileData // #cjy testCode 2021.07.08
+// const FileData = require('./assets/main/globalFunk.js').FileData // #cjy testCode 2021.07.08
 const _path = require('path')
+
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
-const gWindows = []
+const g_windows = []
 let gWin = null
 const g_NotificationPopUp = new NotificationPopUp()
 let g_DOWNLOAD_FOLDER_PATH = ''
+const g_UPLOAD_FTP_FOLDER_PATH = '/konan/electron_test/'
 let g_curUserInfo
+// eslint-disable-next-line no-unused-vars
+let gIsMac = false
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -78,12 +83,16 @@ async function createWindow () {
     // Load the index.html when not in development
     await gWin.loadURL('app://./index.html')
   }
+
+  if (process.platform === 'darwin') {
+    gIsMac = true
+  }
 }
 
 function RunTray () {
   const tray = new Tray(
     _path.resolve(__dirname, '../public/img/icons/mac/16x16.png')
-  ) // 현재 애플리케이션 디렉터리를 기준으로 하려면 `__dirname + '/images/tray.png'` 형식으로 입력해야 합니다.
+  )
   tray.on('double-click', function () {
     if (!gWin.isShow) {
       windowShow(gWin)
@@ -244,186 +253,41 @@ ipcMain.on('file-delete', (event, _dirPath) => {
 // #endregion
 // #region FTP
 // ftp
-// eslint-disable-next-line camelcase
 const g_FTPInfoDic = {}
-// eslint-disable-next-line camelcase
 const g_FTPWorkQueue = []
-let statusWindow = null
-ipcMain.on(
-  'ftp-file-upload',
-  async (event, _selectFiles, _ftpConnectTypeInfo) => {
-    let ftpConnectTypeInfo
-    if (_ftpConnectTypeInfo === undefined) {
-      // #region testCode FTPConnectTypeInfo
-      ftpConnectTypeInfo = new FTPConnectTypeInfo()
-      ftpConnectTypeInfo.connectionType = '2'
-      /*
-  let connectObject = {
-    host: '10.10.18.28',
-    port:'21',
-    user: 'konan',
-    password: 'konan415'
-  }
-  ftpConnectTypeInfo.ftpSiteList.push(connectObject)
-  */
-      const connectObject2 = {
-        host: '10.10.18.29',
-        port: '21',
-        user: 'konan',
-        password: 'konan415'
-      }
-      ftpConnectTypeInfo.ftpSiteList.push(connectObject2)
-      /*
-    let connectObject3 = {
-    host: '10.10.18.28',
-    port:'21',
-    user: 'konan',
-    password: 'konan415'
-    }
-    ftpConnectTypeInfo.ftpSiteList.push(connectObject3)
-    */
-      // #endregion
-    } else {
-      ftpConnectTypeInfo = _ftpConnectTypeInfo
-
-      statusWindow = new BrowserWindow({
-        width: 400,
-        height: 500,
-        parent: gWin,
-        modal: true,
-        webPreferences: {
-          nodeIntegration: true, // api 접근 허용 여부
-          contextIsolation: false
-        // preload: g_path.join(app.getAppPath(), 'preload.js')
-        }
-      })
-      statusWindow.isShow = true
-
-      if (process.env.WEBPACK_DEV_SERVER_URL) {
-      // Load the url of the dev server if in development mode
-        await statusWindow.loadFile('./renderer/statusWindow.html')
-        if (!process.env.IS_TEST) statusWindow.webContents.openDevTools()
-      } else {
-      // Load the index.html when not in development
-        await statusWindow.loadURL('app://./renderer/statusWindow.html')
-      }
-      statusWindow.setMenu(null)
-    }
-
-    if (ftpConnectTypeInfo) {
-      const desFolderPath = '/konan/electron_test/'
-      FTPConnectTypeBranch(
-        'upload',
-        event,
-        ftpConnectTypeInfo,
-        _selectFiles,
-        desFolderPath
-      )
-    }
-  }
-)
+// eslint-disable-next-line no-unused-vars
+const statusWindow = null
 
 ipcMain.on('ftp-file-upload_new', async (event, _ftpSendData) => {
-  const parentEvent = event
   _ftpSendData.event = event
-  const ftpConnectTypeInfo = _ftpSendData.ftpConnectTypeInfo
-  let statusWindow
+  const ftpSite = _ftpSendData.ftpSite
+
+  _ftpSendData.desFolderPath = g_UPLOAD_FTP_FOLDER_PATH
+  // 이후 statuswindow 에서 시작하면 함. 스택에 쌓을뿐...
+  if (ftpSite.ftpServerList.length != 0) {
+    g_FTPWorkQueue.push(_ftpSendData)
+  }
+
   // statuswindow가 없을 경우에만 생성
   // eslint-disable-next-line no-prototype-builtins
-  if (!gWindows.hasOwnProperty('statusWindow')) {
-    statusWindow = new BrowserWindow({
-      width: 400,
-      height: 500,
-      parent: gWin,
-      modal: true,
-      webPreferences: {
-        nodeIntegration: true, // api 접근 허용 여부
-        contextIsolation: false
-        // preload: g_path.join(app.getAppPath(), 'preload.js')
-      }
-    })
-    statusWindow.on('close', function (event) {
-      delete gWindows.statusWindow
-      const key = undefined
-      parentEvent.sender.send('windowClose', key, true, 'Success')
-    })
-    statusWindow.on('show', () => {
-      setTimeout(() => {
-        statusWindow.focus()
-      }, 200)
-    })
-
-    statusWindow.isShow = true
-    if (process.env.WEBPACK_DEV_SERVER_URL) {
-      // Load the url of the dev server if in development mode
-      await statusWindow.loadFile('./renderer/statusWindow.html')
-      if (!process.env.IS_TEST) statusWindow.webContents.openDevTools()
-    } else {
-      // Load the index.html when not in development
-      await statusWindow.loadURL('app://./renderer/statusWindow.html')
-    }
-    statusWindow.setMenu(null)
-    gWindows.statusWindow = statusWindow
-    _ftpSendData.popUpWindow = statusWindow
+  if (g_windows.hasOwnProperty('statusWindow_upload') == false) {
+    const windowInfo = new WindowInfo()
+    windowInfo.SetStatusWindow('statusWindow_upload', _ftpSendData.targetUrl)
+    WindowCreate(event, windowInfo)
+    _ftpSendData.popUpWindow = windowInfo
   } else {
-    statusWindow.show()
-    _ftpSendData.popUpWindow = gWindows.statusWindow
-  }
-  _ftpSendData.desFolderPath = '/konan/electron_test/'
-  // 이후 statuswindow 에서 시작하면 함. 스택에 쌓을뿐...
-  if (ftpConnectTypeInfo) {
-    g_FTPWorkQueue.push(_ftpSendData)
+    g_windows.statusWindow_upload.show()
+    _ftpSendData.popUpWindow = g_windows.statusWindow_upload
   }
 })
 
 ipcMain.on('ftp-file-upload-start', function () {
   console.log('FTP Upload start!')
   const ftpSendData = g_FTPWorkQueue.shift()
-  FTPConnectTypeBranchNew('upload', ftpSendData)
+  FTPConnectTypeBranch_new('upload', ftpSendData)
 })
 
-ipcMain.on('ftp-file-download', (event, _selectFiles) => {
-  // #region TestCode
-  // TestCode #cjy 2021.07.06
-  const testfile = new FileData()
-  testfile.path = '/konan/electron_test//201906100001_002.MXF'
-  testfile.size = 0
-  // let testfile2 = new FileData()
-  // testfile2.path = '/konan/electron_test/201906100001_002-copy.MXF'
-  // testfile2.size = 0
-
-  // let testfile3 = new FileData()
-  // testfile3.path = '/konan/electron_test/22222222222.MXF'
-  // testfile3.size = 0
-
-  const testfile4 = new FileData()
-  testfile4.path = '/konan/electron_test/201906100001_002-copy.MXF'
-  testfile4.size = 0
-
-  _selectFiles.push(testfile)
-  // _selectFiles.push(testfile2)
-  // _selectFiles.push(testfile3)
-  _selectFiles.push(testfile4)
-
-  const ftpConnectTypeInfo = new FTPConnectTypeInfo()
-  ftpConnectTypeInfo.connectionType = '2'
-
-  const connectObject = {
-    host: '10.10.18.28',
-    port: '21',
-    user: 'konan',
-    password: 'konan415'
-  }
-  ftpConnectTypeInfo.ftpSiteList.push(connectObject)
-
-  const connectObject2 = {
-    host: '10.10.18.29',
-    port: '21',
-    user: 'konan',
-    password: 'konan415'
-  }
-  ftpConnectTypeInfo.ftpSiteList.push(connectObject2)
-  // #endregion
+ipcMain.on('ftp-file-download_new', (event, _ftpSendData) => {
   // 다운로드할 패스 선택 다이얼로그
   const curFileInfo = new FileInfo()
   const getFolderPath = curFileInfo.GetDirPath(gWin)
@@ -435,145 +299,77 @@ ipcMain.on('ftp-file-download', (event, _selectFiles) => {
   if (desFolderPath === undefined) {
     return false
   }
-  // eslint-disable-next-line camelcase
   g_DOWNLOAD_FOLDER_PATH = desFolderPath
+  _ftpSendData.desFolderPath = desFolderPath
 
-  FTPConnectTypeBranch(
-    'download',
-    event,
-    ftpConnectTypeInfo,
-    _selectFiles,
-    desFolderPath
-  )
-})
-function FTPConnectTypeBranch (
-  _FTPType,
-  event,
-  _FTPConnectTypeInfo,
-  _selectFiles,
-  _desFolderPath
-) {
-  const curType = _FTPConnectTypeInfo.connectionType
-  const tempDic = {}
-  if (curType === '1') {
-    const ftpInfo = new FTPInfo_Type1(
-      'admin',
-      event,
-      _FTPConnectTypeInfo.ftpSiteList
-    )
-    tempDic[_FTPConnectTypeInfo.ftpSiteList[0].host] = ftpInfo
-    g_FTPInfoDic.admin = tempDic
-    g_FTPInfoDic.admin.connectionType = '1'
-    ftpInfo.m_DES_FOLDER_PATH = _desFolderPath
-    ftpInfo.RequestFTPWork(_FTPType, _selectFiles, 0)
-  } else if (curType === '2') {
-    const PromiseResult = []
-    let i = 0
-    while (i >= 0) {
-      let result
-      const ftpInfo = new FTPInfo_Type2(
-        'admin',
-        event,
-        _FTPConnectTypeInfo.ftpSiteList
-      )
-      ftpInfo.m_DES_FOLDER_PATH = _desFolderPath
-      tempDic[_FTPConnectTypeInfo.ftpSiteList[i].host] = ftpInfo // dic[10.10.18.29] = ftpInfo
-      result = ftpInfo
-        .RequestFTPWork(_FTPType, _selectFiles, i)
-        .catch(function (error) {
-          console.log(`FTPInfo_Type2_${_FTPType} Error!!!` + error)
-          result = error
-        }) // end catch
-      PromiseResult.push(result)
-      i++
-      if (i === _FTPConnectTypeInfo.ftpSiteList.length) {
-        break
-      }
-    } // end while
+  _ftpSendData.event = event
+  const ftpSite = _ftpSendData.ftpSite
 
-    g_FTPInfoDic.admin = tempDic
-    g_FTPInfoDic.admin.connectionType = '2'
-
-    // 모든 작업이 다 완료되었을 때 출력 (모든 커넥션 작업 완료.)
-    /*
-    Promise.all(PromiseResult).then(value => {
-      let isError = false
-      console.log(g_FTPInfoDic['admin'])
-      for(let i = 0 i<value.length i++){
-        let cnt = g_FTPInfoDic['admin'][i].m_FTPInfoManager.m_FTPStreamList[i].m_WholeWorkFTPDataList
-        let checkList = g_FTPInfoDic['admin'].m_FTPInfoManager.m_FTPStreamList[i].m_WholeWorkFTPDataList
-        for(let j = 0 j<cnt j++){
-          if(checkList[j].isError == true){
-            g_FTPInfoDic['admin'].isError = true
-            console.log(checkList[j].key + ' is fail.')
-          }
-        }
-      }
-    })//end Promise.all
-    */
+  // 이후 statuswindow 에서 시작하면 함. 스택에 쌓을뿐...
+  if (ftpSite != undefined && ftpSite != '') {
+    g_FTPWorkQueue.push(_ftpSendData)
   }
-}
-function FTPConnectTypeBranchNew (_FTPType, ftpSendData) {
-  const curType = ftpSendData.ftpConnectTypeInfo.connectionType
+
+  // statuswindow가 없을 경우에만 생성
+  // eslint-disable-next-line no-prototype-builtins
+  if (g_windows.hasOwnProperty('statusWindow_download') == false) {
+    const windowInfo = new WindowInfo()
+    windowInfo.SetStatusWindow('statusWindow_download', _ftpSendData.targetUrl)
+    WindowCreate(event, windowInfo)
+    _ftpSendData.popUpWindow = windowInfo
+  } else {
+    g_windows.statusWindow_download.show()
+    _ftpSendData.popUpWindow = g_windows.statusWindow_download
+  }
+})
+ipcMain.on('ftp-file-download-start', function () {
+  console.log('FTP Download start!')
+  const ftpSendData = g_FTPWorkQueue.shift()
+  FTPConnectTypeBranch_new('download', ftpSendData)
+})
+function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
+  const curType = ftpSendData.ftpSite.connectionType
   const tempDic = {}
-  if (curType === '1') {
-    const ftpInfo = new FTPInfo_Type1(
-      'admin',
-      ftpSendData.event,
-      ftpSendData.ftpConnectTypeInfo.ftpSiteList,
-      gWindows.statusWindow
-    )
-    tempDic[ftpSendData.ftpConnectTypeInfo.ftpSiteList[0].host] = ftpInfo
-    g_FTPInfoDic.admin = tempDic
-    g_FTPInfoDic.admin.connectionType = '1'
+  const windowName = 'statusWindow_' + ftpSendData.type
+  if (curType == '1') {
+    const ftpInfo = new FTPInfo_Type1(ftpSendData.event, ftpSendData.ftpSite, g_windows[windowName])
+    g_FTPInfoDic[ftpSendData.ftpSite.siteName] = ftpInfo
+    g_FTPInfoDic[ftpSendData.ftpSite.siteName].connectionType = curType
     ftpInfo.m_DES_FOLDER_PATH = ftpSendData.desFolderPath
-    ftpInfo.RequestFTPWork(_FTPType, ftpSendData, 0)
-  } else if (curType === '2') {
+    ftpInfo.clientSendData = ftpSendData
+    ftpInfo.RequestFTPWork(_FTPType, 0)
+  } else if (curType == '2') {
     const PromiseResult = []
     let i = 0
     while (i >= 0) {
       let result
-      const ftpInfo = new FTPInfo_Type2(
-        'admin',
-        ftpSendData.event,
-        ftpSendData.ftpConnectTypeInfo.ftpSiteList,
-        gWindows.statusWindow
-      )
+      const ftpInfo = new FTPInfo_Type2(ftpSendData.event, ftpSendData.ftpSite, g_windows[windowName])
       ftpInfo.m_DES_FOLDER_PATH = ftpSendData.desFolderPath
-      tempDic[ftpSendData.ftpConnectTypeInfo.ftpSiteList[i].host] = ftpInfo // dic[10.10.18.29] = ftpInfo
-      result = ftpInfo
-        .RequestFTPWork(_FTPType, ftpSendData, i)
-        .catch(function (error) {
+      ftpInfo.clientSendData = ftpSendData
+      tempDic[ftpSendData.ftpSite.ftpServerList[i].serverName] = ftpInfo // dic[10.10.18.29] = ftpInfo
+      result = ftpInfo.RequestFTPWork(_FTPType, ftpSendData, i).catch(
+        function (error) {
           console.log(`FTPInfo_Type2_${_FTPType} Error!!!` + error)
           result = error
-        }) // end catch
+        }
+      ) // end catch
       PromiseResult.push(result)
       i++
-      if (i === ftpSendData.ftpConnectTypeInfo.ftpSiteList.length) {
+      if (i == ftpSendData.ftpSite.ftpServerList.length) {
         break
       }
-    } // end while
+    }// end while
 
-    g_FTPInfoDic.admin = tempDic
-    g_FTPInfoDic.admin.connectionType = '2'
+    g_FTPInfoDic[ftpSendData.ftpSite.siteName] = tempDic
+    g_FTPInfoDic[ftpSendData.ftpSite.siteName].connectionType = curType
 
     // 모든 작업이 다 완료되었을 때 출력 (모든 커넥션 작업 완료.) 2번타입일경우에만.
-    /*
+
     Promise.all(PromiseResult).then(value => {
-      let isError = false
-      console.log(g_FTPInfoDic['admin'])
-      for(let i = 0 i<value.length i++){
-        let cnt = g_FTPInfoDic['admin'][i].m_FTPInfoManager.m_FTPStreamList[i].m_WholeWorkFTPDataList
-        let checkList = g_FTPInfoDic['admin'].m_FTPInfoManager.m_FTPStreamList[i].m_WholeWorkFTPDataList
-        for(let j = 0 j<cnt j++){
-          if(checkList[j].isError == true){
-            g_FTPInfoDic['admin'].isError = true
-            console.log(checkList[j].key + ' is fail.')
-          }
-        }
-      }
-    })//end Promise.all
-    */
+      // eslint-disable-next-line no-unused-vars
+      const isError = false
+      console.log(g_FTPInfoDic)
+    })// end Promise.all
   }
 }
 ipcMain.on('open-file-explore', event => {
@@ -687,7 +483,7 @@ ipcMain.on('openWindow', (event, windowInfo) => {
 function WindowCreate (event, windowInfo) {
   const key = windowInfo.key
   // eslint-disable-next-line no-prototype-builtins
-  if (gWindows.hasOwnProperty(key)) {
+  if (g_windows.hasOwnProperty(key)) {
     event.sender.send(
       'openWindow_result',
       key,
@@ -717,7 +513,7 @@ function WindowCreate (event, windowInfo) {
   ) {
     parentWindow = gWin
   } else {
-    parentWindow = gWindows[windowInfo.parent]
+    parentWindow = g_windows[windowInfo.parent]
   }
   const position = parentWindow.getPosition()
   const size = parentWindow.getSize()
@@ -725,8 +521,8 @@ function WindowCreate (event, windowInfo) {
     width: windowInfo.width,
     height: windowInfo.height,
     parent: parentWindow,
-    x: position[0] + size[0] + (gWindows.length * 20),
-    y: position[1] + (gWindows.length * 20),
+    x: position[0] + size[0] + (g_windows.length * 20),
+    y: position[1] + (g_windows.length * 20),
     modal: windowInfo.modal,
     resizable: false,
     minimizable: false,
@@ -738,7 +534,7 @@ function WindowCreate (event, windowInfo) {
     }
   })
   window.on('close', function (event) {
-    delete gWindows[key]
+    delete g_windows[key]
   })
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -756,28 +552,28 @@ function WindowCreate (event, windowInfo) {
   })
   window.isShow = true
 
-  gWindows[key] = window
+  g_windows[key] = window
   event.sender.send('openWindow_result', key, windowInfo.data, true)
   console.log('OpenWindow Finish' + key)
 }
 ipcMain.on('sendData', (event, key, data, type) => {
   // eslint-disable-next-line no-prototype-builtins
-  if (!gWindows.hasOwnProperty(key)) {
+  if (!g_windows.hasOwnProperty(key)) {
     event.sender.send('sendData_result', key, false, 'Key not exist!')
     return
   }
-  gWindows[key].webContents.send('receiveData', key, data, type)
+  g_windows[key].webContents.send('receiveData', key, data, type)
   event.sender.send('sendData_result', key, true, 'Success')
   console.log('SendData Finish' + key)
 })
 
 ipcMain.on('closeWindow', (event, key) => {
   // eslint-disable-next-line no-prototype-builtins
-  if (gWindows.hasOwnProperty(key)) {
+  if (g_windows.hasOwnProperty(key)) {
     event.sender.send('closeWindow_result', key, false, 'Key not exist!')
     return
   }
-  gWindows[key].close()
+  g_windows[key].close()
 })
 // #endregion
 // #region ContextMenu
