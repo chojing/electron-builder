@@ -8,12 +8,12 @@
           <div class="flex-center">
             <h4>전송 Target</h4>
             <!--modify-->
-            <button class="btn h30" @click="this.popup">등록</button>
+            <button class="btn h30" @click="this.manualFtpPopup">등록</button>
           </div>
         </div>
         <div class="target-list" style="background: #f1fbff;">
           <ul class="one-list">
-            <li v-for="item in targetFtpList" v-bind:key="item.userid">
+            <li v-for="item in targetFtpList" v-bind:key="item.userid" @click="this.FileUploadPopup">
               <p>{{item.username}}</p>
             </li>
           </ul>
@@ -41,21 +41,36 @@ export default {
     return {
       g_windowIndex: 0,
       targetFtpList: [
-        { username: '김길동', userhost: 'hostText', userport: 'userPort', userid: 'kim', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' },
-        { username: '이길동', userhost: 'hostText', userport: 'userPort', userid: 'lee', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' },
-        { username: '홍길동', userhost: 'hostText', userport: 'userPort', userid: 'hong', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' }
+        { username: 'Target1', userhost: 'hostText', userport: 'userPort', userid: 'kim', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' },
+        { username: 'Target2', userhost: 'hostText', userport: 'userPort', userid: 'lee', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' },
+        { username: 'Target3', userhost: 'hostText', userport: 'userPort', userid: 'hong', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' }
       ]
     }
   },
   methods: {
-    popup: function () {
-      const name = 'test'
+    manualFtpPopup: function () {
+      const name = 'manualFtp'
       const data = {
         value: name
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
         url: 'manualFtp',
+        data: data,
+        width: 600,
+        height: 700,
+        parent: '',
+        modal: false
+      })
+    },
+    FileUploadPopup: function () {
+      const name = 'FileUpLoad'
+      const data = {
+        value: name
+      }
+      ipcRenderer.send('openWindow', {
+        key: ++this.g_windowIndex,
+        url: 'FileUpLoad',
         data: data,
         width: 700,
         height: 700,

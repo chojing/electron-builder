@@ -59,15 +59,15 @@
           <b>MODE</b>
           <div class="flex-1">
             <div class="radio-input">
-              <input v-model="basicVal" type="radio" name="mode" id="basicVal" checked>
+              <input v-model="basicVal" value="기본" type="radio" name="mode" id="basicVal" checked>
               <label for="basicVal">기본</label>
             </div>
             <div class="radio-input">
-              <input v-model="activeVal" type="radio" name="mode" id="activeVal" :disabled='isDisabled' >
+              <input v-model="activeVal" value="능동형" type="radio" name="mode" id="activeVal" :disabled='isDisabled' >
               <label for="activeVal">능동형</label>
             </div>
             <div class="radio-input">
-              <input v-model="passiveVal" type="radio" name="mode" id="passiveVal" :disabled='isDisabled' >
+              <input v-model="passiveVal" value="수동형" type="radio" name="mode" id="passiveVal" :disabled='isDisabled' >
               <label for="passiveVal">수동형</label>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default {
   data () {
     return {
       terms: false,
-      // 수동FTP 입력값
+      // 수동 FTP 입력값
       username: '',
       userhost: '',
       userport: '',
