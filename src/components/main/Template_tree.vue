@@ -1,8 +1,9 @@
 <template>
-  <li v-for="item in nodeList" v-bind:key="item.nodeid">
+  <li v-for="item in nodeList" v-bind:key="item.nodeid" @click="this.getChildList(item.nodeid)">
     <p @dblclick="this.FileUploadPopup(item.namevalue)" v-bind:data-parentid="item.parentid" v-bind:data-nodeid="item.nodeid" v-bind:data-favorites="item.isfavorite" v-bind:data-isparent="item.isparent">{{item.namevalue}}</p>
     <ul>
       <templateTree v-bind:nodeList="twoDepth"/>
+      <!--      <templateTree v-bind:nodeList="childList">-->
     </ul>
   </li>
 </template>
@@ -13,7 +14,7 @@ const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 const axios = require('@/assets/js/axios.js')
 export default {
-  name: 'template_tree',
+  name: 'Template_tree',
   components: {
     templateTree
   },

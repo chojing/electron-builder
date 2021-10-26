@@ -81,10 +81,10 @@ export default {
     getTree: function () {
       axios.getSyncAxios('/v1/trees/treename', null, function (response) {
         axios.getSyncAxios('/v1/trees/treename/' + response.data.result.rootnodeid, null, function (response) {
-          this.nodeList = response.data.results
+          // this.nodeList = response.data.results
         })
       }, function (error) {
-        this.nodeList = []
+        // this.nodeList = []
         axios.setError(error.response.data)
       })
     }
