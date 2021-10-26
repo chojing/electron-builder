@@ -1,23 +1,28 @@
 <template>
-  <li v-for="item in nodeList" v-bind:key="item.nodeid" @click="this.getChildList(item.nodeid)">
-    <p v-bind:data-parentid="item.parentid" v-bind:data-nodeid="item.nodeid" v-bind:data-favorites="item.isfavorite" v-bind:data-isparent="item.isparent">{{item.namevalue}}</p>
+  <li v-for="item in nodeList" v-bind:key="item.nodeid">
+    <p @dblclick="this.FileUploadPopup(item.namevalue)" v-bind:data-parentid="item.parentid" v-bind:data-nodeid="item.nodeid" v-bind:data-favorites="item.isfavorite" v-bind:data-isparent="item.isparent">{{item.namevalue}}</p>
     <ul>
       <templateTree v-bind:nodeList="twoDepth"/>
-<!--      <templateTree v-bind:nodeList="childList">-->
     </ul>
   </li>
 </template>
 
 <script>
-import templateTree from '@/components/main/template_tree'
+import templateTree from '@/components/main/Template_tree'
+const electron = window.require('electron')
+const ipcRenderer = electron.ipcRenderer
 const axios = require('@/assets/js/axios.js')
 export default {
   name: 'template_tree',
   components: {
     templateTree
   },
+  props: {
+    nodeList: Object
+  },
   data () {
     return {
+      g_windowIndex: 0,
       childList: [],
       twoDepth: [
         { nodeid: 13, parentid: 1, isfavorite: 1, isparent: 0, namevalue: '교양1' },
@@ -33,9 +38,6 @@ export default {
       ]
     }
   },
-  props: {
-    nodeList: Object
-  },
   methods: {
     getChildList: function (nodeid) {
       axios.getSyncAxios('/v1/trees/treename/' + nodeid + '/child', null, function (response) {
@@ -44,6 +46,21 @@ export default {
         this.childList = []
         axios.setError(error.response.data)
       })
+    },
+    FileUploadPopup: function (namevalue) {
+      const data = {
+        value: namevalue
+      }
+      ipcRenderer.send('openWindow', {
+        key: ++this.g_windowIndex,
+        url: 'FileUpLoad',
+        data: data,
+        width: 700,
+        height: 700,
+        parent: '',
+        modal: false
+      })
+      console.log('data send : ', data)
     }
   }
 }

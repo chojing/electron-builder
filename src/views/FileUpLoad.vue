@@ -1,7 +1,13 @@
 <template>
   <section class="file-container pb40">
     <div class="wrap">
-      <h4 class="tti">수동 FTP</h4>
+      <div class="user-favorite">
+        <div class="favorite-list mb20">
+          <div class="file-item fa-item flex-column">
+            <button><span>{{targetNameValue}}</span></button>
+          </div>
+        </div>
+      </div>
       <h4>전송제목</h4>
       <div class="file-tti-box mb40">
         <input class="input-box" type="text" value="">
@@ -31,13 +37,27 @@
 <script>
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
-const axios = require('../assets/js/axios.js')
-
 export default {
   name: 'FileUpLoad',
   data () {
+    return {
+      targetNameValue: ''
+    }
+  },
+  created () {
+    ipcRenderer.on('receiveData', this.init)
+    // ipcRenderer.on('receiveData', function (event, key, data) {
+    //   this.targetNameValue = data.value
+    //   console.log('event : ', event)
+    //   console.log('key : ', key)
+    //   console.log('data : ', data.value)
+    //   console.log('Adata : ', this.targetNameValue)
+    // })
   },
   methods: {
+    init: function (event, key, data) {
+      this.targetNameValue = data.value
+    }
   }
 }
 </script>

@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import templateHistory from '@/components/history/template_history_list'
+import templateHistory from '@/components/history/Template_history_list'
 
 export default {
   components: {

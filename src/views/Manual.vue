@@ -13,7 +13,7 @@
         </div>
         <div class="target-list" style="background: #f1fbff;">
           <ul class="one-list">
-            <li v-for="item in targetFtpList" v-bind:key="item.userid" @click="this.FileUploadPopup">
+            <li v-for="item in targetFtpList" v-bind:key="item.userid" @dblclick="this.FileUploadPopup">
               <p>{{item.username}}</p>
             </li>
           </ul>
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import templateMenu from '@/components/menu/template_menu'
+import templateMenu from '@/components/menu/Template_menu'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 // eslint-disable-next-line no-unused-vars
@@ -64,13 +64,13 @@ export default {
       })
     },
     FileUploadPopup: function () {
-      const name = 'FileUpLoad'
+      const name = 'ManualFileUpLoad'
       const data = {
         value: name
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
-        url: 'FileUpLoad',
+        url: 'ManualFileUpLoad',
         data: data,
         width: 700,
         height: 700,

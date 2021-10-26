@@ -36,9 +36,19 @@ const routes = [
     component: () => import('../views/History.vue')
   },
   {
+    path: '/manualFileUpLoad',
+    name: 'ManualFileUpLoad',
+    component: () => import('../views/ManualFileUpLoad.vue')
+  },
+  {
     path: '/fileUpLoad',
     name: 'FileUpLoad',
     component: () => import('../views/FileUpLoad.vue')
+  },
+  {
+    path: '/template_tree',
+    name: 'Template_tree',
+    component: () => import('../components/main/Template_tree.vue')
   }
 ]
 
