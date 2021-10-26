@@ -32,7 +32,7 @@
       <div class="file-submit-box flex-box">
         <div class="box flex-1">
           <input class="input-box" type="text" placeholder="전송 확인 문자 연락처(다중)">
-          <button id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
+          <button @click="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
         </div>
       </div>
       <button class="btn blue allSubmit">전송</button>
@@ -47,6 +47,7 @@ export default {
   name: 'FileUpLoad',
   data () {
     return {
+      g_windowIndex: 0,
       targetNameValue: ''
     }
   },
@@ -63,6 +64,21 @@ export default {
   methods: {
     init: function (event, key, data) {
       this.targetNameValue = data.value
+    },
+    userInfoPopup: function () {
+      const data = {
+        value: ''
+      }
+      ipcRenderer.send('openWindow', {
+        key: ++this.g_windowIndex,
+        url: 'UserInfo',
+        data: data,
+        width: 500,
+        height: 500,
+        parent: '',
+        modal: false
+      })
+      console.log('data send : ', data)
     }
   }
 }

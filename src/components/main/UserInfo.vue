@@ -3,7 +3,7 @@
     <div class="wrap">
       <div class="info-box">
         <div class="btn-box mb20">
-          <button type="button" class="btn blue addUser">+</button>
+          <button @click="active = !active" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue addUser">+</button>
           <button type="button" class="btn deleteUser">-</button>
         </div>
         <table class="mb20">
@@ -42,17 +42,37 @@
     </div>
   </section>
 
-  <div class="bg"></div>
-  <div class="user-info-add">
+  <div class="bg" :class="{view:active}"></div>
+  <div class="user-info-add" :class="{view:active}">
     <div class="inner">
-      <button class="close" type="button"><i class="fas fa-times"></i></button>
+      <button @click="active = false" class="close"><i class="fas fa-times"></i></button>
       <div class="box flex-box mb20">
-        <input type="text" placeholder="이름" id="info-name" class="name">
-        <input type="tel" placeholder="연락처" id="info-tel">
+        <input v-model="username" type="text" placeholder="이름" id="info-name" class="name">
+        <input v-model="usertel" type="tel" placeholder="연락처" id="info-tel">
       </div>
       <div class="btn-box">
-        <button id="addCheck" class="btn" type="button" >추가</button>
+        <button @click="userAdd" id="addCheck" class="btn" type="button" >추가</button>
       </div>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'UserInfo',
+  data () {
+    return {
+      active: false,
+      username: '',
+      usertel: ''
+    }
+  },
+  methods: {
+    userAdd: function () {
+      this.active = false
+      console.log('이름 ' + this.username)
+      console.log('번호 ' + this.usertel)
+    }
+  }
+}
+</script>
