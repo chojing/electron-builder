@@ -40,8 +40,6 @@ export default {
   },
   methods: {
     getChildList: function (item) {
-      console.log(item)
-      console.log(item.nodeid)
       item.childList = this.twoDepth
       // axios.getSyncAxios('/v1/trees/treename/' + nodeid + '/child', null, function (response) {
       //   this.childList = response.data.results
