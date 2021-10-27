@@ -1,8 +1,8 @@
 <template>
-  <li v-for="item in nodeList" v-bind:key="item.nodeid" @click="this.getChildList(item.nodeid)">
+  <li v-for="item in nodeList" v-bind:key="item.nodeid" @click="this.getChildList(item)">
     <p @dblclick="this.FileUploadPopup(item.namevalue)" v-bind:data-parentid="item.parentid" v-bind:data-nodeid="item.nodeid" v-bind:data-favorites="item.isfavorite" v-bind:data-isparent="item.isparent">{{item.namevalue}}</p>
     <ul>
-      <templateTree v-bind:nodeList="twoDepth"/>
+      <templateTree v-bind:nodeList="item.childList"/>
       <!--      <templateTree v-bind:nodeList="childList">-->
     </ul>
   </li>
@@ -12,9 +12,9 @@
 import templateTree from '@/components/main/Template_tree'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
-const axios = require('@/assets/js/axios.js')
+// const axios = require('@/assets/js/axios.js')
 export default {
-  name: 'Template_tree',
+  name: 'templateTree',
   components: {
     templateTree
   },
@@ -24,7 +24,6 @@ export default {
   data () {
     return {
       g_windowIndex: 0,
-      childList: [],
       twoDepth: [
         { nodeid: 13, parentid: 1, isfavorite: 1, isparent: 0, namevalue: '교양1' },
         { nodeid: 14, parentid: 1, isfavorite: 0, isparent: 0, namevalue: '교양2' },
@@ -40,13 +39,16 @@ export default {
     }
   },
   methods: {
-    getChildList: function (nodeid) {
-      axios.getSyncAxios('/v1/trees/treename/' + nodeid + '/child', null, function (response) {
-        this.childList = response.data.results
-      }, function (error) {
-        this.childList = []
-        axios.setError(error.response.data)
-      })
+    getChildList: function (item) {
+      console.log(item)
+      console.log(item.nodeid)
+      item.childList = this.twoDepth
+      // axios.getSyncAxios('/v1/trees/treename/' + nodeid + '/child', null, function (response) {
+      //   this.childList = response.data.results
+      // }, function (error) {
+      //   this.childList = []
+      //   axios.setError(error.response.data)
+      // })
     },
     FileUploadPopup: function (namevalue) {
       const data = {

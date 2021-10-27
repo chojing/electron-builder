@@ -84,8 +84,8 @@
 </template>
 
 <script>
-const electron = window.require('electron')
-const ipcRenderer = electron.ipcRenderer
+// const electron = window.require('electron')
+// const ipcRenderer = electron.ipcRenderer
 // eslint-disable-next-line no-unused-vars
 const axios = require('@/assets/js/axios.js')
 export default {
