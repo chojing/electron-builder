@@ -25,12 +25,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr v-for="user in users" :key="user.usertel">
               <td>
-                <div class="check"><input type="checkbox" id=""><label for=""></label></div>
+                <div class="check"><input type="checkbox" :id="user.usertel"><label :for="user.usertel"></label></div>
               </td>
-              <td class="name"></td>
-              <td class="tel"></td>
+              <td class="name">{{user.username}}</td>
+              <td class="tel">{{user.usertel}}</td>
             </tr>
           </tbody>
         </table>
@@ -51,7 +51,7 @@
         <input v-model="usertel" type="tel" placeholder="연락처" id="info-tel">
       </div>
       <div class="btn-box">
-        <button @click="userAdd" id="addCheck" class="btn" type="button" >추가</button>
+        <button @click="userAdd()" id="addCheck" class="btn" type="button" >추가</button>
       </div>
     </div>
   </div>
@@ -60,15 +60,14 @@
 <script>
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
-// eslint-disable-next-line camelcase
-let g_curWindowKey = ''
 export default {
   name: 'UserInfo',
   data () {
     return {
       active: false,
-      username: '',
-      usertel: ''
+      g_curWindowKey: '',
+      users: [],
+      allChecked: false
     }
   },
   created () {
@@ -77,15 +76,21 @@ export default {
   methods: {
     init: function (event, key, data) {
       // eslint-disable-next-line camelcase
-      g_curWindowKey = key
+      this.g_curWindowKey = key
     },
     cancel: function () {
-      ipcRenderer.send('closeWindow', g_curWindowKey)
+      ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     userAdd: function () {
       this.active = false
-      console.log('이름 ' + this.username)
-      console.log('번호 ' + this.usertel)
+      this.users.push({
+        username: this.username,
+        usertel: this.usertel
+      })
+      this.username = ''
+      this.usertel = ''
+      // console.log('이름 ' + this.username)
+      // console.log('번호 ' + this.usertel)
     }
   }
 }

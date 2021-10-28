@@ -32,7 +32,7 @@
       <div class="file-submit-box flex-box">
         <div class="box flex-1">
           <input class="input-box" type="text" placeholder="전송 확인 문자 연락처(다중)">
-          <button @click="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
+          <button @dblclick="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
         </div>
       </div>
       <button class="btn blue allSubmit">전송</button>
@@ -76,9 +76,8 @@ export default {
         width: 500,
         height: 500,
         parent: '',
-        modal: false
+        modal: true
       })
-      console.log('data send : ', data)
     }
   }
 }
