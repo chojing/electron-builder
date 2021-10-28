@@ -9,14 +9,14 @@
         <table class="mb20">
           <colgroup>
             <col width="30px">
-            <col width="15%">
+            <col width="20%">
             <col width="*">
           </colgroup>
           <thead>
             <tr>
               <th>
                 <div class="check">
-                  <input type="checkbox" id="allCheck">
+                  <input type="checkbox" id="allCheck" v-model="selectAll">
                   <label for="allCheck"></label>
                 </div>
               </th>
@@ -27,7 +27,7 @@
           <tbody>
             <tr v-for="user in users" :key="user.usertel">
               <td>
-                <div class="check"><input type="checkbox" :id="user.usertel"><label :for="user.usertel"></label></div>
+                <div class="check"><input type="checkbox" v-model="selected" :value="user.usertel" :id="user.usertel"><label :for="user.usertel"></label></div>
               </td>
               <td class="name">{{user.username}}</td>
               <td class="tel">{{user.usertel}}</td>
@@ -67,11 +67,28 @@ export default {
       active: false,
       g_curWindowKey: '',
       users: [],
-      allChecked: false
+      selected: []
     }
   },
   created () {
     ipcRenderer.on('receiveData', this.init)
+  },
+  computed: {
+    selectAll: {
+      get () {
+        return this.users ? this.selected.length == this.users.length : false
+      },
+      set (value) {
+        var selected = []
+        if (value) {
+          this.users.forEach(function (user) {
+            selected.push(user.usertel)
+            console.log('유저번호=아이디: ' + user.usertel)
+          })
+        }
+        this.selected = selected
+      }
+    }
   },
   methods: {
     init: function (event, key, data) {
