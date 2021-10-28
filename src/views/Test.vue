@@ -1,5 +1,5 @@
 <template>
-  <div class="backBtn" @click="$router.go(-1)"><i class="fas fa-arrow-left"></i></div>
+  <div class="backBtn" draggable="false" @click="$router.go(-1)"><i class="fas fa-arrow-left"></i></div>
   <section class="file-container">
     <div class="wrap">
       <h4 class="tti">수동 FTP</h4>
@@ -12,8 +12,8 @@
 
           </div>
 <div>
-<h4>{{test_}}</h4>
-<h4>{{ftpText}}</h4>
+<h4 id = "test">{{test_}}</h4>
+<h4 id = "ftpText">{{ftpText}}</h4>
 </div>
 <div type="text"
        class="form-control"
@@ -32,7 +32,7 @@ Drag your file here
 // import func from 'vue-editor-bridge'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
-
+const g_ftpSendData = { fileList: [] }
 export default {
   name: 'electronTest',
   components: {
@@ -48,11 +48,24 @@ export default {
     ipcRenderer.on('ftp-error', function (event, ftpData) {
       console.log('error')
       // SetAsset(ftpData, g_CheckFTPPersentDic, 0)
-      this.WriteText(this.ftpText, ftpData.errMsg)
+      self.WriteText('ftpText', ftpData.errMsg)
     })
 
     ipcRenderer.on('ftp-message', function (event, msg) {
-      this.WriteText(this.ftpText, msg)
+      self.WriteText('ftpText', msg)
+    })
+
+    ipcRenderer.on('open-dialog-result', function (event, _isCancel, _fileData) {
+      if (_isCancel == true) {
+        self.ftpText = '취소하였습니다.'
+        return
+      }
+      if (_fileData === undefined) {
+        self.ftpText = '파일을 가져오는 중 에러가 발생했습니다.'
+        return
+      }
+      g_ftpSendData.fileList = _fileData
+      self.PrintPath(_fileData)
     })
   },
   data () {
@@ -61,7 +74,8 @@ export default {
       g_windowIndex: 0,
       ftpText: String,
       filename: '',
-      imageSrc: ''
+      fileList: []
+
     }
   },
   mounted () {
@@ -70,16 +84,30 @@ export default {
   },
   methods: {
     onDrop (event) {
-      this.inputFile(event.dataTransfer.files)
+      this.DragDropFile(event.dataTransfer.files)
     },
-    inputFile (files) {
+    DragDropFile (files) {
       if (files.length) {
         for (let i = 0; i < files.length; i++) {
           const file = files[i]
-          this.filename = file.name
-          console.log(this.filename)
+          this.fileList.push(file.path)
         }
+        const convertFileList = this.fileList.map(f => f)
+        ipcRenderer.send('drag-file', convertFileList)
+        this.fileList = []
       }
+    },
+    PrintPath: function (_fileData) {
+      let strResult = ''
+      for (var i = 0; i < _fileData.length; i++) {
+        const file = _fileData[i]
+        strResult += `You selected: ${file.path}` + `<br> You Size: ${file.size}` + '<br><br>'
+        // strResult = 'test'
+      }
+      this.WriteText('ftpText', strResult)
+    },
+    WriteText: function (_id, text) {
+      document.getElementById(_id).innerHTML = text
     },
     getKey: function () {
       ipcRenderer.send('getUserInfo')
@@ -102,9 +130,6 @@ export default {
     },
     ftpTest: function () {
       console.log('test!')
-    },
-    WriteText: function (id, text) {
-      id = text
     }
   }
 }
