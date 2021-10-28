@@ -100,17 +100,12 @@ export default {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     userAdd: function () {
+      this.active = false
+      this.users.push({ username: this.username, usertel: this.usertel })
+      this.username = ''
+      this.usertel = ''
       // console.log('이름 ' + this.username)
       // console.log('번호 ' + this.usertel)
-      if (/^[a-z0-9_-]{8,13}$/.test(this.usertel)) {
-        alert('숫자만 입력해주세요.(8~13자리)')
-        this.usertel.focus()
-      } else {
-        this.active = false
-        this.users.push({ username: this.username, usertel: this.usertel })
-        this.username = ''
-        this.usertel = ''
-      }
     },
     userDel: function (index) {
       this.users.splice(index, 1)
