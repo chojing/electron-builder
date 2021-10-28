@@ -569,7 +569,7 @@ ipcMain.on('sendData', (event, key, data, type) => {
 
 ipcMain.on('closeWindow', (event, key) => {
   // eslint-disable-next-line no-prototype-builtins
-  if (g_windows.hasOwnProperty(key)) {
+  if (!g_windows.hasOwnProperty(key)) {
     event.sender.send('closeWindow_result', key, false, 'Key not exist!')
     return
   }
