@@ -33,24 +33,17 @@
         </div>
         <div class="target-list mt40">
           <ul class="one-list" id="targetContainer">
-<!--            <templateTree v-bind:nodeList="nodeList"></templateTree>-->
             <templateTree v-bind:nodeList="oneDepth"/>
           </ul>
         </div>
       </article>
     </div>
   </main>
-
   <templateMenu/>
-
-  <div class="main">
-    <button id="login-btn" @click="this.loginPage">로그인페이지확인용</button>
-  </div>
-
 </template>
 <script>
-import templateTree from '@/components/main/template_tree'
-import templateMenu from '@/components/menu/template_menu'
+import templateTree from '@/components/main/Template_tree'
+import templateMenu from '@/components/menu/Template_menu'
 const axios = require('@/assets/js/axios.js')
 
 export default {
@@ -78,18 +71,6 @@ export default {
         { nodeid: 11, parentid: 0, isfavorite: 0, isparent: 0, namevalue: '교양' },
         { nodeid: 12, parentid: 0, isfavorite: 1, isparent: 0, namevalue: '예능' }
       ],
-      twoDepth: [
-        { nodeid: 13, parentid: 1, isfavorite: 1, isparent: 0, namevalue: '교양1' },
-        { nodeid: 14, parentid: 1, isfavorite: 0, isparent: 0, namevalue: '교양2' },
-        { nodeid: 15, parentid: 1, isfavorite: 0, isparent: 0, namevalue: '교양3' },
-        { nodeid: 16, parentid: 2, isfavorite: 0, isparent: 0, namevalue: '예능1' },
-        { nodeid: 17, parentid: 2, isfavorite: 0, isparent: 0, namevalue: '예능2' },
-        { nodeid: 18, parentid: 3, isfavorite: 1, isparent: 0, namevalue: '드라마1' },
-        { nodeid: 19, parentid: 3, isfavorite: 0, isparent: 0, namevalue: '드라마2' },
-        { nodeid: 20, parentid: 3, isfavorite: 0, isparent: 0, namevalue: '드라마3' },
-        { nodeid: 21, parentid: 5, isfavorite: 0, isparent: 0, namevalue: '동물농장1' },
-        { nodeid: 22, parentid: 5, isfavorite: 1, isparent: 0, namevalue: '동물농장2' }
-      ],
       active: false
     }
   },
@@ -97,16 +78,13 @@ export default {
     this.getTree()
   },
   methods: {
-    loginPage: async function () {
-      this.$router.push('/login')
-    },
     getTree: function () {
       axios.getSyncAxios('/v1/trees/treename', null, function (response) {
         axios.getSyncAxios('/v1/trees/treename/' + response.data.result.rootnodeid, null, function (response) {
-          this.nodeList = response.data.results
+          // this.nodeList = response.data.results
         })
       }, function (error) {
-        this.nodeList = []
+        // this.nodeList = []
         axios.setError(error.response.data)
       })
     }

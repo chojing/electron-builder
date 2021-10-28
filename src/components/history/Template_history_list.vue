@@ -1,6 +1,6 @@
 <template>
   <tr>
-    <td class="targetName"> </td>
+    <td class="targetName">name</td>
     <td>/root</td>
     <td>test.mp4</td>
     <td>

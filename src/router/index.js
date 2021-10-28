@@ -39,12 +39,37 @@ const routes = [
   {
     path: '/manualFtp',
     name: 'ManualFtp',
-    component: () => import('../views/ManualFtp.vue')
+    component: () => import('../components/manual/ManualFtp.vue')
   },
   {
     path: '/history',
     name: 'History',
     component: () => import('../views/History.vue')
+  },
+  {
+    path: '/manualFileUpLoad',
+    name: 'ManualFileUpLoad',
+    component: () => import('../components/manual/ManualFileUpLoad.vue')
+  },
+  {
+    path: '/fileUpLoad',
+    name: 'FileUpLoad',
+    component: () => import('../components/main/FileUpLoad.vue')
+  },
+  {
+    path: '/template_tree',
+    name: 'Template_tree',
+    component: () => import('../components/main/Template_tree.vue')
+  },
+  {
+    path: '/userInfo',
+    name: 'UserInfo',
+    component: () => import('../components/main/UserInfo.vue')
+  },
+  {
+    path: '/userInfoAdd',
+    name: 'UserInfoAdd',
+    component: () => import('../components/main/UserInfoAdd.vue')
   }
 ]
 
