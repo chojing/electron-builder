@@ -258,7 +258,7 @@ const g_FTPWorkQueue = []
 // eslint-disable-next-line no-unused-vars
 const statusWindow = null
 
-ipcMain.on('ftp-file-upload_new', async (event, _ftpSendData) => {
+ipcMain.on('ftp-file-upload', async (event, _ftpSendData) => {
   _ftpSendData.event = event
   const ftpSite = _ftpSendData.ftpSite
 
@@ -287,7 +287,7 @@ ipcMain.on('ftp-file-upload-start', function () {
   FTPConnectTypeBranch_new('upload', ftpSendData)
 })
 
-ipcMain.on('ftp-file-download_new', (event, _ftpSendData) => {
+ipcMain.on('ftp-file-download', (event, _ftpSendData) => {
   // 다운로드할 패스 선택 다이얼로그
   const curFileInfo = new FileInfo()
   const getFolderPath = curFileInfo.GetDirPath(gWin)
