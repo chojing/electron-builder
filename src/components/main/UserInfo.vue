@@ -36,7 +36,7 @@
         </table>
         <div class="btn-box">
           <button type="button" id="submitBtn" class="btn blue">확인</button>
-          <button type="button" id="cancel" class="btn">닫기</button>
+          <button @click="cancel" type="button" id="cancel" class="btn">닫기</button>
         </div>
       </div>
     </div>
@@ -58,6 +58,10 @@
 </template>
 
 <script>
+const electron = window.require('electron')
+const ipcRenderer = electron.ipcRenderer
+// eslint-disable-next-line camelcase
+let g_curWindowKey = ''
 export default {
   name: 'UserInfo',
   data () {
@@ -67,7 +71,17 @@ export default {
       usertel: ''
     }
   },
+  created () {
+    ipcRenderer.on('receiveData', this.init)
+  },
   methods: {
+    init: function (event, key, data) {
+      // eslint-disable-next-line camelcase
+      g_curWindowKey = key
+    },
+    cancel: function () {
+      ipcRenderer.send('closeWindow', g_curWindowKey)
+    },
     userAdd: function () {
       this.active = false
       console.log('이름 ' + this.username)
