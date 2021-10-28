@@ -4,7 +4,7 @@
       <div class="info-box">
         <div class="btn-box mb20">
           <button @click="active = !active" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue addUser">+</button>
-          <button type="button" class="btn deleteUser">-</button>
+          <button @click="userDel(key)" type="button" class="btn deleteUser">-</button>
         </div>
         <table class="mb20">
           <colgroup>
@@ -51,7 +51,7 @@
         <input v-model="usertel" type="tel" placeholder="연락처" id="info-tel">
       </div>
       <div class="btn-box">
-        <button @click="userAdd()" id="addCheck" class="btn" type="button" >추가</button>
+        <button @click="userAdd" id="addCheck" class="btn" type="button" >추가</button>
       </div>
     </div>
   </div>
@@ -84,6 +84,7 @@ export default {
           this.users.forEach(function (user) {
             selected.push(user.usertel)
             console.log('유저번호=아이디: ' + user.usertel)
+            console.log('유저정보: ' + selected)
           })
         }
         this.selected = selected
@@ -99,15 +100,20 @@ export default {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     userAdd: function () {
-      this.active = false
-      this.users.push({
-        username: this.username,
-        usertel: this.usertel
-      })
-      this.username = ''
-      this.usertel = ''
       // console.log('이름 ' + this.username)
       // console.log('번호 ' + this.usertel)
+      if (/^[a-z0-9_-]{8,13}$/.test(this.usertel)) {
+        alert('숫자만 입력해주세요.(8~13자리)')
+        this.usertel.focus()
+      } else {
+        this.active = false
+        this.users.push({ username: this.username, usertel: this.usertel })
+        this.username = ''
+        this.usertel = ''
+      }
+    },
+    userDel: function (index) {
+      this.users.splice(index, 1)
     }
   }
 }
