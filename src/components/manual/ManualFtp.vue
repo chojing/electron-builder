@@ -4,14 +4,11 @@
       <h4 class="tti">수동 FTP</h4>
       <div class="ftp-info mt20">
         <div class="btn-box right">
-          <button @click="userData()" class="btn h30">등록</button>
-          <button @click="modifyFtp()" :aria-pressed="terms ? 'true' : 'false'" id="modify-btn" class="btn blue h30">수정</button>
+          <button @click="userUpData()" class="btn h30">추가</button>
+          <button @click="usrModifyFtp()" :aria-pressed="terms ? 'true' : 'false'" id="modify-btn" class="btn blue h30">입력</button>
         </div>
-        <select name="" id="selectFtp">
-          <option value="FTP정보1">FTP정보1</option>
-          <option value="FTP정보2">FTP정보2</option>
-          <option value="FTP정보3">FTP정보3</option>
-          <option value="FTP정보4">FTP정보4</option>
+        <select id="selectFtp" @change="testChange($event)">
+          <option v-for="targetInfo in adcSelect" :key="targetInfo.index" :value="targetInfo.username">{{targetInfo.username}}</option>
         </select>
         <div class="list flex-center">
           <b>이름</b>
@@ -84,10 +81,12 @@
 </template>
 
 <script>
+// import { EventBus } from '@/eventBus'
 // const electron = window.require('electron')
 // const ipcRenderer = electron.ipcRenderer
 // eslint-disable-next-line no-unused-vars
 const axios = require('@/assets/js/axios.js')
+
 export default {
   name: 'ManualFtp',
   data () {
@@ -96,14 +95,15 @@ export default {
       // 수동 FTP 입력값
       username: '',
       userhost: '',
-      userport: '',
+      userport: '21',
       userid: '',
       userpw: '',
       userdir: '',
       userproxy: '',
       basicVal: '',
       activeVal: '',
-      passiveVal: ''
+      passiveVal: '',
+      adcSelect: []
     }
   },
   computed: {
@@ -112,14 +112,18 @@ export default {
     }
   },
   methods: {
-    userData () {
+    userUpData () {
       this.terms = false
+      this.adcSelect.push({ username: this.username, userhost: this.userhost, userport: this.userport, userid: this.userid, userpw: this.userpw, userdir: this.userdir, userproxy: this.userproxy })
       console.log(this.username + ' ' + this.userhost + ' ' + this.userport + ' ' + this.userid + ' ' + this.userpw + ' ' + this.userdir + ' ' + this.userproxy)
-      console.log(this.basicVal + ' ' + this.activeVal + ' ' + this.passiveVal)
+    //  EventBus.$emit('test', this.selected)
     },
-    modifyFtp () {
+    usrModifyFtp () {
       this.terms = true
       this.$refs.usernameInput.focus()
+    },
+    testChange (event) {
+      console.log(event.target.value)
     }
   }
 }

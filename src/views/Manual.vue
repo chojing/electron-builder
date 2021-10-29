@@ -27,6 +27,7 @@
 
 <script>
 import templateMenu from '@/components/menu/Template_menu'
+// import { EventBus } from '@/eventBus'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 // eslint-disable-next-line no-unused-vars
@@ -39,6 +40,7 @@ export default {
   data () {
     return {
       g_windowIndex: 0,
+      targetName: '',
       targetFtpList: [
         { username: 'Target1', userhost: 'hostText', userport: 'userPort', userid: 'kim', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' },
         { username: 'Target2', userhost: 'hostText', userport: 'userPort', userid: 'lee', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' },
@@ -76,7 +78,14 @@ export default {
         parent: '',
         modal: false
       })
+    },
+    targetNameSubmit: function () {
     }
   }
+  // created () {
+  //   EventBus.$on('test', function (data) {
+  //     alert('data : ', data)
+  //   })
+  // }
 }
 </script>
