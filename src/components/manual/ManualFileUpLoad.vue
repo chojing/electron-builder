@@ -17,12 +17,10 @@
           </li>
         </ul>
       </div>
-      <h4>파일(폴더) 전송</h4>
-      <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop">
-        <div class="drag">
 
-        </div>
-      </div>
+      <!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "setInput" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
+<baseDragDrop @valueReturn="DragDropResult"/>
+
       <div class="pro-bar mt20">
         <span :style="{width:dataPer + '%'}"></span>
         <b>{{dataPer}}%</b>
@@ -33,11 +31,17 @@
 </template>
 
 <script>
+import baseDragDrop from '@/components/main/BaseDragDrop'
+
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
+
 let g_ftpSendData = {}
 export default {
   name: 'ManualFileUpLoad',
+  components: {
+    baseDragDrop
+  },
   created () {
     console.log('start!')
     // const self = this
@@ -113,7 +117,6 @@ export default {
     }
 
     ipcRenderer.on('receiveData', this.init)
-    ipcRenderer.on('open-dialog-result', this.DragDropFile_Result)
     ipcRenderer.on('ftp-result', this.ftpResult)
   },
   data () {
@@ -128,35 +131,15 @@ export default {
     init: function (event, key, data) {
       this.targetNameValue = data.value
     },
-    onDrop (event) {
-      console.log('dragTest!')
-      this.dataPer = 0
-      this.DragDropFile(event.dataTransfer.files)
-    },
-    DragDropFile (files) {
-      if (files.length) {
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i]
-          this.fileList.push(file.path)
-          console.log(this.fileList)
-        }
-        const convertFileList = this.fileList.map(f => f)
-        ipcRenderer.send('drag-file', convertFileList)
-        this.fileList = []
-      }
-    },
-    DragDropFile_Result (event, _isCancel, _fileData) {
-      if (_isCancel == true) {
-        // self.ftpText = '취소하였습니다.'
+    DragDropResult: function (value) {
+      if (value === '취소하였습니다.') {
         return
       }
-      if (_fileData === undefined) {
-        // self.ftpText = '파일을 가져오는 중 에러가 발생했습니다.'
+      if (value === '파일을 가져오는 중 에러가 발생했습니다.') {
         return
       }
-      g_ftpSendData.fileList = _fileData
-      //   console.log(_fileData)
-      // self.PrintPath(_fileData)
+      g_ftpSendData.fileList = value
+      console.log(value)
     },
     doUpload: function () {
       console.log('request FTP Start')
@@ -165,8 +148,6 @@ export default {
       ipcRenderer.send('ftp-file-upload', g_ftpSendData) // eventName, SendData
     },
     ftpResult: function (event, data) {
-      // WriteFTPData('ftp-log-id', data.ftpData)
-      // g_CurftpDataServer = data.ftpServer
       console.log(data)
       this.dataPer = data.ftpData.curWorkPersent
     }
