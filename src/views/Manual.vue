@@ -1,5 +1,4 @@
 <template>
-  <div class="backBtn" @click="$router.go(-1)"><i class="fas fa-arrow-left"></i></div>
   <section class="file-container">
     <div class="wrap">
       <h4 class="tti">수동 FTP</h4>

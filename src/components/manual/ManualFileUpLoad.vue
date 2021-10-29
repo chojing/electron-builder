@@ -23,6 +23,10 @@
 
         </div>
       </div>
+      <div class="pro-bar mt20">
+        <span :style="{width:dataPer + '%'}"></span>
+        <b>{{dataPer}}%</b>
+      </div>
       <button v-on:click = "doUpload" class="btn blue allSubmit">전송</button>
     </div>
   </section>
@@ -120,7 +124,8 @@ export default {
     return {
       g_windowIndex: 0,
       targetNameValue: '',
-      fileList: []
+      fileList: [],
+      dataPer: 20
     }
   },
   methods: {

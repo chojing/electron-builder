@@ -8,7 +8,7 @@
          <router-link to="/history"> <i class="fas fa-exchange-alt"></i> </router-link>
       </span>
       <span>
-          <router-link to=""> <i class="fas fa-exclamation-triangle"></i></router-link>
+          <router-link to="/emergency"> <i class="fas fa-exclamation-triangle"></i></router-link>
       </span>
       <span>
           <router-link to="/manual"> <i class="fas fa-file-upload"></i> </router-link>

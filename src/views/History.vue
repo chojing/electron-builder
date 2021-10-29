@@ -1,5 +1,4 @@
 <template>
-  <div class="backBtn" @click="$router.go(-1)"><i class="fas fa-arrow-left"></i></div>
   <section class="history-container">
     <div class="wrap">
       <h4 class="tti mb40">전송내역</h4>
@@ -18,17 +17,18 @@
           </tbody>
         </table>
       </div>
-      <button type="button" id="cancel" class="btn h40 m-auto">확인</button>
     </div>
   </section>
+  <templateMenu/>
 </template>
 
 <script>
 import templateHistory from '@/components/history/Template_history_list'
-
+import templateMenu from '@/components/menu/Template_menu'
 export default {
   components: {
-    templateHistory
+    templateHistory,
+    templateMenu
   }
 }
 </script>

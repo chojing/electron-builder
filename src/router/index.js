@@ -32,6 +32,11 @@ const routes = [
     component: () => import('../views/Main.vue')
   },
   {
+    path: '/emergency',
+    name: 'Emergency',
+    component: () => import('../views/Emergency.vue')
+  },
+  {
     path: '/manual',
     name: 'Manual',
     component: () => import('../views/Manual.vue')
@@ -45,6 +50,16 @@ const routes = [
     path: '/history',
     name: 'History',
     component: () => import('../views/History.vue')
+  },
+  {
+    path: '/historyDetail',
+    name: 'HistoryDetail',
+    component: () => import('../views/HistoryDetail.vue')
+  },
+  {
+    path: '/template_history_list',
+    name: 'Template_history_list',
+    component: () => import('../components/history/Template_history_list.vue')
   },
   {
     path: '/manualFileUpLoad',
