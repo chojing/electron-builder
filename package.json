@@ -70,7 +70,10 @@
     },
     "rules": {
 		"camelcase": "off",
-		"eqeqeq": "off"
+		"eqeqeq": "off",
+		"no-unused-expressions": "off",
+		"prefer-promise-reject-errors": "off",
+		"handle-callback-err":"off"
 	},
     "overrides": [
       {

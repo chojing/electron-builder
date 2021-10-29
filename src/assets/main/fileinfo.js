@@ -62,7 +62,7 @@ FileInfo.prototype.GetAllFileInfo = function (_filePaths) {
 
     if (stats.isDirectory()) {
       fs.readdirSync(curPath).forEach(file => { // 파일 리스트 확인
-        const curRepath = curPath + '//' + file
+        const curRepath = curPath + '/' + file
         if (fs.lstatSync(_path.resolve(curPath, file)).isDirectory()) { // 파일 리스트중 디렉토리가 있는지 확인
           // 디렉토리
           rePathArr.push(curRepath)

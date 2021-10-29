@@ -1,11 +1,6 @@
-// const Client = require('ftp')
-// const { shell } = require('electron')
-// const fs = require('fs')
 const FileData = require('./globalFunk.js').FileData
 const NotificationPopUp = require('./globalFunk.js').NotificationPopUp
 const FileInfo = require('./fileinfo.js').FileInfo
-// const util = require('util')
-// const EventEmitter = require('events').EventEmitter
 const FTPStream = require('./ftpStream').FTPStream
 const gfileData = new FileData()
 
@@ -16,14 +11,14 @@ const gfileData = new FileData()
 //   this.connectionType = ''
 // }
 
-function FTPInfo (_key, _event, _FTPServerConfigList, _popUpWnd) {
-  this.key = _key || '' // key는 보통 접속한 유저로 할 계획. 사용처는 클라이언트측에서 취소 요청시, 어떤 파일인지 찾기 위함
+function FTPInfo (_event, _FTPSite, _popUpWnd) {
   this.event = _event || '' // 접속한 유저가 요청한 event를 등록해놓음. 나중에 result 할 때 필요함
   this.m_DES_FOLDER_PATH = ''
-  this.m_FTPServerConfigList = _FTPServerConfigList || ''
+  this.m_FTPSite = _FTPSite || ''
   this.m_NofiPopup = new NotificationPopUp()
-  // eslint-disable-next-line no-unused-expressions
-  this.ftpStream // FTPStream
+  this.ftpStreamList = {} // FTPStream
+  this.clientSendData
+  this.isFinish = false
 
   this.m_popUpWnd = _popUpWnd || ''
 }
@@ -35,73 +30,87 @@ FTPInfo.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData, _conn
   // await 빠져 나오면 그다음 큐
   // 여기서 말하는 큐는 FTP 하나 전송 데이터(_FTPSendData).. FTPType이 있을수도 있으니까
 
-  await self.doftp(_ftpType, PromiseResult, _FTPSendData.fileList, _connectionIndex)
+  // eslint-disable-next-line no-unused-vars
+  const result = await self.doftp(_ftpType, PromiseResult, _FTPSendData.fileList, _connectionIndex)
+  self.isFinish = true
   // console.log("Finish!!!!!!!!!!!!!");
 }
 
-FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _selectFiles, _connectionIndex) {
+FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _currentFtpServer) {
   const self = this
-  const ConnectionList = self.m_FTPServerConfigList
-  const curFtpStream = self.ftpStream = new FTPStream()
+  const ftpServer = _currentFtpServer
+  const ftpStreamKey = _currentFtpServer.serverName
+  const curFtpStream = new FTPStream()
   curFtpStream.on('data', function (ftpData) {
-    self.SendMessage(ftpData, 'data')
+    self.SendMessage(ftpData, ftpServer, 'data')
   })
   curFtpStream.on('finish', function (ftpData) {
-    self.SendMessage(ftpData, 'finish')
+    self.SendMessage(ftpData, ftpServer, 'finish')
   })
   curFtpStream.on('cancel', function (ftpData) {
-    self.SendMessage(ftpData, 'cancel')
+    self.SendMessage(ftpData, ftpServer, 'cancel')
   })
   curFtpStream.on('error', function (ftpData, _errMsg) {
-    self.SendMessage(ftpData, 'error', _errMsg)
+    self.SendMessage(ftpData, ftpServer, 'error', _errMsg)
   })
 
-  for (let j = 0; j < _selectFiles.length; j++) {
-    const curFile = _selectFiles[j]
+  self.ftpStreamList[ftpStreamKey] = curFtpStream
+
+  for (let j = 0; j < _fileList.length; j++) {
+    const curFile = _fileList[j]
     const curPath = curFile.path
     const curFileName = gfileData.getFileFullName(curPath)
     const ftpData = new FTPData(_ftpType, curFile, self.m_DES_FOLDER_PATH, curFileName)
 
     // 전체 취소를 위한 전체 작업 담기
-    self.ftpStream.m_WholeWorkFTPDataList[curPath] = ftpData
+    self.ftpStreamList[ftpStreamKey].m_WholeWorkFTPDataList[curPath] = ftpData
   }
 
-  let result = self.ftpStream.work(_selectFiles, ConnectionList[_connectionIndex], 0).catch(
+  const result = self.ftpStreamList[ftpStreamKey].work(_fileList, ftpServer, 0).catch(
     function (error) {
-      console.log(`FTPInfoType2_${_ftpType} Error!!!` + error)
-      // self.SendMessage(null, "error", error);
-      result = error
+      console.log(`FTPInfo_${_ftpType} Error!!!` + error)
+      return error
     }
   )// end catch
   PromiseResult.push(result) // 작업 하나(FTPSendData)가 끝났다는것을 알림
 }
 
-FTPInfo.prototype.SendMessage = function (_ftpData, _type, _errMsg) {
+FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMsg) {
   const self = this
-  if (_type === 'error') {
-    console.log(_errMsg.message + '//' + _ftpData.key) // 에러처리
+  if (_type == 'error') {
+    console.log(_errMsg)
+    console.log(_errMsg.message + '// AssetKey : ' + _ftpData.key) // 에러처리
     self.event.sender.send('ftp-error', _ftpData)
     self.m_NofiPopup.show('sbspds-anywhere_Error', 'Error! \n' + _errMsg.message)
     return
-  } else if (_type === 'finish') {
-    if (_ftpData.isComplete) {
+  } else if (_type == 'finish') {
+    if (_ftpData.isComplete == true) {
       self.m_NofiPopup.show('sbspds-anywhere_' + _ftpData.FTPtype, 'Success!\n' + _ftpData.srcPath)
     } else {
       self.m_NofiPopup.show('sbspds-anywhere_' + _ftpData.FTPtype, 'Fail!\n' + _ftpData.srcPath)
     }
-  } else if (_type === 'cancel') {
+  } else if (_type == 'cancel') {
     self.m_NofiPopup.show('sbspds-anywhere' + _ftpData.FTPtype, 'Cancel!\n' + _ftpData.srcPath)
     if (_ftpData.cancelInfo === undefined) {
       return
     }
-    if (_ftpData.FTPtype === 'upload') {
-      if (_ftpData.cancelInfo.isDelete) {
+    if (_ftpData.FTPtype == 'upload') {
+      if (_ftpData.cancelInfo.isDelete == true) {
         const ftpStraem = new FTPStream()
+        // 현재 파일 삭제
         const deletePath = _ftpData.destPath + _ftpData.fileName
         ftpStraem.FTPDeleteFile(deletePath, _ftpData.cancelInfo.ftpConfig)
+
+        // 완료된 파일 삭제
+        if (_ftpData.cancelInfo.CompletePaths.length > 0) {
+          for (let i = _ftpData.cancelInfo.CompletePaths.length - 1; i >= 0; i--) {
+            ftpStraem.FTPDeleteFile(_ftpData.cancelInfo.CompletePaths[i], _ftpData.cancelInfo.ftpConfig)
+            console.log('delete!!')
+          }
+        }
       }
-    } else if (_ftpData.FTPtype === 'download') {
-      if (_ftpData.cancelInfo.isDelete) {
+    } else if (_ftpData.FTPtype == 'download') {
+      if (_ftpData.cancelInfo.isDelete == true) {
         // 현재 파일 삭제
         const delFileName = _ftpData.cancelInfo.DelPath.fileName
         console.log(delFileName)
@@ -111,7 +120,6 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _type, _errMsg) {
 
         // 완료된 파일 삭제
         if (_ftpData.cancelInfo.CompletePaths.length > 0) {
-          const fileInfo = new FileInfo()
           for (let i = _ftpData.cancelInfo.CompletePaths.length - 1; i >= 0; i--) {
             fileInfo.DeleteFile(_ftpData.cancelInfo.CompletePaths[i])
             console.log('delete!!')
@@ -120,67 +128,84 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _type, _errMsg) {
       }
     }
   }
-  self.m_popUpWnd.webContents.send('ftp-result', _ftpData)
+  const result = {
+    ftpServer: _curFtpServer,
+    ftpData: _ftpData
+  }
+  if (self.m_popUpWnd.isShow == true) {
+    self.m_popUpWnd.webContents.send('ftp-result', result)
+  }
 }
 
-function FTPInfoType1 () {
+function FTPInfo_Type1 () {
   FTPInfo.apply(this, arguments) // 모든 파라미터를 부모로 넘김
   // arguments : _key, _event, _FTPServerConfig
 }
-FTPInfoType1.prototype = new FTPInfo() // 상속 (관련 함수, 변수 모두 사용 가능)
-FTPInfoType1.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData, _connectionIndex) {
+FTPInfo_Type1.prototype = new FTPInfo() // 상속 (관련 함수, 변수 모두 사용 가능)
+FTPInfo_Type1.prototype.RequestFTPWork = async function (_ftpType, _connectionIndex) {
   const self = this
 
   // 여기서 ftp 큐를 걸자
   // await 빠져 나오면 그다음 큐
   // 여기서 말하는 큐는 FTP 하나 전송 데이터(_FTPSendData).. FTPType이 있을수도 있으니까
-
   const PromiseResult = []
-  await self.doftp(_ftpType, PromiseResult, _FTPSendData.fileList, _connectionIndex)
+  let ftpServerFinish = false
+  const ftpServerCnt = this.clientSendData.ftpSite.ftpServerList.length
+  const currentFtpServer = this.clientSendData.ftpSite.ftpServerList[_connectionIndex]
+  const fileList = this.clientSendData.fileList
+
+  _connectionIndex = _connectionIndex + 1
+  if (_connectionIndex == ftpServerCnt) {
+    ftpServerFinish = true
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  const result = await self.doftp(_ftpType, PromiseResult, fileList, currentFtpServer)
 
   // 모든 upload 가 끝나면 실행됨
   Promise.all(PromiseResult).then(value => {
-    if (!value[0]) {
-      _connectionIndex = _connectionIndex + 1
-      if (_connectionIndex === self.m_FTPServerConfigList.length) {
+    self.isFinish = true
+    if (value[0] != true) {
+      if (ftpServerFinish == true) {
         return false
       }
       // Connection List 순차적으로 연결 및 업로드 시도
-      // eslint-disable-next-line no-undef
-      this.RequestFTPWork(_ftpType, _selectFiles, _connectionIndex)
+      this.RequestFTPWork(_ftpType, _connectionIndex)
     } else {
-      console.log(self.m_FTPServerConfigList[_connectionIndex].host + ' is Success!')
+      console.log(currentFtpServer.host + ' is Success!')
       return true
     }
   })
 }
 
-function FTPInfoType2 () {
+function FTPInfo_Type2 () {
   FTPInfo.apply(this, arguments) // 모든 파라미터를 부모로 넘김
   // arguments : _key, _event, _FTPServerConfig
 }
-FTPInfoType2.prototype = new FTPInfo() // 상속 (관련 함수, 변수 모두 사용 가능)
-FTPInfoType2.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData, _connectionIndex) {
+FTPInfo_Type2.prototype = new FTPInfo() // 상속 (관련 함수, 변수 모두 사용 가능)
+FTPInfo_Type2.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData, _connectionIndex) {
   const self = this
   return new Promise((resolve, reject) => {
     const PromiseResult = []
-
-    // eslint-disable-next-line no-undef
-    self.doftp(_ftpType, PromiseResult, _selectFiles, _connectionIndex)
+    const fileList = this.clientSendData.fileList
+    const currentFtpServer = this.clientSendData.ftpSite.ftpServerList[_connectionIndex]
+    self.doftp(_ftpType, PromiseResult, fileList, currentFtpServer)
 
     // FTPInfo 가 끝나면 실행됨 (WorkObject 별 FTPInfo 가 모두 실행되면 출력)
     Promise.all(PromiseResult).then(value => {
       let result = true
+      const ServerName = self.m_FTPSite.ftpServerList[_connectionIndex].serverName
+      self.isFinish = true
       for (let i = 0; i < value.length; i++) {
-        if (!value[i]) { // 실패
-          console.log(self.m_FTPServerConfigList[_connectionIndex].host + ' is fail!')
+        if (value[i] != true) { // 실패
+          console.log(ServerName + ' is fail!')
           result = value[i]
         } else {
-          console.log(self.m_FTPServerConfigList[_connectionIndex].host + ' is Success!')
+          console.log(ServerName + ' is Success!')
         }
       }
-      if (result) {
-        resolve(true)
+      if (result == true) {
+        resolve({ serverName: ServerName, result: true })
         return true
       } else {
         reject(result)
@@ -199,19 +224,13 @@ function FTPData (_type, _file, _desPath, _fileName) {
   this.curWorkPersent = 0
 
   // Time
-  // eslint-disable-next-line no-unused-expressions
   this.startTime
-  // eslint-disable-next-line no-unused-expressions
   this.curTime
-  // eslint-disable-next-line no-unused-expressions
   this.elapsed
 
   // bps
-  // eslint-disable-next-line no-unused-expressions
   this.bps
-  // eslint-disable-next-line no-unused-expressions
   this.kbps
-  // eslint-disable-next-line no-unused-expressions
   this.mbps
 
   // file
@@ -232,6 +251,6 @@ function FTPData (_type, _file, _desPath, _fileName) {
   this.isFirst = true
 }
 
-exports.FTPInfoType1 = FTPInfoType1
-exports.FTPInfoType2 = FTPInfoType2
+exports.FTPInfo_Type1 = FTPInfo_Type1
+exports.FTPInfo_Type2 = FTPInfo_Type2
 exports.FTPInfo = FTPInfo

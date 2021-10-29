@@ -16,9 +16,8 @@ const NotificationPopUp = require('./assets/main/globalFunk.js')
   .NotificationPopUp
 const WindowInfo = require('./assets/main/windows.js').WindowInfo
 // test
-const FTPInfo_Type1 = require('./assets/main/ftpinfo.js').FTPInfoType1
-const FTPInfo_Type2 = require('./assets/main/ftpinfo.js').FTPInfoType2
-// const FileData = require('./assets/main/globalFunk.js').FileData // #cjy testCode 2021.07.08
+const FTPInfo_Type1 = require('./assets/main/ftpinfo.js').FTPInfo_Type1
+const FTPInfo_Type2 = require('./assets/main/ftpinfo.js').FTPInfo_Type2
 const _path = require('path')
 
 // #region main global value
@@ -508,8 +507,7 @@ function WindowCreate (event, windowInfo) {
   let parentWindow
   if (
     windowInfo.parent === '' ||
-    windowInfo.parent === undefined ||
-    windowInfo.parent === ''
+    windowInfo.parent === undefined
   ) {
     parentWindow = gWin
   } else {

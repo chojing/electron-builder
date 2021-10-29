@@ -26,6 +26,7 @@
         <div>
           <button id="json-id" @click="this.login">Login</button>
           <button id="popup" @click="this.popup">Popup</button>
+<button id="testpage" @click="this.testpage">TestPage</button>
         </div>
       </div>
     </section>
@@ -109,6 +110,9 @@ export default {
         parent: '',
         modal: false
       })
+    },
+    testpage: async function () {
+      await this.$router.push('/test')
     }
   }
 }
