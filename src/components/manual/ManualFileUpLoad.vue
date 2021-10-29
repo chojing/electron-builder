@@ -111,21 +111,17 @@ export default {
 
       g_ftpSendData.ftpSite = ftpSite
     }
-    ipcRenderer.on('ftp-result', function (event, data) {
-    // ftp-log-id
-      // WriteFTPData('ftp-log-id', data.ftpData)
-      // g_CurftpDataServer = data.ftpServer
-      console.log(data)
-    })
+
     ipcRenderer.on('receiveData', this.init)
     ipcRenderer.on('open-dialog-result', this.DragDropFile_Result)
+    ipcRenderer.on('ftp-result', this.ftpResult)
   },
   data () {
     return {
       g_windowIndex: 0,
       targetNameValue: '',
       fileList: [],
-      dataPer: 20
+      dataPer: 0
     }
   },
   methods: {
@@ -134,6 +130,7 @@ export default {
     },
     onDrop (event) {
       console.log('dragTest!')
+      this.dataPer = 0
       this.DragDropFile(event.dataTransfer.files)
     },
     DragDropFile (files) {
@@ -166,6 +163,12 @@ export default {
       g_ftpSendData.type = 'upload'
       g_ftpSendData.targetUrl = ''
       ipcRenderer.send('ftp-file-upload', g_ftpSendData) // eventName, SendData
+    },
+    ftpResult: function (event, data) {
+      // WriteFTPData('ftp-log-id', data.ftpData)
+      // g_CurftpDataServer = data.ftpServer
+      console.log(data)
+      this.dataPer = data.ftpData.curWorkPersent
     }
   }
 }
