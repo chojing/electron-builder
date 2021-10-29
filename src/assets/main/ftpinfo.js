@@ -132,8 +132,12 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMs
     ftpServer: _curFtpServer,
     ftpData: _ftpData
   }
-  if (self.m_popUpWnd.isShow == true) {
-    self.m_popUpWnd.webContents.send('ftp-result', result)
+  if (self.m_popUpWnd === undefined || self.m_popUpWnd === '') {
+    self.event.sender.send('ftp-result', result)
+  } else {
+    if (self.m_popUpWnd.isShow == true) {
+      self.m_popUpWnd.webContents.send('ftp-result', result)
+    }
   }
 }
 
