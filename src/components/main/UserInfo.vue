@@ -4,19 +4,19 @@
       <div class="info-box">
         <div class="btn-box mb20">
           <button @click="active = !active" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue addUser">+</button>
-          <button type="button" class="btn deleteUser">-</button>
+          <button @click="userDel(key)" type="button" class="btn deleteUser">-</button>
         </div>
         <table class="mb20">
           <colgroup>
             <col width="30px">
-            <col width="15%">
+            <col width="20%">
             <col width="*">
           </colgroup>
           <thead>
             <tr>
               <th>
                 <div class="check">
-                  <input type="checkbox" id="allCheck">
+                  <input type="checkbox" id="allCheck" v-model="selectAll">
                   <label for="allCheck"></label>
                 </div>
               </th>
@@ -25,18 +25,18 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr v-for="user in users" :key="user.usertel">
               <td>
-                <div class="check"><input type="checkbox" id=""><label for=""></label></div>
+                <div class="check"><input type="checkbox" v-model="selected" :value="user.usertel" :id="user.usertel"><label :for="user.usertel"></label></div>
               </td>
-              <td class="name"></td>
-              <td class="tel"></td>
+              <td class="name">{{user.username}}</td>
+              <td class="tel">{{user.usertel}}</td>
             </tr>
           </tbody>
         </table>
         <div class="btn-box">
           <button type="button" id="submitBtn" class="btn blue">확인</button>
-          <button type="button" id="cancel" class="btn">닫기</button>
+          <button @click="cancel" type="button" id="cancel" class="btn">닫기</button>
         </div>
       </div>
     </div>
@@ -58,20 +58,57 @@
 </template>
 
 <script>
+const electron = window.require('electron')
+const ipcRenderer = electron.ipcRenderer
 export default {
   name: 'UserInfo',
   data () {
     return {
       active: false,
-      username: '',
-      usertel: ''
+      g_curWindowKey: '',
+      users: [],
+      selected: []
+    }
+  },
+  created () {
+    ipcRenderer.on('receiveData', this.init)
+  },
+  computed: {
+    selectAll: {
+      get () {
+        return this.users ? this.selected.length == this.users.length : false
+      },
+      set (value) {
+        var selected = []
+        if (value) {
+          this.users.forEach(function (user) {
+            selected.push(user.usertel)
+            console.log('유저번호=아이디: ' + user.usertel)
+            console.log('유저정보: ' + selected)
+          })
+        }
+        this.selected = selected
+      }
     }
   },
   methods: {
+    init: function (event, key, data) {
+      // eslint-disable-next-line camelcase
+      this.g_curWindowKey = key
+    },
+    cancel: function () {
+      ipcRenderer.send('closeWindow', this.g_curWindowKey)
+    },
     userAdd: function () {
       this.active = false
-      console.log('이름 ' + this.username)
-      console.log('번호 ' + this.usertel)
+      this.users.push({ username: this.username, usertel: this.usertel })
+      this.username = ''
+      this.usertel = ''
+      // console.log('이름 ' + this.username)
+      // console.log('번호 ' + this.usertel)
+    },
+    userDel: function (index) {
+      this.users.splice(index, 1)
     }
   }
 }
