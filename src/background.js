@@ -268,23 +268,31 @@ ipcMain.on('ftp-file-upload', async (event, _ftpSendData) => {
   }
 
   // statuswindow가 없을 경우에만 생성
-  // eslint-disable-next-line no-prototype-builtins
-  if (g_windows.hasOwnProperty('statusWindow_upload') == false) {
-    const windowInfo = new WindowInfo()
-    windowInfo.SetStatusWindow('statusWindow_upload', _ftpSendData.targetUrl)
-    WindowCreate(event, windowInfo)
-    _ftpSendData.popUpWindow = windowInfo
+
+  if (_ftpSendData.targetUrl === undefined || _ftpSendData.targetUrl === '') {
+    startUpload()
   } else {
-    g_windows.statusWindow_upload.show()
-    _ftpSendData.popUpWindow = g_windows.statusWindow_upload
+    // eslint-disable-next-line no-prototype-builtins
+    if (g_windows.hasOwnProperty('statusWindow_upload') == false) {
+      const windowInfo = new WindowInfo()
+      windowInfo.SetStatusWindow('statusWindow_upload', _ftpSendData.targetUrl)
+      WindowCreate(event, windowInfo)
+      _ftpSendData.popUpWindow = windowInfo
+    } else {
+      g_windows.statusWindow_upload.show()
+      _ftpSendData.popUpWindow = g_windows.statusWindow_upload
+    }
   }
 })
 
 ipcMain.on('ftp-file-upload-start', function () {
+  startUpload()
+})
+function startUpload () {
   console.log('FTP Upload start!')
   const ftpSendData = g_FTPWorkQueue.shift()
   FTPConnectTypeBranch_new('upload', ftpSendData)
-})
+}
 
 ipcMain.on('ftp-file-download', (event, _ftpSendData) => {
   // 다운로드할 패스 선택 다이얼로그
@@ -522,7 +530,7 @@ function WindowCreate (event, windowInfo) {
     x: position[0] + size[0] + (g_windows.length * 20),
     y: position[1] + (g_windows.length * 20),
     modal: windowInfo.modal,
-    resizable: false,
+    // resizable: false,
     minimizable: false,
     maximizable: false,
     webPreferences: {
