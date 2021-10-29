@@ -1,20 +1,13 @@
 const Client = require('ftp')
 const { shell } = require('electron')
 const fs = require('fs')
-// const FileData = require('./globalFunk.js').FileData
-// const NotificationPopUp = require('./globalFunk.js').NotificationPopUp
-// const FileInfo = require('./fileinfo.js').FileInfo
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
-// const g_fileData = new FileData()
 
 function FTPStream () {
-  // eslint-disable-next-line no-unused-expressions
   this.m_ftpClient
   this.m_ftpConnectConfig = {}
-  // eslint-disable-next-line no-unused-expressions
   this.key
-  // eslint-disable-next-line no-unused-expressions
   this.m_CurWorkFTPData
   this.m_WholeWorkFTPDataList = {}
   this.m_CompleteFTPDataPath = []
@@ -57,21 +50,28 @@ FTPStream.prototype.connect = function (_ftpConnectConfig) {
 // 한번 요청한 fileList 를 처리함. work가 끝나면 FTPSendData 1개가 끝난것.
 FTPStream.prototype.work = async function (_srcPaths, _ftpConnectConfig, index) {
   const self = this
+  let err
+  let isConnection = true
   self.worklist = _srcPaths
-  await self.connect(_ftpConnectConfig).catch((err) => {
-    console.log(err)
+  await self.connect(_ftpConnectConfig).catch((_err) => {
+    console.log(_err)
+    err = _err
+    isConnection = false
   })
   return new Promise((resolve, reject) => {
+    if (isConnection == false) {
+      reject(err)
+      return 'Connection Fail'
+    }
     function callPromiseResult (_promiseResultType, object) {
-      if (_promiseResultType === 'resolve') {
+      if (_promiseResultType == 'resolve') {
         resolve(object)
-      } else if (_promiseResultType === 'reject') {
+      } else if (_promiseResultType == 'reject') {
         reject(object)
       }
     }
     const curFile = _srcPaths[index]
     if (curFile === undefined) { // file exist 확인(upload 의 경우)
-      // eslint-disable-next-line prefer-promise-reject-errors
       reject(curFile.path + ' is undefined')
     }
     // find ftpData, registry curWorkData
@@ -79,15 +79,14 @@ FTPStream.prototype.work = async function (_srcPaths, _ftpConnectConfig, index) 
     ftpData.workIndex = index
     self.m_CurWorkFTPData = ftpData
 
-    if (ftpData.FTPtype === 'upload') {
+    if (ftpData.FTPtype == 'upload') {
       // file exist check
       if (!(fs.existsSync(curFile.path))) {
-        // eslint-disable-next-line prefer-promise-reject-errors
         reject('Not Exist File')
         return 'Not Exist File'
       }
       self.upload(ftpData, callPromiseResult)
-    } else if (ftpData.FTPtype === 'download') {
+    } else if (ftpData.FTPtype == 'download') {
       self.download(ftpData, callPromiseResult)
     }
   })
@@ -97,7 +96,7 @@ FTPStream.prototype.upload = function (ftpData, callPromiseResult) {
   const curPath = ftpData.srcPath
   const curDescPath = ftpData.destPath + ftpData.fileName
 
-  if (!self.isConnection) {
+  if (self.isConnection == false) {
     const err = new Error()
     err.message = 'Connection Fail'
     self.doError(undefined, ftpData, err, callPromiseResult)
@@ -115,11 +114,11 @@ FTPStream.prototype.upload = function (ftpData, callPromiseResult) {
 
     // FTP work
     curFileStream.on('data', function (buffer) {
-      if (ftpData.isCancel) {
+      if (ftpData.isCancel == true) {
         self.m_ftpClient.end()
         self.doCheckRecursive_work(ftpData, curFileStream, callPromiseResult)
       } else {
-        if (ftpData.isFirst) {
+        if (ftpData.isFirst == true) {
           self.doFirst(ftpData, ftpData.workIndex)
         }
         // console.log(self.m_ftpConnectConfig.host);
@@ -130,10 +129,10 @@ FTPStream.prototype.upload = function (ftpData, callPromiseResult) {
     // Local Path      //FTP Path
     self.m_ftpClient.put(curFileStream, curDescPath, function (err) {
       if (err) { // error
+        callPromiseResult('reject', err)
         self.doError(curFileStream, ftpData, err, callPromiseResult)
-        callPromiseResult('reject', 'put Error + ' + err)
       } else { // 완료 후 //finish
-        if (!ftpData.isCancel) { // cancel 되고 finish로 넘어왔을 때, 중복 호출을 막기 위함
+        if (ftpData.isCancel == false) { // cancel 되고 finish로 넘어왔을 때, 중복 호출을 막기 위함
           self.m_CompleteFTPDataPath.push(curDescPath) // ftp Path
           self.doCheckRecursive_work(ftpData, curFileStream, callPromiseResult)
         }
@@ -143,7 +142,7 @@ FTPStream.prototype.upload = function (ftpData, callPromiseResult) {
 }
 FTPStream.prototype.download = function (ftpData, callPromiseResult) {
   const self = this
-  if (!self.isConnection) {
+  if (self.isConnection == false) {
     const err = new Error()
     err.message = 'Connection Fail'
     self.doError(undefined, ftpData, err, callPromiseResult)
@@ -155,7 +154,6 @@ FTPStream.prototype.download = function (ftpData, callPromiseResult) {
     const curPath = ftpData.srcPath
 
     // FTP work
-    // eslint-disable-next-line handle-callback-err
     self.m_ftpClient.size(curPath, function (err, size) {
       ftpData.curMaxFileSize = size
       self.m_ftpClient.get(curPath, function (err, stream) {
@@ -166,12 +164,12 @@ FTPStream.prototype.download = function (ftpData, callPromiseResult) {
           return err
         } else {
           stream.on('data', function (buff) {
-            if (ftpData.isCancel) {
+            if (ftpData.isCancel == true) {
               stream.destroy(true)
               self.m_ftpClient.end()
               self.doCheckRecursive_work(ftpData, curFileStream, callPromiseResult)
             } else {
-              if (ftpData.isFirst) {
+              if (ftpData.isFirst == true) {
                 self.doFirst(ftpData, ftpData.workIndex) // param : ftpData, key (임시 : index)
               }
               ftpData = self.calculateFTPData(buff, ftpData)
@@ -179,7 +177,7 @@ FTPStream.prototype.download = function (ftpData, callPromiseResult) {
             }
           })
             .once('close', function () {
-              if (!ftpData.isCancel) {
+              if (ftpData.isCancel == false) {
                 self.m_CompleteFTPDataPath.push(curDescPath)
                 self.doCheckRecursive_work(ftpData, curFileStream, callPromiseResult)
               }
@@ -187,8 +185,8 @@ FTPStream.prototype.download = function (ftpData, callPromiseResult) {
             .pipe(curFileStream, function (err) {
               if (err) {
                 console.log(err)
-                self.doError(stream, ftpData, err, callPromiseResult) // #cjy 2021.07.16 테스트 필요
                 callPromiseResult('reject', err)
+                self.doError(stream, ftpData, err, callPromiseResult) // #cjy 2021.07.16 테스트 필요
               } else {
                 console.log('close')
               }
@@ -205,6 +203,10 @@ FTPStream.prototype.doCheckRecursive_work = function (_ftpData, _curFileStream, 
   // send Event
   self.doSendEvent(_ftpData, isError)
 
+  if (isError == true) {
+    return
+  }
+
   const nextIndex = _ftpData.workIndex + 1
   // final job check or all cancel check
   if (nextIndex >= self.worklist.length) {
@@ -213,7 +215,7 @@ FTPStream.prototype.doCheckRecursive_work = function (_ftpData, _curFileStream, 
     return
   }
   if (_ftpData.cancelInfo !== undefined) {
-    if (_ftpData.cancelInfo.cancelType === 'all') {
+    if (_ftpData.cancelInfo.cancelType == 'all') {
       callPromiseResult('resolve', true)
       return
     }
@@ -234,7 +236,7 @@ FTPStream.prototype.cancel = function (_cancelInfo) {
   const self = this
   const value = self.m_CurWorkFTPData
   if (value === undefined) {
-    console.log('ftp.js > Cancel > 해당 경로가 없습니다!')
+    console.log('ftpStream.js > Cancel > 해당 경로가 없습니다!')
     return false
   }
   value.isCancel = true
@@ -254,15 +256,7 @@ FTPStream.prototype.calculateFTPData = function (_buffer, _ftpData) {
   _ftpData.mbps = 0
   if (_ftpData.kbps > 1024) {
     _ftpData.mbps = (_ftpData.kbps / 1024).toFixed(2)
-    // console.log(_ftpData.mbps+ " / mbps");
-  } else {
-    // console.log(_ftpData.kbps+" / kbps");
   }
-  /*
-    console.log(`Progress[${_ftpData.srcPath}]:\t` + _ftpData.curWorkPersent + "%");
-    console.log("Elapsed : " + _ftpData.elapsed);
-    console.log(_ftpData.curFileSize + " byte");
-    */
 
   return _ftpData
 }
@@ -289,10 +283,10 @@ FTPStream.prototype.doReleaseStream = function (_stream) {
 }
 FTPStream.prototype.doSendEvent = function (_ftpData, isError) {
   const self = this
-  if (_ftpData.isCancel) {
+  if (_ftpData.isCancel == true) {
     self.doSendCancelEvent(_ftpData)
   } else {
-    if (!isError) {
+    if (isError == false) {
       self.m_ftpClient.end()
       self.doSendFinishEvent(_ftpData)
     }
@@ -300,7 +294,7 @@ FTPStream.prototype.doSendEvent = function (_ftpData, isError) {
 }
 FTPStream.prototype.doSendFinishEvent = function (_ftpData, isError) {
   const self = this
-  if (isError) {
+  if (isError == true) {
     return
   }
   _ftpData.isComplete = true

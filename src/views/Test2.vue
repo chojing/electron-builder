@@ -7,6 +7,8 @@
         <div class="search-form">
 <div>
 <h4>{{test_}}</h4>
+
+<button v-on:click = "close">종료</button>
 </div>
 
         </div>
@@ -19,29 +21,37 @@
 // import func from 'vue-editor-bridge'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
-
+// let g_curWindowKey = 0
 export default {
   name: 'electronTest',
   components: {
   },
   created () {
-    const self = this
-    ipcRenderer.on('getUserInfo_result', async function (event, _g_loginInfo) {
-      console.log('Response GetAPIKey')
-      console.log(_g_loginInfo)
-      self.test_ = _g_loginInfo
-    })
+    // const self = this
+    ipcRenderer.on('receiveData', this.Init)
   },
   data () {
     return {
       test_: String,
-      g_windowIndex: 0
+      g_windowIndex: 0,
+      g_curWindowKey: ''
     }
   },
   mounted () {
     this.test_ = 'Test2 Page.'
   },
   methods: {
+    Init: function (event, key, data) {
+      console.log(key)
+      this.g_curWindowKey = key
+      console.log(data)
+      ipcRenderer.send('ftp-file-upload-start')
+    },
+    close: function () {
+      console.log('close')
+      ipcRenderer.send('closeWindow', this.g_curWindowKey)
+      console.log('close2')
+    },
     getKey: function () {
       ipcRenderer.send('getUserInfo')
       console.log('Request GetAPIKey')
