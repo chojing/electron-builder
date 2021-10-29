@@ -23,6 +23,11 @@
 
         </div>
       </div>
+      <div class="pro-bar mt20">
+        <span :style="{width:dataPer + '%'}"></span>
+        <b>{{dataPer}}%</b>
+      </div>
+
       <button class="btn blue allSubmit">전송</button>
     </div>
   </section>
@@ -32,6 +37,9 @@
 export default {
   name: 'ManualFileUpLoad',
   data () {
+    return {
+      dataPer: 20
+    }
   },
   methods: {
   }
