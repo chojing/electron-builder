@@ -47,8 +47,8 @@
     <div class="inner">
       <button @click="active = false" class="close"><i class="fas fa-times"></i></button>
       <div class="box flex-box mb20">
-        <input v-model="username" type="text" placeholder="이름" id="info-name" class="name">
-        <input v-model="usertel" type="tel" placeholder="연락처" id="info-tel">
+        <input v-model="username" ref="usernameInput" type="text" placeholder="이름" id="info-name" class="name">
+        <input v-model="usertel" ref="usertelInput" type="tel" placeholder="연락처" id="info-tel">
       </div>
       <div class="btn-box">
         <button @click="userAdd" id="addCheck" class="btn" type="button" >추가</button>
@@ -100,12 +100,24 @@ export default {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     userAdd: function () {
-      this.active = false
-      this.users.push({ username: this.username, usertel: this.usertel })
-      this.username = ''
-      this.usertel = ''
       // console.log('이름 ' + this.username)
       // console.log('번호 ' + this.usertel)
+      if (!/^[a-z0-9_-]{8,13}$/.test(this.usertel)) {
+        alert('숫자만 입력해주세요.(8~13자리)')
+        this.$refs.usertelInput.focus()
+      } else if (!this.usertel) {
+        alert('연락처를 입력해주세요.')
+        this.$refs.usertelInput.focus()
+      } else if (!this.username) {
+        alert('이름을 입력해주세요.')
+        this.$refs.usernameInput.focus()
+      } else {
+        this.active = false
+        this.users.push({ username: this.username, usertel: this.usertel })
+        this.username = ''
+        this.usertel = ''
+        this.$emit('pass', 10)
+      }
     },
     userDel: function (index) {
       this.users.splice(index, 1)
