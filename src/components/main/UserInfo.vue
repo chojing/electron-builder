@@ -35,7 +35,7 @@
           </tbody>
         </table>
         <div class="btn-box">
-          <button type="button" id="submitBtn" class="btn blue">확인</button>
+          <button type="button" id="submitBtn" class="btn blue" @click="btn_OK">확인</button>
           <button @click="cancel" type="button" id="cancel" class="btn">닫기</button>
         </div>
       </div>
@@ -98,6 +98,9 @@ export default {
     },
     cancel: function () {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
+    },
+    btn_OK: function () {
+      // ipcRender.send('SendData', 'main', )
     },
     userAdd: function () {
       // console.log('이름 ' + this.username)
