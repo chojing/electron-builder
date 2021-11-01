@@ -3,13 +3,13 @@
       <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop">
         <div class="drag">
           <label for="file">
-            <div class="fileName">
-              <span>파일명파일명파일명파일명파일명파일명파일명파일명</span>
+            <div v-for="file in fileList" :key="file.index" class="fileName">
+              <span>{{ file.fileName }}</span>
               <button>X</button>
             </div>
           </label>
         </div>
-        <input type="file" id="file" name="file" @change="onChange" multiple/>
+        <input type="file" id="file" name="file" @change="onUpload" multiple/>
       </div>
 </template>
 
@@ -21,25 +21,30 @@ export default {
   },
   data () {
     return {
-    //   fileList: [],
-      dataPer: 0
+      fileList: [],
+      dataPer: 0,
+      fileName: ''
     }
   },
   created () {
   },
   methods: {
     onDrop (event) {
-      console.log('onDrop', event)
+      // console.log('onDrop', event)
       this.dataPer = 0
       this.DragDropFile(event.dataTransfer.files)
     },
-    onChange (event) {
-      console.log('onChange')
+    onUpload (event) {
+      console.log('fileArray', fileList)
       this.dataPer = 0
       this.DragDropFile(event.target.files)
+      for (let i = 0; i < fileList.length; i++) {
+        this.fileName = fileList[i].fileName
+        console.log('filename', this.fileName)
+      }
     },
     DragDropFile (files) {
-      console.log(files)
+      // console.log(files)
       if (files.length) {
         for (let i = 0; i < files.length; i++) {
           const inputfile = {
