@@ -2,8 +2,9 @@
       <h4>파일(폴더) 전송</h4>
       <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop">
         <div class="drag">
-
+          <label for="file"></label>
         </div>
+        <input type="file" id="file" name="file" @change="onChange" multiple/>
       </div>
 </template>
 
@@ -27,8 +28,15 @@ export default {
     onDrop (event) {
       this.dataPer = 0
       this.DragDropFile(event.dataTransfer.files)
+      console.log('onDrop', event)
+    },
+    onChange (event) {
+      console.log('onChange')
+      this.dataPer = 0
+      console.log('file', event)
     },
     DragDropFile (files) {
+      console.log(files)
       if (files.length) {
         for (let i = 0; i < files.length; i++) {
           const file = files[i]
@@ -37,7 +45,7 @@ export default {
         }
         const convertFileList = this.fileList.map(f => f) // serialize 조건 충족
         ipcRenderer.send('drag-file', convertFileList)
-        this.fileList = []
+        // this.fileList = []
       }
     },
     DragDropFile_Result (event, _isCancel, _fileData) {
