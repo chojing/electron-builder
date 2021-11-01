@@ -78,14 +78,7 @@ export default {
         parent: '',
         modal: false
       })
-    },
-    targetNameSubmit: function () {
     }
   }
-  // created () {
-  //   EventBus.$on('test', function (data) {
-  //     alert('data : ', data)
-  //   })
-  // }
 }
 </script>
