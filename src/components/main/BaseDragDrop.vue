@@ -4,7 +4,7 @@
         <div class="drag">
           <label for="file">
             <div v-for="item in fileList" :key="item.index" class="fileName">
-              <span>{{ fileNameItem }}</span>
+              <span>{{ item.fileName }}</span>
               <button>X</button>
             </div>
           </label>
