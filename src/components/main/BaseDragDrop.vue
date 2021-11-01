@@ -2,7 +2,12 @@
       <h4>파일(폴더) 전송</h4>
       <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop">
         <div class="drag">
-          <label for="file"></label>
+          <label for="file">
+            <div class="fileName">
+              <span>파일명파일명파일명파일명파일명파일명파일명파일명</span>
+              <button>X</button>
+            </div>
+          </label>
         </div>
         <input type="file" id="file" name="file" @change="onChange" multiple/>
       </div>
