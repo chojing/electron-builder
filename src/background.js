@@ -86,6 +86,8 @@ async function createWindow () {
   if (process.platform === 'darwin') {
     gIsMac = true
   }
+  const windowKey = 'main'
+  g_windows[windowKey] = gWin
 }
 
 function RunTray () {

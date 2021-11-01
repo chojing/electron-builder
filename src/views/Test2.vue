@@ -9,8 +9,9 @@
 <h4>{{test_}}</h4>
 
 <button v-on:click = "close">종료</button>
+<h4>name : {{$route.params.name}}</h4>
+<h4>age : {{$route.params.age}}</h4>
 </div>
-
         </div>
       </article>
     </div>
