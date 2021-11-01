@@ -3,8 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    redirect: '/loading'
-    // redirect: '/test'
+    // redirect: '/loading'
+    redirect: '/test'
   },
   {
     path: '/test',

@@ -25,6 +25,14 @@ Drag your file here
         </div>
       </article>
     </div>
+
+<span>
+        <router-link
+:to="{
+name : 'test2',
+params: {name: '테스트네임', age: 1},
+}"> test2로 이동 </router-link>
+      </span>
   </section>
 </template>
 
