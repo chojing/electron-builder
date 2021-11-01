@@ -116,7 +116,8 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fb
 .auto-login{margin:20px 0;}
 .auto-login label{font-size: 14px;line-height: 1;color: #fff;}
 .auto-login input{margin-left: 5px; vertical-align: middle;}
-#errorText{display: none;font-size: 13px;color: red;text-align: right;margin: 5px 0 0;font-style: normal;font-weight: 500;}
+#errorText,
+.error{display: none;font-size: 13px;color: red;text-align: right;margin: 5px 0 0;font-style: normal;font-weight: 500;}
 .login-info span{display: block;margin: 0 0 20px;font-size: 0;}
 .login-info span label{display: inline-block;vertical-align: middle;width: 60px;font-size: 16px;color: #fff;}
 .login-info span input{padding: 0 10px; display: inline-block;vertical-align: middle;width: calc(100% - 60px);height: 40px;border: 1px solid #eee;border-radius: 10px;}
