@@ -5,7 +5,7 @@
           <label for="file">
             <div v-for="fileItem in fileList" :key="fileItem.index" class="fileName">
               <span>{{fileItem.fileName}}</span>
-              <button @click="fileDel(fileList, index)">X</button>
+              <button @click="fileDel(fileItem, index)">X</button>
             </div>
           </label>
         </div>
@@ -60,6 +60,10 @@ export default {
           console.log('filename : ', this.fileName)
         }
       }
+    },
+    fileDel (fileItem, index) {
+      this.fileList.splice(index, 1)
+      console.log('파일삭제후', this.fileList)
     }
   }
 }

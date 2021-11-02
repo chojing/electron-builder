@@ -148,8 +148,9 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fb
 .file-list-box ul li{padding: 5px 0;font-size: 14px;}
 .file-drag-box .drag label{display: block;width: 100%;height: 100%;overflow-y: auto}
 #file{overflow: hidden;display: none;}
-.file-drag-box .fileName div{margin-bottom: 5px; width:200px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;}
-.file-drag-box .fileName button{margin-left: 10px; border:1px solid #eee;padding: 4px;border-radius: 5px;color: #b8b8b8;font-size: 10px;}
+.file-drag-box .fileName{font-size: 0;text-align: left;margin-bottom: 5px;}
+.file-drag-box .fileName span{display: inline-block;vertical-align: middle;max-width:200px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;font-size: 13px;}
+.file-drag-box .fileName button{margin-left: 10px;vertical-align: middle; border:1px solid #eee;padding:1px 4px;border-radius: 5px;color: #b8b8b8;font-size: 10px;}
 .file-drag-box .fileName button:hover{color: #333;border-color:#333;}
 /** userInfo-container **/
 .userInfo-container{}
