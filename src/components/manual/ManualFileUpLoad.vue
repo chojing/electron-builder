@@ -125,12 +125,6 @@ export default {
       this.targetNameValue = data.value
     },
     DragDropResult: function (value) {
-      if (value === '취소하였습니다.') {
-        return
-      }
-      if (value === '파일을 가져오는 중 에러가 발생했습니다.') {
-        return
-      }
       g_ftpSendData.fileList = value
       console.log(value)
     },

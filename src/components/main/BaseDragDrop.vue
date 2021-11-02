@@ -5,7 +5,7 @@
           <label for="file">
             <div v-for="fileItem in fileList" :key="fileItem.index" class="fileName">
               <span>{{fileItem.fileName}}</span>
-              <button @click="fileDel(fileItem, index)">X</button>
+              <button @click="btn_Del_Click(fileItem)">X</button>
             </div>
           </label>
         </div>
@@ -52,19 +52,32 @@ export default {
           inputfile.size = file.size
           fileList.push(inputfile)
         }
+        this.printList()
         this.$emit('valueReturn', fileList)
-        this.fileList = []
-        for (let i = 0; i < fileList.length; i++) {
-          this.fileName = fileList[i].fileName
-          this.fileList.push({ fileName: this.fileName })
-          console.log('filename : ', this.fileName)
-        }
       }
     },
-    fileDel (fileItem, index) {
-      this.fileList.splice(index, 1)
-      console.log('파일삭제후', this.fileList)
+    btn_Del_Click (fileItem) {
+      this.delFileList(fileItem)
+      this.printList()
       this.$emit('valueReturn', this.fileList)
+    },
+    delFileList (fileItem) {
+      fileList.forEach(element => {
+        if (element.fileName == fileItem.fileName) {
+          const index = fileList.indexOf(element)
+          if (index > -1) {
+            fileList.splice(index, 1)
+          }
+        }
+      })
+    },
+    printList () {
+      this.fileList = []
+      for (let i = 0; i < fileList.length; i++) {
+        this.fileName = fileList[i].fileName
+        this.fileList.push({ fileName: this.fileName })
+        console.log('filename : ', this.fileName)
+      }
     }
   }
 }
