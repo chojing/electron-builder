@@ -4,7 +4,7 @@
       <div class="info-box">
         <div class="btn-box mb20">
           <button @click="active = !active" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue addUser">+</button>
-          <button @click="userDel" type="button" class="btn deleteUser">-</button>
+          <button @click="userDel(this.usertel)" type="button" class="btn deleteUser">-</button>
         </div>
         <table class="mb20">
           <colgroup>
@@ -121,8 +121,10 @@ export default {
         this.usertel = ''
       }
     },
-    userDel: function () {
-      // this.users.splice(this.usertel, 1)
+    userDel: function (id) {
+      this.selected = this.users
+      var index = this.users.findIndex(function (item) { return item.usertel === id })
+      this.users.splice(index, 1)
       console.log(this.selected)
     }
   }
