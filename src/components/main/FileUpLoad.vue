@@ -44,6 +44,7 @@ export default {
   data () {
     return {
       g_windowIndex: 0,
+      selfKey: '',
       targetNameValue: '',
       fileList: [],
       testValue: {}
@@ -53,12 +54,17 @@ export default {
     ipcRenderer.on('receiveData', this.init)
   },
   methods: {
-    init: function (event, key, data) {
-      this.targetNameValue = data.value
+    init: function (event, key, data, type) {
+      if (type == 'init') {
+        this.targetNameValue = data.value
+        this.selfKey = key
+      } else if (type == 'telData') {
+        console.log(data)
+      }
     },
     userInfoPopup: function () {
       const data = {
-        value: ''
+        parentKey: this.selfKey
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,

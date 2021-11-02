@@ -45,7 +45,6 @@
 import templateTree from '@/components/main/Template_tree'
 import templateMenu from '@/components/menu/Template_menu'
 const axios = require('@/assets/js/axios.js')
-
 export default {
   name: 'Main',
   el: '#mainView',

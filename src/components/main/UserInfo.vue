@@ -4,7 +4,7 @@
       <div class="info-box">
         <div class="btn-box mb20">
           <button @click="active = !active" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue addUser">+</button>
-          <button @click="userDel(this.usertel)" type="button" class="btn deleteUser">-</button>
+          <button @click="userDel" type="button" class="btn deleteUser">-</button>
         </div>
         <table class="mb20">
           <colgroup>
@@ -66,6 +66,7 @@ export default {
     return {
       active: false,
       g_curWindowKey: '',
+      parentKey: '',
       users: [],
       selected: []
     }
@@ -92,11 +93,21 @@ export default {
     }
   },
   methods: {
-    init: function (event, key, data) {
-      // eslint-disable-next-line camelcase
-      this.g_curWindowKey = key
+    // 값 넘기는 부분
+    init: function (event, key, data, type) {
+      if (type == 'init') {
+        console.log('부모키', data)
+        this.parentKey = data.parentKey
+        // eslint-disable-next-line camelcase
+        this.g_curWindowKey = key
+      }
     },
     cancel: function () {
+      const data = []
+      this.selected.forEach(seleted => {
+        data.push(seleted)
+      })
+      ipcRenderer.send('sendData', this.parentKey, data, 'telData')
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     btn_OK: function () {
@@ -121,11 +132,21 @@ export default {
         this.usertel = ''
       }
     },
-    userDel: function (id) {
-      this.selected = this.users
-      var index = this.users.findIndex(function (item) { return item.usertel === id })
-      this.users.splice(index, 1)
+    userDel: function () {
+      // var index = this.users.findIndex(function (item) { return item.usertel === id })
+      // this.users.splice(index, 1)
       console.log(this.selected)
+      this.selected.forEach(seleted => {
+        this.users.forEach(user => {
+          if (user.usertel == seleted) {
+            const index = this.users.indexOf(user)
+            if (index > -1) {
+              this.users.splice(index, 1)
+            }
+          }
+        })
+      })
+      this.selected = []
     }
   }
 }

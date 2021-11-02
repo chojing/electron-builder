@@ -12,7 +12,7 @@
         </div>
         <div class="target-list" style="background: #f1fbff;">
           <ul class="one-list">
-            <li v-for="item in targetFtpListVue" v-bind:key="item.userid" @dblclick="this.FileUploadPopup(item)">
+            <li v-for="item in targetFtpList" v-bind:key="item.userid" @dblclick="this.FileUploadPopup(item)">
               <p>{{item.username}}</p>
             </li>
           </ul>
@@ -30,36 +30,23 @@ const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 // eslint-disable-next-line no-unused-vars
 const axios = require('@/assets/js/axios.js')
-
-const targetFtpList = []
 export default {
   name: 'Manual',
   components: {
     templateMenu
   },
-  created () {
-    testData()
-    function testData () {
-      targetFtpList.push({ username: 'Server1', userhost: '10.10.18.29', userport: '21', userid: 'konan', userpw: 'konan415', userdir: '', userproxy: '' })
-      targetFtpList.push({ username: 'Target2', userhost: 'hostText', userport: 'userPort', userid: 'lee', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' })
-      targetFtpList.push({ username: 'Target3', userhost: 'hostText', userport: 'userPort', userid: 'hong', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' })
-    }
-
-    this.Init()
-  },
   data () {
     return {
       g_windowIndex: 0,
       targetName: '',
-      targetFtpListVue: []
+      targetFtpList: [
+        { username: 'Server1', userhost: '10.10.18.29', userport: '21', userid: 'konan', userpw: 'konan415', userdir: '', userproxy: '' },
+        { username: 'Target2', userhost: 'hostText', userport: 'userPort', userid: 'lee', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' },
+        { username: 'Target3', userhost: 'hostText', userport: 'userPort', userid: 'hong', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' }
+      ]
     }
   },
   methods: {
-    Init: function () {
-      targetFtpList.forEach(element => {
-        this.targetFtpListVue.push(element)
-      })
-    },
     manualFtpPopup: function () {
       const name = 'manualFtp'
       const data = {
@@ -76,17 +63,8 @@ export default {
       })
     },
     FileUploadPopup: function (ftpInfoItem) {
-      console.log(ftpInfoItem)
       const data = {
-        value: {
-          username: ftpInfoItem.username,
-          userhost: ftpInfoItem.userhost,
-          userport: ftpInfoItem.userport,
-          userid: ftpInfoItem.userid,
-          userpw: ftpInfoItem.userpw,
-          userdir: ftpInfoItem.userdir,
-          userproxy: ftpInfoItem.userproxy
-        }
+        value: { username: ftpInfoItem.username, userhost: ftpInfoItem.userhost, userport: ftpInfoItem.userport, userid: ftpInfoItem.userid, userpw: ftpInfoItem.userpw, userdir: ftpInfoItem.userdir, userproxy: ftpInfoItem.userproxy }
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,

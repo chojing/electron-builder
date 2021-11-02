@@ -28,6 +28,43 @@ import baseDragDrop from '@/components/main/BaseDragDrop'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 
+const FTPServer = function () {
+  this.host = ''
+  this.port = 0
+  this.user = ''
+  this.password = ''
+  this.homeDir = ''
+  this.serverName = ''
+  this.parentSiteName = ''
+}
+FTPServer.prototype.getftpServerInfo = function (ftpServer) {
+  ftpServer.host = this.host
+  ftpServer.port = this.port
+  ftpServer.user = this.user
+  ftpServer.password = this.password
+  ftpServer.homeDir = this.homeDir
+  ftpServer.serverName = this.serverName
+  ftpServer.parentSiteName = this.parentSiteName
+
+  return ftpServer
+}
+const FTPSite = function () {
+  this.key = 0 // DB P.K
+  this.siteName = ''
+  this.connectionType = '' // load balance , multi send 등..
+  this.ftpServerList = [] // FTPServer[]
+}
+
+const FTPSendData = function () {
+  this.title = ''
+  this.comment = ''
+  this.fileList = []
+  this.author = ''
+  // eslint-disable-next-line no-unused-expressions
+  this.ftpSite // FTPSite
+
+  // sms 정보
+}
 let g_ftpSendData = {}
 export default {
   name: 'ManualFileUpLoad',
@@ -37,92 +74,24 @@ export default {
   created () {
     console.log('start!')
     // const self = this
-    function FTPServer () {
-      this.host = ''
-      this.port = 0
-      this.user = ''
-      this.password = ''
-      this.homeDir = ''
-      this.serverName = ''
-      this.parentSiteName = ''
-    }
-    FTPServer.prototype.getftpServerInfo = function (ftpServer) {
-      ftpServer.host = this.host
-      ftpServer.port = this.port
-      ftpServer.user = this.user
-      ftpServer.password = this.password
-      ftpServer.homeDir = this.homeDir
-      ftpServer.serverName = this.serverName
-      ftpServer.parentSiteName = this.parentSiteName
-
-      return ftpServer
-    }
-    function FTPSite () {
-      this.key = 0 // DB P.K
-      this.siteName = ''
-      this.connectionType = '' // load balance , multi send 등..
-      this.ftpServerList = [] // FTPServer[]
-    }
-
-    function FTPSendData () {
-      this.title = ''
-      this.comment = ''
-      this.fileList = []
-      this.author = ''
-      // eslint-disable-next-line no-unused-expressions
-      this.ftpSite // FTPSite
-
-      // sms 정보
-    }
-    testSite()
-    function testSite () {
-      // eslint-disable-next-line no-const-assign
-      g_ftpSendData = new FTPSendData()
-
-      const curFtpServer1 = new FTPServer()
-      curFtpServer1.host = '10.10.18.29'
-      curFtpServer1.port = '21'
-      curFtpServer1.user = 'konan'
-      curFtpServer1.password = 'konan415'
-      curFtpServer1.serverName = 'Server1'
-      curFtpServer1.homeDir = ''
-
-      const curFtpServer2 = new FTPServer()
-      curFtpServer2.host = '10.10.18.13'
-      curFtpServer2.port = '21'
-      curFtpServer2.user = 'konan'
-      curFtpServer2.password = 'konan415'
-      curFtpServer2.serverName = 'Server2'
-      curFtpServer2.homeDir = ''
-
-      const ftpSite = new FTPSite()
-      ftpSite.connectionType = '1'
-      ftpSite.siteName = 'konanSite'
-
-      curFtpServer2.parentSiteName = ftpSite.siteName
-      // ftpSite.ftpServerList.push(curFtpServer2)
-
-      curFtpServer1.parentSiteName = ftpSite.siteName
-      ftpSite.ftpServerList.push(curFtpServer1)
-
-      g_ftpSendData.ftpSite = ftpSite
-    }
-
     ipcRenderer.on('receiveData', this.init)
     ipcRenderer.on('ftp-result', this.ftpResult)
   },
   data () {
     return {
       g_windowIndex: 0,
-      targetNameValue: '',
+      targetFtpInfo: '',
       fileList: [],
       dataPer: 0
     }
   },
   methods: {
     init: function (event, key, data) {
-      this.targetNameValue = data.value
-      console.log(this.targetNameValue)
+      this.targetFtpInfo = data.value
+      this.ftpSet(data.value)
+      // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
+      console.log('ftp정보', this.targetFtpInfo)
+      // console.log('ftp정보', curFtpServer)
     },
     DragDropResult: function (value) {
       g_ftpSendData.fileList = value
@@ -137,6 +106,25 @@ export default {
     ftpResult: function (event, data) {
       console.log(data)
       this.dataPer = data.ftpData.curWorkPersent
+    },
+    ftpSet: function (value) {
+      // eslint-disable-next-line no-const-assign
+      g_ftpSendData = new FTPSendData()
+      const curFtpServer1 = new FTPServer()
+      curFtpServer1.host = value.userhost
+      curFtpServer1.port = value.userport
+      curFtpServer1.user = value.userid
+      curFtpServer1.password = value.userpw
+      curFtpServer1.serverName = value.username
+      curFtpServer1.homeDir = value.userdir
+      const ftpSite = new FTPSite()
+      ftpSite.connectionType = '1'
+      ftpSite.siteName = 'konanSite'
+      // curFtpServer2.parentSiteName = ftpSite.siteName
+      // ftpSite.ftpServerList.push(curFtpServer2)
+      curFtpServer1.parentSiteName = ftpSite.siteName
+      ftpSite.ftpServerList.push(curFtpServer1)
+      g_ftpSendData.ftpSite = ftpSite
     }
   }
 }
