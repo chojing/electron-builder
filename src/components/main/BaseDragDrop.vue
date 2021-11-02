@@ -64,6 +64,7 @@ export default {
     fileDel (fileItem, index) {
       this.fileList.splice(index, 1)
       console.log('파일삭제후', this.fileList)
+      this.$emit('valueReturn', this.fileList)
     }
   }
 }
