@@ -3,7 +3,7 @@
       <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop">
         <div class="drag">
           <label for="file">
-            <div v-for="fileItem in fileList" :key="fileItem.index" class="fileName">
+            <div v-for="fileItem in fileListVue" :key="fileItem.index" class="fileName">
               <span>{{fileItem.fileName}}</span>
               <button @click="btn_Del_Click(fileItem)">X</button>
             </div>
@@ -21,7 +21,7 @@ export default {
   },
   data () {
     return {
-      fileList: [],
+      fileListVue: [],
       dataPer: 0
     }
   },
@@ -59,7 +59,7 @@ export default {
     btn_Del_Click (fileItem) {
       this.delFileList(fileItem)
       this.printList()
-      this.$emit('valueReturn', this.fileList)
+      this.$emit('valueReturn', this.fileListVue)
     },
     delFileList (fileItem) {
       fileList.forEach(element => {
@@ -72,10 +72,10 @@ export default {
       })
     },
     printList () {
-      this.fileList = []
+      this.fileListVue = []
       for (let i = 0; i < fileList.length; i++) {
         this.fileName = fileList[i].fileName
-        this.fileList.push({ fileName: this.fileName })
+        this.fileListVue.push({ fileName: this.fileName })
         console.log('filename : ', this.fileName)
       }
     }
