@@ -76,7 +76,7 @@ export default {
   computed: {
     selectAll: {
       get () {
-        return this.users ? this.selected.length == this.users.length : false
+        return this.users ? this.selected.length === this.users.length : false
       },
       set (value) {
         var selected = []

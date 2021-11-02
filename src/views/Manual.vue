@@ -42,7 +42,7 @@ export default {
       g_windowIndex: 0,
       targetName: '',
       targetFtpList: [
-        { username: 'Target1', userhost: 'hostText', userport: 'userPort', userid: 'kim', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' },
+        { username: 'Server1', userhost: '10.10.18.29', userport: '21', userid: 'konan', userpw: 'konan415', userdir: '', userproxy: '' },
         { username: 'Target2', userhost: 'hostText', userport: 'userPort', userid: 'lee', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' },
         { username: 'Target3', userhost: 'hostText', userport: 'userPort', userid: 'hong', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' }
       ]
