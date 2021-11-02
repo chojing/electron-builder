@@ -12,7 +12,7 @@
         </div>
         <div class="target-list" style="background: #f1fbff;">
           <ul class="one-list">
-            <li v-for="item in targetFtpList" v-bind:key="item.userid" @dblclick="this.FileUploadPopup">
+            <li v-for="item in targetFtpList" v-bind:key="item.userid" @dblclick="this.FileUploadPopup(item)">
               <p>{{item.username}}</p>
             </li>
           </ul>
@@ -20,9 +20,7 @@
       </article>
     </div>
   </section>
-
   <templateMenu/>
-
 </template>
 
 <script>
@@ -64,10 +62,9 @@ export default {
         modal: false
       })
     },
-    FileUploadPopup: function () {
-      const name = 'ManualFileUpLoad'
+    FileUploadPopup: function (ftpInfoItem) {
       const data = {
-        value: name
+        value: 'ftpInfoItem'
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
@@ -78,6 +75,7 @@ export default {
         parent: '',
         modal: false
       })
+      console.log(ftpInfoItem)
     }
   }
 }

@@ -71,7 +71,7 @@ export default {
         }
       })
     },
-    printList () {
+    printList (fileItem) {
       this.fileListVue = []
       for (let i = 0; i < fileList.length; i++) {
         this.fileName = fileList[i].fileName

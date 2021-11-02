@@ -12,8 +12,7 @@
       </div>
 
       <!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "setInput" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
-<baseDragDrop @valueReturn="DragDropResult"/>
-
+      <baseDragDrop @valueReturn="DragDropResult"/>
       <div class="pro-bar mt20">
         <span :style="{width:dataPer + '%'}"></span>
         <b>{{dataPer}}%</b>
@@ -123,6 +122,7 @@ export default {
   methods: {
     init: function (event, key, data) {
       this.targetNameValue = data.value
+      console.log(this.targetNameValue)
     },
     DragDropResult: function (value) {
       g_ftpSendData.fileList = value

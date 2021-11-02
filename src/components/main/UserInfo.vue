@@ -4,7 +4,7 @@
       <div class="info-box">
         <div class="btn-box mb20">
           <button @click="active = !active" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue addUser">+</button>
-          <button @click="userDel(key)" type="button" class="btn deleteUser">-</button>
+          <button @click="userDel" type="button" class="btn deleteUser">-</button>
         </div>
         <table class="mb20">
           <colgroup>
@@ -83,8 +83,8 @@ export default {
         if (value) {
           this.users.forEach(function (user) {
             selected.push(user.usertel)
-            console.log('유저번호=아이디: ' + user.usertel)
-            console.log('유저정보: ' + selected)
+            console.log('유저번호=id: ' + user.usertel)
+            console.log('전체체크한 유저정보: ' + selected)
           })
         }
         this.selected = selected
@@ -100,7 +100,7 @@ export default {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     btn_OK: function () {
-      // ipcRender.send('SendData', 'main', )
+      //
     },
     userAdd: function () {
       // console.log('이름 ' + this.username)
@@ -119,11 +119,11 @@ export default {
         this.users.push({ username: this.username, usertel: this.usertel })
         this.username = ''
         this.usertel = ''
-        this.$emit('pass', 10)
       }
     },
-    userDel: function (index) {
-      this.users.splice(index, 1)
+    userDel: function () {
+      // this.users.splice(this.usertel, 1)
+      console.log(this.selected)
     }
   }
 }
