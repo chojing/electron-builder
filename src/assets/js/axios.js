@@ -8,10 +8,13 @@ function init () {
 }
 async function login (id, password) {
   // axios.defaults.baseURL = store.state.server
-  await axios.post('/v1/users/apikey', null, {
+  await axios.post('/v2/users/apikey', null, {
     params: {
       username: id,
       password: password
+    },
+    headers: {
+      'Content-Type': 'application/json'
     }
   }).then(function (response) {
     store.commit('commitUsername', response.data.result.username)
@@ -22,7 +25,10 @@ async function login (id, password) {
 }
 async function getSyncAxios (url, param, callback, fail) {
   await axios.get(url, {
-    params: param
+    params: param,
+    headers: {
+      Authorization: store.state.apikey
+    }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
     else alert(response)
@@ -33,7 +39,10 @@ async function getSyncAxios (url, param, callback, fail) {
 }
 function getAsyncAxios (url, param, callback, fail) {
   axios.get(url, {
-    params: param
+    params: param,
+    headers: {
+      Authorization: store.state.apikey
+    }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
     else alert(response)
@@ -51,7 +60,8 @@ async function postSyncAxios (url, body, param, callback, fail) {
   await axios.post(url, body, {
     params: param,
     headers: {
-      'Content-Type': contentType
+      'Content-Type': contentType,
+      Authorization: store.state.apikey
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
@@ -69,7 +79,8 @@ function postAsyncAxios (url, body, param, callback, fail) {
   axios.post(url, body, {
     params: param,
     headers: {
-      'Content-Type': contentType
+      'Content-Type': contentType,
+      Authorization: store.state.apikey
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
@@ -88,7 +99,8 @@ async function putSyncAxios (url, body, param, callback, fail) {
   await axios.put(url, body, {
     params: param,
     headers: {
-      'Content-Type': contentType
+      'Content-Type': contentType,
+      Authorization: store.state.apikey
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
@@ -106,7 +118,8 @@ function putAsyncAxios (url, body, param, callback, fail) {
   axios.put(url, body, {
     params: param,
     headers: {
-      'Content-Type': contentType
+      'Content-Type': contentType,
+      Authorization: store.state.apikey
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
@@ -125,7 +138,8 @@ async function deleteSyncAxios (url, body, param, callback, fail) {
   await axios.delete(url, body, {
     params: param,
     headers: {
-      'Content-Type': contentType
+      'Content-Type': contentType,
+      Authorization: store.state.apikey
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
@@ -143,7 +157,8 @@ function deleteAsyncAxios (url, body, param, callback, fail) {
   axios.delete(url, body, {
     params: param,
     headers: {
-      'Content-Type': contentType
+      'Content-Type': contentType,
+      Authorization: store.state.apikey
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
@@ -164,42 +179,16 @@ function setError (xhr) {
     router.push({ name: 'Login' })
     return false
   } else {
-    let errorCode = '[ ERROR CODE : ' + xhr.status + ' ]<br/>'
-    if (typeof xhr.responseText !== 'undefined') {
-      const responseText = xhr.responseText
-      const isJson = checkJsonString(responseText)
+    let errorCode = '[ ERROR CODE : ' + xhr.status + ' ]'
+    if (xhr.message !== null) {
+      errorCode += xhr.message
 
-      if (isJson) {
-        if (typeof JSON.parse(xhr.responseText).message !== 'undefined') {
-          const message = JSON.parse(xhr.responseText).message
-          const idx = message.indexOf(':')
-          if (idx > 0) {
-            errorCode += message.substring(idx + 1)
-          } else {
-            errorCode += message
-          }
-        }
+      if (xhr.status >= 400) {
+        alert('에러\n' + errorCode)
       } else {
-        const message = '리스트 조회하는데 실패했습니다.'
-        errorCode += message
+        alert(errorCode)
       }
     }
-
-    if (xhr.status >= 400) {
-      alert('에러\n' + errorCode)
-    } else {
-      alert(errorCode)
-    }
-
-    return false
-  }
-}
-
-function checkJsonString (str) {
-  try {
-    const json = JSON.parse(str)
-    return (typeof json === 'object')
-  } catch (e) {
     return false
   }
 }

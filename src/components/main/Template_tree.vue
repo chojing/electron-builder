@@ -41,7 +41,7 @@ export default {
   methods: {
     getChildList: function (item) {
       item.childList = this.twoDepth
-      // axios.getSyncAxios('/v1/trees/treename/' + nodeid + '/child', null, function (response) {
+      // axios.getSyncAxios('/v2/trees/treename/' + nodeid + '/child', null, function (response) {
       //   this.childList = response.data.results
       // }, function (error) {
       //   this.childList = []

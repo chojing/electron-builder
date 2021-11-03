@@ -153,7 +153,7 @@ function windowShow (_win) {
 
 app.whenReady().then(() => {
   globalShortcut.register('CommandOrControl+R', () => {
-    console.log('CommandOrControl+R is pressed: Shortcut Disabled')
+    // console.log('CommandOrControl+R is pressed: Shortcut Disabled')
   })
   RunTray()
   g_NotificationPopUp.show('sbspds-anywhere', 'Start!')

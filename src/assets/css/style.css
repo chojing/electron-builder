@@ -28,7 +28,7 @@ header{padding: 25px 4%;}
 header .logo{text-align: center;}
 
 /** 공통 **/
-#app{padding-top:20px;}
+/*#app{padding-top:20px;}*/
 /*input*/
 .input-box{padding: 0 5px;display: inline-block;vertical-align: top;width: calc(100% - 60px);height: 100%;border: 1px solid #eee;border-radius: 10px;}
 .input-box::placeholder{color: #b8b8b8;}

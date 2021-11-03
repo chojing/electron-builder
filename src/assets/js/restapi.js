@@ -31,7 +31,7 @@ function RESTAPIInfo () {
 
 RESTAPIInfo.prototype.login = async function (_id, _pw) {
   const self = this
-  const restPropertyInfo = new RESTAPIPropertyInfo('/v1/users/apikey')
+  const restPropertyInfo = new RESTAPIPropertyInfo('/v2/users/apikey')
   // const cryptoPassword = CryptoEncodingSHA512(_pw)
   const params = {
     username: _id,
@@ -50,7 +50,7 @@ RESTAPIInfo.prototype.login = async function (_id, _pw) {
 }
 RESTAPIInfo.prototype.CreateAsset = async function (_assetInfo, _apikey) {
   const self = this
-  const restPropertyInfo = new RESTAPIPropertyInfo('/v1/assets')
+  const restPropertyInfo = new RESTAPIPropertyInfo('/v2/assets')
   const requestBody = {
     assetviewname: 'asset_transferjob',
     parameter: {
@@ -68,7 +68,7 @@ RESTAPIInfo.prototype.CreateAsset = async function (_assetInfo, _apikey) {
 }
 RESTAPIInfo.prototype.GetAsset = async function (_transferjobid, _apikey) {
   const self = this
-  const restPropertyInfo = new RESTAPIPropertyInfo('/v1/assets/asset_transferjob')
+  const restPropertyInfo = new RESTAPIPropertyInfo('/v2/assets/asset_transferjob')
   const params = {
     condition: `{'$and':[{'$eq':{'transferjobid':'${_transferjobid}'}}]}`
   }
@@ -81,7 +81,7 @@ RESTAPIInfo.prototype.GetAsset = async function (_transferjobid, _apikey) {
 }
 RESTAPIInfo.prototype.SetAsset = async function (_assetInfo, _apikey) {
   const self = this
-  const restPropertyInfo = new RESTAPIPropertyInfo('/v1/assets/asset_transferjob')
+  const restPropertyInfo = new RESTAPIPropertyInfo('/v2/assets/asset_transferjob')
   const requestBody = {
     assetviewname: 'asset_transferjob',
     condition: {
@@ -110,7 +110,7 @@ RESTAPIInfo.prototype.SetAsset = async function (_assetInfo, _apikey) {
 }
 RESTAPIInfo.prototype.DelAsset = async function (_transferjobid, _apikey) {
   const self = this
-  const restPropertyInfo = new RESTAPIPropertyInfo('/v1/assets/asset_transferjob')
+  const restPropertyInfo = new RESTAPIPropertyInfo('/v2/assets/asset_transferjob')
   const params = {
     condition: `{'$and':[{'$eq':{'transferjobid':'${_transferjobid}'}}]}`
   }
@@ -121,7 +121,7 @@ RESTAPIInfo.prototype.DelAsset = async function (_transferjobid, _apikey) {
 }
 RESTAPIInfo.prototype.SearchAsset = async function (_apikey, _filename = '%%', _startTime = 20200101000000, _endTime = 20211231235959, _timeSort = 'desc', _offset = 0, _limit = 20, _search5 = false, _nocache = false) {
   const self = this
-  const restPropertyInfo = new RESTAPIPropertyInfo('/v1/search/search_transfer')
+  const restPropertyInfo = new RESTAPIPropertyInfo('/v2/search/search_transfer')
   const params = {
     condition: `{'$and':[{'$like':{'filename':'${_filename}'}},{'$and':[{'$ge':{'createtime':'${_startTime}'}},{'$lt':{'createtime':'${_endTime}'}}]}]}`,
     sort: `{'$sort':{'createtime':'${_timeSort}'}}`,
@@ -140,7 +140,7 @@ RESTAPIInfo.prototype.SearchAsset = async function (_apikey, _filename = '%%', _
 }
 RESTAPIInfo.prototype.GetUserInfo = async function (_apikey, _userid) {
   const self = this
-  const restPropertyInfo = new RESTAPIPropertyInfo(`/v1/admin/users/${_userid}`)
+  const restPropertyInfo = new RESTAPIPropertyInfo(`/v2/admin/users/${_userid}`)
 
   // request REST API
   const resultURL = self.createRequestURL(self.m_RESTAPIConnect_SBSAPI, restPropertyInfo)
