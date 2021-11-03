@@ -1,4 +1,12 @@
 <template>
+      <h4>전송제목</h4>
+      <div class="file-tti-box mb40">
+        <input class="input-box" type="text" value="">
+      </div>
+      <h4>Optional(요청내역)</h4>
+      <div class="file-list-box mb20">
+        <textarea></textarea>
+      </div>
       <h4>파일(폴더) 전송</h4>
       <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop">
         <div class="drag">
