@@ -35,7 +35,7 @@
           </tbody>
         </table>
         <div class="btn-box">
-          <button type="button" id="submitBtn" class="btn blue" @click="btn_OK">확인</button>
+          <button @click="submit" type="button" id="submitBtn" class="btn blue">확인</button>
           <button @click="cancel" type="button" id="cancel" class="btn">닫기</button>
         </div>
       </div>
@@ -103,15 +103,16 @@ export default {
       }
     },
     cancel: function () {
-      const data = []
-      this.selected.forEach(seleted => {
-        data.push(seleted)
-      })
-      ipcRenderer.send('sendData', this.parentKey, data, 'telData')
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
-    btn_OK: function () {
-      //
+    submit: function () {
+      const data = []
+      this.selected.forEach(userTelData => {
+        data.push(userTelData)
+      })
+      // key, data, type
+      ipcRenderer.send('sendData', this.parentKey, data, 'userTelData')
+      ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     userAdd: function () {
       // console.log('이름 ' + this.username)
@@ -133,9 +134,6 @@ export default {
       }
     },
     userDel: function () {
-      // var index = this.users.findIndex(function (item) { return item.usertel === id })
-      // this.users.splice(index, 1)
-      console.log(this.selected)
       this.selected.forEach(seleted => {
         this.users.forEach(user => {
           if (user.usertel == seleted) {

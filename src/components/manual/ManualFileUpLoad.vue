@@ -2,15 +2,6 @@
   <section class="file-container pb40">
     <div class="wrap">
       <h4 class="tti">수동 FTP</h4>
-      <h4>전송제목</h4>
-      <div class="file-tti-box mb40">
-        <input class="input-box" type="text" value="">
-      </div>
-      <h4>Optional(요청내역)</h4>
-      <div class="file-list-box mb20">
-        <textarea></textarea>
-      </div>
-
       <!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "setInput" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
       <baseDragDrop @valueReturn="DragDropResult"/>
       <div class="pro-bar mt20">

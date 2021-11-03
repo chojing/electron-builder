@@ -8,20 +8,11 @@
           </div>
         </div>
       </div>
-      <h4>전송제목</h4>
-      <div class="file-tti-box mb40">
-        <input class="input-box" type="text" value="">
-      </div>
-      <h4>Optional(요청내역)</h4>
-      <div class="file-list-box mb20">
-        <textarea></textarea>
-      </div>
-<!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "setInput" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
-<baseDragDrop @valueReturn="DragDropResult"/>
-
-      <div class="file-submit-box flex-box">
-        <div class="box flex-1">
-          <input class="input-box" type="text" placeholder="전송 확인 문자 연락처(다중)">
+      <!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "setInput" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
+      <baseDragDrop @valueReturn="DragDropResult"/>
+      <div class="file-submit-box">
+        <div class="box flex-box">
+          <input :value="this.testValue" class="input-box flex-1" type="text" placeholder="전송 확인 문자 연락처(다중)">
           <button @dblclick="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
         </div>
       </div>
@@ -47,19 +38,22 @@ export default {
       selfKey: '',
       targetNameValue: '',
       fileList: [],
-      testValue: {}
+      testValue: []
     }
   },
   created () {
     ipcRenderer.on('receiveData', this.init)
   },
   methods: {
+    // type에 따라 값 전달
     init: function (event, key, data, type) {
       if (type == 'init') {
         this.targetNameValue = data.value
         this.selfKey = key
-      } else if (type == 'telData') {
-        console.log(data)
+      } else if (type == 'userTelData') {
+        console.log('넘겨받은 데이터', data)
+        this.testValue.push(data)
+        console.log('담은 데이터', this.testValue)
       }
     },
     userInfoPopup: function () {
