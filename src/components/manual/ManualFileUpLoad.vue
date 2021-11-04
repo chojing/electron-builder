@@ -102,12 +102,12 @@ export default {
       // eslint-disable-next-line no-const-assign
       g_ftpSendData = new FTPSendData()
       const curFtpServer1 = new FTPServer()
-      curFtpServer1.host = value.userhost
-      curFtpServer1.port = value.userport
-      curFtpServer1.user = value.userid
-      curFtpServer1.password = value.userpw
-      curFtpServer1.serverName = value.username
-      curFtpServer1.homeDir = value.userdir
+      curFtpServer1.host = value.host
+      curFtpServer1.port = value.port
+      curFtpServer1.user = value.username
+      curFtpServer1.password = value.password
+      curFtpServer1.serverName = value.name
+      curFtpServer1.homeDir = value.rootpath
       const ftpSite = new FTPSite()
       ftpSite.connectionType = '1'
       ftpSite.siteName = 'konanSite'

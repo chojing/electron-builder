@@ -7,7 +7,7 @@
           <div class="flex-center">
             <h4>전송 Target</h4>
             <!--modify-->
-            <button class="btn h30" @click="this.manualFtpPopup">등록</button>
+            <button class="btn h30" @click="this.manualFtpPopup">관리</button>
           </div>
         </div>
         <div class="target-list" style="background: #f1fbff;">
@@ -88,7 +88,7 @@ export default {
     },
     FileUploadPopup: function (ftpInfoItem) {
       const data = {
-        value: { username: ftpInfoItem.name, userhost: ftpInfoItem.host, userport: ftpInfoItem.port, userid: ftpInfoItem.username, userpw: ftpInfoItem.password, userdir: ftpInfoItem.rootpath, userproxy: ftpInfoItem.proxy, modeValue: ftpInfoItem.mode_code }
+        value: { name: ftpInfoItem.name, host: ftpInfoItem.host, port: ftpInfoItem.port, username: ftpInfoItem.username, password: ftpInfoItem.password, rootpath: ftpInfoItem.rootpath, proxy: ftpInfoItem.proxy, mode: ftpInfoItem.mode }
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
