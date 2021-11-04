@@ -36,7 +36,7 @@
 <script>
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
-const axios = require('../assets/js/axios.js')
+const axios = require('@/assets/js/axios.js')
 
 export default {
   name: 'Login',

@@ -1,13 +1,12 @@
 <template>
   <div class="loading">
-  <h2><img style="width: 100%;" src="../assets/images/sbspds.png" alt=""></h2>
+  <h2><img style="width: 100%;" src="@/assets/images/sbspds.png" alt=""></h2>
   </div>
 
 </template>
 <script>
 const { ipcRenderer } = window.require('electron')
-// const RESTAPIInfo = require('../assets/js/restapi.js').RESTAPIInfo
-const axios = require('../assets/js/axios.js')
+const axios = require('@/assets/js/axios.js')
 
 export default {
   name: 'Loading',
