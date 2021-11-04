@@ -8,8 +8,7 @@
             <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" id="modify-btn" class="btn blue h30">수정</button>
           </div>
           <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
-            <option v-for="item in addSelect" :key="item.index" :value="item.name">{{item.name}}</option>
-            <option v-if="!isDisabled">선택된 값이 없습니다.</option>
+            <option v-for="item in addSelect" :key="item.index">{{item.name}}</option>
           </select>
           <div class="list flex-center">
             <b>서버명</b>
@@ -131,6 +130,7 @@ export default {
       axios.getAsyncAxios('/v2/ftpserver', param, (response) => {
         console.log(response)
         this.addSelect = response.data.results
+        this.ftpSelected = this.addSelect[0].name
       })
     },
     selected () {
@@ -139,6 +139,13 @@ export default {
         if (element.name == this.ftpSelected) {
           const index = this.addSelect.indexOf(element)
           console.log('선택값 확인 : ', this.addSelect[index])
+          this.ftpInfo.name = this.addSelect[index].name
+          this.ftpInfo.host = this.addSelect[index].host
+          this.ftpInfo.port = this.addSelect[index].port
+          this.ftpInfo.username = this.addSelect[index].username
+          this.ftpInfo.password = this.addSelect[index].password
+          this.ftpInfo.rootpath = this.addSelect[index].rootpath
+          this.ftpInfo.proxy = this.addSelect[index].proxy
         }
       })
     },
@@ -169,12 +176,11 @@ export default {
         this.addSelect.push(this.ftpInfo)
         this.terms = false
         this.cancel()
-        // data.push({ name: this.name, host: this.host, port: this.port, username: this.username, password: this.password, rootpath: this.rootpath, userproxy: this.userproxy, modeValue: this.modeValue })
-        // ipcRenderer.send('sendData', 'main', data, 'ftpUserAdd')
       }
     },
     newFtpAdd () {
       this.terms = true
+      this.ftpSelected = '사용자 지정'
       this.$refs.usernameInput.focus()
       this.ftpInfo.name = ''
       this.ftpInfo.host = ''
