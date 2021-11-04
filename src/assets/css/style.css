@@ -181,7 +181,8 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fb
 .manual-ftp-container .ftp-info .list .flex-1{height: 100%;}
 .manual-ftp-container .ftp-info .list .input-box{width: 100%;}
 .manual-ftp-container .ftp-info .list .input-box:focus{border-color: #333;}
-.manual-ftp-container .ftp-info .list .input-box:disabled{background-color: #e9f3f7;}
+.manual-ftp-container .ftp-info .list .input-box:disabled,
+.manual-ftp-container .ftp-info select:disabled{background-color: #e9f3f7;}
 .manual-ftp-container .ftp-info .list.mode .flex-1{display: flex;align-items: center;}
 .manual-ftp-container .ftp-info .list.mode .radio-input{cursor: pointer;margin-right: 20px;font-size: 14px;}
 
