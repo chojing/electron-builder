@@ -51,7 +51,6 @@ export default {
         this.targetNameValue = data.value
         this.selfKey = key
       } else if (type == 'userTelData') {
-        console.log('넘겨받은 데이터', data)
         this.testValue.push(data)
         console.log('담은 데이터', this.testValue)
       }
