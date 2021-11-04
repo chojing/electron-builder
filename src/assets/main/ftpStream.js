@@ -19,12 +19,18 @@ util.inherits(FTPStream, EventEmitter)
 
 FTPStream.prototype.connect = function (_ftpConnectConfig) {
   const self = this
+  const config = {
+    host: _ftpConnectConfig.host,
+    port: _ftpConnectConfig.port,
+    user: _ftpConnectConfig.username,
+    password: _ftpConnectConfig.password
+  }
   return new Promise((resolve, reject) => {
     self.m_ftpClient = new Client()
     self.m_ftpClient.on('ready', () => {
       console.log('ftp ready')
       self.isConnection = true
-      self.m_ftpConnectConfig = _ftpConnectConfig
+      self.m_ftpConnectConfig = config
       resolve('true')
     })
     this.m_ftpClient.on('close', () => {
@@ -43,7 +49,7 @@ FTPStream.prototype.connect = function (_ftpConnectConfig) {
       reject(err)
     })
 
-    this.m_ftpClient.connect(_ftpConnectConfig)
+    this.m_ftpClient.connect(config)
   })
 }
 
