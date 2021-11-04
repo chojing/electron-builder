@@ -22,18 +22,18 @@ const ipcRenderer = electron.ipcRenderer
 const FTPServer = function () {
   this.host = ''
   this.port = 0
-  this.user = ''
+  this.username = ''
   this.password = ''
-  this.homeDir = ''
-  this.serverName = ''
+  this.rootpath = '' // homeDir
+  this.name = '' // ServerName
   this.parentSiteName = ''
 }
 FTPServer.prototype.getftpServerInfo = function (ftpServer) {
   ftpServer.host = this.host
   ftpServer.port = this.port
-  ftpServer.user = this.user
+  ftpServer.username = this.username
   ftpServer.password = this.password
-  ftpServer.homeDir = this.homeDir
+  ftpServer.rootpath = this.rootpath
   ftpServer.serverName = this.serverName
   ftpServer.parentSiteName = this.parentSiteName
 
@@ -104,10 +104,10 @@ export default {
       const curFtpServer1 = new FTPServer()
       curFtpServer1.host = value.host
       curFtpServer1.port = value.port
-      curFtpServer1.user = value.username
+      curFtpServer1.username = value.username
       curFtpServer1.password = value.password
-      curFtpServer1.serverName = value.name
-      curFtpServer1.homeDir = value.rootpath
+      curFtpServer1.name = value.name
+      curFtpServer1.rootpath = value.rootpath
       const ftpSite = new FTPSite()
       ftpSite.connectionType = '1'
       ftpSite.siteName = 'konanSite'
