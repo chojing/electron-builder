@@ -97,7 +97,7 @@ FTPStream.prototype.work = async function (_srcPaths, _ftpConnectConfig, index) 
     }
   })
 }
-FTPStream.prototype.upload = function (ftpData, callPromiseResult) {
+FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
   const self = this
   const curPath = ftpData.srcPath
   const curDescPath = ftpData.destPath + ftpData.fileName
@@ -132,19 +132,43 @@ FTPStream.prototype.upload = function (ftpData, callPromiseResult) {
         self.emit('data', ftpData)
       }
     })
-    // Local Path      //FTP Path
-    self.m_ftpClient.put(curFileStream, curDescPath, function (err) {
-      if (err) { // error
-        callPromiseResult('reject', err)
-        self.doError(curFileStream, ftpData, err, callPromiseResult)
-      } else { // 완료 후 //finish
-        if (ftpData.isCancel == false) { // cancel 되고 finish로 넘어왔을 때, 중복 호출을 막기 위함
-          self.m_CompleteFTPDataPath.push(curDescPath) // ftp Path
-          self.doCheckRecursive_work(ftpData, curFileStream, callPromiseResult)
-        }
+
+    self.m_ftpClient.cwd(ftpData.destPath, (err, path) => {
+      if (path === undefined) { // 폴더 없음
+        self.m_ftpClient.mkdir(ftpData.destPath, true, function (err) {
+          if (err) {
+            const error = new Error()
+            error.message = err
+            self.doError(curFileStream, ftpData, error, callPromiseResult)
+            return false
+          } else {
+            console.log('FTP 폴더 생성')
+            self.ftpUploadPut(curFileStream, curDescPath, callPromiseResult, ftpData)
+          }
+        })
+      } else { // 폴더 있음
+        self.ftpUploadPut(curFileStream, curDescPath, callPromiseResult, ftpData)
       }
     })
+    /*
+    // Local Path      //FTP Path
+
+*/
   }
+}
+FTPStream.prototype.ftpUploadPut = function (curFileStream, curDescPath, callPromiseResult, ftpData) {
+  const self = this
+  self.m_ftpClient.put(curFileStream, curDescPath, function (err) {
+    if (err) { // error
+      callPromiseResult('reject', err)
+      self.doError(curFileStream, ftpData, err, callPromiseResult)
+    } else { // 완료 후 //finish
+      if (ftpData.isCancel == false) { // cancel 되고 finish로 넘어왔을 때, 중복 호출을 막기 위함
+        self.m_CompleteFTPDataPath.push(curDescPath) // ftp Path
+        self.doCheckRecursive_work(ftpData, curFileStream, callPromiseResult)
+      }
+    }
+  })
 }
 FTPStream.prototype.download = function (ftpData, callPromiseResult) {
   const self = this
