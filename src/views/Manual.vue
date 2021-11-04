@@ -27,8 +27,8 @@
 import templateMenu from '@/components/menu/Template_menu'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
-// eslint-disable-next-line no-unused-vars
 const axios = require('@/assets/js/axios.js')
+const custom = require('@/assets/js/custom.js')
 export default {
   name: 'Manual',
   components: {
@@ -87,13 +87,11 @@ export default {
       })
     },
     FileUploadPopup: function (ftpInfoItem) {
-      const data = {
-        value: { name: ftpInfoItem.name, host: ftpInfoItem.host, port: ftpInfoItem.port, username: ftpInfoItem.username, password: ftpInfoItem.password, rootpath: ftpInfoItem.rootpath, proxy: ftpInfoItem.proxy, mode: ftpInfoItem.mode }
-      }
+      const item = custom.proxy2map(ftpInfoItem)
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
         url: 'ManualFileUpLoad',
-        data: data,
+        data: item,
         width: 700,
         height: 700,
         parent: '',

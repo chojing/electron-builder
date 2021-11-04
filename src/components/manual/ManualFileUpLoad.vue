@@ -78,8 +78,8 @@ export default {
   },
   methods: {
     init: function (event, key, data) {
-      this.targetFtpInfo = data.value
-      this.ftpSet(data.value)
+      this.targetFtpInfo = data
+      this.ftpSet(data)
       // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
       console.log('ftp정보', this.targetFtpInfo)
       // console.log('ftp정보', curFtpServer)
