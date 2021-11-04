@@ -4,11 +4,12 @@
       <h4 class="tti">수동 FTP 관리</h4>
       <div class="ftp-info mt20">
           <div class="btn-box right">
-            <button class="btn h30">추가</button>
+            <button @click="newFtpAdd" class="btn h30">추가</button>
             <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" id="modify-btn" class="btn blue h30">수정</button>
           </div>
-          <select id="selectFtp">
+          <select id="selectFtp" :disabled='!isDisabled'>
             <option v-for="targetInfo in addSelect" :key="targetInfo.index" :value="targetInfo.username">{{targetInfo.username}}</option>
+            <option v-if="!isDisabled">선택된 값이 없습니다.</option>
           </select>
           <div class="list flex-center">
             <b>서버명</b>
@@ -70,9 +71,9 @@
             </div>
           </div>
       </div>
-      <div class="pt20">
-        <button @click="cancel" id="cancel" class="btn h30 m-auto">닫기</button>
-        <button @click="userUpData" class="btn h30 m-auto">저장</button>
+      <div class="btn-box center pt20">
+        <button @click="cancel" id="cancel" class="btn h30">닫기</button>
+        <button @click="userUpData" class="btn h30">저장</button>
       </div>
     </div>
   </section>
@@ -120,7 +121,6 @@ export default {
     },
     userUpData () {
       // const data = []
-      console.log(this.ftpInfo)
       if (!this.ftpInfo.name) {
         alert('필수값을 입력해주세요.')
         this.$refs.usernameInput.focus()
@@ -139,9 +139,21 @@ export default {
       } else {
         this.addSelect.push(this.ftpInfo)
         this.terms = false
+        this.cancel()
         // data.push({ name: this.name, host: this.host, port: this.port, username: this.username, password: this.password, rootpath: this.rootpath, userproxy: this.userproxy, modeValue: this.modeValue })
         // ipcRenderer.send('sendData', 'main', data, 'ftpUserAdd')
       }
+    },
+    newFtpAdd () {
+      this.terms = true
+      this.$refs.usernameInput.focus()
+      this.ftpInfo.name = ''
+      this.ftpInfo.host = ''
+      this.ftpInfo.port = '21'
+      this.ftpInfo.username = ''
+      this.ftpInfo.password = ''
+      this.ftpInfo.rootpath = ''
+      this.ftpInfo.proxy = ''
     },
     usrModifyFtp () {
       this.terms = true

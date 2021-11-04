@@ -37,7 +37,6 @@ export default {
   data () {
     return {
       g_windowIndex: 0,
-      selfKey: '',
       targetNameValue: '',
       targetName: '',
       targetFtpList: []
@@ -45,9 +44,6 @@ export default {
   },
   mounted () {
     this.getList()
-  },
-  created () {
-    ipcRenderer.on('receiveData', this.init)
   },
   methods: {
     getList: function () {
@@ -66,15 +62,9 @@ export default {
         this.targetFtpList = response.data.results
       })
     },
-    init: function (event, key, data, type) {
-      if (type == 'ftpUserAdd') {
-        this.selfKey = key
-        console.log('넘겨받은 데이터', data)
-      }
-    },
     manualFtpPopup: function () {
       const data = {
-        parentKey: this.selfKey
+        value: 'manualFtpPopup'
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,

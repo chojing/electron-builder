@@ -13,7 +13,6 @@ const gfileData = new FileData()
 
 function FTPInfo (_event, _FTPSite, _popUpWnd) {
   this.event = _event || '' // 접속한 유저가 요청한 event를 등록해놓음. 나중에 result 할 때 필요함
-  this.m_DES_FOLDER_PATH = ''
   this.m_FTPSite = _FTPSite || ''
   this.m_NofiPopup = new NotificationPopUp()
   this.ftpStreamList = {} // FTPStream
@@ -39,7 +38,8 @@ FTPInfo.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData, _conn
 FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _currentFtpServer) {
   const self = this
   const ftpServer = _currentFtpServer
-  const ftpStreamKey = _currentFtpServer.serverName
+  const ftpStreamKey = _currentFtpServer.name
+  const desFolderPath = _currentFtpServer.rootpath
   const curFtpStream = new FTPStream()
   curFtpStream.on('data', function (ftpData) {
     self.SendMessage(ftpData, ftpServer, 'data')
@@ -60,7 +60,7 @@ FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _current
     const curFile = _fileList[j]
     const curPath = curFile.path
     const curFileName = gfileData.getFileFullName(curPath)
-    const ftpData = new FTPData(_ftpType, curFile, self.m_DES_FOLDER_PATH, curFileName)
+    const ftpData = new FTPData(_ftpType, curFile, desFolderPath, curFileName)
 
     // 전체 취소를 위한 전체 작업 담기
     self.ftpStreamList[ftpStreamKey].m_WholeWorkFTPDataList[curPath] = ftpData
@@ -198,18 +198,18 @@ FTPInfo_Type2.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData,
     // FTPInfo 가 끝나면 실행됨 (WorkObject 별 FTPInfo 가 모두 실행되면 출력)
     Promise.all(PromiseResult).then(value => {
       let result = true
-      const ServerName = self.m_FTPSite.ftpServerList[_connectionIndex].serverName
+      const curName = self.m_FTPSite.ftpServerList[_connectionIndex].name
       self.isFinish = true
       for (let i = 0; i < value.length; i++) {
         if (value[i] != true) { // 실패
-          console.log(ServerName + ' is fail!')
+          console.log(curName + ' is fail!')
           result = value[i]
         } else {
-          console.log(ServerName + ' is Success!')
+          console.log(curName + ' is Success!')
         }
       }
       if (result == true) {
-        resolve({ serverName: ServerName, result: true })
+        resolve({ name: curName, result: true })
         return true
       } else {
         reject(result)

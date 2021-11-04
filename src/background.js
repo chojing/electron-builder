@@ -344,7 +344,6 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
     const ftpInfo = new FTPInfo_Type1(ftpSendData.event, ftpSendData.ftpSite, g_windows[windowName])
     g_FTPInfoDic[ftpSendData.ftpSite.siteName] = ftpInfo
     g_FTPInfoDic[ftpSendData.ftpSite.siteName].connectionType = curType
-    ftpInfo.m_DES_FOLDER_PATH = ftpSendData.desFolderPath
     ftpInfo.clientSendData = ftpSendData
     ftpInfo.RequestFTPWork(_FTPType, 0)
   } else if (curType == '2') {
@@ -353,9 +352,8 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
     while (i >= 0) {
       let result
       const ftpInfo = new FTPInfo_Type2(ftpSendData.event, ftpSendData.ftpSite, g_windows[windowName])
-      ftpInfo.m_DES_FOLDER_PATH = ftpSendData.desFolderPath
       ftpInfo.clientSendData = ftpSendData
-      tempDic[ftpSendData.ftpSite.ftpServerList[i].serverName] = ftpInfo // dic[10.10.18.29] = ftpInfo
+      tempDic[ftpSendData.ftpSite.ftpServerList[i].name] = ftpInfo // dic[10.10.18.29] = ftpInfo
       result = ftpInfo.RequestFTPWork(_FTPType, ftpSendData, i).catch(
         function (error) {
           console.log(`FTPInfo_Type2_${_FTPType} Error!!!` + error)
