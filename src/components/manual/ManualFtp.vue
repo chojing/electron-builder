@@ -7,8 +7,8 @@
             <button @click="newFtpAdd" class="btn h30">추가</button>
             <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" id="modify-btn" class="btn blue h30">수정</button>
           </div>
-          <select id="selectFtp" :disabled='!isDisabled'>
-            <option v-for="targetInfo in addSelect" :key="targetInfo.index" :value="targetInfo.username">{{targetInfo.username}}</option>
+          <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
+            <option v-for="item in addSelect" :key="item.index" :value="item.name">{{item.name}}</option>
             <option v-if="!isDisabled">선택된 값이 없습니다.</option>
           </select>
           <div class="list flex-center">
@@ -101,11 +101,15 @@ export default {
         proxy: '',
         mode: ''
       },
+      ftpSelected: [],
       addSelect: []
     }
   },
   created () {
     ipcRenderer.on('receiveData', this.init)
+  },
+  mounted () {
+    this.getList()
   },
   computed: {
     isDisabled: function () {
@@ -113,10 +117,36 @@ export default {
     }
   },
   methods: {
-    init: function (event, key, data, type) {
+    getList () {
+      const param = {}
+      const condition = {}
+      condition.owner = this.$store.state.userid
+      condition.ismanual = 1
+      param.condition = condition
+      const sort = {}
+      sort.createtime = 'desc'
+      param.sort = sort
+      param.limit = 0
+      param.offset = 0
+      axios.getAsyncAxios('/v2/ftpserver', param, (response) => {
+        console.log(response)
+        this.addSelect = response.data.results
+      })
+    },
+    selected () {
+      console.log('들어있는 값 확인 : ', this.addSelect)
+      console.log('선택값 확인 : ', this.ftpSelected)
+      this.addSelect.forEach(element => {
+        if (element.name == this.ftpSelected) {
+          const index = this.addSelect.indexOf(element)
+          console.log(index)
+        }
+      })
+    },
+    init (event, key, data, type) {
       this.g_curWindowKey = key
     },
-    cancel: function () {
+    cancel () {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     userUpData () {

@@ -37,8 +37,6 @@ export default {
   data () {
     return {
       g_windowIndex: 0,
-      targetNameValue: '',
-      targetName: '',
       targetFtpList: []
     }
   },
