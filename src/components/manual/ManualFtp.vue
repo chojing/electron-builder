@@ -56,15 +56,15 @@
             <b>MODE</b>
             <div class="flex-1">
               <div class="radio-input">
-                <input v-model="basicVal" value="기본" type="radio" name="mode" id="basicVal" checked>
+                <input v-model="modeValue" value="기본" type="radio" name="mode" id="basicVal" checked>
                 <label for="basicVal">기본</label>
               </div>
               <div class="radio-input">
-                <input v-model="activeVal" value="능동형" type="radio" name="mode" id="activeVal" :disabled='isDisabled' >
+                <input v-model="modeValue" value="능동형" type="radio" name="mode" id="activeVal" :disabled='isDisabled' >
                 <label for="activeVal">능동형</label>
               </div>
               <div class="radio-input">
-                <input v-model="passiveVal" value="수동형" type="radio" name="mode" id="passiveVal" :disabled='isDisabled' >
+                <input v-model="modeValue" value="수동형" type="radio" name="mode" id="passiveVal" :disabled='isDisabled' >
                 <label for="passiveVal">수동형</label>
               </div>
             </div>
@@ -100,9 +100,7 @@ export default {
       userpw: '',
       userdir: '',
       userproxy: '',
-      basicVal: '',
-      activeVal: '',
-      passiveVal: '',
+      modeValue: '',
       adcSelect: []
     }
   },
@@ -113,7 +111,7 @@ export default {
   },
   methods: {
     userUpData () {
-      console.log(this.username + ' ' + this.userhost + ' ' + this.userport + ' ' + this.userid + ' ' + this.userpw + ' ' + this.userdir + ' ' + this.userproxy)
+      console.log(this.username + ' ' + this.userhost + ' ' + this.userport + ' ' + this.userid + ' ' + this.userpw + ' ' + this.userdir + ' ' + this.userproxy + ' ' + this.modeValue)
       if (!this.username) {
         alert('필수값을 입력해주세요.')
         this.$refs.usernameInput.focus()
@@ -130,7 +128,7 @@ export default {
         alert('숫자만 입력해주세요.')
         this.$refs.userportInput.focus()
       } else {
-        this.adcSelect.push({ username: this.username, userhost: this.userhost, userport: this.userport, userid: this.userid, userpw: this.userpw, userdir: this.userdir, userproxy: this.userproxy })
+        this.adcSelect.push({ username: this.username, userhost: this.userhost, userport: this.userport, userid: this.userid, userpw: this.userpw, userdir: this.userdir, userproxy: this.userproxy, testRadio: this.modeValue })
         this.terms = false
       }
     },

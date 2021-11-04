@@ -40,9 +40,9 @@ export default {
       g_windowIndex: 0,
       targetName: '',
       targetFtpList: [
-        { username: 'Server1', userhost: '10.10.18.29', userport: '21', userid: 'konan', userpw: 'konan415', userdir: '', userproxy: '' },
-        { username: 'Target2', userhost: 'hostText', userport: 'userPort', userid: 'lee', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' },
-        { username: 'Target3', userhost: 'hostText', userport: 'userPort', userid: 'hong', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy' }
+        { username: 'Server1', userhost: '10.10.18.29', userport: '21', userid: 'konan', userpw: 'konan415', userdir: '', userproxy: '', modeValue: '' },
+        { username: 'Target2', userhost: 'hostText', userport: 'userPort', userid: 'lee', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy', modeValue: '' },
+        { username: 'Target3', userhost: 'hostText', userport: 'userPort', userid: 'hong', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy', modeValue: '' }
       ]
     }
   },
@@ -64,7 +64,7 @@ export default {
     },
     FileUploadPopup: function (ftpInfoItem) {
       const data = {
-        value: { username: ftpInfoItem.username, userhost: ftpInfoItem.userhost, userport: ftpInfoItem.userport, userid: ftpInfoItem.userid, userpw: ftpInfoItem.userpw, userdir: ftpInfoItem.userdir, userproxy: ftpInfoItem.userproxy }
+        value: { username: ftpInfoItem.username, userhost: ftpInfoItem.userhost, userport: ftpInfoItem.userport, userid: ftpInfoItem.userid, userpw: ftpInfoItem.userpw, userdir: ftpInfoItem.userdir, userproxy: ftpInfoItem.userproxy, modeValue: ftpInfoItem.modeValue }
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
