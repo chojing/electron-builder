@@ -6,7 +6,7 @@ const EventEmitter = require('events').EventEmitter
 
 function FTPStream () {
   this.m_ftpClient
-  this.m_ftpConnectConfig = {}
+  this.m_ftpConnectConfig = undefined
   this.key
   this.m_CurWorkFTPData
   this.m_WholeWorkFTPDataList = {}
@@ -19,11 +19,16 @@ util.inherits(FTPStream, EventEmitter)
 
 FTPStream.prototype.connect = function (_ftpConnectConfig) {
   const self = this
-  const config = {
-    host: _ftpConnectConfig.host,
-    port: _ftpConnectConfig.port,
-    user: _ftpConnectConfig.username,
-    password: _ftpConnectConfig.password
+  let config = {}
+  if (self.m_ftpConnectConfig === undefined) {
+    config = {
+      host: _ftpConnectConfig.host,
+      port: _ftpConnectConfig.port,
+      user: _ftpConnectConfig.username,
+      password: _ftpConnectConfig.password
+    }
+  } else {
+    config = self.m_ftpConnectConfig
   }
   return new Promise((resolve, reject) => {
     self.m_ftpClient = new Client()
