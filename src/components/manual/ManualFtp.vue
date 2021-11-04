@@ -101,8 +101,8 @@ export default {
         proxy: '',
         mode: ''
       },
-      ftpSelected: [],
-      addSelect: []
+      addSelect: [],
+      ftpSelected: {}
     }
   },
   created () {
@@ -135,11 +135,10 @@ export default {
     },
     selected () {
       console.log('들어있는 값 확인 : ', this.addSelect)
-      console.log('선택값 확인 : ', this.ftpSelected)
       this.addSelect.forEach(element => {
         if (element.name == this.ftpSelected) {
           const index = this.addSelect.indexOf(element)
-          console.log(index)
+          console.log('선택값 확인 : ', this.addSelect[index])
         }
       })
     },
