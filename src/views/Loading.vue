@@ -20,8 +20,6 @@ export default {
       this.$store.commit('commitServer', _loginData.server)
       this.$store.commit('commitUsername', _loginData.id)
       this.$store.commit('commitAutologin', _loginData.autologin)
-      // axios.setBaseUrl(_loginData.server)
-      console.log('loading init', _loginData)
       if (_loginData !== undefined && _loginData.autologin) {
         // 자동로그인 체크시
         setTimeout(() => {

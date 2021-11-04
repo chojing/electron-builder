@@ -24,10 +24,6 @@ async function login (id, password) {
   })
 }
 async function getSyncAxios (url, param, callback, fail) {
-  console.log('axios')
-  console.log(store.state.server)
-  console.log(axios.defaults)
-  console.log(axios.defaults.headers)
   await axios.get(url, {
     params: param,
     headers: {
