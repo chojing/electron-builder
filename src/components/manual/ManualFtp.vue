@@ -158,19 +158,19 @@ export default {
     userUpData () {
       // const data = []
       if (!this.ftpInfo.name) {
-        alert('필수값을 입력해주세요.')
+        alert('서버명을 입력해주세요.')
         this.$refs.usernameInput.focus()
       } else if (!this.ftpInfo.host) {
-        alert('필수값을 입력해주세요.')
+        alert('HOST를 입력해주세요.')
         this.$refs.userhostInput.focus()
       } else if (!this.ftpInfo.username) {
-        alert('필수값을 입력해주세요.')
+        alert('아이디를 입력해주세요.')
         this.$refs.useridInput.focus()
       } else if (!this.ftpInfo.password) {
-        alert('필수값을 입력해주세요.')
+        alert('비밀번호를 입력해주세요.')
         this.$refs.userpwInput.focus()
       } else if (!/^[0-9]*$/.test(this.ftpInfo.port)) {
-        alert('숫자만 입력해주세요.')
+        alert('PORT는 숫자만 입력해주세요.')
         this.$refs.userportInput.focus()
       } else {
         this.addSelect.push(this.ftpInfo)
