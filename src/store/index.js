@@ -1,9 +1,14 @@
 import { createStore } from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 
 export default createStore({
+  plugins: [
+    createPersistedState()
+  ],
   state: {
     server: null,
     username: null,
+    userid: null,
     autologin: false,
     apikey: null
   },
@@ -13,6 +18,9 @@ export default createStore({
     },
     commitUsername (state, username) {
       state.username = username
+    },
+    commitUserid (state, userid) {
+      state.userid = userid
     },
     commitAutologin (state, autologin) {
       state.autologin = autologin
@@ -24,6 +32,7 @@ export default createStore({
       state = {
         server: null,
         username: null,
+        userid: null,
         autologin: false,
         apikey: null
       }
@@ -36,6 +45,9 @@ export default createStore({
     setUsername (context, username) {
       context.commit('commitUsername', username)
     },
+    setUserid (context, userid) {
+      context.commit('commitUserid', userid)
+    },
     setAutologin (context, autologin) {
       context.commit('commitAutologin', autologin)
     },
@@ -45,7 +57,5 @@ export default createStore({
     clearStore (context) {
       context.commit('crear')
     }
-  },
-  modules: {
   }
 })

@@ -2,10 +2,9 @@ import store from '@/store/index'
 import router from '@/router/index'
 import axios from 'axios'
 
-function init () {
-  axios.defaults.baseURL = store.state.server
-  axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
-}
+axios.defaults.baseURL = store.state.server
+axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
+
 async function login (id, password) {
   // axios.defaults.baseURL = store.state.server
   await axios.post('/v2/users/apikey', null, {
@@ -18,12 +17,17 @@ async function login (id, password) {
     }
   }).then(function (response) {
     store.commit('commitUsername', response.data.result.username)
+    store.commit('commitUserid', response.data.result.userid)
     store.commit('commitApikey', response.data.result.apikey)
   }).catch(function (error) {
     setError(error.response.data)
   })
 }
 async function getSyncAxios (url, param, callback, fail) {
+  console.log('axios')
+  console.log(store.state.server)
+  console.log(axios.defaults)
+  console.log(axios.defaults.headers)
   await axios.get(url, {
     params: param,
     headers: {
@@ -194,7 +198,6 @@ function setError (xhr) {
 }
 
 export {
-  init,
   login,
   getSyncAxios,
   getAsyncAxios,
