@@ -80,11 +80,6 @@ const routes = [
     path: '/userInfo',
     name: 'UserInfo',
     component: () => import('../components/main/UserInfo.vue')
-  },
-  {
-    path: '/userInfoAdd',
-    name: 'UserInfoAdd',
-    component: () => import('../components/main/UserInfoAdd.vue')
   }
 ]
 

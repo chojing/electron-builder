@@ -4,11 +4,11 @@
       <h4 class="tti">수동 FTP</h4>
       <div class="ftp-info mt20">
           <div class="btn-box right">
-            <button @click="userUpData()" class="btn h30">추가</button>
-            <button @click="usrModifyFtp()" :aria-pressed="terms ? 'true' : 'false'" id="modify-btn" class="btn blue h30">입력</button>
+            <button @click="userUpData" class="btn h30">추가</button>
+            <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" id="modify-btn" class="btn blue h30">입력</button>
           </div>
-          <select id="selectFtp" @change="testChange($event)">
-            <option v-for="targetInfo in adcSelect" :key="targetInfo.index" :value="targetInfo.username">{{targetInfo.username}}</option>
+          <select id="selectFtp">
+            <option v-for="targetInfo in addSelect" :key="targetInfo.index" :value="targetInfo.username">{{targetInfo.username}}</option>
           </select>
           <div class="list flex-center">
             <b>이름</b>
@@ -70,28 +70,24 @@
             </div>
           </div>
       </div>
-<!--      <div class="pt20">-->
-<!--        <button id="cancel" class="btn h30 m-auto">확인</button>-->
-<!--      </div>-->
+      <div class="pt20">
+        <button @click="cancel" id="cancel" class="btn h30 m-auto">확인</button>
+      </div>
     </div>
   </section>
-
-  <templateMenu/>
-
 </template>
 
 <script>
-// import { EventBus } from '@/eventBus'
-// const electron = window.require('electron')
-// const ipcRenderer = electron.ipcRenderer
+const electron = window.require('electron')
+const ipcRenderer = electron.ipcRenderer
 // eslint-disable-next-line no-unused-vars
 const axios = require('@/assets/js/axios.js')
-
 export default {
   name: 'ManualFtp',
   data () {
     return {
       terms: false,
+      g_curWindowKey: '',
       // 수동 FTP 입력값
       username: '',
       userhost: '',
@@ -101,8 +97,11 @@ export default {
       userdir: '',
       userproxy: '',
       modeValue: '',
-      adcSelect: []
+      addSelect: []
     }
+  },
+  created () {
+    ipcRenderer.on('receiveData', this.init)
   },
   computed: {
     isDisabled: function () {
@@ -110,7 +109,14 @@ export default {
     }
   },
   methods: {
+    init: function (event, key, data, type) {
+      this.g_curWindowKey = key
+    },
+    cancel: function () {
+      ipcRenderer.send('closeWindow', this.g_curWindowKey)
+    },
     userUpData () {
+      const data = []
       console.log(this.username + ' ' + this.userhost + ' ' + this.userport + ' ' + this.userid + ' ' + this.userpw + ' ' + this.userdir + ' ' + this.userproxy + ' ' + this.modeValue)
       if (!this.username) {
         alert('필수값을 입력해주세요.')
@@ -128,16 +134,15 @@ export default {
         alert('숫자만 입력해주세요.')
         this.$refs.userportInput.focus()
       } else {
-        this.adcSelect.push({ username: this.username, userhost: this.userhost, userport: this.userport, userid: this.userid, userpw: this.userpw, userdir: this.userdir, userproxy: this.userproxy, testRadio: this.modeValue })
+        this.addSelect.push({ username: this.username, userhost: this.userhost, userport: this.userport, userid: this.userid, userpw: this.userpw, userdir: this.userdir, userproxy: this.userproxy, modeValue: this.modeValue })
         this.terms = false
+        data.push({ username: this.username, userhost: this.userhost, userport: this.userport, userid: this.userid, userpw: this.userpw, userdir: this.userdir, userproxy: this.userproxy, modeValue: this.modeValue })
+        ipcRenderer.send('sendData', 'main', data, 'ftpUserAdd')
       }
     },
     usrModifyFtp () {
       this.terms = true
       this.$refs.usernameInput.focus()
-    },
-    testChange (event) {
-      console.log(event.target.value)
     }
   }
 }

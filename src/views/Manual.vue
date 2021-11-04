@@ -25,7 +25,6 @@
 
 <script>
 import templateMenu from '@/components/menu/Template_menu'
-// import { EventBus } from '@/eventBus'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 // eslint-disable-next-line no-unused-vars
@@ -38,7 +37,8 @@ export default {
   data () {
     return {
       g_windowIndex: 0,
-      targetName: '',
+      selfKey: '',
+      targetNameValue: '',
       targetFtpList: [
         { username: 'Server1', userhost: '10.10.18.29', userport: '21', userid: 'konan', userpw: 'konan415', userdir: '', userproxy: '', modeValue: '' },
         { username: 'Target2', userhost: 'hostText', userport: 'userPort', userid: 'lee', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy', modeValue: '' },
@@ -46,11 +46,19 @@ export default {
       ]
     }
   },
+  created () {
+    ipcRenderer.on('receiveData', this.init)
+  },
   methods: {
+    init: function (event, key, data, type) {
+      if (type == 'ftpUserAdd') {
+        this.selfKey = key
+        console.log('넘겨받은 데이터', data)
+      }
+    },
     manualFtpPopup: function () {
-      const name = 'manualFtp'
       const data = {
-        value: name
+        parentKey: this.selfKey
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
