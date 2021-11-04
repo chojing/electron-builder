@@ -40,9 +40,9 @@ params: {name: '테스트네임', age: 1},
 // import func from 'vue-editor-bridge'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
-const axios = require('../assets/js/axios.js')
-const RESTAPIInfo = require('../assets/js/restapi.js').RESTAPIInfo
-const AssetInfo = require('../assets/js/restapi.js').AssetInfo
+const axios = require('@/assets/js/axios.js')
+const RESTAPIInfo = require('@/assets/js/restapi.js').RESTAPIInfo
+const AssetInfo = require('@/assets/js/restapi.js').AssetInfo
 const restInfo = new RESTAPIInfo()
 let g_ftpSendData = {}
 const g_isUpload = true

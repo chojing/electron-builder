@@ -1,13 +1,12 @@
 <template>
   <div class="loading">
-  <h2><img style="width: 100%;" src="../assets/images/sbspds.png" alt=""></h2>
+  <h2><img style="width: 100%;" src="@/assets/images/sbspds.png" alt=""></h2>
   </div>
 
 </template>
 <script>
 const { ipcRenderer } = window.require('electron')
-// const RESTAPIInfo = require('../assets/js/restapi.js').RESTAPIInfo
-const axios = require('../assets/js/axios.js')
+const axios = require('@/assets/js/axios.js')
 
 export default {
   name: 'Loading',
@@ -20,9 +19,6 @@ export default {
       this.$store.commit('commitServer', _loginData.server)
       this.$store.commit('commitUsername', _loginData.id)
       this.$store.commit('commitAutologin', _loginData.autologin)
-      axios.init()
-      // axios.setBaseUrl(_loginData.server)
-      console.log('loading init', _loginData)
       if (_loginData !== undefined && _loginData.autologin) {
         // 자동로그인 체크시
         setTimeout(() => {

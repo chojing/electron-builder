@@ -12,8 +12,8 @@
         </div>
         <div class="target-list" style="background: #f1fbff;">
           <ul class="one-list">
-            <li v-for="item in targetFtpList" v-bind:key="item.userid" @dblclick="this.FileUploadPopup(item)">
-              <p>{{item.username}}</p>
+            <li v-for="item in targetFtpList" v-bind:key="item.ftpserferid" @dblclick="this.FileUploadPopup(item)">
+              <p>{{item.name}}</p>
             </li>
           </ul>
         </div>
@@ -39,17 +39,33 @@ export default {
       g_windowIndex: 0,
       selfKey: '',
       targetNameValue: '',
-      targetFtpList: [
-        { username: 'Server1', userhost: '10.10.18.29', userport: '21', userid: 'konan', userpw: 'konan415', userdir: '', userproxy: '', modeValue: '' },
-        { username: 'Target2', userhost: 'hostText', userport: 'userPort', userid: 'lee', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy', modeValue: '' },
-        { username: 'Target3', userhost: 'hostText', userport: 'userPort', userid: 'hong', userpw: 1, userdir: 'dir/dir', userproxy: 'proxy', modeValue: '' }
-      ]
+      targetName: '',
+      targetFtpList: []
     }
+  },
+  mounted () {
+    this.getList()
   },
   created () {
     ipcRenderer.on('receiveData', this.init)
   },
   methods: {
+    getList: function () {
+      const param = {}
+      const condition = {}
+      condition.owner = this.$store.state.userid
+      condition.ismanual = 1
+      param.condition = condition
+      const sort = {}
+      sort.createtime = 'desc'
+      param.sort = sort
+      param.limit = 0
+      param.offset = 0
+      axios.getAsyncAxios('/v2/ftpserver', param, (response) => {
+        console.log(response)
+        this.targetFtpList = response.data.results
+      })
+    },
     init: function (event, key, data, type) {
       if (type == 'ftpUserAdd') {
         this.selfKey = key
@@ -72,7 +88,7 @@ export default {
     },
     FileUploadPopup: function (ftpInfoItem) {
       const data = {
-        value: { username: ftpInfoItem.username, userhost: ftpInfoItem.userhost, userport: ftpInfoItem.userport, userid: ftpInfoItem.userid, userpw: ftpInfoItem.userpw, userdir: ftpInfoItem.userdir, userproxy: ftpInfoItem.userproxy, modeValue: ftpInfoItem.modeValue }
+        value: { username: ftpInfoItem.name, userhost: ftpInfoItem.host, userport: ftpInfoItem.port, userid: ftpInfoItem.username, userpw: ftpInfoItem.password, userdir: ftpInfoItem.rootpath, userproxy: ftpInfoItem.proxy, modeValue: ftpInfoItem.mode_code }
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,

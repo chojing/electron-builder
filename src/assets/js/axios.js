@@ -2,10 +2,9 @@ import store from '@/store/index'
 import router from '@/router/index'
 import axios from 'axios'
 
-function init () {
-  axios.defaults.baseURL = store.state.server
-  axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
-}
+axios.defaults.baseURL = store.state.server
+axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
+
 async function login (id, password) {
   // axios.defaults.baseURL = store.state.server
   await axios.post('/v2/users/apikey', null, {
@@ -18,24 +17,27 @@ async function login (id, password) {
     }
   }).then(function (response) {
     store.commit('commitUsername', response.data.result.username)
+    store.commit('commitUserid', response.data.result.userid)
     store.commit('commitApikey', response.data.result.apikey)
   }).catch(function (error) {
     setError(error.response.data)
   })
 }
-async function getSyncAxios (url, param, callback, fail) {
+async function getSyncAxios (url, param, fail) {
+  let result
   await axios.get(url, {
     params: param,
     headers: {
       Authorization: store.state.apikey
     }
   }).then(function (response) {
-    if (typeof callback === 'function') callback(response)
-    else alert(response)
+    result = response.data
   }).catch(function (error) {
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
+  console.log('axios', result)
+  return result
 }
 function getAsyncAxios (url, param, callback, fail) {
   axios.get(url, {
@@ -57,6 +59,7 @@ async function postSyncAxios (url, body, param, callback, fail) {
   if (body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
+  let result
   await axios.post(url, body, {
     params: param,
     headers: {
@@ -64,12 +67,12 @@ async function postSyncAxios (url, body, param, callback, fail) {
       Authorization: store.state.apikey
     }
   }).then(function (response) {
-    if (typeof callback === 'function') callback(response)
-    else alert(response)
+    result = response.data
   }).catch(function (error) {
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
+  return result
 }
 function postAsyncAxios (url, body, param, callback, fail) {
   let contentType = 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -96,6 +99,7 @@ async function putSyncAxios (url, body, param, callback, fail) {
   if (body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
+  let result
   await axios.put(url, body, {
     params: param,
     headers: {
@@ -103,12 +107,12 @@ async function putSyncAxios (url, body, param, callback, fail) {
       Authorization: store.state.apikey
     }
   }).then(function (response) {
-    if (typeof callback === 'function') callback(response)
-    else alert(response)
+    result = response.data
   }).catch(function (error) {
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
+  return result
 }
 function putAsyncAxios (url, body, param, callback, fail) {
   let contentType = 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -135,6 +139,7 @@ async function deleteSyncAxios (url, body, param, callback, fail) {
   if (body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
+  let result
   await axios.delete(url, body, {
     params: param,
     headers: {
@@ -142,12 +147,12 @@ async function deleteSyncAxios (url, body, param, callback, fail) {
       Authorization: store.state.apikey
     }
   }).then(function (response) {
-    if (typeof callback === 'function') callback(response)
-    else alert(response)
+    result = response.data
   }).catch(function (error) {
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
+  return result
 }
 function deleteAsyncAxios (url, body, param, callback, fail) {
   let contentType = 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -194,7 +199,6 @@ function setError (xhr) {
 }
 
 export {
-  init,
   login,
   getSyncAxios,
   getAsyncAxios,
