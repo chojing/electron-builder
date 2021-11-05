@@ -4,7 +4,7 @@
       <h4 class="tti">수동 FTP 관리</h4>
       <div class="ftp-info mt20">
           <div class="btn-box right">
-            <button @click="newFtpAdd" class="btn h30">추가</button>
+            <button @click="newFtpAdd" :aria-pressed="terms2 ? 'true' : 'false'" class="btn h30">추가</button>
             <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" id="modify-btn" class="btn blue h30">수정</button>
           </div>
           <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
@@ -89,6 +89,7 @@ export default {
   data () {
     return {
       terms: false,
+      terms2: false,
       g_curWindowKey: '',
       // 수동 FTP 입력값
       ftpInfo: {
@@ -166,6 +167,9 @@ export default {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     userUpData: function () {
+      // 저장 2가지 경우 나누기
+      // 수정 = put
+      // 추가 = post
       if (!this.ftpInfo.name) {
         alert('서버명을 입력해주세요.')
         this.$refs.usernameInput.focus()
@@ -203,6 +207,7 @@ export default {
       this.ftpInfo.proxy = ''
     },
     usrModifyFtp () {
+      // 수정누르면 => 취소버튼으로 변경
       this.terms = true
       this.$refs.usernameInput.focus()
     }
