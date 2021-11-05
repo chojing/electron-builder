@@ -99,7 +99,9 @@ export default {
         password: '',
         rootpath: '',
         proxy: '',
-        mode: ''
+        mode: 'active',
+        ismanual: 1,
+        owner: 'konan'
       },
       addSelect: [],
       ftpSelected: {}
@@ -117,7 +119,7 @@ export default {
     }
   },
   methods: {
-    getList () {
+    getList: function () {
       const param = {}
       const condition = {}
       condition.owner = this.$store.state.userid
@@ -163,8 +165,7 @@ export default {
     cancel () {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
-    userUpData () {
-      // const data = []
+    userUpData: function () {
       if (!this.ftpInfo.name) {
         alert('서버명을 입력해주세요.')
         this.$refs.usernameInput.focus()
@@ -181,9 +182,12 @@ export default {
         alert('PORT는 숫자만 입력해주세요.')
         this.$refs.userportInput.focus()
       } else {
-        this.addSelect.push(this.ftpInfo)
         this.terms = false
-        this.cancel()
+        // this.cancel()
+        console.log(this.ftpInfo)
+        axios.postAsyncAxios('/v2/ftpserver', JSON.stringify(this.ftpInfo), null, (response) => {
+          console.log('post', response)
+        })
       }
     },
     newFtpAdd () {
@@ -204,4 +208,6 @@ export default {
     }
   }
 }
-</script>
+<img
+  src="../../../../../../../var/folders/rm/xwrb8jfn5gnd2w4scv0xtp5r0000gn/T/TemporaryItems/NSIRD_screencaptureui_ypBfK0/스크린샷 2021-11-05 오후 3.51.26.png"
+  height="88" width="538"/></script>
