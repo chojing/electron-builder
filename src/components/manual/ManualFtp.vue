@@ -9,6 +9,7 @@
           </div>
           <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
             <option v-for="item in addSelect" :key="item.index">{{item.name}}</option>
+            <option v-if="!isDisabled">사용자 지정</option>
           </select>
           <div class="list flex-center">
             <b>서버명</b>
@@ -131,6 +132,13 @@ export default {
         console.log(response)
         this.addSelect = response.data.results
         this.ftpSelected = this.addSelect[0].name
+        this.ftpInfo.name = this.addSelect[0].name
+        this.ftpInfo.host = this.addSelect[0].host
+        this.ftpInfo.port = this.addSelect[0].port
+        this.ftpInfo.username = this.addSelect[0].username
+        this.ftpInfo.password = this.addSelect[0].password
+        this.ftpInfo.rootpath = this.addSelect[0].rootpath
+        this.ftpInfo.proxy = this.addSelect[0].proxy
       })
     },
     selected () {
