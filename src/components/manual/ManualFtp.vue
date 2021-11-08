@@ -102,7 +102,9 @@ export default {
         proxy: '',
         mode: 'active',
         ismanual: 1,
-        owner: 'konan'
+        owner: 'konan',
+        macvolume: '',
+        winvolume: ''
       },
       addSelect: [],
       ftpSelected: {}
@@ -194,7 +196,18 @@ export default {
         // })
       } else {
         console.log('수정 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
-        axios.putAsyncAxios('/v2/ftpserver/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(this.ftpInfo), null, (response) => {
+        axios.putAsyncAxios('/v2/ftpserver/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(
+          this.ftpInfo.name,
+          this.ftpInfo.host,
+          this.ftpInfo.port,
+          this.ftpInfo.username,
+          this.ftpInfo.password,
+          this.ftpInfo.rootpath,
+          this.ftpInfo.proxy,
+          this.ftpInfo.mode,
+          this.ftpInfo.ismanual,
+          this.ftpInfo.owner
+        ), null, (response) => {
           console.log('put', response)
         })
       }
