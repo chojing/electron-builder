@@ -5,7 +5,7 @@
       <div class="ftp-info mt20">
         <div class="btn-box right">
           <button @click="newFtpAdd" class="btn h30">추가</button>
-          <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" id="modify-btn" class="btn blue h30">수정</button>
+          <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" ref="btnToggle" id="modify-btn" class="btn blue h30">수정</button>
         </div>
         <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
           <option v-for="item in addSelect" :key="item.index">{{item.name}}</option>
@@ -203,8 +203,8 @@ export default {
       this.ftpInfo.proxy = ''
     },
     usrModifyFtp () {
-      this.terms = true
-      this.$refs.usernameInput.focus()
+      this.terms = !this.terms
+      this.$refs.btnToggle.innerText = this.terms ? '취소' : '수정'
     }
   }
 }
