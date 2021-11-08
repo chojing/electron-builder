@@ -3,73 +3,73 @@
     <div class="wrap">
       <h4 class="tti">수동 FTP 관리</h4>
       <div class="ftp-info mt20">
-          <div class="btn-box right">
-            <button @click="newFtpAdd" :aria-pressed="addActive ? 'true' : 'false'" class="btn h30">추가</button>
-            <button @click="usrModifyFtp" :aria-pressed="modifyActive ? 'true' : 'false'" id="modify-btn" class="btn blue h30">수정</button>
+        <div class="btn-box right">
+          <button @click="newFtpAdd" class="btn h30">추가</button>
+          <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" id="modify-btn" class="btn blue h30">수정</button>
+        </div>
+        <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
+          <option v-for="item in addSelect" :key="item.index">{{item.name}}</option>
+          <option v-if="!isDisabled">사용자 지정</option>
+        </select>
+        <div class="list flex-center">
+          <b>서버명</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.name" ref="usernameInput" type="text" class="input-box name" :disabled='isDisabled'>
           </div>
-          <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
-            <option v-for="item in addSelect" :key="item.index">{{item.name}}</option>
-            <option v-if="!isDisabled">사용자 지정</option>
-          </select>
-          <div class="list flex-center">
-            <b>서버명</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.name" ref="usernameInput" type="text" class="input-box name" :disabled='isDisabled'>
+        </div>
+        <div class="list flex-center">
+          <b>HOST</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.host" ref="userhostInput" type="text" class="input-box" :disabled='isDisabled' >
+          </div>
+        </div>
+        <div class="list flex-center">
+          <b>PORT</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.port" ref="userportInput" type="text" class="input-box" :disabled='isDisabled'>
+          </div>
+        </div>
+        <div class="list flex-center">
+          <b>ID</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.username" ref="useridInput" type="text" class="input-box" :disabled='isDisabled' >
+          </div>
+        </div>
+        <div class="list flex-center">
+          <b>PW</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.password" ref="userpwInput" type="password" class="input-box" :disabled='isDisabled' >
+          </div>
+        </div>
+        <div class="list flex-center">
+          <b>DIR</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.rootpath" type="text" class="input-box" :disabled='isDisabled' >
+          </div>
+        </div>
+        <div class="list flex-center">
+          <b>Proxy</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.proxy" type="text" class="input-box" :disabled='isDisabled' >
+          </div>
+        </div>
+        <div class="list flex-center mode">
+          <b>MODE</b>
+          <div class="flex-1">
+            <div class="radio-input">
+              <input v-model="ftpInfo.mode" value="기본" type="radio" name="mode" id="basicVal" checked>
+              <label for="basicVal">기본</label>
+            </div>
+            <div class="radio-input">
+              <input v-model="ftpInfo.mode" value="능동형" type="radio" name="mode" id="activeVal" :disabled='isDisabled' >
+              <label for="activeVal">능동형</label>
+            </div>
+            <div class="radio-input">
+              <input v-model="ftpInfo.mode" value="수동형" type="radio" name="mode" id="passiveVal" :disabled='isDisabled' >
+              <label for="passiveVal">수동형</label>
             </div>
           </div>
-          <div class="list flex-center">
-            <b>HOST</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.host" ref="userhostInput" type="text" class="input-box" :disabled='isDisabled' >
-            </div>
-          </div>
-          <div class="list flex-center">
-            <b>PORT</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.port" ref="userportInput" type="text" class="input-box" :disabled='isDisabled'>
-            </div>
-          </div>
-          <div class="list flex-center">
-            <b>ID</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.username" ref="useridInput" type="text" class="input-box" :disabled='isDisabled' >
-            </div>
-          </div>
-          <div class="list flex-center">
-            <b>PW</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.password" ref="userpwInput" type="password" class="input-box" :disabled='isDisabled' >
-            </div>
-          </div>
-          <div class="list flex-center">
-            <b>DIR</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.rootpath" type="text" class="input-box" :disabled='isDisabled' >
-            </div>
-          </div>
-          <div class="list flex-center">
-            <b>Proxy</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.proxy" type="text" class="input-box" :disabled='isDisabled' >
-            </div>
-          </div>
-          <div class="list flex-center mode">
-            <b>MODE</b>
-            <div class="flex-1">
-              <div class="radio-input">
-                <input v-model="ftpInfo.mode" value="기본" type="radio" name="mode" id="basicVal" checked>
-                <label for="basicVal">기본</label>
-              </div>
-              <div class="radio-input">
-                <input v-model="ftpInfo.mode" value="능동형" type="radio" name="mode" id="activeVal" :disabled='isDisabled' >
-                <label for="activeVal">능동형</label>
-              </div>
-              <div class="radio-input">
-                <input v-model="ftpInfo.mode" value="수동형" type="radio" name="mode" id="passiveVal" :disabled='isDisabled' >
-                <label for="passiveVal">수동형</label>
-              </div>
-            </div>
-          </div>
+        </div>
       </div>
       <div class="btn-box center pt20">
         <button @click="cancel" id="cancel" class="btn h30">닫기</button>
@@ -88,8 +88,7 @@ export default {
   name: 'ManualFtp',
   data () {
     return {
-      modifyActive: false,
-      addActive: false,
+      terms: false,
       g_curWindowKey: '',
       // 수동 FTP 입력값
       ftpInfo: {
@@ -115,13 +114,8 @@ export default {
     this.getList()
   },
   computed: {
-    // eslint-disable-next-line vue/return-in-computed-property
     isDisabled: function () {
-      if (this.modifyActive == true) {
-        return !this.modifyActive
-      } else if (this.addActive == true) {
-        return !this.addActive
-      }
+      return !this.terms
     }
   },
   methods: {
@@ -172,9 +166,6 @@ export default {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     userUpData: function () {
-      // 저장 2가지 경우 나누기
-      // 수정 = put
-      // 추가 = post
       if (!this.ftpInfo.name) {
         alert('서버명을 입력해주세요.')
         this.$refs.usernameInput.focus()
@@ -190,8 +181,8 @@ export default {
       } else if (!/^[0-9]*$/.test(this.ftpInfo.port)) {
         alert('PORT는 숫자만 입력해주세요.')
         this.$refs.userportInput.focus()
-      } else if (this.addActive == true) {
-        this.addActive = false
+      } else {
+        this.terms = false
         // this.cancel()
         console.log(this.ftpInfo)
         axios.postAsyncAxios('/v2/ftpserver', JSON.stringify(this.ftpInfo), null, (response) => {
@@ -200,7 +191,7 @@ export default {
       }
     },
     newFtpAdd () {
-      this.addActive = true
+      this.terms = true
       this.ftpSelected = '사용자 지정'
       this.$refs.usernameInput.focus()
       this.ftpInfo.name = ''
@@ -212,8 +203,7 @@ export default {
       this.ftpInfo.proxy = ''
     },
     usrModifyFtp () {
-      // 수정누르면 => 취소버튼으로 변경
-      this.modifyActive = true
+      this.terms = true
       this.$refs.usernameInput.focus()
     }
   }
