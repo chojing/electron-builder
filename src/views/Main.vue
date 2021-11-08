@@ -78,8 +78,8 @@ export default {
   },
   methods: {
     getTree: function () {
-      axios.getSyncAxios('/v2/node', null, (response) => {
-        axios.getSyncAxios('/v2/node/' + response.data.result.nodename, null, (response) => {
+      axios.getSyncAxios('/v2/nodes', null, (response) => {
+        axios.getSyncAxios('/nodes/' + response.data.result.nodename, null, (response) => {
           this.nodeList = response.data.results
         })
       }, function (error) {

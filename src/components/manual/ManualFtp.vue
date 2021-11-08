@@ -133,7 +133,7 @@ export default {
       param.sort = sort
       param.limit = 0
       param.offset = 0
-      axios.getAsyncAxios('/v2/ftpserver', param, (response) => {
+      axios.getAsyncAxios('/v2/ftpservers', param, (response) => {
         console.log(response)
         this.addSelect = response.data.results
         this.ftpSelected = this.addSelect[0].name
@@ -191,12 +191,12 @@ export default {
         this.terms = false
         // this.cancel()
         console.log('추가 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
-        // axios.postAsyncAxios('/v2/ftpserver', JSON.stringify(this.ftpInfo), null, (response) => {
+        // axios.postAsyncAxios('/v2/ftpservers', JSON.stringify(this.ftpInfo), null, (response) => {
         //   console.log('post', response)
         // })
       } else {
         console.log('수정 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
-        axios.putAsyncAxios('/v2/ftpserver/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(
+        axios.putAsyncAxios('/v2/ftpservers/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(
           this.ftpInfo.name,
           this.ftpInfo.host,
           this.ftpInfo.port,
