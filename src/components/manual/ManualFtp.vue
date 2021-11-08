@@ -4,8 +4,8 @@
       <h4 class="tti">수동 FTP 관리</h4>
       <div class="ftp-info mt20">
           <div class="btn-box right">
-            <button @click="newFtpAdd" :aria-pressed="terms2 ? 'true' : 'false'" class="btn h30">추가</button>
-            <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" id="modify-btn" class="btn blue h30">수정</button>
+            <button @click="newFtpAdd" :aria-pressed="addActive ? 'true' : 'false'" class="btn h30">추가</button>
+            <button @click="usrModifyFtp" :aria-pressed="modifyActive ? 'true' : 'false'" id="modify-btn" class="btn blue h30">수정</button>
           </div>
           <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
             <option v-for="item in addSelect" :key="item.index">{{item.name}}</option>
@@ -88,8 +88,8 @@ export default {
   name: 'ManualFtp',
   data () {
     return {
-      terms: false,
-      terms2: false,
+      modifyActive: false,
+      addActive: false,
       g_curWindowKey: '',
       // 수동 FTP 입력값
       ftpInfo: {
@@ -115,8 +115,13 @@ export default {
     this.getList()
   },
   computed: {
+    // eslint-disable-next-line vue/return-in-computed-property
     isDisabled: function () {
-      return !this.terms
+      if (this.modifyActive == true) {
+        return !this.modifyActive
+      } else if (this.addActive == true) {
+        return !this.addActive
+      }
     }
   },
   methods: {
@@ -185,8 +190,8 @@ export default {
       } else if (!/^[0-9]*$/.test(this.ftpInfo.port)) {
         alert('PORT는 숫자만 입력해주세요.')
         this.$refs.userportInput.focus()
-      } else {
-        this.terms = false
+      } else if (this.addActive == true) {
+        this.addActive = false
         // this.cancel()
         console.log(this.ftpInfo)
         axios.postAsyncAxios('/v2/ftpserver', JSON.stringify(this.ftpInfo), null, (response) => {
@@ -195,7 +200,7 @@ export default {
       }
     },
     newFtpAdd () {
-      this.terms = true
+      this.addActive = true
       this.ftpSelected = '사용자 지정'
       this.$refs.usernameInput.focus()
       this.ftpInfo.name = ''
@@ -208,11 +213,9 @@ export default {
     },
     usrModifyFtp () {
       // 수정누르면 => 취소버튼으로 변경
-      this.terms = true
+      this.modifyActive = true
       this.$refs.usernameInput.focus()
     }
   }
 }
-<img
-  src="../../../../../../../var/folders/rm/xwrb8jfn5gnd2w4scv0xtp5r0000gn/T/TemporaryItems/NSIRD_screencaptureui_ypBfK0/스크린샷 2021-11-05 오후 3.51.26.png"
-  height="88" width="538"/></script>
+</script>
