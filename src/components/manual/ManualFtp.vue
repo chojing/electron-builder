@@ -4,8 +4,8 @@
       <h4 class="tti">수동 FTP 관리</h4>
       <div class="ftp-info mt20">
         <div class="btn-box right">
-          <button @click="newFtpAdd" class="btn h30">추가</button>
-          <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" ref="btnToggle" id="modify-btn" class="btn blue h30">수정</button>
+          <button @click="newFtpAdd" class="btn h30" dataname="newBtn">추가</button>
+          <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" ref="btnToggle" id="modify-btn" class="btn blue h30" dataname="addBtn">수정</button>
         </div>
         <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
           <option v-for="item in addSelect" :key="item.index">{{item.name}}</option>
@@ -92,6 +92,7 @@ export default {
       g_curWindowKey: '',
       // 수동 FTP 입력값
       ftpInfo: {
+        ftpserverid: '',
         name: '',
         host: '',
         port: '21',
@@ -141,6 +142,7 @@ export default {
         this.ftpInfo.password = this.addSelect[0].password
         this.ftpInfo.rootpath = this.addSelect[0].rootpath
         this.ftpInfo.proxy = this.addSelect[0].proxy
+        this.ftpInfo.ftpserverid = this.addSelect[0].ftpserverid
       })
     },
     selected () {
@@ -149,6 +151,7 @@ export default {
         if (element.name == this.ftpSelected) {
           const index = this.addSelect.indexOf(element)
           console.log('선택값 확인 : ', this.addSelect[index])
+          console.log('ftpserverid 확인 : ', this.addSelect[index].ftpserverid)
           this.ftpInfo.name = this.addSelect[index].name
           this.ftpInfo.host = this.addSelect[index].host
           this.ftpInfo.port = this.addSelect[index].port
@@ -156,6 +159,7 @@ export default {
           this.ftpInfo.password = this.addSelect[index].password
           this.ftpInfo.rootpath = this.addSelect[index].rootpath
           this.ftpInfo.proxy = this.addSelect[index].proxy
+          this.ftpInfo.ftpserverid = this.addSelect[index].ftpserverid
         }
       })
     },
@@ -181,12 +185,17 @@ export default {
       } else if (!/^[0-9]*$/.test(this.ftpInfo.port)) {
         alert('PORT는 숫자만 입력해주세요.')
         this.$refs.userportInput.focus()
-      } else {
+      } else if (this.ftpInfo.ftpserverid == '') {
         this.terms = false
         // this.cancel()
-        console.log(this.ftpInfo)
-        axios.postAsyncAxios('/v2/ftpserver', JSON.stringify(this.ftpInfo), null, (response) => {
-          console.log('post', response)
+        console.log('추가 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
+        // axios.postAsyncAxios('/v2/ftpserver', JSON.stringify(this.ftpInfo), null, (response) => {
+        //   console.log('post', response)
+        // })
+      } else {
+        console.log('수정 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
+        axios.putAsyncAxios('/v2/ftpserver/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(this.ftpInfo), null, (response) => {
+          console.log('put', response)
         })
       }
     },
@@ -201,6 +210,8 @@ export default {
       this.ftpInfo.password = ''
       this.ftpInfo.rootpath = ''
       this.ftpInfo.proxy = ''
+      this.ftpInfo.ftpserverid = ''
+      console.log('사용자지정 ', this.ftpInfo)
     },
     usrModifyFtp () {
       this.terms = !this.terms
