@@ -199,7 +199,7 @@ export default {
         axios.putAsyncAxios('/v2/ftpservers/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(this.ftpInfo), null, (response) => {
           console.log('put', response)
         })
-        //this.cancel()
+        // this.cancel()
       }
     },
     newFtpAdd () {
