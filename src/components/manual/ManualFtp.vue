@@ -191,9 +191,9 @@ export default {
         this.terms = false
         // this.cancel()
         console.log('추가 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
-        // axios.postAsyncAxios('/v2/ftpservers', JSON.stringify(this.ftpInfo), null, (response) => {
-        //   console.log('post', response)
-        // })
+        axios.postAsyncAxios('/v2/ftpservers', JSON.stringify(this.ftpInfo), null, (response) => {
+          console.log('post', response)
+        })
       } else {
         console.log('수정 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
         axios.putAsyncAxios('/v2/ftpservers/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(
