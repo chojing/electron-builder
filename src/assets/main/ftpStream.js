@@ -125,23 +125,6 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
       callPromiseResult('reject', 'uploadFile undefined')
     }
 
-    // FTP work
-    curFileStream.on('data', function (buffer) {
-    //   const buff = new Buffer(buffer)
-    //   console.log(buff)
-      if (ftpData.isCancel == true) {
-        self.m_ftpClient.end()
-        self.doCheckRecursive_work(ftpData, curFileStream, callPromiseResult)
-      } else {
-        if (ftpData.isFirst == true) {
-          self.doFirst(ftpData, ftpData.workIndex)
-        }
-        // console.log(self.m_ftpConnectConfig.host);
-        ftpData = self.calculateFTPData(buffer, ftpData)
-        self.emit('data', ftpData)
-      }
-    })
-
     self.m_ftpClient.cwd(ftpData.destPath, (err, path) => {
       if (path === undefined) { // 폴더 없음
         self.m_ftpClient.mkdir(ftpData.destPath, true, function (err) {
@@ -152,21 +135,21 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
             return false
           } else {
             console.log('FTP 폴더 생성')
-            self.ftpUploadPut(curFileStream, curDescPath, callPromiseResult, ftpData)
+            self.m_ftpClient.put(curFileStream, curDescPath, false, function (err) {
+              if (err) { // error
+                callPromiseResult('reject', err)
+                self.doError(curFileStream, ftpData, err, callPromiseResult)
+              } else { // 완료 후 //finish
+                if (ftpData.isCancel == false) { // cancel 되고 finish로 넘어왔을 때, 중복 호출을 막기 위함
+                  self.m_CompleteFTPDataPath.push(curDescPath) // ftp Path
+                  self.doCheckRecursive_work(ftpData, curFileStream, callPromiseResult)
+                }
+              }
+            })
           }
         })
       } else { // 폴더 있음
-        self.m_ftpClient.put(curFileStream, curDescPath, false, function (err) {
-          if (err) { // error
-            callPromiseResult('reject', err)
-            self.doError(curFileStream, ftpData, err, callPromiseResult)
-          } else { // 완료 후 //finish
-            if (ftpData.isCancel == false) { // cancel 되고 finish로 넘어왔을 때, 중복 호출을 막기 위함
-              self.m_CompleteFTPDataPath.push(curDescPath) // ftp Path
-              self.doCheckRecursive_work(ftpData, curFileStream, callPromiseResult)
-            }
-          }
-        })
+        self.ftpUploadPut(curFileStream, curDescPath, callPromiseResult, ftpData)
       }
     })
   }
@@ -183,6 +166,20 @@ FTPStream.prototype.ftpUploadPut = function (curFileStream, curDescPath, callPro
         self.m_CompleteFTPDataPath.push(curDescPath) // ftp Path
         self.doCheckRecursive_work(ftpData, curFileStream, callPromiseResult)
       }
+    }
+  })
+
+  curFileStream.on('data', function (buffer) {
+    if (ftpData.isCancel == true) {
+      self.m_ftpClient.end()
+      self.doCheckRecursive_work(ftpData, curFileStream, callPromiseResult)
+    } else {
+      if (ftpData.isFirst == true) {
+        self.doFirst(ftpData, ftpData.workIndex)
+      }
+      // console.log(self.m_ftpConnectConfig.host);
+      ftpData = self.calculateFTPData(buffer, ftpData)
+      self.emit('data', ftpData)
     }
   })
 }
