@@ -1,3 +1,4 @@
+// const Buffer = require('buffer')
 const Client = require('ftp')
 const { shell } = require('electron')
 const fs = require('fs')
@@ -18,7 +19,7 @@ function FTPStream () {
 util.inherits(FTPStream, EventEmitter)
 
 FTPStream.prototype.connect = function (_ftpConnectConfig) {
-  const self = this
+  let self = this
   let config = {}
   if (self.m_ftpConnectConfig === undefined) {
     config = {
@@ -60,7 +61,7 @@ FTPStream.prototype.connect = function (_ftpConnectConfig) {
 
 // 한번 요청한 fileList 를 처리함. work가 끝나면 FTPSendData 1개가 끝난것.
 FTPStream.prototype.work = async function (_srcPaths, _ftpConnectConfig, index) {
-  const self = this
+  let self = this
   let err
   let isConnection = true
   self.worklist = _srcPaths
@@ -81,12 +82,12 @@ FTPStream.prototype.work = async function (_srcPaths, _ftpConnectConfig, index) 
         reject(object)
       }
     }
-    const curFile = _srcPaths[index]
+    let curFile = _srcPaths[index]
     if (curFile === undefined) { // file exist 확인(upload 의 경우)
       reject(curFile.path + ' is undefined')
     }
     // find ftpData, registry curWorkData
-    const ftpData = self.m_WholeWorkFTPDataList[curFile.path]
+    let ftpData = self.m_WholeWorkFTPDataList[curFile.path]
     ftpData.workIndex = index
     self.m_CurWorkFTPData = ftpData
 
@@ -103,21 +104,22 @@ FTPStream.prototype.work = async function (_srcPaths, _ftpConnectConfig, index) 
   })
 }
 FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
-  const self = this
-  const curPath = ftpData.srcPath
-  const curDescPath = ftpData.destPath + ftpData.fileName
+  let self = this
+  let curPath = ftpData.srcPath
+  let curDescPath = ftpData.destPath + ftpData.fileName
 
   if (self.isConnection == false) {
-    const err = new Error()
+    let err = new Error()
     err.message = 'Connection Fail'
     self.doError(undefined, ftpData, err, callPromiseResult)
     callPromiseResult('reject', 'Connection Fail')
   } else {
     // create readStream
-    const curFileStream = fs.createReadStream(curPath, { emitClose: true })
+    // eslint-disable-next-line prefer-const
+    let curFileStream = fs.createReadStream(curPath, { emitClose: true })
     if (curFileStream === undefined) {
       // error
-      const err = new Error()
+      let err = new Error()
       err.message = `${ftpData.destPath} ${ftpData.fileName} : No such file or directory.`
       self.doError(curFileStream, ftpData, err, callPromiseResult)
       callPromiseResult('reject', 'uploadFile undefined')
@@ -125,6 +127,8 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
 
     // FTP work
     curFileStream.on('data', function (buffer) {
+    //   const buff = new Buffer(buffer)
+    //   console.log(buff)
       if (ftpData.isCancel == true) {
         self.m_ftpClient.end()
         self.doCheckRecursive_work(ftpData, curFileStream, callPromiseResult)
@@ -142,7 +146,7 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
       if (path === undefined) { // 폴더 없음
         self.m_ftpClient.mkdir(ftpData.destPath, true, function (err) {
           if (err) {
-            const error = new Error()
+            let error = new Error()
             error.message = err
             self.doError(curFileStream, ftpData, error, callPromiseResult)
             return false
@@ -152,18 +156,25 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
           }
         })
       } else { // 폴더 있음
-        self.ftpUploadPut(curFileStream, curDescPath, callPromiseResult, ftpData)
+        self.m_ftpClient.put(curFileStream, curDescPath, false, function (err) {
+          if (err) { // error
+            callPromiseResult('reject', err)
+            self.doError(curFileStream, ftpData, err, callPromiseResult)
+          } else { // 완료 후 //finish
+            if (ftpData.isCancel == false) { // cancel 되고 finish로 넘어왔을 때, 중복 호출을 막기 위함
+              self.m_CompleteFTPDataPath.push(curDescPath) // ftp Path
+              self.doCheckRecursive_work(ftpData, curFileStream, callPromiseResult)
+            }
+          }
+        })
       }
     })
-    /*
-    // Local Path      //FTP Path
-
-*/
   }
 }
 FTPStream.prototype.ftpUploadPut = function (curFileStream, curDescPath, callPromiseResult, ftpData) {
-  const self = this
-  self.m_ftpClient.put(curFileStream, curDescPath, function (err) {
+  let self = this
+  // eslint-disable-next-line prefer-const
+  self.m_ftpClient.put(curFileStream, curDescPath, false, function (err) {
     if (err) { // error
       callPromiseResult('reject', err)
       self.doError(curFileStream, ftpData, err, callPromiseResult)
@@ -176,17 +187,17 @@ FTPStream.prototype.ftpUploadPut = function (curFileStream, curDescPath, callPro
   })
 }
 FTPStream.prototype.download = function (ftpData, callPromiseResult) {
-  const self = this
+  let self = this
   if (self.isConnection == false) {
-    const err = new Error()
+    let err = new Error()
     err.message = 'Connection Fail'
     self.doError(undefined, ftpData, err, callPromiseResult)
     callPromiseResult('reject', 'Connection Fail')
   } else {
     // create writestream
-    const curDescPath = ftpData.destPath + ftpData.fileName
-    const curFileStream = fs.createWriteStream(curDescPath, { emitClose: true })
-    const curPath = ftpData.srcPath
+    let curDescPath = ftpData.destPath + ftpData.fileName
+    let curFileStream = fs.createWriteStream(curDescPath, { emitClose: true })
+    let curPath = ftpData.srcPath
 
     // FTP work
     self.m_ftpClient.size(curPath, function (err, size) {
@@ -232,7 +243,7 @@ FTPStream.prototype.download = function (ftpData, callPromiseResult) {
   }
 }
 FTPStream.prototype.doCheckRecursive_work = function (_ftpData, _curFileStream, callPromiseResult, isError = false) {
-  const self = this
+  let self = this
   // WriteStream release
   self.doReleaseStream(_curFileStream)
   // send Event
@@ -242,7 +253,7 @@ FTPStream.prototype.doCheckRecursive_work = function (_ftpData, _curFileStream, 
     return
   }
 
-  const nextIndex = _ftpData.workIndex + 1
+  let nextIndex = _ftpData.workIndex + 1
   // final job check or all cancel check
   if (nextIndex >= self.worklist.length) {
     // finish
@@ -268,8 +279,8 @@ FTPStream.prototype.downloadFolderOpen = function (_path) {
   shell.openExternal(_path)
 }
 FTPStream.prototype.cancel = function (_cancelInfo) {
-  const self = this
-  const value = self.m_CurWorkFTPData
+  let self = this
+  let value = self.m_CurWorkFTPData
   if (value === undefined) {
     console.log('ftpStream.js > Cancel > 해당 경로가 없습니다!')
     return false
@@ -296,7 +307,7 @@ FTPStream.prototype.calculateFTPData = function (_buffer, _ftpData) {
   return _ftpData
 }
 FTPStream.prototype.doError = function (_stream, _ftpData, _errMsg, callResolve) {
-  const self = this
+  let self = this
   _ftpData.isError = true
   _ftpData.errMsg = _errMsg
   self.doCheckRecursive_work(_ftpData, _stream, callResolve, true)
@@ -317,7 +328,7 @@ FTPStream.prototype.doReleaseStream = function (_stream) {
   _stream.destroy()
 }
 FTPStream.prototype.doSendEvent = function (_ftpData, isError) {
-  const self = this
+  let self = this
   if (_ftpData.isCancel == true) {
     self.doSendCancelEvent(_ftpData)
   } else {
@@ -328,7 +339,7 @@ FTPStream.prototype.doSendEvent = function (_ftpData, isError) {
   }
 }
 FTPStream.prototype.doSendFinishEvent = function (_ftpData, isError) {
-  const self = this
+  let self = this
   if (isError == true) {
     return
   }
@@ -336,7 +347,7 @@ FTPStream.prototype.doSendFinishEvent = function (_ftpData, isError) {
   self.emit('finish', _ftpData)
 }
 FTPStream.prototype.doSendCancelEvent = function (_ftpData) {
-  const self = this
+  let self = this
   _ftpData.cancelInfo.ftpConfig = self.m_ftpConnectConfig
   _ftpData.cancelInfo.DelPath = self.m_CurWorkFTPData
   _ftpData.cancelInfo.CompletePaths = self.m_CompleteFTPDataPath
@@ -344,11 +355,11 @@ FTPStream.prototype.doSendCancelEvent = function (_ftpData) {
   self.emit('cancel', _ftpData)
 }
 FTPStream.prototype.doSendErrorEvent = function (_ftpData, _errMsg) {
-  const self = this
+  let self = this
   self.emit('error', _ftpData, _errMsg)
 }
 FTPStream.prototype.FTPDeleteFile = async function (_path, _ftpConfig) {
-  const self = this
+  let self = this
   await self.connect(_ftpConfig)
   self.m_ftpClient.delete(_path, function (err) {
     if (err) {
@@ -361,7 +372,7 @@ FTPStream.prototype.FTPDeleteFile = async function (_path, _ftpConfig) {
   })
 }
 FTPStream.prototype.FTPCreateFolder = async function (_path, _ftpConfig) {
-  const self = this
+  let self = this
   await self.connect(_ftpConfig)
   self.m_ftpClient.mkdir(_path, true, function (err) {
     if (err) {

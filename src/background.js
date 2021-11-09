@@ -22,9 +22,9 @@ const _path = require('path')
 
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
-const g_windows = []
+let g_windows = []
 let gWin = null
-const g_NotificationPopUp = new NotificationPopUp()
+let g_NotificationPopUp = new NotificationPopUp()
 let g_DOWNLOAD_FOLDER_PATH = ''
 const g_UPLOAD_FTP_FOLDER_PATH = '/konan/electron_test/'
 let g_curUserInfo
@@ -68,8 +68,8 @@ async function createWindow () {
   gWin.isShow = true
 
   // StartFolder Create
-  const fileInfo = new FileInfo()
-  const path = getUserHome() + KONAN_ROOT_FOLDER
+  let fileInfo = new FileInfo()
+  let path = getUserHome() + KONAN_ROOT_FOLDER
   fileInfo.CreateDir(path)
 
   gWin.setMenu(null)
@@ -86,12 +86,12 @@ async function createWindow () {
   if (process.platform === 'darwin') {
     gIsMac = true
   }
-  const windowKey = 'main'
+  let windowKey = 'main'
   g_windows[windowKey] = gWin
 }
 
 function RunTray () {
-  const tray = new Tray(
+  let tray = new Tray(
     _path.resolve(__dirname, '../public/img/icons/mac/16x16.png')
   )
   tray.on('double-click', function () {
@@ -102,7 +102,7 @@ function RunTray () {
     }
   })
 
-  const menu = new Menu()
+  let menu = new Menu()
   menu.append(
     new MenuItem({
       label: 'Window Show',
@@ -254,14 +254,14 @@ ipcMain.on('file-delete', (event, _dirPath) => {
 // #endregion
 // #region FTP
 // ftp
-const g_FTPInfoDic = {}
-const g_FTPWorkQueue = []
+let g_FTPInfoDic = {}
+let g_FTPWorkQueue = []
 // eslint-disable-next-line no-unused-vars
-const statusWindow = null
+let statusWindow = null
 
 ipcMain.on('ftp-file-upload', async (event, _ftpSendData) => {
   _ftpSendData.event = event
-  const ftpSite = _ftpSendData.ftpSite
+  let ftpSite = _ftpSendData.ftpSite
 
   _ftpSendData.desFolderPath = g_UPLOAD_FTP_FOLDER_PATH
   // 이후 statuswindow 에서 시작하면 함. 스택에 쌓을뿐...
@@ -276,13 +276,13 @@ ipcMain.on('ftp-file-upload', async (event, _ftpSendData) => {
   } else {
     // eslint-disable-next-line no-prototype-builtins
     if (g_windows.hasOwnProperty('statusWindow_upload') == false) {
-      const windowInfo = new WindowInfo()
+      let windowInfo = new WindowInfo()
       windowInfo.SetStatusWindow('statusWindow_upload', _ftpSendData.targetUrl)
       WindowCreate(event, windowInfo)
       _ftpSendData.popUpWindow = windowInfo
     } else {
-      g_windows.statusWindow_upload.show()
-      _ftpSendData.popUpWindow = g_windows.statusWindow_upload
+      g_windows['statusWindow_upload'].show()
+      _ftpSendData.popUpWindow = g_windows['statusWindow_upload']
     }
   }
 })
@@ -292,7 +292,7 @@ ipcMain.on('ftp-file-upload-start', function () {
 })
 function startUpload () {
   console.log('FTP Upload start!')
-  const ftpSendData = g_FTPWorkQueue.shift()
+  let ftpSendData = g_FTPWorkQueue.shift()
   FTPConnectTypeBranch_new('upload', ftpSendData)
 }
 
@@ -327,31 +327,31 @@ ipcMain.on('ftp-file-download', (event, _ftpSendData) => {
     WindowCreate(event, windowInfo)
     _ftpSendData.popUpWindow = windowInfo
   } else {
-    g_windows.statusWindow_download.show()
-    _ftpSendData.popUpWindow = g_windows.statusWindow_download
+    g_windows['statusWindow_download'].show()
+    _ftpSendData.popUpWindow = g_windows['statusWindow_download']
   }
 })
 ipcMain.on('ftp-file-download-start', function () {
   console.log('FTP Download start!')
-  const ftpSendData = g_FTPWorkQueue.shift()
+  let ftpSendData = g_FTPWorkQueue.shift()
   FTPConnectTypeBranch_new('download', ftpSendData)
 })
 function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
-  const curType = ftpSendData.ftpSite.connectionType
-  const tempDic = {}
-  const windowName = 'statusWindow_' + ftpSendData.type
+  let curType = ftpSendData.ftpSite.connectionType
+  let tempDic = {}
+  let windowName = 'statusWindow_' + ftpSendData.type
   if (curType == '1') {
-    const ftpInfo = new FTPInfo_Type1(ftpSendData.event, ftpSendData.ftpSite, g_windows[windowName])
+    let ftpInfo = new FTPInfo_Type1(ftpSendData.event, ftpSendData.ftpSite, g_windows[windowName])
     g_FTPInfoDic[ftpSendData.ftpSite.siteName] = ftpInfo
     g_FTPInfoDic[ftpSendData.ftpSite.siteName].connectionType = curType
     ftpInfo.clientSendData = ftpSendData
     ftpInfo.RequestFTPWork(_FTPType, 0)
   } else if (curType == '2') {
-    const PromiseResult = []
+    let PromiseResult = []
     let i = 0
     while (i >= 0) {
       let result
-      const ftpInfo = new FTPInfo_Type2(ftpSendData.event, ftpSendData.ftpSite, g_windows[windowName])
+      let ftpInfo = new FTPInfo_Type2(ftpSendData.event, ftpSendData.ftpSite, g_windows[windowName])
       ftpInfo.clientSendData = ftpSendData
       tempDic[ftpSendData.ftpSite.ftpServerList[i].name] = ftpInfo // dic[10.10.18.29] = ftpInfo
       result = ftpInfo.RequestFTPWork(_FTPType, ftpSendData, i).catch(
@@ -374,7 +374,7 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
 
     Promise.all(PromiseResult).then(value => {
       // eslint-disable-next-line no-unused-vars
-      const isError = false
+      let isError = false
       console.log(g_FTPInfoDic)
     })// end Promise.all
   }
@@ -384,7 +384,7 @@ ipcMain.on('open-file-explore', event => {
   if (g_DOWNLOAD_FOLDER_PATH === undefined) {
     return
   }
-  const ftpStream = new FTPStream()
+  let ftpStream = new FTPStream()
   ftpStream.downloadFolderOpen(g_DOWNLOAD_FOLDER_PATH)
 })
 
@@ -405,7 +405,7 @@ ipcMain.on('ftp-download-cancel-path', (event, cancelInfo) => {
 })
 // _cancelType : all / path
 function ftpCancelBranch (cancelInfo) {
-  const DicKey = 'admin'
+  let DicKey = 'admin'
   if (g_FTPInfoDic[DicKey] === undefined) {
     // 현재 작업중인 FTP가 없음
     return
@@ -413,7 +413,7 @@ function ftpCancelBranch (cancelInfo) {
   let FTPInfoList
 
   if (g_FTPInfoDic[DicKey].connectionType === '1') {
-    const cnt = g_FTPInfoDic[DicKey].m_FTPInfoManager.m_FTPStreamList.length
+    let cnt = g_FTPInfoDic[DicKey].m_FTPInfoManager.m_FTPStreamList.length
     if (cnt === undefined) {
       return
     }
@@ -421,7 +421,7 @@ function ftpCancelBranch (cancelInfo) {
     ftpCancel(cancelInfo, cnt, FTPInfoList)
   } else if (g_FTPInfoDic[DicKey].connectionType === '2') {
     for (let i = 0; i < cancelInfo.cancelConnectionList.length; i++) {
-      const cnt =
+      let cnt =
         g_FTPInfoDic[DicKey][cancelInfo.cancelConnectionList[i]]
           .m_FTPInfoManager.m_FTPStreamList.length
       if (cnt === undefined) {
