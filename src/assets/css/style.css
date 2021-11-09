@@ -101,14 +101,14 @@ main .target-list{max-height: 400px;overflow-y: auto;}
 main .favorite-list .fa-item{margin: 0 0 10px;}
 main .favorite-list button:hover{border-color: #0073a5;}
 main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fbff;}
-.target-list ul{padding:5px 15px;}
-.target-list ul li{padding:5px 0;}
+.target-list ul{padding:5px 15px 0 15px;}
+.target-list ul li{padding:5px 0 0;}
 .target-list ul li p{position: relative;cursor: pointer;}
 .target-list ul li p.active{color: #0073a5;font-weight: bold;}
 .target-list > ul p{padding-left: 20px;}
 .target-list > ul p::after{position: absolute;content: '-';left:0;top:0;width: 15px;height: 15px;}
 .target-list > ul li p[data-isparent='1']::after{position: absolute;content: '';left:0;top:0;width: 12px;height: 15px; background: url('../images/folder-solid.svg') no-repeat center 0/100% auto;}
-
+.target-list > ul li p[data-isopen='true']::after{background-image: url('../images/folder-open-solid.svg')}
 /** login **/
 .login{width: 100%;height:100vh;padding-top: 100px;background-color:#0073a5;}
 .login-container{margin:50px auto;max-width:500px;}

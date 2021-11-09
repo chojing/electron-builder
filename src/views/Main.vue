@@ -45,7 +45,6 @@
 import templateTree from '@/components/main/Template_tree'
 import templateMenu from '@/components/menu/Template_menu'
 const axios = require('@/assets/js/axios.js')
-const custom = require('@/assets/js/custom.js')
 export default {
   name: 'Main',
   el: '#mainView',
@@ -65,11 +64,13 @@ export default {
   },
   methods: {
     getTree: function () {
-      axios.getAsyncAxios('/v2/nodes', null, (response) => {
-        console.log('response 값 : ', response)
-        this.nodeList = response.data.results
-        console.log('results 값 : ', custom.proxy2map(this.nodeList))
-        console.log('nodes name : ', this.nodeList[0].name)
+      axios.getAsyncAxios('/v2/nodes', {}, (response) => {
+        // console.log('response 값 : ', response)
+        // console.log('nodeid : ', response.data.results[0].nodeid)
+        axios.getAsyncAxios('/v2/nodes/' + response.data.results[0].nodeid, null, (response) => {
+          this.nodeList = response.data.results
+          // console.log('results 값 : ', this.nodeList)
+        })
       })
     }
     // getTree: function () {

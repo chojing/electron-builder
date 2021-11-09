@@ -1,9 +1,21 @@
 <template>
   <li v-for="item in nodeList" v-bind:key="item.nodeid" @click="this.getChildList(item)">
-    <p @dblclick="this.FileUploadPopup(item.namevalue)"
-       v-bind:data-parentid="item.parentid"
+    <!-- 임시) 전체 값 넣어보기-->
+    <p @dblclick="this.FileUploadPopup(item.name)"
+       v-bind:data-isparent="item.isparent"
+       v-bind:data-ftpserverid="item.ftpserverid"
+       v-bind:data-ftpsiteid="item.ftpsiteid"
+       v-bind:data-isabs="item.isabs"
+       v-bind:data-isabs_boolean="item.isabs_boolean"
+       v-bind:data-name="item.name"
        v-bind:data-nodeid="item.nodeid"
-       v-bind:data-favorites="item.isfavorite" v-bind:data-isparent="item.isparent">{{item.name}}</p>
+       v-bind:data-nodeseq="item.nodeseq"
+       v-bind:data-parentnodeid="item.parentnodeid"
+       v-bind:data-path="item.path"
+       v-bind:data-path_ftpserverid="item.path_ftpserverid"
+       v-bind:data-path_ftpsiteid="item.path_ftpsiteid"
+       v-bind:data-isopen="item.isopen"
+       >{{item.name}}</p>
     <ul>
       <templateTree v-bind:nodeList="item.childList"/>
       <!--      <templateTree v-bind:nodeList="childList">-->
@@ -15,7 +27,8 @@
 import templateTree from '@/components/main/Template_tree'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
-// const axios = require('@/assets/js/axios.js')
+const axios = require('@/assets/js/axios.js')
+// const custom = require('@/assets/js/custom.js')
 export default {
   name: 'templateTree',
   components: {
@@ -26,24 +39,28 @@ export default {
   },
   data () {
     return {
-      g_windowIndex: 0,
-      twoDepth: [
-        { nodeid: 13, parentid: 1, isfavorite: 1, isparent: 0, namevalue: '교양1' },
-        { nodeid: 14, parentid: 1, isfavorite: 0, isparent: 0, namevalue: '교양2' },
-        { nodeid: 15, parentid: 1, isfavorite: 0, isparent: 0, namevalue: '교양3' },
-        { nodeid: 16, parentid: 2, isfavorite: 0, isparent: 0, namevalue: '예능1' },
-        { nodeid: 17, parentid: 2, isfavorite: 0, isparent: 0, namevalue: '예능2' },
-        { nodeid: 18, parentid: 3, isfavorite: 1, isparent: 0, namevalue: '드라마1' },
-        { nodeid: 19, parentid: 3, isfavorite: 0, isparent: 0, namevalue: '드라마2' },
-        { nodeid: 20, parentid: 3, isfavorite: 0, isparent: 0, namevalue: '드라마3' },
-        { nodeid: 21, parentid: 5, isfavorite: 0, isparent: 0, namevalue: '동물농장1' },
-        { nodeid: 22, parentid: 5, isfavorite: 1, isparent: 0, namevalue: '동물농장2' }
-      ]
+      g_windowIndex: 0
     }
   },
   methods: {
     getChildList: function (item) {
-      item.childList = this.twoDepth
+      if (item.isopen == undefined) {
+        const thisnodeid = item.nodeid
+        axios.getAsyncAxios('/v2/nodes/' + JSON.stringify(thisnodeid), null, (response) => {
+          console.log('클릭한 nodeid 값 : ', thisnodeid)
+          item.childList = response.data.results
+          item.isopen = true
+          console.log('클릭한: ', item)
+          // response.data.results.forEach(function (item, index) {
+          //   console.log(index, item)
+          //   console.log(item.parentnodeid)
+          //   if (item.parentnodeid == thisnodeid) {
+          //     console.log('같다')
+          //   }
+          // })
+        })
+      }
+      return false
       // axios.getSyncAxios('/v2/trees/treename/' + nodeid + '/child', null, function (response) {
       //   this.childList = response.data.results
       // }, function (error) {
@@ -51,9 +68,10 @@ export default {
       //   axios.setError(error.response.data)
       // })
     },
-    FileUploadPopup: function (namevalue) {
+    FileUploadPopup: function (name) {
+      console.log('nodeList : ', this.nodeList)
       const data = {
-        value: namevalue
+        value: name
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
