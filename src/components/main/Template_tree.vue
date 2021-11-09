@@ -1,6 +1,9 @@
 <template>
   <li v-for="item in nodeList" v-bind:key="item.nodeid" @click="this.getChildList(item)">
-    <p @dblclick="this.FileUploadPopup(item.namevalue)" v-bind:data-parentid="item.parentid" v-bind:data-nodeid="item.nodeid" v-bind:data-favorites="item.isfavorite" v-bind:data-isparent="item.isparent">{{item.namevalue}}</p>
+    <p @dblclick="this.FileUploadPopup(item.namevalue)"
+       v-bind:data-parentid="item.parentid"
+       v-bind:data-nodeid="item.nodeid"
+       v-bind:data-favorites="item.isfavorite" v-bind:data-isparent="item.isparent">{{item.name}}</p>
     <ul>
       <templateTree v-bind:nodeList="item.childList"/>
       <!--      <templateTree v-bind:nodeList="childList">-->

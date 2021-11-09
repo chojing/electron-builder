@@ -33,7 +33,7 @@
         </div>
         <div class="target-list mt40">
           <ul class="one-list" id="targetContainer">
-            <templateTree v-bind:nodeList="oneDepth"/>
+            <templateTree v-bind:nodeList="nodeList"/>
           </ul>
         </div>
       </article>
@@ -45,6 +45,7 @@
 import templateTree from '@/components/main/Template_tree'
 import templateMenu from '@/components/menu/Template_menu'
 const axios = require('@/assets/js/axios.js')
+const custom = require('@/assets/js/custom.js')
 export default {
   name: 'Main',
   el: '#mainView',
@@ -56,20 +57,6 @@ export default {
     return {
       username: this.$store.state.username,
       nodeList: [],
-      oneDepth: [
-        { nodeid: 1, parentid: 0, isfavorite: 0, isparent: 1, namevalue: '교양' },
-        { nodeid: 2, parentid: 0, isfavorite: 0, isparent: 1, namevalue: '예능' },
-        { nodeid: 3, parentid: 0, isfavorite: 0, isparent: 1, namevalue: '드라마' },
-        { nodeid: 4, parentid: 0, isfavorite: 0, isparent: 0, namevalue: '외주제작' },
-        { nodeid: 5, parentid: 0, isfavorite: 0, isparent: 1, namevalue: '종편' },
-        { nodeid: 6, parentid: 0, isfavorite: 0, isparent: 0, namevalue: '부조' },
-        { nodeid: 7, parentid: 0, isfavorite: 0, isparent: 0, namevalue: '색보정' },
-        { nodeid: 8, parentid: 0, isfavorite: 0, isparent: 0, namevalue: '더빙' },
-        { nodeid: 9, parentid: 0, isfavorite: 1, isparent: 0, namevalue: '자막' },
-        { nodeid: 10, parentid: 0, isfavorite: 1, isparent: 0, namevalue: '영상편집' },
-        { nodeid: 11, parentid: 0, isfavorite: 0, isparent: 0, namevalue: '교양' },
-        { nodeid: 12, parentid: 0, isfavorite: 1, isparent: 0, namevalue: '예능' }
-      ],
       active: false
     }
   },
@@ -78,15 +65,23 @@ export default {
   },
   methods: {
     getTree: function () {
-      axios.getSyncAxios('/v2/nodes', null, (response) => {
-        axios.getSyncAxios('/nodes/' + response.data.result.nodename, null, (response) => {
-          this.nodeList = response.data.results
-        })
-      }, function (error) {
-        this.nodeList = []
-        axios.setError(error.response.data)
+      axios.getAsyncAxios('/v2/nodes', null, (response) => {
+        console.log('response 값 : ', response)
+        this.nodeList = response.data.results
+        console.log('results 값 : ', custom.proxy2map(this.nodeList))
+        console.log('nodes name : ', this.nodeList[0].name)
       })
     }
+    // getTree: function () {
+    //   axios.getSyncAxios('/v2/nodes', null, (response) => {
+    //     axios.getSyncAxios('/nodes/' + response.data.result.nodename, null, (response) => {
+    //       this.nodeList = response.data.results
+    //     })
+    //   }, function (error) {
+    //     this.nodeList = []
+    //     axios.setError(error.response.data)
+    //   })
+    // }
   }
 }
 </script>
