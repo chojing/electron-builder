@@ -55,7 +55,7 @@ export default {
       param.sort = sort
       param.limit = 0
       param.offset = 0
-      axios.getAsyncAxios('/v2/ftpserver', param, (response) => {
+      axios.getAsyncAxios('/v2/ftpservers', param, (response) => {
         console.log(response)
         this.targetFtpList = response.data.results
       })

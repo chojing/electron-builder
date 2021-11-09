@@ -3,72 +3,73 @@
     <div class="wrap">
       <h4 class="tti">수동 FTP 관리</h4>
       <div class="ftp-info mt20">
-          <div class="btn-box right">
-            <button @click="newFtpAdd" class="btn h30">추가</button>
-            <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" id="modify-btn" class="btn blue h30">수정</button>
+        <div class="btn-box right">
+          <button @click="newFtpAdd" class="btn h30" dataname="newBtn">추가</button>
+          <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" ref="btnToggle" id="modify-btn" class="btn blue h30" dataname="addBtn">수정</button>
+        </div>
+        <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
+          <option v-for="item in addSelect" :key="item.index">{{item.name}}</option>
+          <option v-if="!isDisabled">사용자 지정</option>
+        </select>
+        <div class="list flex-center">
+          <b>서버명</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.name" ref="usernameInput" type="text" class="input-box name" :disabled='isDisabled'>
           </div>
-          <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
-            <option v-for="item in addSelect" :key="item.index">{{item.name}}</option>
-          </select>
-          <div class="list flex-center">
-            <b>서버명</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.name" ref="usernameInput" type="text" class="input-box name" :disabled='isDisabled'>
+        </div>
+        <div class="list flex-center">
+          <b>HOST</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.host" ref="userhostInput" type="text" class="input-box" :disabled='isDisabled' >
+          </div>
+        </div>
+        <div class="list flex-center">
+          <b>PORT</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.port" ref="userportInput" type="text" class="input-box" :disabled='isDisabled'>
+          </div>
+        </div>
+        <div class="list flex-center">
+          <b>ID</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.username" ref="useridInput" type="text" class="input-box" :disabled='isDisabled' >
+          </div>
+        </div>
+        <div class="list flex-center">
+          <b>PW</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.password" ref="userpwInput" type="password" class="input-box" :disabled='isDisabled' >
+          </div>
+        </div>
+        <div class="list flex-center">
+          <b>DIR</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.rootpath" type="text" class="input-box" :disabled='isDisabled' >
+          </div>
+        </div>
+        <div class="list flex-center">
+          <b>Proxy</b>
+          <div class="flex-1">
+            <input v-model="ftpInfo.proxy" type="text" class="input-box" :disabled='isDisabled' >
+          </div>
+        </div>
+        <div class="list flex-center mode">
+          <b>MODE</b>
+          <div class="flex-1">
+            <div class="radio-input">
+              <input v-model="ftpInfo.mode" value="기본" type="radio" name="mode" id="basicVal" checked>
+              <label for="basicVal">기본</label>
+            </div>
+            <div class="radio-input">
+              <input v-model="ftpInfo.mode" value="능동형" type="radio" name="mode" id="activeVal" :disabled='isDisabled' >
+              <label for="activeVal">능동형</label>
+            </div>
+            <div class="radio-input">
+              <input v-model="ftpInfo.mode" value="수동형" type="radio" name="mode" id="passiveVal" :disabled='isDisabled' >
+              <label for="passiveVal">수동형</label>
             </div>
           </div>
-          <div class="list flex-center">
-            <b>HOST</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.host" ref="userhostInput" type="text" class="input-box" :disabled='isDisabled' >
-            </div>
-          </div>
-          <div class="list flex-center">
-            <b>PORT</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.port" ref="userportInput" type="text" class="input-box" :disabled='isDisabled'>
-            </div>
-          </div>
-          <div class="list flex-center">
-            <b>ID</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.username" ref="useridInput" type="text" class="input-box" :disabled='isDisabled' >
-            </div>
-          </div>
-          <div class="list flex-center">
-            <b>PW</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.password" ref="userpwInput" type="password" class="input-box" :disabled='isDisabled' >
-            </div>
-          </div>
-          <div class="list flex-center">
-            <b>DIR</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.rootpath" type="text" class="input-box" :disabled='isDisabled' >
-            </div>
-          </div>
-          <div class="list flex-center">
-            <b>Proxy</b>
-            <div class="flex-1">
-              <input v-model="ftpInfo.proxy" type="text" class="input-box" :disabled='isDisabled' >
-            </div>
-          </div>
-          <div class="list flex-center mode">
-            <b>MODE</b>
-            <div class="flex-1">
-              <div class="radio-input">
-                <input v-model="ftpInfo.mode" value="기본" type="radio" name="mode" id="basicVal" checked>
-                <label for="basicVal">기본</label>
-              </div>
-              <div class="radio-input">
-                <input v-model="ftpInfo.mode" value="능동형" type="radio" name="mode" id="activeVal" :disabled='isDisabled' >
-                <label for="activeVal">능동형</label>
-              </div>
-              <div class="radio-input">
-                <input v-model="ftpInfo.mode" value="수동형" type="radio" name="mode" id="passiveVal" :disabled='isDisabled' >
-                <label for="passiveVal">수동형</label>
-              </div>
-            </div>
-          </div>
+        </div>
       </div>
       <div class="btn-box center pt20">
         <button @click="cancel" id="cancel" class="btn h30">닫기</button>
@@ -91,6 +92,7 @@ export default {
       g_curWindowKey: '',
       // 수동 FTP 입력값
       ftpInfo: {
+        ftpserverid: '',
         name: '',
         host: '',
         port: '21',
@@ -98,7 +100,11 @@ export default {
         password: '',
         rootpath: '',
         proxy: '',
-        mode: ''
+        mode: 'active',
+        ismanual: 1,
+        owner: 'konan',
+        macvolume: '',
+        winvolume: ''
       },
       addSelect: [],
       ftpSelected: {}
@@ -116,7 +122,7 @@ export default {
     }
   },
   methods: {
-    getList () {
+    getList: function () {
       const param = {}
       const condition = {}
       condition.owner = this.$store.state.userid
@@ -127,10 +133,18 @@ export default {
       param.sort = sort
       param.limit = 0
       param.offset = 0
-      axios.getAsyncAxios('/v2/ftpserver', param, (response) => {
+      axios.getAsyncAxios('/v2/ftpservers', param, (response) => {
         console.log(response)
         this.addSelect = response.data.results
         this.ftpSelected = this.addSelect[0].name
+        this.ftpInfo.name = this.addSelect[0].name
+        this.ftpInfo.host = this.addSelect[0].host
+        this.ftpInfo.port = this.addSelect[0].port
+        this.ftpInfo.username = this.addSelect[0].username
+        this.ftpInfo.password = this.addSelect[0].password
+        this.ftpInfo.rootpath = this.addSelect[0].rootpath
+        this.ftpInfo.proxy = this.addSelect[0].proxy
+        this.ftpInfo.ftpserverid = this.addSelect[0].ftpserverid
       })
     },
     selected () {
@@ -139,6 +153,7 @@ export default {
         if (element.name == this.ftpSelected) {
           const index = this.addSelect.indexOf(element)
           console.log('선택값 확인 : ', this.addSelect[index])
+          console.log('ftpserverid 확인 : ', this.addSelect[index].ftpserverid)
           this.ftpInfo.name = this.addSelect[index].name
           this.ftpInfo.host = this.addSelect[index].host
           this.ftpInfo.port = this.addSelect[index].port
@@ -146,6 +161,7 @@ export default {
           this.ftpInfo.password = this.addSelect[index].password
           this.ftpInfo.rootpath = this.addSelect[index].rootpath
           this.ftpInfo.proxy = this.addSelect[index].proxy
+          this.ftpInfo.ftpserverid = this.addSelect[index].ftpserverid
         }
       })
     },
@@ -155,8 +171,7 @@ export default {
     cancel () {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
-    userUpData () {
-      // const data = []
+    userUpData: function () {
       if (!this.ftpInfo.name) {
         alert('서버명을 입력해주세요.')
         this.$refs.usernameInput.focus()
@@ -172,10 +187,29 @@ export default {
       } else if (!/^[0-9]*$/.test(this.ftpInfo.port)) {
         alert('PORT는 숫자만 입력해주세요.')
         this.$refs.userportInput.focus()
-      } else {
-        this.addSelect.push(this.ftpInfo)
+      } else if (this.ftpInfo.ftpserverid == '') {
         this.terms = false
-        this.cancel()
+        // this.cancel()
+        console.log('추가 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
+        // axios.postAsyncAxios('/v2/ftpservers', JSON.stringify(this.ftpInfo), null, (response) => {
+        //   console.log('post', response)
+        // })
+      } else {
+        console.log('수정 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
+        axios.putAsyncAxios('/v2/ftpservers/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(
+          this.ftpInfo.name,
+          this.ftpInfo.host,
+          this.ftpInfo.port,
+          this.ftpInfo.username,
+          this.ftpInfo.password,
+          this.ftpInfo.rootpath,
+          this.ftpInfo.proxy,
+          this.ftpInfo.mode,
+          this.ftpInfo.ismanual,
+          this.ftpInfo.owner
+        ), null, (response) => {
+          console.log('put', response)
+        })
       }
     },
     newFtpAdd () {
@@ -189,10 +223,12 @@ export default {
       this.ftpInfo.password = ''
       this.ftpInfo.rootpath = ''
       this.ftpInfo.proxy = ''
+      this.ftpInfo.ftpserverid = ''
+      console.log('사용자지정 ', this.ftpInfo)
     },
     usrModifyFtp () {
-      this.terms = true
-      this.$refs.usernameInput.focus()
+      this.terms = !this.terms
+      this.$refs.btnToggle.innerText = this.terms ? '취소' : '수정'
     }
   }
 }
