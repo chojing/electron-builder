@@ -13,6 +13,10 @@ function FTPStream () {
   this.m_WholeWorkFTPDataList = {}
   this.m_CompleteFTPDataPath = []
 
+  this.totalWorkSize = 0
+  this.totalWorkSize_Current = 0
+  this.totalWorkSize_Percent = 0
+
   this.worklist = []
   this.isConnection = false
 }
@@ -277,6 +281,7 @@ FTPStream.prototype.cancel = function (_cancelInfo) {
   return true
 }
 FTPStream.prototype.calculateFTPData = function (_buffer, _ftpData) {
+  let self = this
   _ftpData.segmentLength = _buffer.length // 파일 보낸 량 확인 65536이 최대
   _ftpData.curTime = new Date().getTime() // 현재 시간 가져오기
   _ftpData.curFileSize += _ftpData.segmentLength // 현재 업로드된 사이즈 계산
@@ -291,7 +296,18 @@ FTPStream.prototype.calculateFTPData = function (_buffer, _ftpData) {
     _ftpData.mbps = (_ftpData.kbps / 1024).toFixed(2)
   }
 
+  // total Work 계산
+  self.calculateTotalWorkData(_ftpData)
+  _ftpData.totalWorkSize = self.totalWorkSize
+  _ftpData.totalWorkSize_Current = self.totalWorkSize_Current
+  _ftpData.totalWorkSize_Percent = self.totalWorkSize_Percent
+
   return _ftpData
+}
+FTPStream.prototype.calculateTotalWorkData = function (_ftpData) {
+  let self = this
+  self.totalWorkSize_Current += _ftpData.segmentLength
+  self.totalWorkSize_Percent = (self.totalWorkSize_Current / self.totalWorkSize * 100).toFixed(2) // 현재 업로드 % 계산
 }
 FTPStream.prototype.doError = function (_stream, _ftpData, _errMsg, callResolve) {
   let self = this
