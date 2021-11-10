@@ -65,7 +65,8 @@ header .logo{text-align: center;}
 .fixed-bar span a{width: 100%;height: 100%;}
 .fixed-bar span a svg{font-size: 22px;}
 .fixed-bar span a .fa-folder{color:rgb(2, 121, 95);}
-.fixed-bar span a .fa-exchange-alt{color:#0073a5;}
+.fixed-bar span a .fa-upload{color:#0073a5;}
+.fixed-bar span a .fa-download{color:#0073a5;}
 .fixed-bar span a .fa-exclamation-triangle{color:red;}
 .fixed-bar span a .fa-user-edit{color:navy;}
 .fixed-bar span a .fa-star{color:rgb(22, 124, 219);}
@@ -129,7 +130,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fb
 /** file-up-load **/
 .file-container{height:100%; border-left: 2px solid #eee;}
 .file-container .wrap{height: 100%;}
-.file-container h4{margin-bottom: 15px;font-size: 18px;font-weight: 600;}
+.file-container h4{margin-bottom: 10px;font-size: 16px;font-weight: 600;}
 .file-tti-box .input-box{width: 100%;}
 .file-container .favorite-list{padding: 10px; border: 1px solid #333;border-radius: 5px;background-color: #333;}
 .file-container .favorite-list button{margin: 0; border: none;cursor:default;}
@@ -146,7 +147,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fb
 .file-drag-box .drag{position: relative; width: 100%;height: 100%;padding: 10px;border-radius: 10px;border: 1px solid #eee;}
 .file-drag-box .drag::after{content: 'Drag & Drop';position: absolute;left: 50%;top:50%;transform: translate(-50%,-50%);font-size: 16px;z-index: 2;color: #b8b8b8;}
 .file-list-box ul,
-.file-list-box textarea{resize:none;width: 100%;height: 150px;overflow-x: auto;padding: 10px;border-radius: 10px;border: 1px solid #eee;font-size: 14px;line-height: 1.6}
+.file-list-box textarea{resize:none;width: 100%;height: 100px;overflow-x: auto;padding: 10px;border-radius: 10px;border: 1px solid #eee;font-size: 14px;line-height: 1.6}
 .file-list-box ul li{padding: 5px 0;font-size: 14px;}
 .file-drag-box .drag label{display: block;width: 100%;height: 100%;overflow-y: auto}
 #file{overflow: hidden;display: none;}
@@ -202,6 +203,9 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fb
 .pro-bar span{display: block;height: 100%;background-color: #0082bb;border-top-right-radius:20px;border-bottom-right-radius:20px;transition: width .3s linear;}
 .pro-bar b{position: absolute;left: 50%;top: 50%;z-index: 10;transform: translate(-50%,-50%);font-size: 14px;text-shadow: 2px 1px 2px rgb(255 255 255 / 50%);}
 .history-detaile-container .targetName{font-size: 17px;font-weight: 600;}
+
+.history-container select{padding: 0 5px; width: 100%;height: 40px;border: 1px solid #eee;border-radius: 5px;}
+
 
 @media screen and (min-height: 700px){
   .user-list{height: 100vh;}

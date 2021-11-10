@@ -78,7 +78,7 @@ export default {
       const item = custom.proxy2map(ftpInfoItem)
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
-        url: 'ManualFileUpLoad',
+        url: 'ManualFileUpload',
         data: item,
         width: 700,
         height: 700,

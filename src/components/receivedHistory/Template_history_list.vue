@@ -1,4 +1,4 @@
-<!-- 전송내역 -->
+<!-- 수신내역 -->
 <template>
   <tr v-for="item in historyList" v-bind:key="item.id">
     <td @click="historyDetailPopup(item.ftpName)" class="targetName">{{item.ftpName}}</td>

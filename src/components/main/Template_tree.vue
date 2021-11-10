@@ -75,7 +75,7 @@ export default {
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
-        url: 'FileUpLoad',
+        url: 'MainFileUpLoad',
         data: data,
         width: 600,
         height: 750,

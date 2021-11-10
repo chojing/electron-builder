@@ -1,4 +1,4 @@
-<!-- 전송내역 -->
+<!-- 수신내역 -->
 <template>
   <tr v-for="item in historyDetailList" v-bind:key="item.id">
     <td>{{item.ftpSiteName}}</td>
