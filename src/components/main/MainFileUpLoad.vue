@@ -8,7 +8,7 @@
           </div>
         </div>
       </div>
-      <Template_file/>
+      <Template_file v-bind:isTelUse="isTelUse"/>
     </div>
   </section>
 </template>
@@ -29,7 +29,7 @@ export default {
       selfKey: '',
       targetNameValue: '',
       fileList: [],
-      isTelUse: true
+      isTelUse: false
     }
   },
   created () {
