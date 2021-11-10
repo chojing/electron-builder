@@ -8,7 +8,10 @@
         <span :style="{width:dataPer + '%'}"></span>
         <b>{{dataPer}}%</b>
       </div>
-      <button v-on:click = "doUpload" class="btn blue allSubmit">전송</button>
+      <div class="btn-box center pt20">
+        <button class="btn h30">취소</button>
+        <button v-on:click = "doUpload" class="btn blue h30">전송</button>
+      </div>
     </div>
   </section>
 </template>
