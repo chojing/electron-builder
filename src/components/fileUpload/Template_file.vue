@@ -7,7 +7,7 @@
       <b>{{dataPer}}%</b>
     </div>
     <div class="btn-box center pt20">
-      <button class="btn h30">취소</button>
+      <button v-on:click = "doCancel" class="btn h30">취소</button>
       <button v-on:click = "doUpload" class="btn blue h30">전송</button>
     </div>
 </template>
@@ -16,6 +16,7 @@
 import baseDragDrop from '@/components/main/BaseDragDrop'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
+
 const custom = require('@/assets/js/custom.js')
 const FTPServer = function () {
   this.host = ''
@@ -55,6 +56,7 @@ const FTPSendData = function () {
   // sms 정보
 }
 let g_ftpSendData = {}
+let g_CurftpDataServer
 export default {
   components: {
     baseDragDrop
@@ -113,6 +115,25 @@ export default {
       curFtpServer1.parentSiteName = ftpSite.siteName
       ftpSite.ftpServerList.push(curFtpServer1)
       g_ftpSendData.ftpSite = ftpSite
+
+      g_CurftpDataServer = curFtpServer1
+    },
+    doCancel: function () {
+      console.log('cancel Test!')
+
+      let isFileDelete = true
+      let cancelConnectionList = [] // ServerName
+      cancelConnectionList.push(g_CurftpDataServer)
+      let cancelType = 'all' // all / path
+
+      let cancelInfo = {
+        cancelType: cancelType,
+        cancelConnectionList: cancelConnectionList,
+        isDelete: isFileDelete,
+        path: undefined // type 이 path일 경우만 기재
+      }
+      ipcRenderer.send('ftp-cancel', cancelInfo)
+      console.log('cancel request!')
     }
   }
 }
