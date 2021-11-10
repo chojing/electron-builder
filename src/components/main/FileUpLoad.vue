@@ -1,5 +1,5 @@
 <template>
-  <section class="file-container pb40">
+  <section class="file-container pb40 pt20">
     <div class="wrap">
       <div class="user-favorite">
         <div class="favorite-list mb20">
@@ -12,11 +12,14 @@
       <baseDragDrop @valueReturn="DragDropResult"/>
       <div class="file-submit-box">
         <div class="box flex-box">
-          <input :value="this.testValue" class="input-box flex-1" type="text" placeholder="전송 확인 문자 연락처(다중)">
+          <input :value="this.testValue" class="input-box flex-1" type="text" placeholder="전송 확인 문자 연락처(다중)" disabled>
           <button @dblclick="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
         </div>
       </div>
-      <button class="btn blue allSubmit">전송</button>
+      <div class="btn-box center pt20">
+        <button class="btn h30">취소</button>
+        <button class="btn blue h30">전송</button>
+      </div>
     </div>
   </section>
 </template>
