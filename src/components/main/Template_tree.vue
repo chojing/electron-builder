@@ -45,6 +45,7 @@ export default {
   },
   methods: {
     onClick: function (item, name) {
+      const thishaschild = item.haschild
       if (!this.timeoutId) {
         // 원클릭
         this.timeoutId = setTimeout(() => {
@@ -53,9 +54,11 @@ export default {
         }, 300)
       } else {
         // 더블클릭
-        clearTimeout(this.timeoutId)
-        this.FileUploadPopup(name)
-        this.timeoutId = null
+        if (!thishaschild == 1) {
+          clearTimeout(this.timeoutId)
+          this.FileUploadPopup(name)
+          this.timeoutId = null
+        }
       }
     },
     getChildList: function (item) {
