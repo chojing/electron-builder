@@ -2,6 +2,9 @@
   <section class="history-container">
     <div class="wrap">
       <h4 class="tti mb40">수신내역</h4>
+      <select>
+        <option> 기본값 </option>
+      </select>
       <div class="send-box">
         <table>
           <thead>
