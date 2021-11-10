@@ -4,8 +4,9 @@
       <h4 class="tti">수동 FTP 관리</h4>
       <div class="ftp-info mt20">
         <div class="btn-box right">
-          <button @click="newFtpAdd" class="btn h30" dataname="newBtn">추가</button>
-          <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" ref="btnToggle" id="modify-btn" class="btn blue h30" dataname="addBtn">수정</button>
+          <button @click="newFtpAdd" class="btn h30" id="new-btn" dataname="newBtn" v-show="!isOptionClicked">추가</button>
+          <button @click="usrModifyFtp" class="btn blue h30" id="modify-btn"  dataname="addBtn" v-show="!isOptionClicked">수정</button>
+          <button @click="optionCancelClick" class="btn blue h30" id="option-cancel-btn" dataname="optionCancelBtn" v-show="isOptionClicked">취소</button>
         </div>
         <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
           <option v-for="item in addSelect" :key="item.index">{{item.name}}</option>
@@ -58,22 +59,22 @@
           <div class="flex-1">
             <div class="radio-input">
               <input v-model="ftpInfo.mode" value="기본" type="radio" name="mode" id="basicVal" checked>
-              <label for="basicVal">기본</label>
+              <label for="basicVal"> 기본</label>
             </div>
             <div class="radio-input">
               <input v-model="ftpInfo.mode" value="능동형" type="radio" name="mode" id="activeVal" :disabled='isDisabled' >
-              <label for="activeVal">능동형</label>
+              <label for="activeVal"> 능동형</label>
             </div>
             <div class="radio-input">
               <input v-model="ftpInfo.mode" value="수동형" type="radio" name="mode" id="passiveVal" :disabled='isDisabled' >
-              <label for="passiveVal">수동형</label>
+              <label for="passiveVal"> 수동형</label>
             </div>
           </div>
         </div>
       </div>
       <div class="btn-box center pt20">
-        <button @click="cancel" id="cancel" class="btn h30">닫기</button>
-        <button @click="userUpData" class="btn h30">저장</button>
+        <button @click="cancel" id="cancel" class="btn h30" v-show="!isOptionClicked">닫기</button>
+        <button @click="userUpData" class="btn h30" v-show="isOptionClicked">저장</button>
       </div>
     </div>
   </section>
@@ -88,7 +89,9 @@ export default {
   name: 'ManualFtp',
   data () {
     return {
-      terms: false,
+      terms: false, /* 수정 버튼 클릭 시 */
+      flag: true, /* true -> 수정 버튼 클릭, false -> 추가 버튼 클릭 */
+      isOptionClicked: false, /* true -> 취소/저장 버튼 보이기 , false -> 추가,수정/닫기 버튼 보이기 */
       g_curWindowKey: '',
       parentKey: '',
       // 수동 FTP 입력값
@@ -135,7 +138,7 @@ export default {
       param.limit = 0
       param.offset = 0
       axios.getAsyncAxios('/v2/ftpservers', param, (response) => {
-        console.log(response)
+        // console.log(response)
         this.addSelect = response.data.results
         this.ftpSelected = this.addSelect[0].name
         this.ftpInfo.name = this.addSelect[0].name
@@ -148,13 +151,13 @@ export default {
         this.ftpInfo.ftpserverid = this.addSelect[0].ftpserverid
       })
     },
-    selected () {
-      console.log('들어있는 값 확인 : ', this.addSelect)
+    selected: function () {
+      // console.log('들어있는 값 확인 : ', this.addSelect)
       this.addSelect.forEach(element => {
         if (element.name == this.ftpSelected) {
           const index = this.addSelect.indexOf(element)
-          console.log('선택값 확인 : ', this.addSelect[index])
-          console.log('ftpserverid 확인 : ', this.addSelect[index].ftpserverid)
+          // console.log('선택값 확인 : ', this.addSelect[index])
+          // console.log('ftpserverid 확인 : ', this.addSelect[index].ftpserverid)
           this.ftpInfo.name = this.addSelect[index].name
           this.ftpInfo.host = this.addSelect[index].host
           this.ftpInfo.port = this.addSelect[index].port
@@ -174,12 +177,14 @@ export default {
         this.g_curWindowKey = key
       }
     },
-    cancel () {
+    cancel: function () {
       const data = '닫힘'
       ipcRenderer.send('sendData', this.parentKey, data, 'testType')
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     userUpData: function () {
+      this.terms = true
+      this.usrModifyFtp()
       if (!this.ftpInfo.name) {
         alert('서버명을 입력해주세요.')
         this.$refs.usernameInput.focus()
@@ -221,12 +226,12 @@ export default {
         // console.log('ftpInfoData : ', ftpInfoData)
         // console.log('ftpInfo : ', this.ftpInfo)
         axios.putAsyncAxios('/v2/ftpservers/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(ftpInfoData), null, (response) => {
-          console.log('put', response)
+          // console.log('put', response)
         })
         // this.cancel()
       }
     },
-    newFtpAdd () {
+    newFtpAdd: function () {
       this.terms = true
       this.ftpSelected = '사용자 지정'
       this.$refs.usernameInput.focus()
@@ -238,11 +243,28 @@ export default {
       this.ftpInfo.rootpath = ''
       this.ftpInfo.proxy = ''
       this.ftpInfo.ftpserverid = ''
-      console.log('사용자지정 ', this.ftpInfo)
+      // console.log('사용자지정 ', this.ftpInfo)
+
+      this.isOptionClicked = true
+      this.flag = false
     },
-    usrModifyFtp () {
-      this.terms = !this.terms
-      this.$refs.btnToggle.innerText = this.terms ? '취소' : '수정'
+    usrModifyFtp: function () {
+      this.isOptionClicked = true
+      this.terms = true
+      this.flag = true
+    },
+    optionCancelClick: function () {
+      this.isOptionClicked = false
+      if (this.flag) { // 수정 버튼 클릭 시
+        this.terms = false
+        this.selected()
+      } else if (!this.flag) { // 추가 버튼 클릭 시
+        this.terms = false
+        if (!this.flag) {
+          this.ftpSelected = this.addSelect[0].name
+        }
+        this.selected()
+      }
     }
   }
 }
