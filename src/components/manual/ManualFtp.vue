@@ -4,7 +4,7 @@
       <h4 class="tti">수동 FTP 관리</h4>
       <div class="ftp-info mt20">
         <div class="btn-box right">
-          <button @click="newFtpAdd" class="btn h30" dataname="newBtn">추가</button>
+          <button @click="newFtpAdd" :aria-pressed="flag ? 'true' : 'false'" id = "new-btn" ref = "newBtnToggle" class="btn h30" dataname="newBtn">추가</button>
           <button @click="usrModifyFtp" :aria-pressed="terms ? 'true' : 'false'" ref="btnToggle" id="modify-btn" class="btn blue h30" dataname="addBtn">수정</button>
         </div>
         <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
@@ -89,6 +89,7 @@ export default {
   data () {
     return {
       terms: false,
+      flag: false,
       g_curWindowKey: '',
       // 수동 FTP 입력값
       ftpInfo: {
@@ -150,6 +151,7 @@ export default {
     selected () {
       console.log('들어있는 값 확인 : ', this.addSelect)
       this.addSelect.forEach(element => {
+        console.log('element : ', element)
         if (element.name == this.ftpSelected) {
           const index = this.addSelect.indexOf(element)
           console.log('선택값 확인 : ', this.addSelect[index])
@@ -231,10 +233,16 @@ export default {
       this.ftpInfo.proxy = ''
       this.ftpInfo.ftpserverid = ''
       console.log('사용자지정 ', this.ftpInfo)
+
+      this.flag = !this.flag
+      this.$refs.newBtnToggle.innerText = this.flag ? '취소' : '추가'
     },
     usrModifyFtp () {
       this.terms = !this.terms
       this.$refs.btnToggle.innerText = this.terms ? '취소' : '수정'
+      if (this.terms) {
+        this.selected()
+      }
     }
   }
 }
