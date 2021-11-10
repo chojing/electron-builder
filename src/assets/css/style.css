@@ -111,8 +111,8 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fb
 .target-list ul li p.active{color: #0073a5;font-weight: bold;}
 .target-list > ul p{padding-left: 20px;}
 .target-list > ul p::after{position: absolute;content: '-';left:0;top:0;width: 15px;height: 15px;}
-.target-list > ul li p[data-isparent='1']::after{position: absolute;content: '';left:0;top:0;width: 12px;height: 15px; background: url('../images/folder-solid.svg') no-repeat center 0/100% auto;}
-.target-list > ul li p[data-isopen='true'][data-isparent='1']::after{background-image: url('../images/folder-open-solid.svg')}
+.target-list > ul li p[data-haschild='1']::after{position: absolute;content: '';left:0;top:0;width: 12px;height: 15px; background: url('../images/folder-solid.svg') no-repeat center 0/100% auto;}
+.target-list > ul li p[data-isopen='true'][data-haschild='1']::after{background-image: url('../images/folder-open-solid.svg')}
 
 /** login **/
 .login{width: 100%;height:100vh;padding-top: 100px;background-color:#0073a5;}

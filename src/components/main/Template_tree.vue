@@ -2,7 +2,7 @@
   <li v-for="item in nodeList" v-bind:key="item.nodeid">
     <!-- 임시) 전체 값 넣어보기-->
     <p @click="this.onClick(item, item.name)"
-       v-bind:data-isparent="item.isparent"
+       v-bind:data-haschild="item.haschild"
        v-bind:data-ftpserverid="item.ftpserverid"
        v-bind:data-ftpsiteid="item.ftpsiteid"
        v-bind:data-isabs="item.isabs"
