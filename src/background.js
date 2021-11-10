@@ -264,16 +264,14 @@ ipcMain.on('ftp-file-upload', async (event, _ftpSendData) => {
   let ftpSite = _ftpSendData.ftpSite
 
   _ftpSendData.desFolderPath = g_UPLOAD_FTP_FOLDER_PATH
-  // 이후 statuswindow 에서 시작하면 함. 스택에 쌓을뿐...
   if (ftpSite.ftpServerList.length != 0) {
     g_FTPWorkQueue.push(_ftpSendData)
   }
 
-  // statuswindow가 없을 경우에만 생성
-
   if (_ftpSendData.targetUrl === undefined || _ftpSendData.targetUrl === '') {
     startUpload()
   } else {
+    // 타 창으로 연결되는 부분. 현재 사용되지 않음
     // eslint-disable-next-line no-prototype-builtins
     if (g_windows.hasOwnProperty('statusWindow_upload') == false) {
       let windowInfo = new WindowInfo()
@@ -405,38 +403,40 @@ ipcMain.on('ftp-download-cancel-path', (event, cancelInfo) => {
 })
 // _cancelType : all / path
 function ftpCancelBranch (cancelInfo) {
-  let DicKey = 'admin'
+  let CurCancelServer = cancelInfo.cancelConnectionList[0]
+  let DicKey = CurCancelServer.parentSiteName
+  let FTPInfo
   if (g_FTPInfoDic[DicKey] === undefined) {
     // 현재 작업중인 FTP가 없음
     return
+  } else {
+    FTPInfo = g_FTPInfoDic[DicKey]
   }
-  let FTPInfoList
 
-  if (g_FTPInfoDic[DicKey].connectionType === '1') {
-    let cnt = g_FTPInfoDic[DicKey].m_FTPInfoManager.m_FTPStreamList.length
-    if (cnt === undefined) {
-      return
-    }
-    FTPInfoList = g_FTPInfoDic[DicKey].m_FTPInfoManager.m_FTPStreamList
-    ftpCancel(cancelInfo, cnt, FTPInfoList)
-  } else if (g_FTPInfoDic[DicKey].connectionType === '2') {
+  if (g_FTPInfoDic[DicKey].connectionType == '1') {
+    ftpCancel(FTPInfo, cancelInfo)
+  } else if (g_FTPInfoDic[DicKey].connectionType == '2') {
     for (let i = 0; i < cancelInfo.cancelConnectionList.length; i++) {
-      let cnt =
-        g_FTPInfoDic[DicKey][cancelInfo.cancelConnectionList[i]]
-          .m_FTPInfoManager.m_FTPStreamList.length
-      if (cnt === undefined) {
-        return
-      }
-      FTPInfoList =
-        g_FTPInfoDic[DicKey][cancelInfo.cancelConnectionList[i]]
-          .m_FTPInfoManager.m_FTPStreamList
-      ftpCancel(cancelInfo, cnt, FTPInfoList)
+      FTPInfo = g_FTPInfoDic[DicKey][cancelInfo.cancelConnectionList[i].serverName]
+      ftpCancel(FTPInfo, cancelInfo)
     }
   }
 }
-function ftpCancel (_cancelInfo, cnt, FTPInfoList) {
-  for (let i = 0; i < cnt; i++) {
-    FTPInfoList[i].cancel(_cancelInfo)
+function ftpCancel (_FtpInfo, _cancelInfo) {
+  if (_FtpInfo === undefined) {
+    console.log('Cancel Fail!')
+    return
+  }
+  if (_FtpInfo.ftpStreamList === undefined) {
+    console.log('No Job')
+    return
+  }
+  if (_FtpInfo.isFinish == true) {
+    console.log('Job is almost done.')
+  }
+  let KeyList = Object.keys(_FtpInfo.ftpStreamList)
+  for (let i = 0; i < KeyList.length; i++) {
+    _FtpInfo.ftpStreamList[KeyList[i]].cancel(_cancelInfo)
   }
 }
 // #endregion

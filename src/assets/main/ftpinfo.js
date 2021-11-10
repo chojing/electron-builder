@@ -96,12 +96,12 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMs
         let ftpStraem = new FTPStream()
         // 현재 파일 삭제
         let deletePath = _ftpData.destPath + _ftpData.fileName
-        ftpStraem.FTPDeleteFile(deletePath, _ftpData.cancelInfo.ftpConfig)
+        ftpStraem.FTPDeleteFile(deletePath, _curFtpServer)
 
         // 완료된 파일 삭제
         if (_ftpData.cancelInfo.CompletePaths.length > 0) {
           for (let i = _ftpData.cancelInfo.CompletePaths.length - 1; i >= 0; i--) {
-            ftpStraem.FTPDeleteFile(_ftpData.cancelInfo.CompletePaths[i], _ftpData.cancelInfo.ftpConfig)
+            ftpStraem.FTPDeleteFile(_ftpData.cancelInfo.CompletePaths[i], _curFtpServer)
             console.log('delete!!')
           }
         }

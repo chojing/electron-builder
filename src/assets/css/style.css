@@ -94,6 +94,7 @@ main h4{padding: 20px 0 10px; font-size: 15px;font-weight: 600;}
 main .head-top{padding:10px; border: 1px solid #eee;border-radius: 5px;}
 main .target-list{max-height: 400px;overflow-y: auto;}
 main .target-list ul{padding:5px 15px 0 15px;}
+main .target-list ul.hide{display: none}
 main .target-list ul li{padding: 5px 0 0;}
 .favorite-list{font-size: 0;text-align: left;}
 .favorite-list button{margin-bottom: 10px;padding: 4px 0; border-radius: 5px;border: 1px solid #eee;transition: border-color .2s;}
@@ -112,6 +113,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fb
 .target-list > ul p::after{position: absolute;content: '-';left:0;top:0;width: 15px;height: 15px;}
 .target-list > ul li p[data-isparent='1']::after{position: absolute;content: '';left:0;top:0;width: 12px;height: 15px; background: url('../images/folder-solid.svg') no-repeat center 0/100% auto;}
 .target-list > ul li p[data-isopen='true'][data-isparent='1']::after{background-image: url('../images/folder-open-solid.svg')}
+
 /** login **/
 .login{width: 100%;height:100vh;padding-top: 100px;background-color:#0073a5;}
 .login-container{margin:50px auto;max-width:500px;}
@@ -142,6 +144,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fb
 .file-container .file-submit-box .box{height: 40px;font-size: 0;}
 .file-container .file-submit-box button{margin-left: 10px; height: 100%;}
 .file-container .file-submit-box .fa-phone-square-alt{font-size: 40px;color: #333;}
+.file-container .user-tel-box.hide{display: none;}
 .file-container .allSubmit{display: block;margin: 40px auto 0;width: 100px;height: 40px;}
 .file-drag-box{position: relative; height:150px;}
 .file-drag-box .drag{position: relative; width: 100%;height: 100%;padding: 10px;border-radius: 10px;border: 1px solid #eee;}

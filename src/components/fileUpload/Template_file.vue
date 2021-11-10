@@ -6,8 +6,14 @@
       <span :style="{width:dataPer + '%'}"></span>
       <b>{{dataPer}}%</b>
     </div>
+    <div class="file-submit-box mt20 user-tel-box" :class="{hide:isTelUse}">
+      <div class="box flex-box">
+        <input :value="this.testValue" class="input-box flex-1" type="text" placeholder="전송 확인 문자 연락처(다중)" v-bind:isTelUse="isTelUse" disabled>
+        <button @dblclick="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
+      </div>
+    </div>
     <div class="btn-box center pt20">
-      <button class="btn h30">취소</button>
+      <button v-on:click = "doCancel" class="btn h30">취소</button>
       <button v-on:click = "doUpload" class="btn blue h30">전송</button>
     </div>
 </template>
@@ -43,7 +49,6 @@ const FTPSite = function () {
   this.connectionType = '' // load balance , multi send 등..
   this.ftpServerList = [] // FTPServer[]
 }
-
 const FTPSendData = function () {
   this.title = ''
   this.comment = ''
@@ -55,9 +60,13 @@ const FTPSendData = function () {
   // sms 정보
 }
 let g_ftpSendData = {}
+let g_CurftpDataServer
 export default {
   components: {
     baseDragDrop
+  },
+  props: {
+    isTelUse: Boolean
   },
   created () {
     console.log('start!')
@@ -68,18 +77,26 @@ export default {
   data () {
     return {
       g_windowIndex: 0,
+      selfKey: '',
       targetFtpInfo: '',
       fileList: [],
+      testValue: [],
       dataPer: 0
     }
   },
   methods: {
-    init: function (event, key, data) {
-      this.targetFtpInfo = data
-      this.ftpSet(data)
-      // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
-      console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
-      // console.log('ftp정보', curFtpServer)
+    init: function (event, key, data, type) {
+      if (type == 'init') {
+        this.targetFtpInfo = data
+        this.ftpSet(data)
+        this.selfKey = key
+        // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
+        console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
+        // console.log('ftp정보', curFtpServer)
+      } else if (type == 'userTelData') {
+        this.testValue.push(data)
+        console.log('담은 데이터', this.testValue)
+      }
     },
     DragDropResult: function (value) {
       g_ftpSendData.fileList = value
@@ -113,6 +130,39 @@ export default {
       curFtpServer1.parentSiteName = ftpSite.siteName
       ftpSite.ftpServerList.push(curFtpServer1)
       g_ftpSendData.ftpSite = ftpSite
+
+      g_CurftpDataServer = curFtpServer1
+    },
+    doCancel: function () {
+      console.log('cancel Test!')
+
+      let isFileDelete = true
+      let cancelConnectionList = [] // ServerName
+      cancelConnectionList.push(g_CurftpDataServer)
+      let cancelType = 'all' // all / path
+
+      let cancelInfo = {
+        cancelType: cancelType,
+        cancelConnectionList: cancelConnectionList,
+        isDelete: isFileDelete,
+        path: undefined // type 이 path일 경우만 기재
+      }
+      ipcRenderer.send('ftp-cancel', cancelInfo)
+      console.log('cancel request!')
+    },
+    userInfoPopup: function () {
+      const data = {
+        parentKey: this.selfKey
+      }
+      ipcRenderer.send('openWindow', {
+        key: ++this.g_windowIndex,
+        url: 'UserInfo',
+        data: data,
+        width: 500,
+        height: 500,
+        parent: '',
+        modal: true
+      })
     }
   }
 }
