@@ -57,6 +57,16 @@ const routes = [
     component: () => import('../views/HistoryDetail.vue')
   },
   {
+    path: '/receivedHistory',
+    name: 'ReceivedHistory',
+    component: () => import('../views/ReceivedHistory.vue')
+  },
+  {
+    path: '/receivedHistoryDetail',
+    name: 'ReceivedHistoryDetail',
+    component: () => import('../views/ReceivedHistoryDetail.vue')
+  },
+  {
     path: '/template_history_list',
     name: 'Template_history_list',
     component: () => import('../components/history/Template_history_list.vue')
