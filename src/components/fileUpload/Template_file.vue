@@ -1,4 +1,4 @@
-<!-- 파일업로드 공통 템플릿-->
+<!-- 파일업로드 공통-->
 <template>
     <!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "setInput" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
     <baseDragDrop @valueReturn="DragDropResult"/>
@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="btn-box center pt20">
-      <button class="btn h30">취소</button>
+      <button v-on:click = "doCancel" class="btn h30">취소</button>
       <button v-on:click = "doUpload" class="btn blue h30">전송</button>
     </div>
 </template>
@@ -60,6 +60,7 @@ const FTPSendData = function () {
   // sms 정보
 }
 let g_ftpSendData = {}
+let g_CurftpDataServer
 export default {
   components: {
     baseDragDrop
@@ -129,6 +130,25 @@ export default {
       curFtpServer1.parentSiteName = ftpSite.siteName
       ftpSite.ftpServerList.push(curFtpServer1)
       g_ftpSendData.ftpSite = ftpSite
+
+      g_CurftpDataServer = curFtpServer1
+    },
+    doCancel: function () {
+      console.log('cancel Test!')
+
+      let isFileDelete = true
+      let cancelConnectionList = [] // ServerName
+      cancelConnectionList.push(g_CurftpDataServer)
+      let cancelType = 'all' // all / path
+
+      let cancelInfo = {
+        cancelType: cancelType,
+        cancelConnectionList: cancelConnectionList,
+        isDelete: isFileDelete,
+        path: undefined // type 이 path일 경우만 기재
+      }
+      ipcRenderer.send('ftp-cancel', cancelInfo)
+      console.log('cancel request!')
     },
     userInfoPopup: function () {
       const data = {

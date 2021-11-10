@@ -4,13 +4,6 @@ const FileInfo = require('./fileinfo.js').FileInfo
 const FTPStream = require('./ftpStream').FTPStream
 let gfileData = new FileData()
 
-// const g_FTPWorkQueue = []
-//
-// function FTPConnectTypeInfo () {
-//   this.ftpSiteList = []
-//   this.connectionType = ''
-// }
-
 function FTPInfo (_event, _FTPSite, _popUpWnd) {
   this.event = _event || '' // 접속한 유저가 요청한 event를 등록해놓음. 나중에 result 할 때 필요함
   this.m_FTPSite = _FTPSite || ''
@@ -55,7 +48,7 @@ FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _current
   })
 
   self.ftpStreamList[ftpStreamKey] = curFtpStream
-
+  let totalSize = 0
   for (let j = 0; j < _fileList.length; j++) {
     let curFile = _fileList[j]
     let curPath = curFile.path
@@ -64,8 +57,11 @@ FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _current
 
     // 전체 취소를 위한 전체 작업 담기
     self.ftpStreamList[ftpStreamKey].m_WholeWorkFTPDataList[curPath] = ftpData
-  }
 
+    // 전체 사이즈 체킹
+    totalSize += curFile.size
+  }
+  curFtpStream.totalWorkSize = totalSize
   let result = self.ftpStreamList[ftpStreamKey].work(_fileList, ftpServer, 0).catch(
     function (error) {
       console.log(`FTPInfo_${_ftpType} Error!!!` + error)
@@ -100,12 +96,12 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMs
         let ftpStraem = new FTPStream()
         // 현재 파일 삭제
         let deletePath = _ftpData.destPath + _ftpData.fileName
-        ftpStraem.FTPDeleteFile(deletePath, _ftpData.cancelInfo.ftpConfig)
+        ftpStraem.FTPDeleteFile(deletePath, _curFtpServer)
 
         // 완료된 파일 삭제
         if (_ftpData.cancelInfo.CompletePaths.length > 0) {
           for (let i = _ftpData.cancelInfo.CompletePaths.length - 1; i >= 0; i--) {
-            ftpStraem.FTPDeleteFile(_ftpData.cancelInfo.CompletePaths[i], _ftpData.cancelInfo.ftpConfig)
+            ftpStraem.FTPDeleteFile(_ftpData.cancelInfo.CompletePaths[i], _curFtpServer)
             console.log('delete!!')
           }
         }
@@ -227,6 +223,11 @@ function FTPData (_type, _file, _desPath, _fileName) {
   // eslint-disable-next-line no-unused-expressions
   this.segmentLength
   this.curWorkPersent = 0
+
+  // totalSize
+  this.totalWorkSize = 0
+  this.totalWorkSize_Current = 0
+  this.totalWorkSize_Percent = 0
 
   // Time
   this.startTime
