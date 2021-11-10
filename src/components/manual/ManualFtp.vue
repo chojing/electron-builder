@@ -90,6 +90,7 @@ export default {
     return {
       terms: false,
       g_curWindowKey: '',
+      parentKey: '',
       // 수동 FTP 입력값
       ftpInfo: {
         ftpserverid: '',
@@ -165,10 +166,17 @@ export default {
         }
       })
     },
-    init (event, key, data, type) {
-      this.g_curWindowKey = key
+    init: function (event, key, data, type) {
+      if (type == 'init') {
+        console.log('부모키', data)
+        this.parentKey = data.parentKey
+        // eslint-disable-next-line camelcase
+        this.g_curWindowKey = key
+      }
     },
     cancel () {
+      const data = '닫힘'
+      ipcRenderer.send('sendData', this.parentKey, data, 'testType')
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     userUpData: function () {

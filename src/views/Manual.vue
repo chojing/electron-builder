@@ -37,13 +37,26 @@ export default {
   data () {
     return {
       g_windowIndex: 0,
-      targetFtpList: []
+      selfKey: 'main',
+      targetFtpList: [],
+      testValue: []
     }
   },
   mounted () {
     this.getList()
   },
+  created () {
+    console.log('start!')
+    // const self = this
+    ipcRenderer.on('receiveData', this.init)
+  },
   methods: {
+    init: function (event, key, data, type) {
+      if (type == 'testType') {
+        this.testValue.push(data)
+        console.log('담은 데이터', this.testValue)
+      }
+    },
     getList: function () {
       const param = {}
       const condition = {}
@@ -62,11 +75,11 @@ export default {
     },
     manualFtpPopup: function () {
       const data = {
-        value: 'manualFtpPopup'
+        parentKey: this.selfKey
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
-        url: 'manualFtp',
+        url: 'ManualFtp',
         data: data,
         width: 600,
         height: 700,

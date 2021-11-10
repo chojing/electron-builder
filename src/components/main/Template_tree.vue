@@ -46,16 +46,16 @@ export default {
   methods: {
     onClick: function (item, name) {
       if (!this.timeoutId) {
+        // 원클릭
         this.timeoutId = setTimeout(() => {
           this.getChildList(item)
           this.timeoutId = null
-          console.log('원클릭', this.timeoutId)
         }, 300)
       } else {
+        // 더블클릭
         clearTimeout(this.timeoutId)
         this.FileUploadPopup(name)
         this.timeoutId = null
-        console.log('더블 클릭', this.timeoutId)
       }
     },
     getChildList: function (item) {

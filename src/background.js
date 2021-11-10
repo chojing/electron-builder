@@ -65,6 +65,10 @@ async function createWindow () {
     }
     return false
   })
+  gWin.webContents.on('did-finish-load', (evt) => {
+    // onWebcontentsValue 이벤트 송신
+    gWin.webContents.send('receiveData', 'main', undefined, 'init')
+  })
   gWin.isShow = true
 
   // StartFolder Create
