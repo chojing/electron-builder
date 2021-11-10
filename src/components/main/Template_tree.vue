@@ -1,7 +1,7 @@
 <template>
-  <li v-for="item in nodeList" v-bind:key="item.nodeid" @click="this.getChildList(item)">
+  <li v-for="item in nodeList" v-bind:key="item.nodeid">
     <!-- 임시) 전체 값 넣어보기-->
-    <p @dblclick="this.FileUploadPopup(item.name)"
+    <p @click="this.onClick(item, item.name)"
        v-bind:data-isparent="item.isparent"
        v-bind:data-ftpserverid="item.ftpserverid"
        v-bind:data-ftpsiteid="item.ftpsiteid"
@@ -16,7 +16,7 @@
        v-bind:data-path_ftpsiteid="item.path_ftpsiteid"
        v-bind:data-isopen="item.isopen"
        >{{item.name}}</p>
-    <ul>
+    <ul :class="{hide:!item.isopen}">
       <templateTree v-bind:nodeList="item.childList"/>
       <!--      <templateTree v-bind:nodeList="childList">-->
     </ul>
@@ -39,13 +39,28 @@ export default {
   },
   data () {
     return {
-      g_windowIndex: 0
+      g_windowIndex: 0,
+      timeoutId: null
     }
   },
   methods: {
+    onClick: function (item, name) {
+      if (!this.timeoutId) {
+        this.timeoutId = setTimeout(() => {
+          this.getChildList(item)
+          this.timeoutId = null
+          console.log('원클릭', this.timeoutId)
+        }, 300)
+      } else {
+        clearTimeout(this.timeoutId)
+        this.FileUploadPopup(name)
+        this.timeoutId = null
+        console.log('더블 클릭', this.timeoutId)
+      }
+    },
     getChildList: function (item) {
-      if (item.isopen == undefined) {
-        const thisnodeid = item.nodeid
+      const thisnodeid = item.nodeid
+      if (item.isopen == undefined || item.isopen == false) {
         axios.getAsyncAxios('/v2/nodes/' + JSON.stringify(thisnodeid), null, (response) => {
           console.log('클릭한 nodeid 값 : ', thisnodeid)
           item.childList = response.data.results
@@ -59,8 +74,11 @@ export default {
           //   }
           // })
         })
+        return false
+      } else if (item.isopen == true) {
+        item.isopen = false
+        return false
       }
-      return false
       // axios.getSyncAxios('/v2/trees/treename/' + nodeid + '/child', null, function (response) {
       //   this.childList = response.data.results
       // }, function (error) {

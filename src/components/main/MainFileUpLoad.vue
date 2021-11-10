@@ -9,12 +9,6 @@
         </div>
       </div>
       <Template_file/>
-      <div class="file-submit-box mt20">
-        <div class="box flex-box">
-          <input :value="this.testValue" class="input-box flex-1" type="text" placeholder="전송 확인 문자 연락처(다중)" disabled>
-          <button @dblclick="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
-        </div>
-      </div>
     </div>
   </section>
 </template>
@@ -35,7 +29,7 @@ export default {
       selfKey: '',
       targetNameValue: '',
       fileList: [],
-      testValue: []
+      isTelUse: true
     }
   },
   created () {
@@ -46,29 +40,7 @@ export default {
     init: function (event, key, data, type) {
       if (type == 'init') {
         this.targetNameValue = data.value
-        this.selfKey = key
-      } else if (type == 'userTelData') {
-        this.testValue.push(data)
-        console.log('담은 데이터', this.testValue)
       }
-    },
-    userInfoPopup: function () {
-      const data = {
-        parentKey: this.selfKey
-      }
-      ipcRenderer.send('openWindow', {
-        key: ++this.g_windowIndex,
-        url: 'UserInfo',
-        data: data,
-        width: 500,
-        height: 500,
-        parent: '',
-        modal: true
-      })
-    },
-    DragDropResult: function (value) {
-      this.fileList = value
-      console.log(value)
     }
   }
 }
