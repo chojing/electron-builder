@@ -15,10 +15,9 @@
 
 <script>
 import baseDragDrop from '@/components/main/BaseDragDrop'
-
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
-
+const custom = require('@/assets/js/custom.js')
 const FTPServer = function () {
   this.host = ''
   this.port = 0
@@ -81,7 +80,7 @@ export default {
       this.targetFtpInfo = data
       this.ftpSet(data)
       // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
-      console.log('ftp정보', this.targetFtpInfo)
+      console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
       // console.log('ftp정보', curFtpServer)
     },
     DragDropResult: function (value) {

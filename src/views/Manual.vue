@@ -7,7 +7,7 @@
           <div class="flex-center">
             <h4>전송 Target</h4>
             <!--modify-->
-            <button class="btn h30" @click="this.manualFtpPopup">관리</button>
+            <button class="btn h30" @click="manualFtpPopup">관리</button>
           </div>
         </div>
         <div class="target-list" style="background: #f1fbff;">

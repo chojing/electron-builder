@@ -195,8 +195,24 @@ export default {
           console.log('post', response)
         })
       } else {
+        this.cancel()
         console.log('수정 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
-        axios.putAsyncAxios('/v2/ftpservers/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(this.ftpInfo), null, (response) => {
+        const ftpInfoData = {}
+        ftpInfoData.name = this.ftpInfo.name
+        ftpInfoData.host = this.ftpInfo.host
+        ftpInfoData.port = this.ftpInfo.port
+        ftpInfoData.username = this.ftpInfo.username
+        ftpInfoData.password = this.ftpInfo.password
+        ftpInfoData.rootpath = this.ftpInfo.rootpath
+        ftpInfoData.proxy = this.ftpInfo.proxy
+        ftpInfoData.mode = this.ftpInfo.mode
+        ftpInfoData.ismanual = this.ftpInfo.ismanual
+        ftpInfoData.owner = this.ftpInfo.owner
+        ftpInfoData.macvolume = this.ftpInfo.macvolume
+        ftpInfoData.winvolume = this.ftpInfo.winvolume
+        // console.log('ftpInfoData : ', ftpInfoData)
+        // console.log('ftpInfo : ', this.ftpInfo)
+        axios.putAsyncAxios('/v2/ftpservers/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(ftpInfoData), null, (response) => {
           console.log('put', response)
         })
         // this.cancel()
