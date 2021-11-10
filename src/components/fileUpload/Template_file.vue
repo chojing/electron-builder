@@ -1,19 +1,15 @@
+<!-- 파일업로드 공통-->
 <template>
-  <section class="file-container pb40">
-    <div class="wrap">
-      <h4 class="tti">수동 FTP</h4>
-      <!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "setInput" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
-      <baseDragDrop @valueReturn="DragDropResult"/>
-      <div class="pro-bar mt20">
-        <span :style="{width:dataPer + '%'}"></span>
-        <b>{{dataPer}}%</b>
-      </div>
-      <div class="btn-box center pt20">
-        <button class="btn h30">취소</button>
-        <button v-on:click = "doUpload" class="btn blue h30">전송</button>
-      </div>
+    <!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "setInput" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
+    <baseDragDrop @valueReturn="DragDropResult"/>
+    <div class="pro-bar mt20">
+      <span :style="{width:dataPer + '%'}"></span>
+      <b>{{dataPer}}%</b>
     </div>
-  </section>
+    <div class="btn-box center pt20">
+      <button class="btn h30">취소</button>
+      <button v-on:click = "doUpload" class="btn blue h30">전송</button>
+    </div>
 </template>
 
 <script>
@@ -60,7 +56,6 @@ const FTPSendData = function () {
 }
 let g_ftpSendData = {}
 export default {
-  name: 'ManualFileUpLoad',
   components: {
     baseDragDrop
   },

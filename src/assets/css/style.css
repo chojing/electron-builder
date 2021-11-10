@@ -130,7 +130,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fb
 /** file-up-load **/
 .file-container{height:100%; border-left: 2px solid #eee;}
 .file-container .wrap{height: 100%;}
-.file-container h4{margin-bottom: 10px;font-size: 15px;font-weight: 600;}
+.file-container h4{margin-bottom: 10px;font-size: 16px;font-weight: 600;}
 .file-tti-box .input-box{width: 100%;}
 .file-container .favorite-list{padding: 10px; border: 1px solid #333;border-radius: 5px;background-color: #333;}
 .file-container .favorite-list button{margin: 0; border: none;cursor:default;}

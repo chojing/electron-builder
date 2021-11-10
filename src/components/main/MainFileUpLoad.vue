@@ -8,32 +8,26 @@
           </div>
         </div>
       </div>
-      <!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "setInput" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
-      <baseDragDrop @valueReturn="DragDropResult"/>
-      <div class="file-submit-box">
+      <Template_file/>
+      <div class="file-submit-box mt20">
         <div class="box flex-box">
           <input :value="this.testValue" class="input-box flex-1" type="text" placeholder="전송 확인 문자 연락처(다중)" disabled>
           <button @dblclick="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
         </div>
-      </div>
-      <div class="btn-box center pt20">
-        <button class="btn h30">취소</button>
-        <button class="btn blue h30">전송</button>
       </div>
     </div>
   </section>
 </template>
 
 <script>
-import baseDragDrop from '@/components/main/BaseDragDrop'
-
+import Template_file from '@/components/fileUpload/Template_file'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 
 export default {
   name: 'FileUpLoad',
   components: {
-    baseDragDrop
+    Template_file
   },
   data () {
     return {

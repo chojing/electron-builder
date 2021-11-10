@@ -32,9 +32,19 @@ const routes = [
     component: () => import('../views/Main.vue')
   },
   {
+    path: '/mainFileUpLoad',
+    name: 'MainFileUpLoad',
+    component: () => import('../components/main/MainFileUpLoad.vue')
+  },
+  {
     path: '/emergency',
     name: 'Emergency',
     component: () => import('../views/Emergency.vue')
+  },
+  {
+    path: '/emergencyFileUpLoad',
+    name: 'EmergencyFileUpLoad',
+    component: () => import('../components/emergency/EmergencyFileUpLoad.vue')
   },
   {
     path: '/manual',
@@ -45,6 +55,11 @@ const routes = [
     path: '/manualFtp',
     name: 'ManualFtp',
     component: () => import('../components/manual/ManualFtp.vue')
+  },
+  {
+    path: '/manualFileUpload',
+    name: 'ManualFileUpload',
+    component: () => import('../components/manual/ManualFileUpload.vue')
   },
   {
     path: '/history',
@@ -72,14 +87,9 @@ const routes = [
     component: () => import('../components/history/Template_history_list.vue')
   },
   {
-    path: '/manualFileUpLoad',
-    name: 'ManualFileUpLoad',
-    component: () => import('../components/manual/ManualFileUpLoad.vue')
-  },
-  {
-    path: '/fileUpLoad',
-    name: 'FileUpLoad',
-    component: () => import('../components/main/FileUpLoad.vue')
+    path: '/template_fileUpLoad',
+    name: 'Template_fileUpLoad',
+    component: () => import('../components/fileUpload/Template_file.vue')
   },
   {
     path: '/template_tree',
