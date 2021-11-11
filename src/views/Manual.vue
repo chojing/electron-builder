@@ -39,7 +39,7 @@ export default {
       g_windowIndex: 0,
       selfKey: 'main',
       targetFtpList: [],
-      testValue: []
+      isManualFtpClose: false
     }
   },
   mounted () {
@@ -52,12 +52,15 @@ export default {
   },
   methods: {
     init: function (event, key, data, type) {
-      if (type == 'testType') {
-        this.testValue.push(data)
-        console.log('담은 데이터', this.testValue)
+      if (type == 'isManualFtpClose') {
+        this.isManualFtpClose = data
+        if (this.isManualFtpClose) {
+          this.getList()
+        }
       }
     },
     getList: function () {
+      this.targetFtpList = []
       const param = {}
       const condition = {}
       condition.owner = this.$store.state.userid
@@ -69,7 +72,6 @@ export default {
       param.limit = 0
       param.offset = 0
       axios.getAsyncAxios('/v2/ftpservers', param, (response) => {
-        console.log(response)
         this.targetFtpList = response.data.results
       })
     },

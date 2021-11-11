@@ -1,14 +1,15 @@
 <template>
+  <div>
       <h4>전송제목</h4>
       <div class="file-tti-box mb40">
-        <input class="input-box" type="text" value="">
+        <input class="input-box" type="text" value="" :disabled='isDisabled'>
       </div>
       <h4>Optional(요청내역)</h4>
       <div class="file-list-box mb20">
-        <textarea></textarea>
+        <textarea :disabled='isDisabled'></textarea>
       </div>
       <h4>파일(폴더) 전송</h4>
-      <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop">
+      <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop" :disabled='isDisabled'>
         <div class="drag">
           <label for="file">
             <div v-for="fileItem in fileListVue" :key="fileItem.index" class="fileName">
@@ -19,6 +20,7 @@
         </div>
         <input type="file" id="file" name="file" @change="onUpload" multiple/>
       </div>
+  </div>
 </template>
 
 <script>
@@ -26,11 +28,23 @@ const fileList = []
 export default {
   name: 'BaseDragDrop',
   props: {
+    isUploading: Boolean,
+    isUploadComplete: Boolean
   },
   data () {
     return {
       fileListVue: [],
       dataPer: 0
+    }
+  },
+  computed: {
+    isDisabled: function () {
+      if (this.isUploading) {
+        return true
+      } else if (this.isUploadComplete) {
+        return true
+      }
+      return false
     }
   },
   methods: {

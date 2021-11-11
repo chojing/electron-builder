@@ -178,8 +178,8 @@ export default {
       }
     },
     cancel: function () {
-      const data = '닫힘'
-      ipcRenderer.send('sendData', this.parentKey, data, 'testType')
+      const data = true
+      ipcRenderer.send('sendData', this.parentKey, data, 'isManualFtpClose')
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     userUpData: function () {
@@ -202,13 +202,12 @@ export default {
         this.$refs.userportInput.focus()
       } else if (this.ftpInfo.ftpserverid == '') {
         this.terms = false
-        this.cancel()
         console.log('추가 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
         axios.postAsyncAxios('/v2/ftpservers', JSON.stringify(this.ftpInfo), null, (response) => {
           console.log('post', response)
+          this.cancel()
         })
       } else {
-        this.cancel()
         console.log('수정 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
         const ftpInfoData = {}
         ftpInfoData.name = this.ftpInfo.name
@@ -227,8 +226,8 @@ export default {
         // console.log('ftpInfo : ', this.ftpInfo)
         axios.putAsyncAxios('/v2/ftpservers/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(ftpInfoData), null, (response) => {
           // console.log('put', response)
+          this.cancel()
         })
-        // this.cancel()
       }
     },
     newFtpAdd: function () {

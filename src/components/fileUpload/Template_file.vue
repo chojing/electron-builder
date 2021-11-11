@@ -1,10 +1,14 @@
 <!-- 파일업로드 공통-->
 <template>
     <!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "setInput" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
-    <baseDragDrop @valueReturn="DragDropResult"/>
-    <div class="pro-bar mt20">
+    <baseDragDrop @valueReturn="DragDropResult" :isUploading="isUploading" :isUploadComplete="isUploadComplete"/>
+    <div class="pro-bar mt15">
       <span :style="{width:dataPer + '%'}"></span>
-      <b>{{dataPer}}%</b>
+      <b>{{dataPer}}%   ({{fileIndex}} / {{fileTotal}})</b>
+    </div>
+    <div class="pro-bar" style="margin-top: 4px !important;">
+      <span :style="{width:totalDataPer + '%'}"></span>
+      <b>{{totalDataPer}}%</b>
     </div>
     <div class="file-submit-box mt20 user-tel-box" :class="{hide:isTelUse}">
       <div class="box flex-box">
@@ -13,8 +17,9 @@
       </div>
     </div>
     <div class="btn-box center pt20">
-      <button v-on:click = "doCancel" class="btn h30">취소</button>
-      <button v-on:click = "doUpload" class="btn blue h30">전송</button>
+      <button v-on:click = "doUpload" class="btn blue h30" v-show="!isUploading&&!isUploadComplete">전송</button>
+      <button v-on:click = "doCancel" class="btn h30" v-show="isUploading&&!isUploadComplete">전송 취소</button>
+      <button v-on:click = "doClose" class="btn h30" ref="closeBtn">닫기</button>
     </div>
 </template>
 
@@ -81,7 +86,13 @@ export default {
       targetFtpInfo: '',
       fileList: [],
       testValue: [],
-      dataPer: 0
+      dataPer: 0,
+      totalDataPer: 0,
+      fileIndex: 0,
+      fileTotal: 0,
+      g_curWindowKey: '',
+      isUploading: false,
+      isUploadComplete: false
     }
   },
   methods: {
@@ -90,6 +101,7 @@ export default {
         this.targetFtpInfo = data
         this.ftpSet(data)
         this.selfKey = key
+        this.g_curWindowKey = key
         // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
         console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
         // console.log('ftp정보', curFtpServer)
@@ -106,11 +118,20 @@ export default {
       console.log('request FTP Start')
       g_ftpSendData.type = 'upload'
       g_ftpSendData.targetUrl = ''
+      this.isUploading = true
       ipcRenderer.send('ftp-file-upload', g_ftpSendData) // eventName, SendData
     },
     ftpResult: function (event, data) {
-      console.log(data)
-      this.dataPer = data.ftpData.curWorkPersent
+      console.log('ftpResult', data)
+      this.dataPer = data.ftpData.curWorkPersent // 현재 파일 업로드 진행 퍼센트
+      this.totalDataPer = data.ftpData.totalWorkSize_Percent // 전체 파일 업로드 진행 퍼센트
+      this.fileIndex = data.ftpData.workIndex + 1 // 현재 진행 중인 파일 인덱스
+      this.fileTotal = g_ftpSendData.fileList.length // 전체 파일 진행 개수
+      if (data.ftpData.totalWorkSize_Percent == 100) {
+        this.isUploadComplete = true
+        this.isUploading = false
+        this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
+      }
     },
     ftpSet: function (value) {
       // eslint-disable-next-line no-const-assign
@@ -148,7 +169,12 @@ export default {
         path: undefined // type 이 path일 경우만 기재
       }
       ipcRenderer.send('ftp-cancel', cancelInfo)
+      this.isUploading = false
+      this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
       console.log('cancel request!')
+    },
+    doClose: function () {
+      ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     userInfoPopup: function () {
       const data = {
