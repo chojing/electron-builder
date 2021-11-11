@@ -92,8 +92,8 @@ export default {
         key: ++this.g_windowIndex,
         url: 'MainFileUpLoad',
         data: data,
-        width: 600,
-        height: 750,
+        width: 500,
+        height: 730,
         parent: '',
         modal: false
       })

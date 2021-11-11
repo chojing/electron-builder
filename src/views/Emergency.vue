@@ -62,7 +62,7 @@ export default {
         key: ++this.g_windowIndex,
         url: 'EmergencyFileUpLoad',
         data: item,
-        width: 700,
+        width: 600,
         height: 700,
         parent: '',
         modal: false
