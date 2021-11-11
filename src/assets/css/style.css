@@ -148,8 +148,8 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .file-container .file-submit-box .fa-phone-square-alt{font-size: 40px;color: #333;}
 .file-container .user-tel-box.hide{display: none;}
 .file-container .allSubmit{display: block;margin: 40px auto 0;width: 100px;height: 40px;}
-.file-drag-box{position: relative; height:150px;}
-.file-drag-box .drag{position: relative; width: 100%;height: 100%;padding: 10px;border-radius: 10px;border: 1px solid #eee;}
+.file-drag-box{position: relative; height:150px;border-radius: 10px;border: 1px solid #eee;}
+.file-drag-box .drag{position: relative; width: 100%;height: 100%;padding: 10px;}
 .file-drag-box .drag::after{content: 'Drag & Drop';position: absolute;left: 50%;top:50%;transform: translate(-50%,-50%);font-size: 16px;z-index: 2;color: #b8b8b8;}
 .file-list-box ul,
 .file-list-box textarea{resize:none;width: 100%;height: 80px;overflow-x: auto;padding: 10px;border-radius: 10px;border: 1px solid #eee;font-size: 14px;line-height: 1.6}
@@ -188,8 +188,6 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .manual-ftp-container .ftp-info .list b{width: 100px;font-size: 15px;}
 .manual-ftp-container .ftp-info .list .flex-1{height: 100%;}
 .manual-ftp-container .ftp-info .list .input-box{width: 100%;}
-.manual-ftp-container .ftp-info .list .input-box:disabled,
-.manual-ftp-container .ftp-info select:disabled{background-color: #e9f3f7;}
 .manual-ftp-container .ftp-info .list.mode .flex-1{display: flex;align-items: center;}
 .manual-ftp-container .ftp-info .list.mode .radio-input{margin-right: 20px;font-size: 14px;}
 .manual-ftp-container .ftp-info .list.mode .radio-input label{cursor: pointer;}
@@ -200,6 +198,16 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .file-tti-box .input-box:focus,
 .file-list-box textarea:focus,
 .user-info-add .box input:focus{border-color: #333;}
+/* disabled */
+.file-tti-box .input-box:disabled,
+.file-list-box ul, .file-list-box textarea:disabled,
+.manual-ftp-container .ftp-info .list .input-box:disabled,
+.manual-ftp-container .ftp-info select:disabled,
+.file-drag-box.disabled::after{background-color: #f1f1f1;}
+
+.file-drag-box.disabled{position: relative;pointer-events: none;overflow:hidden;}
+.file-drag-box.disabled .drag:after{display: none;}
+.file-drag-box.disabled::after{content: '';position: absolute;top: 0;left:0;right:0;bottom:0;z-index: 1;}
 
 /*전송내역*/
 .send-box{margin: 20px 0;}
@@ -210,9 +218,9 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .send-box tr:nth-of-type(even){background-color: #f4faff;}
 .send-box .targetName{cursor: pointer;}
 .send-box .targetName:hover{color: #0082bb;}
-.pro-bar{position: relative;margin: 0 auto;width:100%;height: 25px;overflow: hidden;border: 1px solid #eee; border-radius: 30px;background-color: #fff;}
+.pro-bar{position: relative;margin: 0 auto;width:100%;height:30px;overflow: hidden;border: 1px solid #eee; border-radius: 30px;background-color: #fff;}
 .pro-bar span{display: block;height: 100%;background-color: #0082bb;border-top-right-radius:20px;border-bottom-right-radius:20px;transition: width .3s linear;}
-.pro-bar b{position: absolute;left: 50%;top: 50%;z-index: 10;transform: translate(-50%,-50%);font-size: 14px;text-shadow: 2px 1px 2px rgb(255 255 255 / 50%);}
+.pro-bar b{position: absolute;left: 50%;top: 50%;z-index: 10;transform: translate(-50%,-50%);font-size: 14px;text-shadow: 1px 1px 3px rgb(255 255 255 / 50%);}
 .history-detaile-container .targetName{font-size: 17px;font-weight: 600;}
 
 .history-container select{padding: 0 5px; width: 100%;height: 40px;border: 1px solid #eee;border-radius: 5px;}

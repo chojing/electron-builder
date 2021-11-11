@@ -96,7 +96,7 @@ export default {
         url: 'ManualFileUpload',
         data: item,
         width: 500,
-        height: 800,
+        height: 700,
         parent: '',
         modal: false
       })
