@@ -109,7 +109,7 @@ main .favorite-list button:hover{border-color: #0073a5;}
 main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5f5;}
 .target-list ul{padding:5px 15px;}
 .target-list ul li{padding:5px 0;}
-.target-list ul li p{position: relative;cursor: pointer;}
+.target-list ul li p{position: relative;cursor: pointer;display: inline-block;}
 .target-list > ul p{padding-left: 20px;}
 .target-list > ul p::after{position: absolute;content: '-';left:0;top:0;width: 15px;height: 15px;}
 .target-list > ul li p[data-haschild='1']::after{position: absolute;content: '';left:0;top:50%;transform: translateY(-50%); width: 12px;height: 15px;background: url('../images/folder-solid.svg') no-repeat center 0/100% auto;}
