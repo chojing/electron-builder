@@ -1,6 +1,5 @@
 <template>
   <li v-for="item in nodeList" v-bind:key="item.nodeid">
-    <!-- 임시) 전체 값 넣어보기-->
     <p @click="this.onClick(item, item.name)"
        v-bind:data-haschild="item.haschild"
        v-bind:data-ftpserverid="item.ftpserverid"
@@ -8,12 +7,8 @@
        v-bind:data-isabs="item.isabs"
        v-bind:data-isabs_boolean="item.isabs_boolean"
        v-bind:data-name="item.name"
-       v-bind:data-nodeid="item.nodeid"
-       v-bind:data-nodeseq="item.nodeseq"
-       v-bind:data-parentnodeid="item.parentnodeid"
        v-bind:data-path="item.path"
-       v-bind:data-path_ftpserverid="item.path_ftpserverid"
-       v-bind:data-path_ftpsiteid="item.path_ftpsiteid"
+       v-bind:data-isserver="item.isserver"
        v-bind:data-isopen="item.isopen"
        >{{item.name}}</p>
     <ul :class="{hide:!item.isopen}">
@@ -49,33 +44,38 @@ export default {
       if (!this.timeoutId) {
         // 원클릭
         this.timeoutId = setTimeout(() => {
-          this.getChildList(item)
+          if (thishaschild == 1) {
+            this.getChildList(item)
+          }
           this.timeoutId = null
         }, 300)
-      } else {
-        // 더블클릭
-        if (!thishaschild == 1) {
-          clearTimeout(this.timeoutId)
-          this.FileUploadPopup(name)
-          this.timeoutId = null
-        }
+      } else if (!thishaschild == 1) {
+        clearTimeout(this.timeoutId)
+        this.FileUploadPopup(name)
+        this.timeoutId = null
       }
     },
     getChildList: function (item) {
       const thisnodeid = item.nodeid
       if (item.isopen == undefined || item.isopen == false) {
         axios.getAsyncAxios('/v2/nodes/' + JSON.stringify(thisnodeid), null, (response) => {
-          console.log('클릭한 nodeid 값 : ', thisnodeid)
+          // console.log('클릭한 nodeid 값 : ', thisnodeid)
+          // console.log('isserver 값 : ', item.isserver)
+          for (const result of response.data.results) {
+            // console.log('is', result.isserver)
+            // console.log('nodeid ', result.nodeid)
+            if (result.isserver == true) {
+              axios.getAsyncAxios('/v2/nodes/' + JSON.stringify(thisnodeid), null, (response) => {
+                console.log('isserver 값2  : ', result.isserver)
+                console.log('childList data : ', item.childList)
+              })
+            }
+          }
           item.childList = response.data.results
+          console.log('childList : ', item.childList)
+
           item.isopen = true
-          console.log('클릭한: ', item)
-          // response.data.results.forEach(function (item, index) {
-          //   console.log(index, item)
-          //   console.log(item.parentnodeid)
-          //   if (item.parentnodeid == thisnodeid) {
-          //     console.log('같다')
-          //   }
-          // })
+          // console.log('클릭한: ', item)
         })
         return false
       } else if (item.isopen == true) {

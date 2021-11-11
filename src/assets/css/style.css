@@ -108,6 +108,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f1fb
 .target-list ul{padding:5px 15px;}
 .target-list ul li{padding:5px 0;}
 .target-list ul li p{position: relative;cursor: pointer;}
+/*.target-list ul li p[data-isserver='true']{opacity: 0;}*/
 .target-list ul li p.active{color: #0073a5;font-weight: bold;}
 .target-list > ul p{padding-left: 20px;}
 .target-list > ul p::after{position: absolute;content: '-';left:0;top:0;width: 15px;height: 15px;}
