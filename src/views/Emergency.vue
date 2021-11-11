@@ -6,7 +6,7 @@
         <div class="search-form">
             <h4>전송 Target</h4>
         </div>
-        <div class="target-list" style="background: #f1fbff;">
+        <div class="target-list" style="background: #f5f5f5;border-radius: 5px;">
           <ul class="one-list">
             <!-- 수동FTP리스트 임시값 적용 // 추후에 맞는 값으로 변경해야함-->
             <li v-for="item in targetFtpList" v-bind:key="item.ftpserferid" @dblclick="this.FileUploadPopup(item)">
