@@ -39,8 +39,8 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow () {
   console.log('createWindow')
   gWin = new BrowserWindow({
-    width: 700,
-    height: 700,
+    width: 600,
+    height: 760,
     webPreferences: {
       // Required for Spectron testing
       enableRemoteModule: !!process.env.IS_TEST,

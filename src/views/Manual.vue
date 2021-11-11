@@ -95,7 +95,7 @@ export default {
         key: ++this.g_windowIndex,
         url: 'ManualFileUpload',
         data: item,
-        width: 700,
+        width: 500,
         height: 700,
         parent: '',
         modal: false
