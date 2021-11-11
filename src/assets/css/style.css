@@ -81,11 +81,11 @@ header .logo{text-align: center;}
 .tab-info.view{display: block;}
 
 .search-form{padding: 10px; background: #fff;border-radius: 5px;}
-.search-form h4{padding: 0; color: #0086c1;font-size: 16px;}
+.search-form h4{padding: 0; color: #0c5c80;font-size: 16px;}
 .search-form .search-btn button{padding: 10px;border-radius: 5px; border:1px solid #333;background-color: #fff;}
 .search-form .search-box{display: none;}
 .search-form .search-box.show{display: block;}
-.search-form .search-box input{padding: 0 5px;width: 100%;height: 30px;border:1px solid #b8b8b8;border-radius: 5px;}
+.search-form .search-box input{padding: 0 5px;width: 100%;height: 35px;border:1px solid #eee;border-radius: 5px;}
 
 /** main **/
 main{padding: 40px 0 100px;}
@@ -132,7 +132,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 /** file-up-load **/
 .file-container{height:100%; border-left: 2px solid #eee;}
 .file-container .wrap{height: 100%;}
-.file-container h4{font-size: 16px;font-weight: 600;}
+.file-container h4{margin-bottom: 10px;font-size: 16px;font-weight: 600;}
 .file-tti-box .input-box{width: 100%;}
 .file-container .favorite-list{padding: 10px; border: 1px solid #333;border-radius: 5px;background-color: #333;}
 .file-container .favorite-list button{margin: 0; border: none;cursor:default;}
@@ -194,6 +194,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 
 /* focus */
 .manual-ftp-container .ftp-info .list .input-box:focus,
+.search-form .search-box input:focus,
 .file-tti-box .input-box:focus,
 .file-list-box textarea:focus,
 .user-info-add .box input:focus{border-color: #333;}
