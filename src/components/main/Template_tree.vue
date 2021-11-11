@@ -93,7 +93,7 @@ export default {
         url: 'MainFileUpLoad',
         data: data,
         width: 500,
-        height: 730,
+        height: 800,
         parent: '',
         modal: false
       })
