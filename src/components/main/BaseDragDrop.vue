@@ -9,7 +9,7 @@
         <textarea :disabled='isDisabled'></textarea>
       </div>
       <h4>파일(폴더) 전송</h4>
-      <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop" :disabled='isDisabled'>
+      <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop" :class="isDisabled ? 'disabled' : ''">
         <div class="drag">
           <label for="file">
             <div v-for="fileItem in fileListVue" :key="fileItem.index" class="fileName">

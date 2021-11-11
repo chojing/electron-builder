@@ -112,14 +112,19 @@ export default {
     },
     DragDropResult: function (value) {
       g_ftpSendData.fileList = value
-      console.log(value)
+      console.log('DragDropResult', value)
     },
     doUpload: function () {
       console.log('request FTP Start')
-      g_ftpSendData.type = 'upload'
-      g_ftpSendData.targetUrl = ''
-      this.isUploading = true
-      ipcRenderer.send('ftp-file-upload', g_ftpSendData) // eventName, SendData
+      console.log('g_ftpSendData : ', g_ftpSendData)
+      if (Object.keys(g_ftpSendData.fileList).length === 0) {
+        alert('전송할 파일(폴더)를 선택해주세요.')
+      } else {
+        g_ftpSendData.type = 'upload'
+        g_ftpSendData.targetUrl = ''
+        this.isUploading = true
+        ipcRenderer.send('ftp-file-upload', g_ftpSendData) // eventName, SendData
+      }
     },
     ftpResult: function (event, data) {
       console.log('ftpResult', data)
@@ -169,6 +174,7 @@ export default {
         path: undefined // type 이 path일 경우만 기재
       }
       ipcRenderer.send('ftp-cancel', cancelInfo)
+
       this.isUploading = false
       this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
       console.log('cancel request!')

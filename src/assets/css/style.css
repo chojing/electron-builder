@@ -207,7 +207,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 
 .file-drag-box.disabled{position: relative;pointer-events: none;overflow:hidden;}
 .file-drag-box.disabled .drag:after{display: none;}
-.file-drag-box.disabled::after{content: '';position: absolute;top: 0;left:0;right:0;bottom:0;z-index: 1;}
+.file-drag-box.disabled::after{content: '';position: absolute;top: 0;left:0;right:0;bottom:0;z-index: -1;}
 
 /*전송내역*/
 .send-box{margin: 20px 0;}
