@@ -14,7 +14,7 @@
           </span>
           <span>
             <label> pw </label>
-            <input id="password" name="pwInput" min="3" type="password"/>
+            <input @keyup.enter="this.login"  id="password" name="pwInput" min="3" type="password"/>
             <em id="errorText"></em>
           </span>
         </div>
@@ -24,7 +24,7 @@
           </label>
         </div>
         <div>
-          <button id="json-id" @keyup.enter="this.login" @click="this.login">Login</button>
+          <button id="json-id" @click="this.login">Login</button>
 <!--          <button id="popup" @click="this.popup">Popup</button>-->
 <!--          <button id="testpage" @click="this.testpage">TestPage</button>-->
         </div>
