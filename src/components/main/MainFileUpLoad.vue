@@ -39,7 +39,7 @@ export default {
     // type에 따라 값 전달
     init: function (event, key, data, type) {
       if (type == 'init') {
-        this.targetNameValue = data.value
+        this.targetNameValue = data.nodename
       }
     }
   }

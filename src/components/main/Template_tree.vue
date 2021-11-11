@@ -13,7 +13,6 @@
        >{{item.name}}</p>
     <ul :class="{hide:!item.isopen}">
       <templateTree v-bind:nodeList="item.childList"/>
-      <!--      <templateTree v-bind:nodeList="childList">-->
     </ul>
   </li>
 </template>
@@ -23,7 +22,7 @@ import templateTree from '@/components/main/Template_tree'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 const axios = require('@/assets/js/axios.js')
-// const custom = require('@/assets/js/custom.js')
+const custom = require('@/assets/js/custom.js')
 export default {
   name: 'templateTree',
   components: {
@@ -51,7 +50,7 @@ export default {
         }, 200)
       } else if (!thishaschild == 1) {
         clearTimeout(this.timeoutId)
-        this.FileUploadPopup(name)
+        this.FileUploadPopup(item, name)
         this.timeoutId = null
       }
     },
@@ -83,10 +82,11 @@ export default {
       //   axios.setError(error.response.data)
       // })
     },
-    FileUploadPopup: function (name) {
+    FileUploadPopup: function (ftpInfo, name) {
       console.log('nodeList : ', this.nodeList)
       const data = {
-        value: name
+        ftpinfo: custom.proxy2map(ftpInfo),
+        nodename: name
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
