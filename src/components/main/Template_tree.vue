@@ -48,7 +48,7 @@ export default {
             this.getChildList(item)
           }
           this.timeoutId = null
-        }, 300)
+        }, 200)
       } else if (!thishaschild == 1) {
         clearTimeout(this.timeoutId)
         this.FileUploadPopup(name)
@@ -59,23 +59,17 @@ export default {
       const thisnodeid = item.nodeid
       if (item.isopen == undefined || item.isopen == false) {
         axios.getAsyncAxios('/v2/nodes/' + JSON.stringify(thisnodeid), null, (response) => {
-          // console.log('클릭한 nodeid 값 : ', thisnodeid)
-          // console.log('isserver 값 : ', item.isserver)
+          item.isopen = true
           for (const result of response.data.results) {
-            // console.log('is', result.isserver)
-            // console.log('nodeid ', result.nodeid)
             if (result.isserver == true) {
-              axios.getAsyncAxios('/v2/nodes/' + JSON.stringify(thisnodeid), null, (response) => {
-                console.log('isserver 값2  : ', result.isserver)
-                console.log('childList data : ', item.childList)
+              axios.getAsyncAxios('/v2/nodes/' + JSON.stringify(result.nodeid), null, (changeResponse) => {
+                item.childList = changeResponse.data.results
+                console.log(changeResponse.data.results)
               })
+            } else {
+              item.childList = response.data.results
             }
           }
-          item.childList = response.data.results
-          console.log('childList : ', item.childList)
-
-          item.isopen = true
-          // console.log('클릭한: ', item)
         })
         return false
       } else if (item.isopen == true) {
