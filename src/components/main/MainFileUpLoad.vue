@@ -26,9 +26,7 @@ export default {
   data () {
     return {
       g_windowIndex: 0,
-      selfKey: '',
       targetNameValue: '',
-      fileList: [],
       isTelUse: false
     }
   },

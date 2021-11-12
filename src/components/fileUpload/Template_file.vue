@@ -85,7 +85,7 @@ export default {
       selfKey: '',
       targetFtpInfo: '',
       fileList: [],
-      testValue: [],
+      telValue: [],
       dataPer: 0,
       totalDataPer: 0,
       fileIndex: 0,
@@ -106,8 +106,8 @@ export default {
         console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
         // console.log('ftp정보', curFtpServer)
       } else if (type == 'userTelData') {
-        this.testValue.push(data)
-        console.log('담은 데이터', this.testValue)
+        this.telValue.push(data)
+        console.log('담은 데이터', this.telValue)
       }
     },
     DragDropResult: function (value) {
