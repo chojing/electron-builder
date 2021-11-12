@@ -78,6 +78,7 @@ export default {
     // const self = this
     ipcRenderer.on('receiveData', this.init)
     ipcRenderer.on('ftp-result', this.ftpResult)
+    ipcRenderer.on('ftp-error', this.ftpError)
   },
   data () {
     return {
@@ -195,6 +196,9 @@ export default {
         parent: '',
         modal: true
       })
+    },
+    ftpError: function (event, errMsg) {
+      console.log(errMsg.message)
     }
   }
 }
