@@ -75,9 +75,12 @@ FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _current
 FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMsg) {
   let self = this
   if (_type == 'error') {
-    console.log(_errMsg)
+    let errObj = {
+      message: _errMsg.message,
+      code: _errMsg.code
+    }
     // console.log(_errMsg.message + '// AssetKey : ' + _ftpData.key) // 에러처리
-    self.event.sender.send('ftp-error', _errMsg)
+    self.event.sender.send('ftp-error', errObj)
     self.m_NofiPopup.show('sbspds-anywhere_Error', 'Error! \n' + _errMsg.message)
     return
   } else if (_type == 'finish') {

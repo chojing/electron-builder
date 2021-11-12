@@ -198,7 +198,7 @@ export default {
       })
     },
     ftpError: function (event, errMsg) {
-      console.log(errMsg.message)
+      alert(errMsg.message)
     }
   }
 }
