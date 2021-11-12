@@ -22,7 +22,6 @@ import templateTree from '@/components/main/Template_tree'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 const axios = require('@/assets/js/axios.js')
-const custom = require('@/assets/js/custom.js')
 export default {
   name: 'templateTree',
   components: {
@@ -84,20 +83,22 @@ export default {
     },
     FileUploadPopup: function (ftpInfo, name) {
       console.log('nodeList : ', this.nodeList)
-      const data = {
-        ftpinfo: custom.proxy2map(ftpInfo),
-        nodename: name
-      }
-      ipcRenderer.send('openWindow', {
-        key: ++this.g_windowIndex,
-        url: 'MainFileUpLoad',
-        data: data,
-        width: 500,
-        height: 800,
-        parent: '',
-        modal: false
+      let ftpServerId = ftpInfo.path_ftpserverid
+      axios.getAsyncAxios('/v2/ftpservers/' + ftpServerId, null, (response) => {
+        let data = {}
+        data = response.data.result
+        data.nodename = name
+        ipcRenderer.send('openWindow', {
+          key: ++this.g_windowIndex,
+          url: 'MainFileUpLoad',
+          data: data,
+          width: 500,
+          height: 800,
+          parent: '',
+          modal: false
+        })
+        console.log('data send : ', data)
       })
-      console.log('data send : ', data)
     }
   }
 }

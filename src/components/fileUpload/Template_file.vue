@@ -100,15 +100,11 @@ export default {
     init: function (event, key, data, type) {
       if (type == 'init') {
         this.targetFtpInfo = data
-        if (this.isTelUse) {
-          console.log('datatatat ', data.ftpinfo.path_ftpserverid)
-        }
         this.ftpSet(data)
         this.selfKey = key
         this.g_curWindowKey = key
         // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
         console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
-        // console.log('ftp정보', curFtpServer)
       } else if (type == 'userTelData') {
         this.telValue.push(data)
         // console.log('담은 데이터', this.telValue)
@@ -125,9 +121,8 @@ export default {
       } else {
         g_ftpSendData.type = 'upload'
         g_ftpSendData.targetUrl = ''
-        this.isUploading = true
-        console.log('g_ftpSendData : ', custom.proxy2map(g_ftpSendData))
         ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
+        this.isUploading = true
       }
     },
     ftpResult: function (event, data) {
@@ -186,7 +181,6 @@ export default {
     doClose: function () {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
-    getFtpInfo: function () {},
     userInfoPopup: function () {
       const data = {
         parentKey: this.selfKey
@@ -202,7 +196,13 @@ export default {
       })
     },
     ftpError: function (event, errMsg) {
-      alert(errMsg.message)
+      console.log(errMsg)
+      let msg = ''
+      if (errMsg.code === 530) {
+        this.isUploading = false
+        msg = '로그인한 계정 / 비밀번호를 확인해주세요'
+        alert(msg)
+      }
     }
   }
 }
