@@ -81,7 +81,7 @@ export default {
     btn_Del_Click (fileItem) {
       this.delFileList(fileItem)
       this.printList()
-      this.$emit('valueReturn', this.fileListVue)
+      this.$emit('valueReturn', fileList)
     },
     delFileList (fileItem) {
       fileList.forEach(element => {
