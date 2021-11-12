@@ -10,7 +10,7 @@
       <span :style="{width:totalDataPer + '%'}"></span>
       <b>{{totalDataPer}}%</b>
     </div>
-    <div class="file-submit-box mt20 user-tel-box" :class="{hide:isTelUse}">
+    <div class="file-submit-box mt20 user-tel-box" :class="{hide:!isTelUse}">
       <div class="box flex-box">
         <input :value="this.telValue" class="input-box flex-1" type="text" placeholder="전송 확인 문자 연락처(다중)" v-bind:isTelUse="isTelUse" disabled>
         <button @dblclick="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
@@ -99,11 +99,14 @@ export default {
     init: function (event, key, data, type) {
       if (type == 'init') {
         this.targetFtpInfo = data
+        if (this.isTelUse) {
+          console.log('datatatat ', data.ftpinfo.path_ftpserverid)
+        }
         this.ftpSet(data)
         this.selfKey = key
         this.g_curWindowKey = key
         // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
-        // console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
+        console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
         // console.log('ftp정보', curFtpServer)
       } else if (type == 'userTelData') {
         this.telValue.push(data)
@@ -182,6 +185,7 @@ export default {
     doClose: function () {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
+    getFtpInfo: function () {},
     userInfoPopup: function () {
       const data = {
         parentKey: this.selfKey
