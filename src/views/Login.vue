@@ -67,7 +67,7 @@ export default {
         ERROR_TEXT.style.display = 'block'
         ERROR_TEXT.innerHTML = '로그아웃 되었습니다.'
       }
-      if (this.$store.state.username !== null) {
+      if (this.$store.state.username !== null && this.$store.state.username !== undefined) {
         ID.value = this.$store.state.username
       }
       if (this.$store.state.autologin !== null) {

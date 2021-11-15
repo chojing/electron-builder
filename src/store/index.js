@@ -17,7 +17,9 @@ export default createStore({
       state.server = server
     },
     commitUsername (state, username) {
-      state.username = username
+      if (username != null && username != undefined) {
+        state.username = username
+      }
     },
     commitUserid (state, userid) {
       state.userid = userid
