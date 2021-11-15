@@ -8,7 +8,7 @@
 </template>
 
 <script>
-// const axios = require('@/assets/js/axios.js')
+const axios = require('@/assets/js/axios.js')
 export default {
   name: 'Template_favorits_menu',
   props: {
@@ -18,13 +18,18 @@ export default {
   methods: {
     editFavoritsMenu: function (e) {
       var isFavorits = document.getElementById('favorits-checkbox-id').checked
-      // var alias = '테스트'
+      var param = {}
+      param.alias = 'tteesstt'
       if (isFavorits) { // 즐겨찾기 추가
-        alert('체크박스 체크 되어있음 ', isFavorits)
-        // axios.postAsyncAxios('/v2/users/' + this.username + '/favorits/' + this.nodeid, alias, null, (response) => {
-        //   console.log('post', response)
-        // })
+        axios.postAsyncAxios('/v2/users/' + this.username + '/favorits/' + this.nodeid, null, param, (response) => {
+          // console.log('post', response)
+          this.$parent.getFavorits()
+        })
       } else if (!isFavorits) { // 즐겨찾기 삭제
+        axios.deleteAsyncAxios('/v2/users/' + this.username + '/favorits/' + this.nodeid, null, null, (response) => {
+          // console.log('delete', response)
+          this.$parent.getFavorits()
+        })
       }
     }
   }

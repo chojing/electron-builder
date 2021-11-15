@@ -13,10 +13,15 @@
         <h4>즐겨찾기</h4>
         <div class="favorite-list">
           <div class="fa-item-link fa-item flex-column">
-            <button>
-              <span>1뎁스</span>
-              <span>2뎁스</span>
-              <span>3뎁스</span>
+            <button v-for="item in favoritsList" v-bind:key="item.nodeid">
+              <template v-if="Array.isArray(item.name)">
+                <template v-for="item in item.name" v-bind:key="item">
+                  <span>{{item}}</span>
+                </template>
+              </template>
+              <template v-else>
+                <span>{{item.name}}</span>
+              </template>
             </button>
           </div>
         </div>
@@ -90,11 +95,19 @@ export default {
     //   })
     // }
     getFavorits: function () {
-      console.log('this.userName', this.username)
       axios.getAsyncAxios('/v2/users/' + this.username + '/favorits', null, (response) => {
         this.favoritsList = response.data.results
-        console.log('response.data : ', response.data)
-        console.log('favoritsList : ', this.favoritsList)
+        var favorits = this.favoritsList.map((obj) => obj['name'])
+        // console.log('favorits : ', favorits)
+        for (var idx in favorits) {
+          let hasDepth = favorits[idx]
+          if (hasDepth.indexOf('>') !== -1) {
+            var str = hasDepth.split('>')
+            // console.log('str : ', str)
+            this.favoritsList[idx].name = str
+          }
+        }
+        // console.log('favoritsList : ', this.favoritsList)
       })
     },
     showContextMenu: function (e) {

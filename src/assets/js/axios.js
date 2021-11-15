@@ -56,7 +56,7 @@ function getAsyncAxios (url, param, callback, fail) {
 
 async function postSyncAxios (url, body, param, callback, fail) {
   let contentType = 'application/x-www-form-urlencoded; charset=UTF-8'
-  if (body.length > 0) {
+  if (body != null && body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
   let result
@@ -76,7 +76,7 @@ async function postSyncAxios (url, body, param, callback, fail) {
 }
 function postAsyncAxios (url, body, param, callback, fail) {
   let contentType = 'application/x-www-form-urlencoded; charset=UTF-8'
-  if (body.length > 0) {
+  if (body != null && body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
   axios.post(url, body, {
@@ -156,7 +156,7 @@ async function deleteSyncAxios (url, body, param, callback, fail) {
 }
 function deleteAsyncAxios (url, body, param, callback, fail) {
   let contentType = 'application/x-www-form-urlencoded; charset=UTF-8'
-  if (body.length > 0) {
+  if (body != null && body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
   axios.delete(url, body, {
