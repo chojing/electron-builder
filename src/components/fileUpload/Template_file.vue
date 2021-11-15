@@ -19,7 +19,7 @@
     <div class="btn-box center pt20">
       <button v-on:click = "doUpload" class="btn blue h30" v-show="!isUploading&&!isUploadComplete">전송</button>
       <button v-on:click = "doCancel" class="btn h30" v-show="isUploading&&!isUploadComplete">전송 취소</button>
-      <button v-on:click = "doClose" class="btn h30" ref="closeBtn">닫기</button>
+      <button v-on:click = "doClose" class="btn h30" v-show="!isUploading" ref="closeBtn">닫기</button>
     </div>
 </template>
 
@@ -138,6 +138,11 @@ export default {
         this.isUploading = false
         this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
       }
+      if (data.ftpData.isCancel == true) {
+        console.log('Cancel Complete')
+        this.isUploading = false
+        this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
+      }
     },
     ftpSet: function (value) {
       // eslint-disable-next-line no-const-assign
@@ -176,12 +181,12 @@ export default {
       }
       ipcRenderer.send('ftp-cancel', cancelInfo)
 
-      this.isUploading = false
-      this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
       console.log('cancel request!')
     },
     doClose: function () {
-      ipcRenderer.send('closeWindow', this.g_curWindowKey)
+      if (this.isUploading == false) {
+        ipcRenderer.send('closeWindow', this.g_curWindowKey)
+      }
     },
     userInfoPopup: function () {
       const data = {
