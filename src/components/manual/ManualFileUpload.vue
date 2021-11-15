@@ -12,7 +12,7 @@ import Template_file from '@/components/fileUpload/Template_file'
 export default {
   data () {
     return {
-      isTelUse: true
+      isTelUse: false
     }
   },
   components: {

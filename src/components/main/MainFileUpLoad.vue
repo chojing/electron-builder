@@ -27,7 +27,7 @@ export default {
     return {
       g_windowIndex: 0,
       targetNameValue: '',
-      isTelUse: false
+      isTelUse: true
     }
   },
   created () {

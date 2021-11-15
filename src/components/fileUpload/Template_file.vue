@@ -10,7 +10,7 @@
       <span :style="{width:totalDataPer + '%'}"></span>
       <b>{{totalDataPer}}%</b>
     </div>
-    <div class="file-submit-box mt20 user-tel-box" :class="{hide:isTelUse}">
+    <div class="file-submit-box mt20 user-tel-box" :class="{hide:!isTelUse}">
       <div class="box flex-box">
         <input :value="this.telValue" class="input-box flex-1" type="text" placeholder="전송 확인 문자 연락처(다중)" v-bind:isTelUse="isTelUse" disabled>
         <button @dblclick="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
@@ -104,8 +104,7 @@ export default {
         this.selfKey = key
         this.g_curWindowKey = key
         // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
-        // console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
-        // console.log('ftp정보', curFtpServer)
+        console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
       } else if (type == 'userTelData') {
         this.telValue.push(data)
         // console.log('담은 데이터', this.telValue)
@@ -122,9 +121,8 @@ export default {
       } else {
         g_ftpSendData.type = 'upload'
         g_ftpSendData.targetUrl = ''
-        this.isUploading = true
-        console.log('g_ftpSendData : ', custom.proxy2map(g_ftpSendData))
         ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
+        this.isUploading = true
       }
     },
     ftpResult: function (event, data) {
@@ -203,7 +201,13 @@ export default {
       })
     },
     ftpError: function (event, errMsg) {
-      alert(errMsg.message)
+      console.log(errMsg)
+      let msg = ''
+      if (errMsg.code === 530) {
+        this.isUploading = false
+        msg = '로그인한 계정 / 비밀번호를 확인해주세요'
+        alert(msg)
+      }
     }
   }
 }
