@@ -1,6 +1,6 @@
 <!-- 파일업로드 공통-->
 <template>
-    <!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "setInput" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
+    <!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "DragDropResult" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
     <baseDragDrop @valueReturn="DragDropResult" :isUploading="isUploading" :isUploadComplete="isUploadComplete"/>
     <div class="pro-bar mt15">
       <span :style="{width:dataPer + '%'}"></span>

@@ -1,5 +1,6 @@
 // const Buffer = require('buffer')
-const Client = require('ftp')
+// const Client = require('ftp')
+const Client = require('../../../libs/custom_ftp')
 const { shell } = require('electron')
 const fs = require('fs')
 const util = require('util')
