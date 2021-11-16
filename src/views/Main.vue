@@ -13,7 +13,7 @@
         <h4>즐겨찾기</h4>
         <div class="favorite-list">
           <div class="fa-item-link fa-item flex-column">
-            <button v-for="item in favoritsList" v-bind:key="item.nodeid">
+            <button v-for="item in favoritsList" v-bind:key="item.nodeid" @dblclick="this.FileUploadPopup(item)" @click.prevent>
               <template v-if="Array.isArray(item.name)">
                 <template v-for="item in item.name" v-bind:key="item">
                   <span>{{item}}</span>
@@ -38,7 +38,7 @@
         </div>
         <div class="target-list mt40"  @click="hideContextMenu()" @contextmenu.prevent="showContextMenu($event)">
           <ul class="one-list" id="targetContainer">
-            <templateTree v-bind:nodeList="nodeList"/>
+            <templateTree v-bind:nodeList="nodeList" ref="templateTree"/>
           </ul>
         </div>
       </article>
@@ -113,7 +113,7 @@ export default {
     showContextMenu: function (e) {
       this.nodeid = ''
       document.getElementById('favorits-checkbox-id').checked = false
-      if (e.target.dataset.nodeid) {
+      if (e.target.dataset.haschild == 0 && e.target.dataset.nodeid) {
         var menu = document.getElementById('favorits-menu')
         menu.style.left = e.pageX + 'px'
         menu.style.top = e.pageY + 'px'
@@ -130,6 +130,16 @@ export default {
     },
     hideContextMenu: function () {
       document.getElementById('favorits-menu').classList.remove('active')
+    },
+    FileUploadPopup: function (item) {
+      console.log('item : ', item)
+      let name = ''
+      if (Array.isArray(item.name)) {
+        name = item.name[item.name.length - 1]
+      } else {
+        name = item.name
+      }
+      this.$refs.templateTree.FileUploadPopup(item, name)
     }
   }
 }

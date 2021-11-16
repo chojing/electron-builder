@@ -2,6 +2,7 @@ import store from '@/store/index'
 import router from '@/router/index'
 import axios from 'axios'
 axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
+axios.defaults.baseURL = store.state.server
 
 async function login (id, password) {
   axios.defaults.baseURL = store.state.server
