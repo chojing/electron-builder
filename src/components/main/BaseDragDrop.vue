@@ -2,11 +2,11 @@
   <div>
       <h4>전송제목</h4>
       <div class="file-tti-box mb40">
-        <input class="input-box" type="text" value="" :disabled='isDisabled'>
+        <input class="input-box" type="text" value="" ref="title" :disabled='isDisabled'>
       </div>
       <h4>Optional(요청내역)</h4>
       <div class="file-list-box mb20">
-        <textarea :disabled='isDisabled'></textarea>
+        <textarea ref="comment" :disabled='isDisabled'></textarea>
       </div>
       <h4>파일(폴더) 전송</h4>
       <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop" :class="isDisabled ? 'disabled' : ''">
