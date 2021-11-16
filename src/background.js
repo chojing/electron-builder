@@ -98,6 +98,7 @@ async function createWindow () {
 
 function RunTray () {
   let tray = new Tray(
+    // eslint-disable-next-line no-undef
     _path.resolve(__static, 'img/icons/mac/16x16.png')
   )
   tray.on('double-click', function () {
@@ -476,6 +477,7 @@ ipcMain.on('login-read', event => {
   */
 
   log.info('NODE_ENV', process.env.NODE_ENV)
+  // eslint-disable-next-line no-undef
   const properties = g_JSON.ReadUserJSON(_path.resolve(__static, 'properties/' + process.env.NODE_ENV + '.json'))
   lastloginInfo.server = properties.server
   log.info('NODE_ENV', lastloginInfo)
@@ -556,8 +558,9 @@ function WindowCreate (event, windowInfo) {
     delete g_windows[key]
   })
   if (process.env.WEBPACK_DEV_SERVER_URL) {
+    console.log(process.env.WEBPACK_DEV_SERVER_URL)
     // Load the url of the dev server if in development mode
-    window.loadURL(process.env.WEBPACK_DEV_SERVER_URL + url)
+    window.loadURL(process.env.WEBPACK_DEV_SERVER_URL + '#/' + url)
     if (!process.env.IS_TEST) window.webContents.openDevTools()
   } else {
     createProtocol('app')

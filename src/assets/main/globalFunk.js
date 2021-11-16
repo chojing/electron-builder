@@ -1,6 +1,7 @@
 const electron = require('electron')
 const app = electron.app
 const { Notification } = require('electron')
+const _path = require('path')
 
 function FileData () {
   this.path = ''
@@ -60,8 +61,8 @@ FileData.prototype.getFilePathInfo = function (_FilePath, _searchType) {
 }
 
 function NotificationPopUp () {
-  // eslint-disable-next-line no-path-concat
-  this.iconPath = __dirname.concat('/.icon-icons/icon.icns')
+  // eslint-disable-next-line no-undef
+  this.iconPath = _path.resolve(__static, 'img/icons/mac/16x16.png')
   this.subTitle = 'subTitle'
 }
 
