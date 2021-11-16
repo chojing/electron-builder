@@ -13,10 +13,15 @@
         <h4>즐겨찾기</h4>
         <div class="favorite-list">
           <div class="fa-item-link fa-item flex-column">
-            <button>
-              <span>1뎁스</span>
-              <span>2뎁스</span>
-              <span>3뎁스</span>
+            <button v-for="item in favoritsList" v-bind:key="item.nodeid">
+              <template v-if="Array.isArray(item.name)">
+                <template v-for="item in item.name" v-bind:key="item">
+                  <span>{{item}}</span>
+                </template>
+              </template>
+              <template v-else>
+                <span>{{item.name}}</span>
+              </template>
             </button>
           </div>
         </div>
@@ -31,7 +36,7 @@
             <input type="text" placeholder="전송타겟을 입력해주세요">
           </div>
         </div>
-        <div class="target-list mt40">
+        <div class="target-list mt40"  @click="hideContextMenu()" @contextmenu.prevent="showContextMenu($event)">
           <ul class="one-list" id="targetContainer">
             <templateTree v-bind:nodeList="nodeList"/>
           </ul>
@@ -40,27 +45,33 @@
     </div>
   </main>
   <templateMenu/>
+  <templateContextMenu :nodeid="nodeid" :username="username"/>
 </template>
 <script>
 import templateTree from '@/components/main/Template_tree'
 import templateMenu from '@/components/menu/Template_menu'
+import templateContextMenu from '@/components/main/Template_context_menu'
 const axios = require('@/assets/js/axios.js')
 export default {
   name: 'Main',
   el: '#mainView',
   components: {
     templateTree,
-    templateMenu
+    templateMenu,
+    templateContextMenu
   },
   data () {
     return {
       username: this.$store.state.username,
+      favoritsList: [],
       nodeList: [],
+      nodeid: null,
       active: false
     }
   },
   mounted () {
     this.getTree()
+    this.getFavorits()
   },
   methods: {
     getTree: function () {
@@ -69,10 +80,10 @@ export default {
         // console.log('nodeid : ', response.data.results[0].nodeid)
         axios.getAsyncAxios('/v2/nodes/' + response.data.results[0].nodeid, null, (response) => {
           this.nodeList = response.data.results
-          // console.log('results 값 : ', this.nodeList)
+          console.log('results 값 : ', this.nodeList)
         })
       })
-    }
+    },
     // getTree: function () {
     //   axios.getSyncAxios('/v2/nodes', null, (response) => {
     //     axios.getSyncAxios('/nodes/' + response.data.result.nodename, null, (response) => {
@@ -83,6 +94,43 @@ export default {
     //     axios.setError(error.response.data)
     //   })
     // }
+    getFavorits: function () {
+      axios.getAsyncAxios('/v2/users/' + this.username + '/favorits', null, (response) => {
+        this.favoritsList = response.data.results
+        var favorits = this.favoritsList.map((obj) => obj['name'])
+        // console.log('favorits : ', favorits)
+        for (var idx in favorits) {
+          let hasDepth = favorits[idx]
+          if (hasDepth.indexOf('>') !== -1) {
+            var str = hasDepth.split('>')
+            // console.log('str : ', str)
+            this.favoritsList[idx].name = str
+          }
+        }
+        // console.log('favoritsList : ', this.favoritsList)
+      })
+    },
+    showContextMenu: function (e) {
+      this.nodeid = ''
+      document.getElementById('favorits-checkbox-id').checked = false
+      if (e.target.dataset.nodeid) {
+        var menu = document.getElementById('favorits-menu')
+        menu.style.left = e.pageX + 'px'
+        menu.style.top = e.pageY + 'px'
+        this.nodeid = e.target.dataset.nodeid
+        var userFavorits = this.favoritsList.map((obj) => obj['nodeid'])
+        for (var idx in userFavorits) {
+          let favoritsNodeid = userFavorits[idx]
+          if (this.nodeid == favoritsNodeid) {
+            document.getElementById('favorits-checkbox-id').checked = true
+          }
+        }
+        menu.classList.add('active')
+      }
+    },
+    hideContextMenu: function () {
+      document.getElementById('favorits-menu').classList.remove('active')
+    }
   }
 }
 </script>

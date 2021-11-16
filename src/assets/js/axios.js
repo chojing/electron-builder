@@ -1,12 +1,10 @@
 import store from '@/store/index'
 import router from '@/router/index'
 import axios from 'axios'
-
-axios.defaults.baseURL = store.state.server
 axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
 
 async function login (id, password) {
-  // axios.defaults.baseURL = store.state.server
+  axios.defaults.baseURL = store.state.server
   await axios.post('/v2/users/apikey', null, {
     params: {
       username: id,
@@ -56,7 +54,7 @@ function getAsyncAxios (url, param, callback, fail) {
 
 async function postSyncAxios (url, body, param, callback, fail) {
   let contentType = 'application/x-www-form-urlencoded; charset=UTF-8'
-  if (body.length > 0) {
+  if (body != null && body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
   let result
@@ -76,7 +74,7 @@ async function postSyncAxios (url, body, param, callback, fail) {
 }
 function postAsyncAxios (url, body, param, callback, fail) {
   let contentType = 'application/x-www-form-urlencoded; charset=UTF-8'
-  if (body.length > 0) {
+  if (body != null && body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
   axios.post(url, body, {
@@ -156,7 +154,7 @@ async function deleteSyncAxios (url, body, param, callback, fail) {
 }
 function deleteAsyncAxios (url, body, param, callback, fail) {
   let contentType = 'application/x-www-form-urlencoded; charset=UTF-8'
-  if (body.length > 0) {
+  if (body != null && body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
   axios.delete(url, body, {

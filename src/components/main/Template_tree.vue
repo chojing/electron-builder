@@ -1,6 +1,7 @@
 <template>
   <li v-for="item in nodeList" v-bind:key="item.nodeid">
     <p @click="this.onClick(item, item.name)"
+       v-bind:data-nodeid="item.nodeid"
        v-bind:data-haschild="item.haschild"
        v-bind:data-ftpserverid="item.ftpserverid"
        v-bind:data-ftpsiteid="item.ftpsiteid"
@@ -84,21 +85,25 @@ export default {
     FileUploadPopup: function (ftpInfo, name) {
       console.log('nodeList : ', this.nodeList)
       let ftpServerId = ftpInfo.path_ftpserverid
-      axios.getAsyncAxios('/v2/ftpservers/' + ftpServerId, null, (response) => {
-        let data = {}
-        data = response.data.result
-        data.nodename = name
-        ipcRenderer.send('openWindow', {
-          key: ++this.g_windowIndex,
-          url: 'MainFileUpLoad',
-          data: data,
-          width: 500,
-          height: 800,
-          parent: '',
-          modal: false
+      if (ftpServerId == '') {
+        alert('조회할 서버아이디가 없습니다.')
+      } else {
+        axios.getAsyncAxios('/v2/ftpservers/' + ftpServerId, null, (response) => {
+          let data = {}
+          data = response.data.result
+          data.nodename = name
+          ipcRenderer.send('openWindow', {
+            key: ++this.g_windowIndex,
+            url: 'MainFileUpLoad',
+            data: data,
+            width: 500,
+            height: 800,
+            parent: '',
+            modal: false
+          })
+          console.log('data send : ', data)
         })
-        console.log('data send : ', data)
-      })
+      }
     }
   }
 }

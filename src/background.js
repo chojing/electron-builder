@@ -1,4 +1,3 @@
-/* eslint-disable no-tabs */
 'use strict'
 
 import { app, protocol, BrowserWindow, ipcMain, globalShortcut } from 'electron'
@@ -19,6 +18,7 @@ const WindowInfo = require('./assets/main/windows.js').WindowInfo
 const FTPInfo_Type1 = require('./assets/main/ftpinfo.js').FTPInfo_Type1
 const FTPInfo_Type2 = require('./assets/main/ftpinfo.js').FTPInfo_Type2
 const _path = require('path')
+const log = require('electron-log')
 
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
@@ -30,6 +30,7 @@ const g_UPLOAD_FTP_FOLDER_PATH = '/konan/electron_test/'
 let g_curUserInfo
 // eslint-disable-next-line no-unused-vars
 let gIsMac = false
+log.transports.file.resolvePath = () => _path.join(getUserHome() + KONAN_ROOT_FOLDER, 'logs/main.log')
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -37,7 +38,7 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 async function createWindow () {
-  console.log('createWindow')
+  log.info('createWindow')
   gWin = new BrowserWindow({
     width: 600,
     height: 760,
@@ -84,7 +85,8 @@ async function createWindow () {
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    await gWin.loadURL('app://./index.html')
+    gWin.loadURL('app://./index.html')
+    gWin.webContents.openDevTools()
   }
 
   if (process.platform === 'darwin') {
@@ -96,7 +98,7 @@ async function createWindow () {
 
 function RunTray () {
   let tray = new Tray(
-    _path.resolve(__dirname, '../public/img/icons/mac/16x16.png')
+    _path.resolve(__static, 'img/icons/mac/16x16.png')
   )
   tray.on('double-click', function () {
     if (!gWin.isShow) {
@@ -157,7 +159,7 @@ function windowShow (_win) {
 
 app.whenReady().then(() => {
   globalShortcut.register('CommandOrControl+R', () => {
-    // console.log('CommandOrControl+R is pressed: Shortcut Disabled')
+    // log.info('CommandOrControl+R is pressed: Shortcut Disabled')
   })
   RunTray()
   g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
@@ -226,6 +228,7 @@ ipcMain.on('files-copy', (event, filePaths) => {
 
   curFileCopyInfo.on('copyDuplicate', function (originPath, desPath) {
     console.log('main Duplication : ' + originPath + ' => ' + desPath)
+    log.info('main Duplication : ' + originPath + ' => ' + desPath)
     event.sender.send('files-copy-result', originPath, desPath, 'duplicate')
   })
   curFileCopyInfo.on('copyError', function (err, srcPath, desPath) {
@@ -243,6 +246,7 @@ ipcMain.on('dir-create', (event, _dirPath) => {
   const fileInfo = new FileInfo()
   const result = fileInfo.CreateDir(_dirPath)
   console.log('Create Folder : ' + result)
+  log.info('Create Folder : ' + result)
 })
 
 ipcMain.on('file-delete', (event, _dirPath) => {
@@ -294,6 +298,7 @@ ipcMain.on('ftp-file-upload-start', function () {
 })
 function startUpload () {
   console.log('FTP Upload start!')
+  log.info('FTP Upload start!')
   let ftpSendData = g_FTPWorkQueue.shift()
   FTPConnectTypeBranch_new('upload', ftpSendData)
 }
@@ -335,6 +340,7 @@ ipcMain.on('ftp-file-download', (event, _ftpSendData) => {
 })
 ipcMain.on('ftp-file-download-start', function () {
   console.log('FTP Download start!')
+  log.info('FTP Download start!')
   let ftpSendData = g_FTPWorkQueue.shift()
   FTPConnectTypeBranch_new('download', ftpSendData)
 })
@@ -359,6 +365,7 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
       result = ftpInfo.RequestFTPWork(_FTPType, ftpSendData, i).catch(
         function (error) {
           console.log(`FTPInfo_Type2_${_FTPType} Error!!!` + error)
+          log.info(`FTPInfo_Type2_${_FTPType} Error!!!` + error)
           result = error
         }
       ) // end catch
@@ -378,6 +385,7 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
       // eslint-disable-next-line no-unused-vars
       let isError = false
       console.log(g_FTPInfoDic)
+      log.info(g_FTPInfoDic)
     })// end Promise.all
   }
 }
@@ -428,15 +436,15 @@ function ftpCancelBranch (cancelInfo) {
 }
 function ftpCancel (_FtpInfo, _cancelInfo) {
   if (_FtpInfo === undefined) {
-    console.log('Cancel Fail!')
+    log.info('Cancel Fail!')
     return
   }
   if (_FtpInfo.ftpStreamList === undefined) {
-    console.log('No Job')
+    log.info('No Job')
     return
   }
   if (_FtpInfo.isFinish == true) {
-    console.log('Job is almost done.')
+    log.info('Job is almost done.')
   }
   let KeyList = Object.keys(_FtpInfo.ftpStreamList)
   for (let i = 0; i < KeyList.length; i++) {
@@ -450,7 +458,7 @@ ipcMain.on('login-read', event => {
   // let data = g_JSON.ReadUserJSON('./UserData.json')
   const path = getUserHome() + KONAN_ROOT_FOLDER + '//UserData.json'
   const data = g_JSON.ReadUserJSON(path)
-  console.log('login-read', data)
+  log.info('login-read', data)
   let lastloginInfo = {}
 
   if (data !== undefined) {
@@ -467,9 +475,10 @@ ipcMain.on('login-read', event => {
   )
   */
 
-  console.log('NODE_ENV', process.env.NODE_ENV)
-  const properties = g_JSON.ReadUserJSON(_path.resolve(__dirname, '../src/assets/properties/' + process.env.NODE_ENV + '.json'))
+  log.info('NODE_ENV', process.env.NODE_ENV)
+  const properties = g_JSON.ReadUserJSON(_path.resolve(__static, 'properties/' + process.env.NODE_ENV + '.json'))
   lastloginInfo.server = properties.server
+  log.info('NODE_ENV', lastloginInfo)
 
   event.sender.send('login-read-result', lastloginInfo)
 })
@@ -564,7 +573,7 @@ function WindowCreate (event, windowInfo) {
 
   g_windows[key] = window
   event.sender.send('openWindow_result', key, windowInfo.data, true)
-  console.log('OpenWindow Finish' + key)
+  log.info('OpenWindow Finish' + key)
 }
 ipcMain.on('sendData', (event, key, data, type) => {
   // eslint-disable-next-line no-prototype-builtins
@@ -574,7 +583,7 @@ ipcMain.on('sendData', (event, key, data, type) => {
   }
   g_windows[key].webContents.send('receiveData', key, data, type)
   event.sender.send('sendData_result', key, true, 'Success')
-  console.log('SendData Finish' + key)
+  log.info('SendData Finish' + key)
 })
 
 ipcMain.on('closeWindow', (event, key) => {

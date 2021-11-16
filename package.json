@@ -20,6 +20,7 @@
     "axios": "^0.23.0",
     "chartjs": "^0.3.24",
     "core-js": "^3.18.3",
+    "electron-log": "^4.4.1",
     "ftp": "^0.3.10",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
@@ -75,8 +76,8 @@
       "no-unused-expressions": "off",
       "prefer-promise-reject-errors": "off",
       "handle-callback-err": "off",
-	  "prefer-const":"off",
-	  "dot-notation":"off"
+      "prefer-const": "off",
+      "dot-notation": "off"
     },
     "overrides": [
       {

@@ -6,7 +6,7 @@ const FileData = require('./globalFunk.js').FileData
 const _path = require('path')
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
-
+const log = require('electron-log')
 function FileInfo () {
   // Path
   this.m_resultPathArr = [] // 결과 fileData 객체의 Arr

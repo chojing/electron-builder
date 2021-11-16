@@ -5,7 +5,7 @@ const { shell } = require('electron')
 const fs = require('fs')
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
-
+const log = require('electron-log')
 function FTPStream () {
   this.m_ftpClient
   this.m_ftpConnectConfig = undefined
@@ -140,6 +140,7 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
             return false
           } else {
             console.log('FTP 폴더 생성')
+            log.info('FTP 폴더 생성')
             self.ftpUploadPut(curFileStream, curDescPath, callPromiseResult, ftpData)
           }
         })
@@ -172,7 +173,7 @@ FTPStream.prototype.ftpUploadPut = function (curFileStream, curDescPath, callPro
       if (ftpData.isFirst == true) {
         self.doFirst(ftpData, ftpData.workIndex)
       }
-      // console.log(self.m_ftpConnectConfig.host);
+      // log.info(self.m_ftpConnectConfig.host);
       ftpData = self.calculateFTPData(buffer, ftpData)
       self.emit('data', ftpData)
     }
@@ -197,6 +198,7 @@ FTPStream.prototype.download = function (ftpData, callPromiseResult) {
       self.m_ftpClient.get(curPath, function (err, stream) {
         if (err) {
           console.log(err)
+          log.info(err)
           self.doError(stream, ftpData, err, callPromiseResult)
           callPromiseResult('reject', err)
           return err
@@ -223,10 +225,12 @@ FTPStream.prototype.download = function (ftpData, callPromiseResult) {
             .pipe(curFileStream, function (err) {
               if (err) {
                 console.log(err)
+                log.info(err)
                 callPromiseResult('reject', err)
                 self.doError(stream, ftpData, err, callPromiseResult) // #cjy 2021.07.16 테스트 필요
               } else {
                 console.log('close')
+                log.info('close')
               }
             })
         }
@@ -263,7 +267,9 @@ FTPStream.prototype.doCheckRecursive_work = function (_ftpData, _curFileStream, 
   callPromiseResult('resolve', self.work(self.worklist, self.m_ftpConnectConfig, nextIndex).catch(
     function (error) {
       console.log('ftpStream_upload Error!!!')
+      log.info('ftpStream_upload Error!!!')
       console.log(error)
+      log.info(error)
     })
   )
 }
@@ -275,6 +281,7 @@ FTPStream.prototype.cancel = function (_cancelInfo) {
   let value = self.m_CurWorkFTPData
   if (value === undefined) {
     console.log('ftpStream.js > Cancel > 해당 경로가 없습니다!')
+    log.info('ftpStream.js > Cancel > 해당 경로가 없습니다!')
     return false
   }
   value.isCancel = true
@@ -367,10 +374,10 @@ FTPStream.prototype.FTPDeleteFile = async function (_path, _ftpConfig) {
   await self.connect(_ftpConfig)
   self.m_ftpClient.delete(_path, function (err) {
     if (err) {
-      console.log(err)
+      log.info(err)
       return false
     } else {
-      console.log('FTP 삭제 완료')
+      log.info('FTP 삭제 완료')
       return true
     }
   })
@@ -380,10 +387,10 @@ FTPStream.prototype.FTPCreateFolder = async function (_path, _ftpConfig) {
   await self.connect(_ftpConfig)
   self.m_ftpClient.mkdir(_path, true, function (err) {
     if (err) {
-      console.log(err)
+      log.info(err)
       return false
     } else {
-      console.log('FTP 폴더 생성')
+      log.info('FTP 폴더 생성')
       return true
     }
   })

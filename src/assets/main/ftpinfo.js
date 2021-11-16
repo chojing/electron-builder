@@ -3,7 +3,7 @@ const NotificationPopUp = require('./globalFunk.js').NotificationPopUp
 const FileInfo = require('./fileinfo.js').FileInfo
 const FTPStream = require('./ftpStream').FTPStream
 let gfileData = new FileData()
-
+const log = require('electron-log')
 function FTPInfo (_event, _FTPSite, _popUpWnd) {
   this.event = _event || '' // 접속한 유저가 요청한 event를 등록해놓음. 나중에 result 할 때 필요함
   this.m_FTPSite = _FTPSite || ''
@@ -25,7 +25,7 @@ FTPInfo.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData, _conn
   // eslint-disable-next-line no-unused-vars
   let result = await self.doftp(_ftpType, PromiseResult, _FTPSendData.fileList, _connectionIndex)
   self.isFinish = true
-  // console.log("Finish!!!!!!!!!!!!!");
+  // log.info("Finish!!!!!!!!!!!!!");
 }
 
 FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _currentFtpServer) {
@@ -79,7 +79,7 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMs
       message: _errMsg.message,
       code: _errMsg.code
     }
-    // console.log(_errMsg.message + '// AssetKey : ' + _ftpData.key) // 에러처리
+    // log.info(_errMsg.message + '// AssetKey : ' + _ftpData.key) // 에러처리
     self.event.sender.send('ftp-error', errObj)
     self.m_NofiPopup.show('sbspds-anywhere_Error', 'Error! \n' + _errMsg.message)
     return

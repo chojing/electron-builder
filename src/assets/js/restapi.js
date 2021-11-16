@@ -1,5 +1,4 @@
 // const crypto = require('crypto')
-
 function RESTAPIConnectInfo (_host, _port) {
   this.host = _host || ''
   this.port = _port || ''
