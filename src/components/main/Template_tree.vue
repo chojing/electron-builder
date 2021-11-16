@@ -92,6 +92,9 @@ export default {
           let data = {}
           data = response.data.result
           data.nodename = name
+          if (ftpInfo.nodeid) {
+            data.nodeid = ftpInfo.nodeid
+          }
           ipcRenderer.send('openWindow', {
             key: ++this.g_windowIndex,
             url: 'MainFileUpLoad',
