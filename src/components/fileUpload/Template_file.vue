@@ -92,6 +92,7 @@ export default {
       totalDataPer: 0,
       fileIndex: 0,
       fileTotal: 0,
+      transferid: null,
       g_curWindowKey: '',
       isUploading: false,
       isUploadComplete: false
@@ -118,6 +119,7 @@ export default {
       // console.log('DragDropResult', custom.proxy2map(value))
     },
     doUpload: function () {
+      this.transferid = null
       console.log('request FTP Start')
       if (Object.keys(g_ftpSendData.fileList).length === 0) {
         alert('전송할 파일(폴더)를 선택해주세요.')
@@ -143,17 +145,21 @@ export default {
           transfer.nodeid = this.targetFtpInfo.nodeid
         }
 
+        // 전송내역 추가
         axios.postAsyncAxios('/v2/transfers', JSON.stringify(transfer), null, (response) => {
           // console.log('post : ', response)
-          var transferid = response.data.transferid
-          axios.postAsyncAxios('/v2/transfers/' + transferid + '/ftpservers/' + this.targetFtpInfo.ftpserverid, null, null, (response) => {})
+          this.transferid = response.data.transferid
+          // 전송서버내역 추가
+          axios.postAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + this.targetFtpInfo.ftpserverid, null, null, (response) => {})
+
           for (let idx in g_ftpSendData.fileList) {
             let item = g_ftpSendData.fileList[idx]
             // transfer_file_tb insert data
             const transferFile = {}
-            transferFile.transferid = transferid
+            transferFile.transferid = this.transferid
             transferFile.filename = item.fileName
             transferFile.filesize = item.size
+            // 전송상세내역 추가
             axios.postAsyncAxios('/v2/transferfiles', JSON.stringify(transferFile), null, (response) => {})
           }
         })
@@ -184,11 +190,14 @@ export default {
       if (this.targetFtpInfo.nodeid) {
         transfer.nodeid = this.targetFtpInfo.nodeid
       }
-      // for (var idx in data.ftpData.workIndex) {
-      //   // let item = data.ftpData[idx]
-      // }
+
       if (data.ftpData.totalWorkSize_Percent < 100) {
+        transfer.status += parseInt(data.ftpData.totalWorkSize_Percent)
       } else if (data.ftpData.totalWorkSize_Percent == 100) {
+        transfer.status = 3000
+        axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
+          console.log('Success Put : ', response)
+        })
         this.isUploadComplete = true
         this.isUploading = false
         this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
@@ -243,6 +252,24 @@ export default {
         path: undefined // type 이 path일 경우만 기재
       }
       ipcRenderer.send('ftp-cancel', cancelInfo)
+      // transfer_tb insert data
+      const transfer = {}
+      transfer.isfolder = false
+      transfer.userid = this.$store.state.userid
+      transfer.filepath = ''
+      transfer.transfername = g_ftpSendData.title
+      transfer.trasnferrequest = g_ftpSendData.comment
+      transfer.filesize = 0
+      for (let idx in g_ftpSendData.fileList) {
+        let item = g_ftpSendData.fileList[idx]
+        transfer.filesize += item.size
+      }
+      if (this.targetFtpInfo.nodeid) {
+        transfer.nodeid = this.targetFtpInfo.nodeid
+      }
+      transfer.status = 4000
+      axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
+      })
 
       console.log('cancel request!')
     },
