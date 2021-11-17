@@ -5,6 +5,8 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 const { Menu, Tray, MenuItem } = require('electron')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
+const net = require('net')
+
 const FileInfo = require('./assets/main/fileinfo.js').FileInfo
 const FileCopyInfo = require('./assets/main/fileinfo.js').FileCopyInfo
 const FTPStream = require('./assets/main/ftpStream.js').FTPStream
@@ -40,6 +42,7 @@ protocol.registerSchemesAsPrivileged([
 
 async function createWindow () {
   log.info('start SBSPDS')
+  // checkPortPing('10.10.18.28', 21, 2500)
   gWin = new BrowserWindow({
     width: 600,
     height: 760,
@@ -656,4 +659,38 @@ if (isDevelopment) {
       app.quit()
     })
   }
+}
+
+ipcMain.on('checkPortPing', (event, ip, port, timeout = 2500) => {
+  // event.sender.send('contextMenu_result', 'error! No Type')
+  checkPortPing(ip, port, timeout, event)
+})
+function checkPortPing (ip, port, timeout, event = undefined) {
+  let hosts = [[ip, port]]
+  let result = {
+    isConnect: false,
+    message: ''
+  }
+  function sendEvent (_isConnect, _msg, event) {
+    if (event !== undefined) {
+      result.isConnect = _isConnect
+      result.message = _msg
+      event.sender.send('checkPortPing_result', result)
+    }
+  }
+  hosts.forEach(function (item) {
+    let sock = new net.Socket()
+    sock.setTimeout(timeout)
+    sock.on('connect', function () {
+      console.log(item[0] + ':' + item[1] + ' is up.')
+      sock.destroy()
+      sendEvent(true, item[0] + ':' + item[1] + ' is up.', event)
+    }).on('error', function (e) {
+      console.log(item[0] + ':' + item[1] + ' is down: ' + e.message)
+      sendEvent(false, item[0] + ':' + item[1] + ' is down: ' + e.message, event)
+    }).on('timeout', function (e) {
+      console.log(item[0] + ':' + item[1] + ' is down: timeout')
+      sendEvent(false, item[0] + ':' + item[1] + ' is down: timeout', event)
+    }).connect(item[1], item[0])
+  })
 }
