@@ -31,11 +31,16 @@ FTPStream.prototype.connect = function (_ftpConnectConfig) {
       host: _ftpConnectConfig.host,
       port: _ftpConnectConfig.port,
       user: _ftpConnectConfig.username,
-      password: _ftpConnectConfig.password
+      password: _ftpConnectConfig.password,
+      passive: _ftpConnectConfig.passive,
+      activeIp: _ftpConnectConfig.activeIp,
+      keepalive: 10000
     }
+    log.info(config)
   } else {
     config = self.m_ftpConnectConfig
   }
+
   return new Promise((resolve, reject) => {
     self.m_ftpClient = new Client()
     self.m_ftpClient.on('ready', () => {
@@ -155,6 +160,7 @@ FTPStream.prototype.ftpUploadPut = function (curFileStream, curDescPath, callPro
   // eslint-disable-next-line prefer-const
   self.m_ftpClient.put(curFileStream, curDescPath, false, function (err) {
     if (err) { // error
+      console.log(err)
       callPromiseResult('reject', err)
       self.doError(curFileStream, ftpData, err, callPromiseResult)
     } else { // 완료 후 //finish
@@ -230,7 +236,6 @@ FTPStream.prototype.download = function (ftpData, callPromiseResult) {
                 self.doError(stream, ftpData, err, callPromiseResult) // #cjy 2021.07.16 테스트 필요
               } else {
                 console.log('close')
-                log.info('close')
               }
             })
         }
@@ -281,7 +286,7 @@ FTPStream.prototype.cancel = function (_cancelInfo) {
   let value = self.m_CurWorkFTPData
   if (value === undefined) {
     console.log('ftpStream.js > Cancel > 해당 경로가 없습니다!')
-    log.info('ftpStream.js > Cancel > 해당 경로가 없습니다!')
+    log.info('ftpStream > Cancel > 해당 경로가 없습니다!')
     return false
   }
   value.isCancel = true
@@ -377,7 +382,6 @@ FTPStream.prototype.FTPDeleteFile = async function (_path, _ftpConfig) {
       log.info(err)
       return false
     } else {
-      log.info('FTP 삭제 완료')
       return true
     }
   })
@@ -390,7 +394,6 @@ FTPStream.prototype.FTPCreateFolder = async function (_path, _ftpConfig) {
       log.info(err)
       return false
     } else {
-      log.info('FTP 폴더 생성')
       return true
     }
   })
