@@ -52,6 +52,7 @@ import templateTree from '@/components/main/Template_tree'
 import templateMenu from '@/components/menu/Template_menu'
 import templateContextMenu from '@/components/main/Template_context_menu'
 const axios = require('@/assets/js/axios.js')
+const custom = require('@/assets/js/custom.js')
 export default {
   name: 'Main',
   el: '#mainView',
@@ -63,6 +64,7 @@ export default {
   data () {
     return {
       username: this.$store.state.username,
+      c_node_type: [],
       favoritsList: [],
       nodeList: [],
       nodeid: null,
@@ -75,12 +77,18 @@ export default {
   },
   methods: {
     getTree: function () {
-      axios.getAsyncAxios('/v2/nodes', {}, (response) => {
-        // console.log('response 값 : ', response)
-        // console.log('nodeid : ', response.data.results[0].nodeid)
-        axios.getAsyncAxios('/v2/nodes/' + response.data.results[0].nodeid, null, (response) => {
-          this.nodeList = response.data.results
-          console.log('results 값 : ', this.nodeList)
+      axios.getAsyncAxios('/v2/node/code', {}, (response) => {
+        this.c_node_type = response.data.c_node_type
+        let param = {}
+        param.nodetype = custom.code.codeToValue(this.c_node_type, 'normal')
+        console.log(param)
+        axios.getAsyncAxios('/v2/nodes', param, (response) => {
+          // console.log('response 값 : ', response)
+          // console.log('nodeid : ', response.data.results[0].nodeid)
+          axios.getAsyncAxios('/v2/nodes/' + response.data.results[0].nodeid, null, (response) => {
+            this.nodeList = response.data.results
+            console.log('results 값 : ', this.nodeList)
+          })
         })
       })
     },

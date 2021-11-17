@@ -1,7 +1,7 @@
 <!-- 파일업로드 공통-->
 <template>
     <!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "DragDropResult" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
-    <baseDragDrop @valueReturn="DragDropResult" :isUploading="isUploading" :isUploadComplete="isUploadComplete"/>
+    <baseDragDrop @valueReturn="DragDropResult" ref="baseDragDrop" :isUploading="isUploading" :isUploadComplete="isUploadComplete"/>
     <div class="pro-bar mt15">
       <span :style="{width:dataPer + '%'}"></span>
       <b>{{dataPer}}%   ({{fileIndex}} / {{fileTotal}})</b>
@@ -27,6 +27,7 @@
 import baseDragDrop from '@/components/main/BaseDragDrop'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
+const axios = require('@/assets/js/axios.js')
 const custom = require('@/assets/js/custom.js')
 const FTPServer = function () {
   this.host = ''
@@ -112,6 +113,8 @@ export default {
     },
     DragDropResult: function (value) {
       g_ftpSendData.fileList = value
+      g_ftpSendData.title = this.$refs.baseDragDrop.$refs.title.value
+      g_ftpSendData.comment = this.$refs.baseDragDrop.$refs.comment.value
       // console.log('DragDropResult', custom.proxy2map(value))
     },
     doUpload: function () {
@@ -122,6 +125,39 @@ export default {
         g_ftpSendData.type = 'upload'
         g_ftpSendData.targetUrl = ''
         ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
+
+        // transfer_tb insert data
+        const transfer = {}
+        transfer.isfolder = false
+        transfer.userid = this.$store.state.userid
+        transfer.filepath = ''
+        transfer.status = 1000
+        transfer.transfername = g_ftpSendData.title
+        transfer.trasnferrequest = g_ftpSendData.comment
+        transfer.filesize = 0
+        for (let idx in g_ftpSendData.fileList) {
+          let item = g_ftpSendData.fileList[idx]
+          transfer.filesize += item.size
+        }
+        if (this.targetFtpInfo.nodeid) {
+          transfer.nodeid = this.targetFtpInfo.nodeid
+        }
+
+        axios.postAsyncAxios('/v2/transfers', JSON.stringify(transfer), null, (response) => {
+          // console.log('post : ', response)
+          var transferid = response.data.transferid
+          axios.postAsyncAxios('/v2/transfers/' + transferid + '/ftpservers/' + this.targetFtpInfo.ftpserverid, null, null, (response) => {})
+          for (let idx in g_ftpSendData.fileList) {
+            let item = g_ftpSendData.fileList[idx]
+            // transfer_file_tb insert data
+            const transferFile = {}
+            transferFile.transferid = transferid
+            transferFile.filename = item.fileName
+            transferFile.filesize = item.size
+            axios.postAsyncAxios('/v2/transferfiles', JSON.stringify(transferFile), null, (response) => {})
+          }
+        })
+        console.log('ftpserverid : ', this.targetFtpInfo.ftpserverid)
         this.isUploading = true
       }
     },

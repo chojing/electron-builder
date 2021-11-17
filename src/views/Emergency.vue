@@ -41,19 +41,15 @@ export default {
   },
   methods: {
     getList: function () {
-      const param = {}
-      const condition = {}
-      condition.owner = this.$store.state.userid
-      condition.ismanual = 1
-      param.condition = condition
-      const sort = {}
-      sort.createtime = 'desc'
-      param.sort = sort
-      param.limit = 0
-      param.offset = 0
-      axios.getAsyncAxios('/v2/ftpservers', param, (response) => {
-        console.log(response)
-        this.targetFtpList = response.data.results
+      axios.getAsyncAxios('/v2/node/code', {}, (response) => {
+        this.c_node_type = response.data.c_node_type
+        let param = {}
+        param.nodetype = custom.code.codeToValue(this.c_node_type, 'emergency')
+        axios.getAsyncAxios('/v2/nodes', param, (response) => {
+          axios.getAsyncAxios('/v2/nodes/' + response.data.results[0].nodeid, null, (response) => {
+            this.targetFtpList = response.data.results
+          })
+        })
       })
     },
     FileUploadPopup: function (ftpInfoItem) {
