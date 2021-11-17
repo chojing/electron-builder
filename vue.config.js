@@ -24,8 +24,8 @@ module.exports = {
           target: ['AppImage', 'deb', 'rpm', 'zip', 'tar.gz']
         },
         mac: {
-          target: ['default']
-          // icon: './public/img/icons/mac/test_im_your_father_mac.icns'
+          target: ['default'],
+          icon: './public/img/icons/mac/test_im_your_father_mac.icns'
         }
       }
     }
