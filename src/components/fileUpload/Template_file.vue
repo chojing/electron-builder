@@ -167,7 +167,7 @@ export default {
       this.totalDataPer = data.ftpData.totalWorkSize_Percent // 전체 파일 업로드 진행 퍼센트
       this.fileIndex = data.ftpData.workIndex + 1 // 현재 진행 중인 파일 인덱스
       this.fileTotal = g_ftpSendData.fileList.length // 전체 파일 진행 개수
-팅
+
       // transfer_tb insert data
       const transfer = {}
       transfer.isfolder = false
