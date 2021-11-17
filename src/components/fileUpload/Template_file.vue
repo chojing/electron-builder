@@ -167,7 +167,28 @@ export default {
       this.totalDataPer = data.ftpData.totalWorkSize_Percent // 전체 파일 업로드 진행 퍼센트
       this.fileIndex = data.ftpData.workIndex + 1 // 현재 진행 중인 파일 인덱스
       this.fileTotal = g_ftpSendData.fileList.length // 전체 파일 진행 개수
-      if (data.ftpData.totalWorkSize_Percent == 100) {
+팅
+      // transfer_tb insert data
+      const transfer = {}
+      transfer.isfolder = false
+      transfer.userid = this.$store.state.userid
+      transfer.filepath = ''
+      transfer.status = 2000
+      transfer.transfername = g_ftpSendData.title
+      transfer.trasnferrequest = g_ftpSendData.comment
+      transfer.filesize = 0
+      for (let idx in g_ftpSendData.fileList) {
+        let item = g_ftpSendData.fileList[idx]
+        transfer.filesize += item.size
+      }
+      if (this.targetFtpInfo.nodeid) {
+        transfer.nodeid = this.targetFtpInfo.nodeid
+      }
+      // for (var idx in data.ftpData.workIndex) {
+      //   // let item = data.ftpData[idx]
+      // }
+      if (data.ftpData.totalWorkSize_Percent < 100) {
+      } else if (data.ftpData.totalWorkSize_Percent == 100) {
         this.isUploadComplete = true
         this.isUploading = false
         this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
