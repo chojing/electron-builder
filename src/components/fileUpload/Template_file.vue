@@ -152,6 +152,14 @@ export default {
       curFtpServer1.password = value.password
       curFtpServer1.name = value.name
       curFtpServer1.rootpath = value.rootpath
+      curFtpServer1.passive = true // passive : true / active : false
+
+      // activeIp:
+      // ftp가 active 일 경우, 반드시 입력되어야 하는 값.
+      // active 모드인데 해당 ip값이 없을 경우, 에러
+      // 클라이언트측의 ip 이며, 127.0.0.1은 사용불가 (서버측 IP로 인식되어버림)
+      curFtpServer1.activeIp = ''
+
       const ftpSite = new FTPSite()
       ftpSite.connectionType = '1'
       ftpSite.siteName = 'konanSite'
@@ -203,11 +211,11 @@ export default {
     ftpError: function (event, errMsg) {
       console.log(errMsg)
       let msg = ''
+      this.isUploading = false
       if (errMsg.code === 530) {
-        this.isUploading = false
         msg = '로그인한 계정 / 비밀번호를 확인해주세요'
         alert(msg)
-      }
+      } else if (errMsg.code == 'EHOSTUNREACH') { msg = 'FTP 서버와 연결할 수 없습니다.' }
     }
   }
 }

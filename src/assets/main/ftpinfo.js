@@ -24,7 +24,6 @@ FTPInfo.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData, _conn
   // eslint-disable-next-line no-unused-vars
   let result = await self.doftp(_ftpType, PromiseResult, _FTPSendData.fileList, _connectionIndex)
   self.isFinish = true
-  // log.info("Finish!!!!!!!!!!!!!");
 }
 
 FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _currentFtpServer) {
@@ -78,7 +77,6 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMs
       message: _errMsg.message,
       code: _errMsg.code
     }
-    // log.info(_errMsg.message + '// AssetKey : ' + _ftpData.key) // 에러처리
     self.event.sender.send('ftp-error', errObj)
     self.m_NofiPopup.show('sbspds-anywhere_Error', 'Error! \n' + _errMsg.message)
     return
