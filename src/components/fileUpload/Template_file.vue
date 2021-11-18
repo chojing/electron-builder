@@ -193,7 +193,6 @@ export default {
         transfer.nodeid = this.targetFtpInfo.nodeid
       }
 
-      console.log(data.ftpData.totalWorkSize_Percent)
       if (!data.ftpData.isTotalComplete) {
         if (this.tempCurrentPercent !== parseInt(data.ftpData.totalWorkSize_Percent)) {
           this.tempCurrentPercent = parseInt(data.ftpData.totalWorkSize_Percent)
