@@ -92,7 +92,7 @@ async function createWindow () {
     createProtocol('app')
     // Load the index.html when not in development
     gWin.loadURL('app://./index.html')
-    gWin.webContents.openDevTools()
+    // gWin.webContents.openDevTools()
   }
 
   if (process.platform === 'darwin') {
