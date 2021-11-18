@@ -2,7 +2,7 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       builderOptions: {
-        productName: 'SBS_PDS',
+        productName: 'SBS_PDS_Anywhere',
         asar: true,
         win: {
           target: ['zip', 'nsis'],
@@ -24,7 +24,12 @@ module.exports = {
           target: ['AppImage', 'deb', 'rpm', 'zip', 'tar.gz']
         },
         mac: {
-          target: ['default'],
+          type: 'distribution',
+          target: ['pkg', 'dmg'],
+          // eslint-disable-next-line no-template-curly-in-string
+          artifactName: '${productName}-${version}-${os}.${ext}',
+          category: 'public.app-category.utilities',
+          provisioningProfile: 'embedded.provisionprofile',
           icon: './public/img/icons/mac/test_im_your_father_mac.icns'
         }
       }
