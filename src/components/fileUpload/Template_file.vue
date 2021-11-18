@@ -95,7 +95,8 @@ export default {
       transferid: null,
       g_curWindowKey: '',
       isUploading: false,
-      isUploadComplete: false
+      isUploadComplete: false,
+      isResponse: false
     }
   },
   methods: {
@@ -168,7 +169,7 @@ export default {
       }
     },
     ftpResult: function (event, data) {
-      console.log('ftpResult', data)
+      // console.log('ftpResult', data)
       this.dataPer = data.ftpData.curWorkPersent // 현재 파일 업로드 진행 퍼센트
       this.totalDataPer = data.ftpData.totalWorkSize_Percent // 전체 파일 업로드 진행 퍼센트
       this.fileIndex = data.ftpData.workIndex + 1 // 현재 진행 중인 파일 인덱스
@@ -191,19 +192,31 @@ export default {
         transfer.nodeid = this.targetFtpInfo.nodeid
       }
 
-      if (data.ftpData.totalWorkSize_Percent < 100) {
+      if (!data.ftpData.isTotalComplete) {
         transfer.status += parseInt(data.ftpData.totalWorkSize_Percent)
-      } else if (data.ftpData.totalWorkSize_Percent == 100) {
-        transfer.status = 3000
-        axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
-          console.log('Success Put : ', response)
-        })
+        if (data.ftpData.totalWorkSize_Percent == 100) {
+          transfer.status = 3000
+        }
+
+        if ((!this.isResponse && this.transferid != null) || data.ftpData.totalWorkSize_Percent == 100) {
+          this.isResponse = true
+          axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
+            console.log('Success Put : ', response)
+            this.isResponse = false
+          })
+        }
+      } else if (data.ftpData.isTotalComplete) {
         this.isUploadComplete = true
         this.isUploading = false
         this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
       }
+
       if (data.ftpData.isCancel == true) {
         console.log('Cancel Complete')
+        transfer.status = 4000
+        axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
+          console.log('isCancel Success Put : ', response)
+        })
         this.isUploading = false
         this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
       }
@@ -252,24 +265,6 @@ export default {
         path: undefined // type 이 path일 경우만 기재
       }
       ipcRenderer.send('ftp-cancel', cancelInfo)
-      // transfer_tb insert data
-      const transfer = {}
-      transfer.isfolder = false
-      transfer.userid = this.$store.state.userid
-      transfer.filepath = ''
-      transfer.transfername = g_ftpSendData.title
-      transfer.trasnferrequest = g_ftpSendData.comment
-      transfer.filesize = 0
-      for (let idx in g_ftpSendData.fileList) {
-        let item = g_ftpSendData.fileList[idx]
-        transfer.filesize += item.size
-      }
-      if (this.targetFtpInfo.nodeid) {
-        transfer.nodeid = this.targetFtpInfo.nodeid
-      }
-      transfer.status = 4000
-      axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
-      })
 
       console.log('cancel request!')
     },
@@ -299,7 +294,9 @@ export default {
       if (errMsg.code === 530) {
         msg = '로그인한 계정 / 비밀번호를 확인해주세요'
         alert(msg)
-      } else if (errMsg.code == 'EHOSTUNREACH') { msg = 'FTP 서버와 연결할 수 없습니다.' }
+      } else if (errMsg.code == 'EHOSTUNREACH') { msg = 'FTP 서버와 연결할 수 없습니다.' } else {
+        alert(errMsg.message)
+      }
     }
   }
 }
