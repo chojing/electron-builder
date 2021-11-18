@@ -17,6 +17,7 @@ function FTPStream () {
   this.totalWorkSize = 0
   this.totalWorkSize_Current = 0
   this.totalWorkSize_Percent = 0
+  this.totalWorkIndex = 0
 
   this.worklist = []
   this.isConnection = false
@@ -314,6 +315,7 @@ FTPStream.prototype.calculateFTPData = function (_buffer, _ftpData) {
   _ftpData.totalWorkSize = self.totalWorkSize
   _ftpData.totalWorkSize_Current = self.totalWorkSize_Current
   _ftpData.totalWorkSize_Percent = self.totalWorkSize_Percent
+  _ftpData.totalWorkIndex = self.totalWorkIndex
 
   return _ftpData
 }

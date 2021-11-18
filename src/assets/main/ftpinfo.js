@@ -60,6 +60,7 @@ FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _current
     totalSize += curFile.size
   }
   curFtpStream.totalWorkSize = totalSize
+  curFtpStream.totalWorkIndex = _fileList.length
   let result = self.ftpStreamList[ftpStreamKey].work(_fileList, ftpServer, 0).catch(
     function (error) {
       console.log(`FTPInfo_${_ftpType} Error!!!` + error)
@@ -82,6 +83,9 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMs
     return
   } else if (_type == 'finish') {
     if (_ftpData.isComplete == true) {
+      if (_ftpData.totalWorkIndex - 1 == _ftpData.workIndex) {
+        _ftpData.isTotalComplete = true
+      }
       self.m_NofiPopup.show('sbspds-anywhere_' + _ftpData.FTPtype, 'Success!\n' + _ftpData.srcPath)
     } else {
       self.m_NofiPopup.show('sbspds-anywhere_' + _ftpData.FTPtype, 'Fail!\n' + _ftpData.srcPath)
@@ -229,6 +233,7 @@ function FTPData (_type, _file, _desPath, _fileName) {
   this.totalWorkSize = 0
   this.totalWorkSize_Current = 0
   this.totalWorkSize_Percent = 0
+  this.isTotalComplete = false
 
   // Time
   this.startTime
