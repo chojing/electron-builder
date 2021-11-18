@@ -24,8 +24,12 @@ module.exports = {
           target: ['AppImage', 'deb', 'rpm', 'zip', 'tar.gz']
         },
         mac: {
-          target: ['default']
-          // icon: './public/img/icons/mac/test_im_your_father_mac.icns'
+          type: "distribution",
+          target: ["pkg", "dmg"],
+          artifactName: "${productName}-${version}-${os}.${ext}",
+          category: "public.app-category.utilities",
+          provisioningProfile: "embedded.provisionprofile",
+          icon: './public/img/icons/mac/test_im_your_father_mac.icns',
         }
       }
     }
