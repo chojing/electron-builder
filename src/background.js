@@ -5,6 +5,8 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 const { Menu, Tray, MenuItem } = require('electron')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
+const net = require('net')
+
 const FileInfo = require('./assets/main/fileinfo.js').FileInfo
 const FileCopyInfo = require('./assets/main/fileinfo.js').FileCopyInfo
 const FTPStream = require('./assets/main/ftpStream.js').FTPStream
@@ -19,6 +21,7 @@ const FTPInfo_Type1 = require('./assets/main/ftpinfo.js').FTPInfo_Type1
 const FTPInfo_Type2 = require('./assets/main/ftpinfo.js').FTPInfo_Type2
 const _path = require('path')
 const log = require('electron-log')
+const starIcon = 'img/icons/mac/16x16.png'
 
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
@@ -38,7 +41,8 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 async function createWindow () {
-  log.info('createWindow')
+  log.info('start SBSPDS')
+  // checkPortPing('10.10.18.28', 21, 2500)
   gWin = new BrowserWindow({
     width: 600,
     height: 760,
@@ -52,7 +56,9 @@ async function createWindow () {
       nodeIntegration: true, // api 접근 허용 여부
       contextIsolation: false,
       webSecurity: false // false로 지정하면 same-origin 정책을 비활성화
-    }
+    },
+    // eslint-disable-next-line no-undef
+    icon: _path.join(__static, starIcon)
   })
 
   gWin.on('minimize', function (event) {
@@ -86,7 +92,7 @@ async function createWindow () {
     createProtocol('app')
     // Load the index.html when not in development
     gWin.loadURL('app://./index.html')
-    gWin.webContents.openDevTools()
+    // gWin.webContents.openDevTools()
   }
 
   if (process.platform === 'darwin') {
@@ -160,7 +166,6 @@ function windowShow (_win) {
 
 app.whenReady().then(() => {
   globalShortcut.register('CommandOrControl+R', () => {
-    // log.info('CommandOrControl+R is pressed: Shortcut Disabled')
   })
   RunTray()
   g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
@@ -229,7 +234,7 @@ ipcMain.on('files-copy', (event, filePaths) => {
 
   curFileCopyInfo.on('copyDuplicate', function (originPath, desPath) {
     console.log('main Duplication : ' + originPath + ' => ' + desPath)
-    log.info('main Duplication : ' + originPath + ' => ' + desPath)
+    log.info('main CopyDuplication : ' + originPath + ' => ' + desPath)
     event.sender.send('files-copy-result', originPath, desPath, 'duplicate')
   })
   curFileCopyInfo.on('copyError', function (err, srcPath, desPath) {
@@ -386,7 +391,7 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
       // eslint-disable-next-line no-unused-vars
       let isError = false
       console.log(g_FTPInfoDic)
-      log.info(g_FTPInfoDic)
+      log.info(ftpSendData.ftpSite.siteName + ' Success : ' + isError)
     })// end Promise.all
   }
 }
@@ -437,15 +442,15 @@ function ftpCancelBranch (cancelInfo) {
 }
 function ftpCancel (_FtpInfo, _cancelInfo) {
   if (_FtpInfo === undefined) {
-    log.info('Cancel Fail!')
+    log.info('Cancel Fail! no ftpInfo')
     return
   }
   if (_FtpInfo.ftpStreamList === undefined) {
-    log.info('No Job')
+    log.info('Cancel Fail! No file list')
     return
   }
   if (_FtpInfo.isFinish == true) {
-    log.info('Job is almost done.')
+    log.info('Cancel Fail! Job is already done.')
   }
   let KeyList = Object.keys(_FtpInfo.ftpStreamList)
   for (let i = 0; i < KeyList.length; i++) {
@@ -459,7 +464,10 @@ ipcMain.on('login-read', event => {
   // let data = g_JSON.ReadUserJSON('./UserData.json')
   const path = getUserHome() + KONAN_ROOT_FOLDER + '//UserData.json'
   const data = g_JSON.ReadUserJSON(path)
-  log.info('login-read', data)
+  if (data !== undefined) {
+    log.info('login-read fail')
+  }
+
   let lastloginInfo = {}
 
   if (data !== undefined) {
@@ -476,9 +484,11 @@ ipcMain.on('login-read', event => {
   )
   */
 
-  log.info('NODE_ENV', process.env.NODE_ENV)
   // eslint-disable-next-line no-undef
   const properties = g_JSON.ReadUserJSON(_path.resolve(__static, 'properties/' + process.env.NODE_ENV + '.json'))
+  if (properties === undefined) {
+    log.info('Fail read properties file(development/production)')
+  }
   lastloginInfo.server = properties.server
   log.info('NODE_ENV', lastloginInfo)
 
@@ -552,7 +562,9 @@ function WindowCreate (event, windowInfo) {
       nodeIntegration: true, // api 접근 허용 여부
       contextIsolation: false
       // preload: g_path.join(app.getAppPath(), 'preload.js')
-    }
+    },
+    // eslint-disable-next-line no-undef
+    icon: _path.join(__static, starIcon)
   })
   window.on('close', function (event) {
     delete g_windows[key]
@@ -576,7 +588,6 @@ function WindowCreate (event, windowInfo) {
 
   g_windows[key] = window
   event.sender.send('openWindow_result', key, windowInfo.data, true)
-  log.info('OpenWindow Finish' + key)
 }
 ipcMain.on('sendData', (event, key, data, type) => {
   // eslint-disable-next-line no-prototype-builtins
@@ -586,7 +597,6 @@ ipcMain.on('sendData', (event, key, data, type) => {
   }
   g_windows[key].webContents.send('receiveData', key, data, type)
   event.sender.send('sendData_result', key, true, 'Success')
-  log.info('SendData Finish' + key)
 })
 
 ipcMain.on('closeWindow', (event, key) => {
@@ -649,4 +659,38 @@ if (isDevelopment) {
       app.quit()
     })
   }
+}
+
+ipcMain.on('checkPortPing', (event, ip, port, timeout = 2500) => {
+  // event.sender.send('contextMenu_result', 'error! No Type')
+  checkPortPing(ip, port, timeout, event)
+})
+function checkPortPing (ip, port, timeout, event = undefined) {
+  let hosts = [[ip, port]]
+  let result = {
+    isConnect: false,
+    message: ''
+  }
+  function sendEvent (_isConnect, _msg, event) {
+    if (event !== undefined) {
+      result.isConnect = _isConnect
+      result.message = _msg
+      event.sender.send('checkPortPing_result', result)
+    }
+  }
+  hosts.forEach(function (item) {
+    let sock = new net.Socket()
+    sock.setTimeout(timeout)
+    sock.on('connect', function () {
+      console.log(item[0] + ':' + item[1] + ' is up.')
+      sock.destroy()
+      sendEvent(true, item[0] + ':' + item[1] + ' is up.', event)
+    }).on('error', function (e) {
+      console.log(item[0] + ':' + item[1] + ' is down: ' + e.message)
+      sendEvent(false, item[0] + ':' + item[1] + ' is down: ' + e.message, event)
+    }).on('timeout', function (e) {
+      console.log(item[0] + ':' + item[1] + ' is down: timeout')
+      sendEvent(false, item[0] + ':' + item[1] + ' is down: timeout', event)
+    }).connect(item[1], item[0])
+  })
 }

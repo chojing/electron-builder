@@ -24,7 +24,6 @@ FTPInfo.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData, _conn
   // eslint-disable-next-line no-unused-vars
   let result = await self.doftp(_ftpType, PromiseResult, _FTPSendData.fileList, _connectionIndex)
   self.isFinish = true
-  // log.info("Finish!!!!!!!!!!!!!");
 }
 
 FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _currentFtpServer) {
@@ -61,6 +60,7 @@ FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _current
     totalSize += curFile.size
   }
   curFtpStream.totalWorkSize = totalSize
+  curFtpStream.totalWorkIndex = _fileList.length
   let result = self.ftpStreamList[ftpStreamKey].work(_fileList, ftpServer, 0).catch(
     function (error) {
       console.log(`FTPInfo_${_ftpType} Error!!!` + error)
@@ -78,12 +78,14 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMs
       message: _errMsg.message,
       code: _errMsg.code
     }
-    // log.info(_errMsg.message + '// AssetKey : ' + _ftpData.key) // 에러처리
     self.event.sender.send('ftp-error', errObj)
     self.m_NofiPopup.show('sbspds-anywhere_Error', 'Error! \n' + _errMsg.message)
     return
   } else if (_type == 'finish') {
     if (_ftpData.isComplete == true) {
+      if (_ftpData.totalWorkIndex - 1 == _ftpData.workIndex) {
+        _ftpData.isTotalComplete = true
+      }
       self.m_NofiPopup.show('sbspds-anywhere_' + _ftpData.FTPtype, 'Success!\n' + _ftpData.srcPath)
     } else {
       self.m_NofiPopup.show('sbspds-anywhere_' + _ftpData.FTPtype, 'Fail!\n' + _ftpData.srcPath)
@@ -231,6 +233,7 @@ function FTPData (_type, _file, _desPath, _fileName) {
   this.totalWorkSize = 0
   this.totalWorkSize_Current = 0
   this.totalWorkSize_Percent = 0
+  this.isTotalComplete = false
 
   // Time
   this.startTime
