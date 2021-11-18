@@ -96,7 +96,8 @@ export default {
       g_curWindowKey: '',
       isUploading: false,
       isUploadComplete: false,
-      isResponse: false
+      isResponse: false,
+      tempCurrentPercent: -1
     }
   },
   methods: {
@@ -192,18 +193,22 @@ export default {
         transfer.nodeid = this.targetFtpInfo.nodeid
       }
 
+      console.log(data.ftpData.totalWorkSize_Percent)
       if (!data.ftpData.isTotalComplete) {
-        transfer.status += parseInt(data.ftpData.totalWorkSize_Percent)
-        if (data.ftpData.totalWorkSize_Percent == 100) {
-          transfer.status = 3000
-        }
+        if (this.tempCurrentPercent !== parseInt(data.ftpData.totalWorkSize_Percent)) {
+          this.tempCurrentPercent = parseInt(data.ftpData.totalWorkSize_Percent)
+          transfer.status += parseInt(data.ftpData.totalWorkSize_Percent)
+          if (data.ftpData.totalWorkSize_Percent == 100) {
+            transfer.status = 3000
+          }
 
-        if ((!this.isResponse && this.transferid != null) || data.ftpData.totalWorkSize_Percent == 100) {
-          this.isResponse = true
-          axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
-            console.log('Success Put : ', response)
-            this.isResponse = false
-          })
+          if ((!this.isResponse && this.transferid != null) || data.ftpData.totalWorkSize_Percent == 100) {
+            this.isResponse = true
+            axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
+              // console.log('Success Put : ', response)
+              this.isResponse = false
+            })
+          }
         }
       } else if (data.ftpData.isTotalComplete) {
         this.isUploadComplete = true
@@ -215,7 +220,7 @@ export default {
         console.log('Cancel Complete')
         transfer.status = 4000
         axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
-          console.log('isCancel Success Put : ', response)
+        //   console.log('isCancel Success Put : ', response)
         })
         this.isUploading = false
         this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
