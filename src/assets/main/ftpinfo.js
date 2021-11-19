@@ -3,6 +3,11 @@ const NotificationPopUp = require('./globalFunk.js').NotificationPopUp
 const FileInfo = require('./fileinfo.js').FileInfo
 const FTPStream = require('./ftpStream').FTPStream
 let gfileData = new FileData()
+
+const Log = require('./log').Log
+// eslint-disable-next-line no-unused-vars
+let log = new Log()
+
 function FTPInfo (_event, _FTPSite, _popUpWnd) {
   this.event = _event || '' // 접속한 유저가 요청한 event를 등록해놓음. 나중에 result 할 때 필요함
   this.m_FTPSite = _FTPSite || ''
@@ -10,6 +15,7 @@ function FTPInfo (_event, _FTPSite, _popUpWnd) {
   this.ftpStreamList = {} // FTPStream
   this.clientSendData
   this.isFinish = false
+  this.isEthernetConnect = true
 
   this.m_popUpWnd = _popUpWnd || ''
 }
@@ -73,73 +79,87 @@ FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _current
 
 FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMsg) {
   let self = this
-  if (_type == 'error') {
-    let errObj = {
-      message: _errMsg.message,
-      code: _errMsg.code
-    }
-    self.event.sender.send('ftp-error', errObj)
-    self.m_NofiPopup.show('sbspds-anywhere_Error', 'Error! \n' + _errMsg.message)
-    return
-  } else if (_type == 'finish') {
-    if (_ftpData.isComplete == true) {
-      if (_ftpData.totalWorkIndex - 1 == _ftpData.workIndex) {
-        _ftpData.isTotalComplete = true
+  //   if (self.isEthernetConnect == false) {
+  //     return
+  //   }
+  try {
+    if (_type == 'error') {
+      let errObj = {
+        message: _errMsg.message,
+        code: _errMsg.code
       }
-      self.m_NofiPopup.show('sbspds-anywhere_' + _ftpData.FTPtype, 'Success!\n' + _ftpData.srcPath)
-    } else {
-      self.m_NofiPopup.show('sbspds-anywhere_' + _ftpData.FTPtype, 'Fail!\n' + _ftpData.srcPath)
-    }
-  } else if (_type == 'cancel') {
-    self.m_NofiPopup.show('sbspds-anywhere' + _ftpData.FTPtype, 'Cancel!\n' + _ftpData.srcPath)
-    if (_ftpData.cancelInfo === undefined) {
+      if (self.event.sender.isDestroyed() == false) {
+        self.event.sender.send('ftp-error', errObj)
+        self.m_NofiPopup.show('sbspds-anywhere_Error', 'Error! \n' + _errMsg.message)
+      }
       return
-    }
-    if (_ftpData.FTPtype == 'upload') {
-      if (_ftpData.cancelInfo.isDelete == true) {
+    } else if (_type == 'finish') {
+      if (_ftpData.isComplete == true) {
+        if (_ftpData.totalWorkIndex - 1 == _ftpData.workIndex) {
+          _ftpData.isTotalComplete = true
+        }
+        self.m_NofiPopup.show('sbspds-anywhere_' + _ftpData.FTPtype, 'Success!\n' + _ftpData.srcPath)
+      } else {
+        self.m_NofiPopup.show('sbspds-anywhere_' + _ftpData.FTPtype, 'Fail!\n' + _ftpData.srcPath)
+      }
+    } else if (_type == 'cancel') {
+      self.m_NofiPopup.show('sbspds-anywhere' + _ftpData.FTPtype, 'Cancel!\n' + _ftpData.srcPath)
+      if (_ftpData.cancelInfo === undefined) {
+        return
+      }
+      if (_ftpData.FTPtype == 'upload') {
+        if (_ftpData.cancelInfo.isDelete == true) {
         // eslint-disable-next-line prefer-const
-        let ftpStraem = new FTPStream()
-        // 현재 파일 삭제
-        let deletePath = _ftpData.destPath + _ftpData.fileName
-        ftpStraem.FTPDeleteFile(deletePath, _curFtpServer)
+          let ftpStraem = new FTPStream()
+          // 현재 파일 삭제
+          let deletePath = _ftpData.destPath + _ftpData.fileName
+          ftpStraem.FTPDeleteFile(deletePath, _curFtpServer)
 
-        // 완료된 파일 삭제
-        if (_ftpData.cancelInfo.CompletePaths.length > 0) {
-          for (let i = _ftpData.cancelInfo.CompletePaths.length - 1; i >= 0; i--) {
-            ftpStraem.FTPDeleteFile(_ftpData.cancelInfo.CompletePaths[i], _curFtpServer)
-            console.log('delete!!')
+          // 완료된 파일 삭제
+          if (_ftpData.cancelInfo.CompletePaths.length > 0) {
+            for (let i = _ftpData.cancelInfo.CompletePaths.length - 1; i >= 0; i--) {
+              ftpStraem.FTPDeleteFile(_ftpData.cancelInfo.CompletePaths[i], _curFtpServer)
+              console.log('delete!!')
+            }
           }
         }
-      }
-    } else if (_ftpData.FTPtype == 'download') {
-      if (_ftpData.cancelInfo.isDelete == true) {
+      } else if (_ftpData.FTPtype == 'download') {
+        if (_ftpData.cancelInfo.isDelete == true) {
         // 현재 파일 삭제
-        let delFileName = _ftpData.cancelInfo.DelPath.fileName
-        console.log(delFileName)
-        let fileInfo = new FileInfo()
-        let deleteFilePath = _ftpData.destPath + delFileName
-        fileInfo.DeleteFile(deleteFilePath)
+          let delFileName = _ftpData.cancelInfo.DelPath.fileName
+          console.log(delFileName)
+          let fileInfo = new FileInfo()
+          let deleteFilePath = _ftpData.destPath + delFileName
+          fileInfo.DeleteFile(deleteFilePath)
 
-        // 완료된 파일 삭제
-        if (_ftpData.cancelInfo.CompletePaths.length > 0) {
-          for (let i = _ftpData.cancelInfo.CompletePaths.length - 1; i >= 0; i--) {
-            fileInfo.DeleteFile(_ftpData.cancelInfo.CompletePaths[i])
-            console.log('delete!!')
+          // 완료된 파일 삭제
+          if (_ftpData.cancelInfo.CompletePaths.length > 0) {
+            for (let i = _ftpData.cancelInfo.CompletePaths.length - 1; i >= 0; i--) {
+              fileInfo.DeleteFile(_ftpData.cancelInfo.CompletePaths[i])
+              console.log('delete!!')
+            }
           }
         }
       }
     }
-  }
-  let result = {
-    ftpServer: _curFtpServer,
-    ftpData: _ftpData
-  }
-  if (self.m_popUpWnd === undefined || self.m_popUpWnd === '') {
-    self.event.sender.send('ftp-result', result)
-  } else {
-    if (self.m_popUpWnd.isShow == true) {
-      self.m_popUpWnd.webContents.send('ftp-result', result)
+    let result = {
+      ftpServer: _curFtpServer,
+      ftpData: _ftpData
     }
+    if (self.m_popUpWnd === undefined || self.m_popUpWnd === '') {
+      if (self.event.sender.isDestroyed() == false) {
+        // if (self.isEthernetConnect == true) {
+        self.event.sender.send('ftp-result', result)
+        // }
+      }
+    } else {
+      // 현재 사용되지 않음
+      if (self.m_popUpWnd.isShow == true) {
+        self.m_popUpWnd.webContents.send('ftp-result', result)
+      }
+    }
+  } catch (e) {
+    log.info('SendMessage >> ' + e.message)
   }
 }
 

@@ -53,6 +53,10 @@ import templateMenu from '@/components/menu/Template_menu'
 import templateContextMenu from '@/components/main/Template_context_menu'
 const axios = require('@/assets/js/axios.js')
 const custom = require('@/assets/js/custom.js')
+
+const electron = window.require('electron')
+const ipcRenderer = electron.ipcRenderer
+
 export default {
   name: 'Main',
   el: '#mainView',
@@ -60,6 +64,11 @@ export default {
     templateTree,
     templateMenu,
     templateContextMenu
+  },
+  created () {
+    window.addEventListener('online', this.updateOnlineStatus)
+    window.addEventListener('offline', this.updateOnlineStatus)
+    ipcRenderer.on('offline_result', this.offlineResult)
   },
   data () {
     return {
@@ -76,6 +85,17 @@ export default {
     this.getFavorits()
   },
   methods: {
+    updateOnlineStatus: function () {
+      if (navigator.onLine == true) {
+        console.log('online')
+      } else {
+        console.log('offline')
+        ipcRenderer.send('offline')
+      }
+    },
+    offlineResult: function (event) {
+      alert('네트워크 연결이 끊어졌습니다')
+    },
     getTree: function () {
       axios.getAsyncAxios('/v2/node/code', {}, (response) => {
         this.c_node_type = response.data.c_node_type

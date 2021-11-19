@@ -2,6 +2,7 @@
 
 import { app, protocol, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
+// import { log } from './assets/main/log.js'
 const { Menu, Tray, MenuItem } = require('electron')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -11,6 +12,7 @@ const FileInfo = require('./assets/main/fileinfo.js').FileInfo
 const FileCopyInfo = require('./assets/main/fileinfo.js').FileCopyInfo
 const FTPStream = require('./assets/main/ftpStream.js').FTPStream
 const globalFunk = require('./assets/main/globalFunk.js')
+const Log = require('./assets/main/log.js').Log
 
 const g_JSON = require('./assets/main/json.js')
 const NotificationPopUp = require('./assets/main/globalFunk.js')
@@ -20,20 +22,22 @@ const WindowInfo = require('./assets/main/windows.js').WindowInfo
 const FTPInfo_Type1 = require('./assets/main/ftpinfo.js').FTPInfo_Type1
 const FTPInfo_Type2 = require('./assets/main/ftpinfo.js').FTPInfo_Type2
 const _path = require('path')
-const log = require('electron-log')
+// const log = require('electron-log')
 const starIcon = 'img/icons/mac/16x16.png'
 
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
 let g_windows = []
 let gWin = null
+// eslint-disable-next-line no-unused-vars
 let g_NotificationPopUp = new NotificationPopUp()
+let log = new Log()
 let g_DOWNLOAD_FOLDER_PATH = ''
 const g_UPLOAD_FTP_FOLDER_PATH = '/konan/electron_test/'
 let g_curUserInfo
 // eslint-disable-next-line no-unused-vars
 let gIsMac = false
-log.transports.file.resolvePath = () => _path.join(getUserHome() + KONAN_ROOT_FOLDER, 'logs/main.log')
+// log.transports.file.resolvePath = () => _path.join(getUserHome() + KONAN_ROOT_FOLDER, 'logs/main.log')
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -168,7 +172,7 @@ app.whenReady().then(() => {
   globalShortcut.register('CommandOrControl+R', () => {
   })
   RunTray()
-  g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
+  // g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
   createWindow()
 
   // Mac OS 를 위한 코드
@@ -609,7 +613,6 @@ ipcMain.on('closeWindow', (event, key) => {
 })
 // #endregion
 // #region ContextMenu
-
 ipcMain.on('contextMenu', (event, type) => {
   let template
   if (type === 'testIndex') {
@@ -660,7 +663,7 @@ if (isDevelopment) {
     })
   }
 }
-
+// #endregion
 ipcMain.on('checkPortPing', (event, ip, port, timeout = 2500) => {
   // event.sender.send('contextMenu_result', 'error! No Type')
   checkPortPing(ip, port, timeout, event)
@@ -694,3 +697,22 @@ function checkPortPing (ip, port, timeout, event = undefined) {
     }).connect(item[1], item[0])
   })
 }
+
+ipcMain.on('offline', (event) => {
+  console.log('offline')
+  console.log(g_FTPInfoDic)
+  for (var key in g_FTPInfoDic) {
+    let curFTPInfo = g_FTPInfoDic[key]
+    curFTPInfo.isEthernetConnect = false
+    log.info('ethernnet Disconnect')
+    for (var key2 in curFTPInfo.ftpStreamList) {
+      console.log(curFTPInfo.ftpStreamList[key2])
+      let curStream = curFTPInfo.ftpStreamList[key2]
+      curStream.doReleaseStream(curStream.m_CurrentStream)
+      log.info('stream release')
+    }
+  }
+
+  console.log('offline job success')
+  event.sender.send('offline_result')
+})

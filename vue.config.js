@@ -6,7 +6,7 @@ module.exports = {
         asar: true,
         win: {
           target: ['zip', 'nsis'],
-          icon: './public/img/icons/win/test_im_your_father_win.ico',
+          icon: './public/img/icons/win/star.ico',
           requestedExecutionLevel: 'requireAdministrator'
         },
         nsis: {
@@ -16,9 +16,9 @@ module.exports = {
             'en_US',
             'ko_KR'
           ],
-          language: '1042',
-          installerIcon: './public/img/icons/win/test_im_your_father_win.ico',
-          uninstallerIcon: './public/img/icons/win/test_cat_icon.ico'
+          language: '1042'
+        //   installerIcon: './public/img/icons/win/star.ico',
+        //   uninstallerIcon: './public/img/icons/win/star.ico'
         },
         linux: {
           target: ['AppImage', 'deb', 'rpm', 'zip', 'tar.gz']
@@ -29,8 +29,8 @@ module.exports = {
           // eslint-disable-next-line no-template-curly-in-string
           artifactName: '${productName}-${version}-${os}.${ext}',
           category: 'public.app-category.utilities',
-          provisioningProfile: 'embedded.provisionprofile',
-          icon: './public/img/icons/mac/test_im_your_father_mac.icns'
+          provisioningProfile: 'embedded.provisionprofile'
+          // icon: './public/img/icons/mac/test_im_your_father_mac.icns'
         }
       }
     }

@@ -5,7 +5,9 @@ const { shell } = require('electron')
 const fs = require('fs')
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
-const log = require('electron-log')
+const Log = require('./log').Log
+// eslint-disable-next-line no-unused-vars
+let log = new Log()
 function FTPStream () {
   this.m_ftpClient
   this.m_ftpConnectConfig = undefined
@@ -14,13 +16,15 @@ function FTPStream () {
   this.m_WholeWorkFTPDataList = {}
   this.m_CompleteFTPDataPath = []
 
+  this.m_CurrentStream
+
   this.totalWorkSize = 0
   this.totalWorkSize_Current = 0
   this.totalWorkSize_Percent = 0
   this.totalWorkIndex = 0
 
   this.worklist = []
-  this.isConnection = false
+  this.isFTPConnection = false
 }
 util.inherits(FTPStream, EventEmitter)
 
@@ -46,22 +50,22 @@ FTPStream.prototype.connect = function (_ftpConnectConfig) {
     self.m_ftpClient = new Client()
     self.m_ftpClient.on('ready', () => {
       console.log('ftp ready')
-      self.isConnection = true
+      self.isFTPConnection = true
       self.m_ftpConnectConfig = config
       resolve('true')
     })
     this.m_ftpClient.on('close', () => {
-      self.isConnection = false
+      self.isFTPConnection = false
       console.log('ftp close')
       // reject("close");
     })
     this.m_ftpClient.on('end', () => {
-      self.isConnection = false
+      self.isFTPConnection = false
       console.log('ftp end')
       // reject("end");
     })
     this.m_ftpClient.on('error', (err) => {
-      self.isConnection = false
+      self.isFTPConnection = false
       console.log('ftp err', err)
       reject(err)
     })
@@ -74,15 +78,15 @@ FTPStream.prototype.connect = function (_ftpConnectConfig) {
 FTPStream.prototype.work = async function (_srcPaths, _ftpConnectConfig, index) {
   let self = this
   let err
-  let isConnection = true
+  let isFTPConnection = true
   self.worklist = _srcPaths
   await self.connect(_ftpConnectConfig).catch((_err) => {
     console.log(_err)
     err = _err
-    isConnection = false
+    isFTPConnection = false
   })
   return new Promise((resolve, reject) => {
-    if (isConnection == false) {
+    if (isFTPConnection == false) {
       reject(err)
       return 'Connection Fail'
     }
@@ -119,7 +123,7 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
   let curPath = ftpData.srcPath
   let curDescPath = ftpData.destPath + ftpData.fileName
 
-  if (self.isConnection == false) {
+  if (self.isFTPConnection == false) {
     let err = new Error()
     err.message = 'Connection Fail'
     self.doError(undefined, ftpData, err, callPromiseResult)
@@ -128,6 +132,7 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
     // create readStream
     // eslint-disable-next-line prefer-const
     let curFileStream = fs.createReadStream(curPath, { emitClose: true })
+    self.m_CurrentStream = curFileStream
     if (curFileStream === undefined) {
       // error
       let err = new Error()
@@ -188,7 +193,7 @@ FTPStream.prototype.ftpUploadPut = function (curFileStream, curDescPath, callPro
 }
 FTPStream.prototype.download = function (ftpData, callPromiseResult) {
   let self = this
-  if (self.isConnection == false) {
+  if (self.isFTPConnection == false) {
     let err = new Error()
     err.message = 'Connection Fail'
     self.doError(undefined, ftpData, err, callPromiseResult)
@@ -250,7 +255,6 @@ FTPStream.prototype.doCheckRecursive_work = function (_ftpData, _curFileStream, 
   self.doReleaseStream(_curFileStream)
   // send Event
   self.doSendEvent(_ftpData, isError)
-
   if (isError == true) {
     return
   }
@@ -344,6 +348,7 @@ FTPStream.prototype.doReleaseStream = function (_stream) {
   }
   _stream.close()
   _stream.destroy()
+  this.m_CurrentStream = undefined
 }
 FTPStream.prototype.doSendEvent = function (_ftpData, isError) {
   let self = this
