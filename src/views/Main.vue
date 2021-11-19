@@ -51,7 +51,7 @@
 import templateTree from '@/components/main/Template_tree'
 import templateMenu from '@/components/menu/Template_menu'
 import templateContextMenu from '@/components/main/Template_context_menu'
-const { axios, custom } = require('@/assets/js/include.js')
+const { axios, custom, ipcRenderer } = require('@/assets/js/include.js')
 export default {
   name: 'Main',
   el: '#mainView',
@@ -59,6 +59,11 @@ export default {
     templateTree,
     templateMenu,
     templateContextMenu
+  },
+  created () {
+    window.addEventListener('online', this.updateOnlineStatus)
+    window.addEventListener('offline', this.updateOnlineStatus)
+    ipcRenderer.on('offline_result', this.offlineResult)
   },
   data () {
     return {
@@ -75,11 +80,23 @@ export default {
     this.getFavorits()
   },
   methods: {
+    updateOnlineStatus: function () {
+      if (navigator.onLine == true) {
+        console.log('online')
+      } else {
+        console.log('offline')
+        ipcRenderer.send('offline')
+      }
+    },
+    offlineResult: function (event) {
+      alert('네트워크 연결이 끊어졌습니다')
+    },
     getTree: function () {
       axios.getAsyncAxios('/v2/node/code', {}, (response) => {
         this.c_node_type = response.data.c_node_type
         let param = {}
         param.nodetype = custom.code.codeToValue(this.c_node_type, 'normal')
+        console.log(param)
         axios.getAsyncAxios('/v2/nodes', param, (response) => {
           // console.log('response 값 : ', response)
           // console.log('nodeid : ', response.data.results[0].nodeid)

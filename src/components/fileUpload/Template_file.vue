@@ -128,7 +128,7 @@ export default {
       } else {
         g_ftpSendData.type = 'upload'
         g_ftpSendData.targetUrl = ''
-        ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
+        // ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
 
         // transfer_tb insert data
         const transfer = {}
@@ -151,6 +151,8 @@ export default {
         axios.postAsyncAxios('/v2/transfers', JSON.stringify(transfer), null, (response) => {
           // console.log('post : ', response)
           this.transferid = response.data.transferid
+          ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
+
           // 전송서버내역 추가
           axios.postAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + this.targetFtpInfo.ftpserverid, null, null, (response) => {})
 
@@ -201,6 +203,7 @@ export default {
             transfer.status = 3000
           }
 
+          console.log(this.transferid)
           if ((!this.isResponse && this.transferid != null) || data.ftpData.totalWorkSize_Percent == 100) {
             this.isResponse = true
             axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {

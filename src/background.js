@@ -27,16 +27,12 @@ const starIcon = 'img/icons/mac/16x16.png'
 const KONAN_ROOT_FOLDER = '//.konan'
 let g_windows = []
 let gWin = null
-let g_NotificationPopUp = new NotificationPopUp()
 let g_DOWNLOAD_FOLDER_PATH = ''
 const g_UPLOAD_FTP_FOLDER_PATH = '/konan/electron_test/'
 let g_curUserInfo
 // eslint-disable-next-line no-unused-vars
 let gIsMac = false
 
-ipcMain.on('userhome', event => {
-  event.sender.send('userhome-result', getUserHome() + KONAN_ROOT_FOLDER)
-})
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
@@ -171,7 +167,7 @@ app.whenReady().then(() => {
   globalShortcut.register('CommandOrControl+R', () => {
   })
   RunTray()
-  g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
+  // g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
   createWindow()
 
   // Mac OS 를 위한 코드
@@ -614,7 +610,6 @@ ipcMain.on('closeWindow', (event, key) => {
 })
 // #endregion
 // #region ContextMenu
-
 ipcMain.on('contextMenu', (event, type) => {
   let template
   if (type === 'testIndex') {
@@ -665,7 +660,7 @@ if (isDevelopment) {
     })
   }
 }
-
+// #endregion
 ipcMain.on('checkPortPing', (event, ip, port, timeout = 2500) => {
   // event.sender.send('contextMenu_result', 'error! No Type')
   checkPortPing(ip, port, timeout, event)
@@ -699,3 +694,22 @@ function checkPortPing (ip, port, timeout, event = undefined) {
     }).connect(item[1], item[0])
   })
 }
+
+ipcMain.on('offline', (event) => {
+  console.log('offline')
+  console.log(g_FTPInfoDic)
+  for (var key in g_FTPInfoDic) {
+    let curFTPInfo = g_FTPInfoDic[key]
+    curFTPInfo.isEthernetConnect = false
+    log.info('ethernnet Disconnect')
+    for (var key2 in curFTPInfo.ftpStreamList) {
+      console.log(curFTPInfo.ftpStreamList[key2])
+      let curStream = curFTPInfo.ftpStreamList[key2]
+      curStream.doReleaseStream(curStream.m_CurrentStream)
+      log.info('stream release')
+    }
+  }
+
+  console.log('offline job success')
+  event.sender.send('offline_result')
+})
