@@ -33,8 +33,10 @@ const g_UPLOAD_FTP_FOLDER_PATH = '/konan/electron_test/'
 let g_curUserInfo
 // eslint-disable-next-line no-unused-vars
 let gIsMac = false
-log.transports.file.resolvePath = () => _path.join(getUserHome() + KONAN_ROOT_FOLDER, 'logs/main.log')
 
+ipcMain.on('userhome', event => {
+  event.sender.send('userhome-result', getUserHome() + KONAN_ROOT_FOLDER)
+})
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
@@ -91,7 +93,7 @@ async function createWindow () {
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    gWin.loadURL('app://./index.html')
+    await gWin.loadURL('app://./index.html')
     // gWin.webContents.openDevTools()
   }
 
@@ -100,6 +102,7 @@ async function createWindow () {
   }
   let windowKey = 'main'
   g_windows[windowKey] = gWin
+  log.info('createWindow end')
 }
 
 function RunTray () {
@@ -514,6 +517,7 @@ ipcMain.on('openWindow', (event, windowInfo) => {
 })
 function WindowCreate (event, windowInfo) {
   const key = windowInfo.key
+  log.info('WindowCreate start', key)
   // eslint-disable-next-line no-prototype-builtins
   if (g_windows.hasOwnProperty(key)) {
     event.sender.send(
@@ -588,6 +592,7 @@ function WindowCreate (event, windowInfo) {
 
   g_windows[key] = window
   event.sender.send('openWindow_result', key, windowInfo.data, true)
+  log.info('WindowCreate end')
 }
 ipcMain.on('sendData', (event, key, data, type) => {
   // eslint-disable-next-line no-prototype-builtins
