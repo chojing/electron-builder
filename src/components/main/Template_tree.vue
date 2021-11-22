@@ -48,7 +48,7 @@ export default {
             this.getChildList(item)
           }
           this.timeoutId = null
-        }, 200)
+        }, 400)
       } else if (!thishaschild == 1) {
         clearTimeout(this.timeoutId)
         this.FileUploadPopup(item, name)
