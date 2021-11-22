@@ -28,7 +28,7 @@ import baseDragDrop from '@/components/main/BaseDragDrop'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 const axios = require('@/assets/js/axios.js')
-const custom = require('@/assets/js/custom.js')
+const custom = require('@/assets/js/include.js')
 const FTPServer = function () {
   this.host = ''
   this.port = 0

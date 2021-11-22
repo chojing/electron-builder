@@ -51,11 +51,7 @@
 import templateTree from '@/components/main/Template_tree'
 import templateMenu from '@/components/menu/Template_menu'
 import templateContextMenu from '@/components/main/Template_context_menu'
-const axios = require('@/assets/js/axios.js')
-const custom = require('@/assets/js/custom.js')
-
-const electron = window.require('electron')
-const ipcRenderer = electron.ipcRenderer
+const { axios, custom, ipcRenderer } = require('@/assets/js/include.js')
 let isOnline = true
 
 export default {
