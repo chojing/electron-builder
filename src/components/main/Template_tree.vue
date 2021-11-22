@@ -5,6 +5,7 @@
        v-bind:data-haschild="item.haschild"
        v-bind:data-ftpserverid="item.ftpserverid"
        v-bind:data-ftpsiteid="item.ftpsiteid"
+       v-bind:data-nodetype-caption="item.nodetype_caption"
        v-bind:data-isabs="item.isabs"
        v-bind:data-isabs_boolean="item.isabs_boolean"
        v-bind:data-name="item.name"

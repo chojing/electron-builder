@@ -113,35 +113,15 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .target-list ul li p{position: relative;cursor: pointer;display: inline-block;}
 .target-list > ul p{padding-left: 20px;}
 .target-list > ul p::after{position: absolute;content: '-';left:0;top:0;width: 15px;height: 15px;}
-.target-list > ul li p[data-haschild='1']::after{position: absolute;content: '';left:0;top:50%;transform: translateY(-50%); width: 12px;height: 15px;background: url('../images/folder-solid.svg') no-repeat center 0/100% auto;}
-.target-list > ul li p[data-isopen='true'][data-haschild='1']::after{background-image: url('../images/folder-open-solid.svg')}
+.target-list > ul li p[data-haschild='1']::after{position: absolute;content: "\f07b";left:0;top:50%;transform: translateY(-50%); width: 12px;height: 15px;font-family: 'Font Awesome 5 Free';font-weight: 900;color:#333;}
+.target-list > ul li p[data-isopen='true'][data-haschild='1']::after{content: "\f07c";}
 .target-list > ul li p[data-isopen='true'][data-haschild='1']{color: rgb(12 92 128);}
-#favorits-menu {
-  top: 0;
-  left: 0;
-  margin: 0;
-  padding: 0;
-  display: none;
-  list-style: none;
-  position: absolute;
-  z-index: 2147483647;
-  background-color: white;
-  border: 1px solid #ebebeb;
-  border-bottom-width: 0px;
-}
-#favorits-menu.active {
-  display: block;
-}
-.favorits-menu-list {
-  display: flex;
-  cursor: pointer;
-  padding: 8px 15px;
-  align-items: center;
-  border-bottom: 1px solid #ebebeb;
-}
-.favorits-menu-list:hover {
-  background-color: #ebebeb;
-}
+.target-list > ul li p[data-haschild='1'][data-nodetype-caption="SubCell"]::after{color:#777;}
+.target-list > ul li p[data-haschild='1'][data-nodetype-caption="Branch"]::after{color:#ababab;}
+#favorits-menu {top: 0;left: 0;margin: 0;padding: 0;display: none;list-style: none;position: absolute;z-index: 2147483647;background-color: white;border: 1px solid #ebebeb;border-bottom-width: 0px;}
+#favorits-menu.active {display: block;}
+.favorits-menu-list {display: flex;cursor: pointer;padding: 8px 15px;align-items: center;border-bottom: 1px solid #ebebeb;}
+.favorits-menu-list:hover {background-color: #ebebeb;}
 
 /** login **/
 .login{width: 100%;height:100vh;padding-top: 100px;background-color:#0073a5;}
