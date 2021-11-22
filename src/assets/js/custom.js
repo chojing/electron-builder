@@ -31,7 +31,32 @@ let code = {
   }
 }
 
+let page = {
+  pagination (total, limit, offset, page) {
+    const totalPage = Math.ceil(total / limit)
+    var currentPage = page
+    var startIndex = (Math.ceil(currentPage / offset) - 1) * offset + 1
+    var endIndex = startIndex + offset > totalPage ? totalPage : startIndex + offset - 1
+    var list = []
+    for (let idx = startIndex; idx <= endIndex; idx++) {
+      list.push(idx)
+    }
+    let prev =
+      currentPage > 1 ? startIndex - 1 : null
+    if (prev <= 0 && prev !== null) {
+      prev = parseInt(currentPage, 10) - parseInt(1, 10)
+    }
+    let next =
+      totalPage !== currentPage ? endIndex + 1 : null
+    if (next >= totalPage && next !== null) {
+      next = parseInt(currentPage, 10) + parseInt(1, 10)
+    }
+    return { prev, next, list, currentPage, totalPage }
+  }
+}
+
 export {
   proxy2map,
-  code
+  code,
+  page
 }

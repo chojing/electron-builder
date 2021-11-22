@@ -1,5 +1,6 @@
 <template>
   <ul id = "favorits-menu">
+    <li class = "favorits-menu-list">전송</li>
     <li class = "favorits-menu-list" :nodeid="nodeid">
       즐겨찾기
       <input id = "favorits-checkbox-id" type="checkbox" class ="ml10" @click="editFavoritsMenu($event)"/>

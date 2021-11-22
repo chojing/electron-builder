@@ -44,7 +44,7 @@ export default {
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
-        url: 'HistoryDetail',
+        url: 'ReceivedHistoryDetail',
         data: data,
         width: 600,
         height: 700,
