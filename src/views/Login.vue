@@ -34,9 +34,7 @@
 </template>
 
 <script>
-const electron = window.require('electron')
-const ipcRenderer = electron.ipcRenderer
-const axios = require('@/assets/js/axios.js')
+const { ipcRenderer, axios } = require('@/assets/js/include.js')
 
 export default {
   name: 'Login',
