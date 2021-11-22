@@ -21,10 +21,7 @@
 </template>
 <script>
 import templateMenu from '@/components/menu/Template_menu'
-const electron = window.require('electron')
-const ipcRenderer = electron.ipcRenderer
-const axios = require('@/assets/js/axios.js')
-const custom = require('@/assets/js/custom.js')
+const { ipcRenderer, axios, custom } = require('@/assets/js/include.js')
 export default {
   name: 'Emergency',
   components: {

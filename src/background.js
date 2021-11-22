@@ -2,7 +2,6 @@
 
 import { app, protocol, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-// import { log } from './assets/main/log.js'
 const { Menu, Tray, MenuItem } = require('electron')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -12,7 +11,6 @@ const FileInfo = require('./assets/main/fileinfo.js').FileInfo
 const FileCopyInfo = require('./assets/main/fileinfo.js').FileCopyInfo
 const FTPStream = require('./assets/main/ftpStream.js').FTPStream
 const globalFunk = require('./assets/main/globalFunk.js')
-const Log = require('./assets/main/log.js').Log
 
 const g_JSON = require('./assets/main/json.js')
 const NotificationPopUp = require('./assets/main/globalFunk.js')
@@ -22,22 +20,18 @@ const WindowInfo = require('./assets/main/windows.js').WindowInfo
 const FTPInfo_Type1 = require('./assets/main/ftpinfo.js').FTPInfo_Type1
 const FTPInfo_Type2 = require('./assets/main/ftpinfo.js').FTPInfo_Type2
 const _path = require('path')
-// const log = require('electron-log')
+const log = require('electron-log')
 const starIcon = 'img/icons/mac/16x16.png'
 
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
 let g_windows = []
 let gWin = null
-// eslint-disable-next-line no-unused-vars
-let g_NotificationPopUp = new NotificationPopUp()
-let log = new Log()
 let g_DOWNLOAD_FOLDER_PATH = ''
 const g_UPLOAD_FTP_FOLDER_PATH = '/konan/electron_test/'
 let g_curUserInfo
 // eslint-disable-next-line no-unused-vars
 let gIsMac = false
-// log.transports.file.resolvePath = () => _path.join(getUserHome() + KONAN_ROOT_FOLDER, 'logs/main.log')
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -95,7 +89,7 @@ async function createWindow () {
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    gWin.loadURL('app://./index.html')
+    await gWin.loadURL('app://./index.html')
     // gWin.webContents.openDevTools()
   }
 
@@ -104,6 +98,7 @@ async function createWindow () {
   }
   let windowKey = 'main'
   g_windows[windowKey] = gWin
+  log.info('createWindow end')
 }
 
 function RunTray () {
@@ -518,6 +513,7 @@ ipcMain.on('openWindow', (event, windowInfo) => {
 })
 function WindowCreate (event, windowInfo) {
   const key = windowInfo.key
+  log.info('WindowCreate start', key)
   // eslint-disable-next-line no-prototype-builtins
   if (g_windows.hasOwnProperty(key)) {
     event.sender.send(
@@ -592,6 +588,7 @@ function WindowCreate (event, windowInfo) {
 
   g_windows[key] = window
   event.sender.send('openWindow_result', key, windowInfo.data, true)
+  log.info('WindowCreate end')
 }
 ipcMain.on('sendData', (event, key, data, type) => {
   // eslint-disable-next-line no-prototype-builtins

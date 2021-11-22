@@ -28,8 +28,7 @@
 
 <script>
 import templateReceivedDetailHistory from '@/components/receivedHistory/Template_history_detail_list'
-const electron = window.require('electron')
-const ipcRenderer = electron.ipcRenderer
+const { ipcRenderer } = require('@/assets/js/include.js')
 export default {
   data () {
     return {
