@@ -3,7 +3,8 @@
 import { app, protocol, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 // import { log } from './assets/main/log.js'
-const { Menu, Tray, MenuItem } = require('electron')
+// eslint-disable-next-line no-unused-vars
+const { Menu, Tray, MenuItem, dialog } = require('electron')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 const net = require('net')
@@ -104,6 +105,7 @@ async function createWindow () {
   }
   let windowKey = 'main'
   g_windows[windowKey] = gWin
+  log.info('Create main Window')
 }
 
 function RunTray () {
@@ -147,6 +149,7 @@ function RunTray () {
 
   tray.setToolTip('Test ToolTip')
   tray.setContextMenu(menu)
+  log.info('Create Tray icon')
 }
 
 function getUserHome () {
@@ -171,14 +174,40 @@ function windowShow (_win) {
 app.whenReady().then(() => {
   globalShortcut.register('CommandOrControl+R', () => {
   })
-  RunTray()
-  // g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
-  createWindow()
+  const gotTheLock = app.requestSingleInstanceLock()
 
-  // Mac OS 를 위한 코드
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
+  if (!gotTheLock) {
+    // const options = {
+    //   type: 'info',
+    //   buttons: ['OK'],
+    //   defaultId: 0,
+    //   title: 'Information',
+    //   message: '현재 Anywhere가 실행중입니다.'
+    //   // detail: 'The program will end'
+    // }
+    // dialog.showMessageBoxSync(null, options)
+    app.quit()
+  } else {
+    app.on('second-instance', () => {
+      // Someone tried to run a second instance, we should focus our window.
+      if (gWin) {
+        if (gWin.isMinimized() || !gWin.isVisible()) {
+          gWin.show()
+        }
+        gWin.focus()
+        // eslint-disable-next-line no-useless-return
+        return
+      }
+    })
+    RunTray()
+    // g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
+    createWindow()
+
+    // Mac OS 를 위한 코드
+    app.on('activate', function () {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    })
+  }
 })
 
 // #endregion

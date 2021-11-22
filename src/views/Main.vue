@@ -56,6 +56,7 @@ const custom = require('@/assets/js/custom.js')
 
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
+let isOnline = true
 
 export default {
   name: 'Main',
@@ -88,13 +89,17 @@ export default {
     updateOnlineStatus: function () {
       if (navigator.onLine == true) {
         console.log('online')
+        isOnline = true
       } else {
         console.log('offline')
         ipcRenderer.send('offline')
       }
     },
     offlineResult: function (event) {
-      alert('네트워크 연결이 끊어졌습니다')
+      if (isOnline == true) {
+        alert('네트워크 연결이 끊어졌습니다')
+        isOnline = false
+      }
     },
     getTree: function () {
       axios.getAsyncAxios('/v2/node/code', {}, (response) => {
