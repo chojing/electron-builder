@@ -25,10 +25,13 @@
 
 <script>
 import baseDragDrop from '@/components/main/BaseDragDrop'
+// import ElectronLog from 'electron-log'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 const axios = require('@/assets/js/axios.js')
 const include = require('@/assets/js/include.js')
+const { log } = require('@/assets/js/include.js')
+// const log = require(ElectronLog)
 const FTPServer = function () {
   this.host = ''
   this.port = 0
@@ -75,7 +78,9 @@ export default {
     isTelUse: Boolean
   },
   created () {
-    console.log('start!')
+    log.info('file upload page')
+
+    // log.info('Template_file.vue start!')
     // const self = this
     ipcRenderer.on('receiveData', this.init)
     ipcRenderer.on('ftp-result', this.ftpResult)

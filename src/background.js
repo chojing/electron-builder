@@ -2,7 +2,10 @@
 
 import { app, protocol, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-const { Menu, Tray, MenuItem } = require('electron')
+// eslint-disable-next-line no-unused-vars
+import { logConfig } from './assets/main/logConfig.js'
+// eslint-disable-next-line no-unused-vars
+const { Menu, Tray, MenuItem, dialog } = require('electron')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 const net = require('net')
@@ -13,6 +16,7 @@ const FTPStream = require('./assets/main/ftpStream.js').FTPStream
 const globalFunk = require('./assets/main/globalFunk.js')
 
 const g_JSON = require('./assets/main/json.js')
+// eslint-disable-next-line no-unused-vars
 const NotificationPopUp = require('./assets/main/globalFunk.js')
   .NotificationPopUp
 const WindowInfo = require('./assets/main/windows.js').WindowInfo
@@ -30,6 +34,7 @@ let gWin = null
 let g_DOWNLOAD_FOLDER_PATH = ''
 const g_UPLOAD_FTP_FOLDER_PATH = '/konan/electron_test/'
 let g_curUserInfo
+let g_NotificationPopUp = new NotificationPopUp()
 // eslint-disable-next-line no-unused-vars
 let gIsMac = false
 
@@ -98,7 +103,7 @@ async function createWindow () {
   }
   let windowKey = 'main'
   g_windows[windowKey] = gWin
-  log.info('createWindow end')
+  log.info('create main window end')
 }
 
 function RunTray () {
@@ -135,6 +140,7 @@ function RunTray () {
     new MenuItem({
       label: 'Window Exit',
       click () {
+        log.info('end SBSPDS')
         Exit(tray)
       }
     })
@@ -142,6 +148,7 @@ function RunTray () {
 
   tray.setToolTip('Test ToolTip')
   tray.setContextMenu(menu)
+  log.info('Create Tray icon')
 }
 
 function getUserHome () {
@@ -166,14 +173,40 @@ function windowShow (_win) {
 app.whenReady().then(() => {
   globalShortcut.register('CommandOrControl+R', () => {
   })
-  RunTray()
-  // g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
-  createWindow()
+  const gotTheLock = app.requestSingleInstanceLock()
 
-  // Mac OS 를 위한 코드
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
+  if (!gotTheLock) {
+    // const options = {
+    //   type: 'info',
+    //   buttons: ['OK'],
+    //   defaultId: 0,
+    //   title: 'Information',
+    //   message: '현재 Anywhere가 실행중입니다.'
+    //   // detail: 'The program will end'
+    // }
+    // dialog.showMessageBoxSync(null, options)
+    app.quit()
+  } else {
+    app.on('second-instance', () => {
+      // Someone tried to run a second instance, we should focus our window.
+      if (gWin) {
+        if (gWin.isMinimized() || !gWin.isVisible()) {
+          gWin.show()
+        }
+        gWin.focus()
+        // eslint-disable-next-line no-useless-return
+        return
+      }
+    })
+    RunTray()
+    g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
+    createWindow()
+
+    // Mac OS 를 위한 코드
+    app.on('activate', function () {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    })
+  }
 })
 
 // #endregion
@@ -232,7 +265,6 @@ ipcMain.on('files-copy', (event, filePaths) => {
   let curFileCopyInfo = new FileCopyInfo()
 
   curFileCopyInfo.on('copyDuplicate', function (originPath, desPath) {
-    console.log('main Duplication : ' + originPath + ' => ' + desPath)
     log.info('main CopyDuplication : ' + originPath + ' => ' + desPath)
     event.sender.send('files-copy-result', originPath, desPath, 'duplicate')
   })
@@ -250,7 +282,6 @@ ipcMain.on('files-copy', (event, filePaths) => {
 ipcMain.on('dir-create', (event, _dirPath) => {
   const fileInfo = new FileInfo()
   const result = fileInfo.CreateDir(_dirPath)
-  console.log('Create Folder : ' + result)
   log.info('Create Folder : ' + result)
 })
 
@@ -273,6 +304,7 @@ let g_FTPWorkQueue = []
 let statusWindow = null
 
 ipcMain.on('ftp-file-upload', async (event, _ftpSendData) => {
+  log.info('FTP Upload Response')
   _ftpSendData.event = event
   let ftpSite = _ftpSendData.ftpSite
 
@@ -302,7 +334,6 @@ ipcMain.on('ftp-file-upload-start', function () {
   startUpload()
 })
 function startUpload () {
-  console.log('FTP Upload start!')
   log.info('FTP Upload start!')
   let ftpSendData = g_FTPWorkQueue.shift()
   FTPConnectTypeBranch_new('upload', ftpSendData)
@@ -344,7 +375,6 @@ ipcMain.on('ftp-file-download', (event, _ftpSendData) => {
   }
 })
 ipcMain.on('ftp-file-download-start', function () {
-  console.log('FTP Download start!')
   log.info('FTP Download start!')
   let ftpSendData = g_FTPWorkQueue.shift()
   FTPConnectTypeBranch_new('download', ftpSendData)
@@ -353,6 +383,8 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
   let curType = ftpSendData.ftpSite.connectionType
   let tempDic = {}
   let windowName = 'statusWindow_' + ftpSendData.type
+  log.info('Start FTP ', _FTPType)
+  log.info('SiteName : ', ftpSendData.ftpSite)
   if (curType == '1') {
     let ftpInfo = new FTPInfo_Type1(ftpSendData.event, ftpSendData.ftpSite, g_windows[windowName])
     g_FTPInfoDic[ftpSendData.ftpSite.siteName] = ftpInfo
@@ -369,7 +401,6 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
       tempDic[ftpSendData.ftpSite.ftpServerList[i].name] = ftpInfo // dic[10.10.18.29] = ftpInfo
       result = ftpInfo.RequestFTPWork(_FTPType, ftpSendData, i).catch(
         function (error) {
-          console.log(`FTPInfo_Type2_${_FTPType} Error!!!` + error)
           log.info(`FTPInfo_Type2_${_FTPType} Error!!!` + error)
           result = error
         }
@@ -389,7 +420,6 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
     Promise.all(PromiseResult).then(value => {
       // eslint-disable-next-line no-unused-vars
       let isError = false
-      console.log(g_FTPInfoDic)
       log.info(ftpSendData.ftpSite.siteName + ' Success : ' + isError)
     })// end Promise.all
   }
@@ -463,7 +493,7 @@ ipcMain.on('login-read', event => {
   // let data = g_JSON.ReadUserJSON('./UserData.json')
   const path = getUserHome() + KONAN_ROOT_FOLDER + '//UserData.json'
   const data = g_JSON.ReadUserJSON(path)
-  if (data !== undefined) {
+  if (data === undefined) {
     log.info('login-read fail')
   }
 
@@ -696,20 +726,17 @@ function checkPortPing (ip, port, timeout, event = undefined) {
 }
 
 ipcMain.on('offline', (event) => {
-  console.log('offline')
-  console.log(g_FTPInfoDic)
+  log.info('ethernnet Disconnect')
   for (var key in g_FTPInfoDic) {
     let curFTPInfo = g_FTPInfoDic[key]
     curFTPInfo.isEthernetConnect = false
-    log.info('ethernnet Disconnect')
     for (var key2 in curFTPInfo.ftpStreamList) {
-      console.log(curFTPInfo.ftpStreamList[key2])
       let curStream = curFTPInfo.ftpStreamList[key2]
       curStream.doReleaseStream(curStream.m_CurrentStream)
-      log.info('stream release')
+      log.info(key2, ' stream release')
     }
   }
 
-  console.log('offline job success')
   event.sender.send('offline_result')
+  log.info('offline job success')
 })

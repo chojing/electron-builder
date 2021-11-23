@@ -88,7 +88,7 @@ FileInfo.prototype.CreateDir = function (_dirPath) {
 
     return true
   } catch (err) {
-    console.log('mkdir > ' + err)
+    log.info('CreateDir > ', err.message)
     return false
   }
 }
@@ -97,8 +97,7 @@ FileInfo.prototype.DeleteFile = function (_filePath) {
   if (isExist) {
     fs.unlink(_filePath, (err) => {
       if (err) {
-        console.log(err)
-        console.log(_filePath)
+        log.error('DeleteFile ', _filePath)
         return false
       } else {
         console.log(`${_filePath} 를 정상적으로 삭제했습니다`)
@@ -141,10 +140,9 @@ FileCopyInfo.prototype.FileCopy = function (_win, _originPaths) {
 FileCopyInfo.prototype.DoFileCopy = function (_srcPath, _desPath) {
   fs.copyFile(_srcPath, _desPath, (_err) => {
     if (_err) {
-      console.log('ipcMain_file-copy Error : ' + _err)
+      log.error('DoFileCopy ', _err)
       this.emit('copyError', _err, _srcPath, _desPath)
     } else {
-      console.log('Success!')
       this.emit('copyFinish', _srcPath, _desPath)
     }
   })
