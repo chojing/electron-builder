@@ -11,10 +11,10 @@
        v-bind:data-name="item.name"
        v-bind:data-path="item.path"
        v-bind:data-isserver="item.isserver"
-       v-bind:data-isopen="item.isopen"
+       v-bind:data-isopen="item.isopen = true"
        >{{item.name}}</p>
     <ul :class="{hide:!item.isopen}">
-      <templateTree v-bind:nodeList="item.childList"/>
+      <templateTree v-bind:nodeList="item.children"/>
     </ul>
   </li>
 </template>
@@ -38,6 +38,14 @@ export default {
       timeoutId: null
     }
   },
+  // setup (props) {
+  //   console.log('test2', props.nodeList)
+  //   for (let test of props.nodeList) {
+  //     console.log('test', test)
+  //     // eslint-disable-next-line vue/no-setup-props-destructure
+  //     test = props.nodeList
+  //   }
+  // },
   methods: {
     onClick: function (item, name) {
       const thishaschild = item.haschild
@@ -56,26 +64,33 @@ export default {
       }
     },
     getChildList: function (item) {
-      const thisnodeid = item.nodeid
-      if (item.isopen == undefined || item.isopen == false) {
-        axios.getAsyncAxios('/v2/nodes/' + JSON.stringify(thisnodeid), null, (response) => {
-          item.isopen = true
-          for (const result of response.data.results) {
-            if (result.isserver == true) {
-              axios.getAsyncAxios('/v2/nodes/' + JSON.stringify(result.nodeid), null, (changeResponse) => {
-                item.childList = changeResponse.data.results
-                console.log(changeResponse.data.results)
-              })
-            } else {
-              item.childList = response.data.results
-            }
-          }
-        })
-        return false
-      } else if (item.isopen == true) {
+      if (item.isopen == true) {
+        console.log('click')
         item.isopen = false
         return false
+      } else if (item.isopen == undefined || item.isopen == false) {
+        item.isopen = true
+        return false
       }
+      // if (item.isopen == undefined || item.isopen == false) {
+      //   axios.getAsyncAxios('/v2/nodes/' + JSON.stringify(thisnodeid), null, (response) => {
+      //     item.isopen = true
+      //     for (const result of response.data.results) {
+      //       if (result.isserver == true) {
+      //         axios.getAsyncAxios('/v2/nodes/' + JSON.stringify(result.nodeid), null, (changeResponse) => {
+      //           item.childList = changeResponse.data.results
+      //           console.log(changeResponse.data.results)
+      //         })
+      //       } else {
+      //         item.childList = response.data.results
+      //       }
+      //     }
+      //   })
+      //   return false
+      // } else if (item.isopen == true) {
+      //   item.isopen = false
+      //   return false
+      // }
       // axios.getSyncAxios('/v2/trees/treename/' + nodeid + '/child', null, function (response) {
       //   this.childList = response.data.results
       // }, function (error) {

@@ -104,13 +104,23 @@ export default {
         let param = {}
         param.nodetype = custom.code.codeToValue(this.c_node_type, 'normal')
         console.log(param)
-        axios.getAsyncAxios('/v2/nodes', param, (response) => {
+        axios.getAsyncAxios('/v2/nodes/tree', param, (response) => {
           // console.log('response 값 : ', response)
           // console.log('nodeid : ', response.data.results[0].nodeid)
-          axios.getAsyncAxios('/v2/nodes/' + response.data.results[0].nodeid, null, (response) => {
-            this.nodeList = response.data.results
-            console.log('results 값 : ', this.nodeList)
-          })
+          this.nodeList = response.data.results.children
+          for (const result of response.data.results.children) {
+            console.log('result', result)
+            console.log('result children', result.children)
+            // for (const resultChildren of result.children) {
+            //   for (const children of resultChildren.children) {
+            //     console.log('Children isserver', children.isserver)
+            //     if (children.isserver == true) {
+            //       // this.nodeList = changeResponse.data.results.children
+            //     } else {
+            //     }
+            //   }
+            // }
+          }
         })
       })
     },
