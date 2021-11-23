@@ -1,18 +1,14 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-new-wrappers */
-const custom = require('@/assets/js/common.js')
-const { ipcRenderer } = window.require('electron')
-// eslint-disable-next-line no-unused-vars
-const axios = require('@/assets/js/axios.js')
-
-const log = window.require('electron-log')
-const fs = window.require('fs')
+const log = require('electron-log')
+const fs = require('fs')
 let curlibraryDefaultDir = ''
 
 log.transports.file.archiveLog = (oldPath) => {
   let file = oldPath.toString()
-
   try {
-    fs.renameSync(file, curlibraryDefaultDir + '/renderer_' + func_get_now_yyyymmddhhiiss() + '.log')
+    fs.renameSync(file, curlibraryDefaultDir + '/main_' + func_get_now_yyyymmddhhiiss() + '.log')
   } catch (e) {
     log.warn('Could not rotate log', e)
   }
@@ -23,7 +19,7 @@ log.transports.file.maxSize = 10485760 // bytes 단위 10485760 bytes = 10 MB
 
 function getLogPath (variables) {
   curlibraryDefaultDir = variables.libraryDefaultDir
-  let resultName = variables.libraryDefaultDir + '/renderer.log'
+  let resultName = variables.libraryDefaultDir + '/main.log'
 
   return resultName
 }
@@ -52,11 +48,4 @@ function func_get_now_yyyymmddhhiiss () {
     second = '0' + second
   }
   return year + month + day + '_' + hour + minute + second
-}
-
-export {
-  custom,
-  axios,
-  log,
-  ipcRenderer
 }

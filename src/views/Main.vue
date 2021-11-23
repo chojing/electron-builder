@@ -52,6 +52,8 @@ import templateTree from '@/components/main/Template_tree'
 import templateMenu from '@/components/menu/Template_menu'
 import templateContextMenu from '@/components/main/Template_context_menu'
 const { axios, custom, ipcRenderer, log } = require('@/assets/js/include.js')
+let isOnline = true
+
 export default {
   name: 'Main',
   el: '#mainView',
@@ -61,6 +63,7 @@ export default {
     templateContextMenu
   },
   created () {
+    log.info('main page')
     window.addEventListener('online', this.updateOnlineStatus)
     window.addEventListener('offline', this.updateOnlineStatus)
     ipcRenderer.on('offline_result', this.offlineResult)
@@ -83,13 +86,17 @@ export default {
     updateOnlineStatus: function () {
       if (navigator.onLine == true) {
         console.log('online')
+        isOnline = true
       } else {
         console.log('offline')
         ipcRenderer.send('offline')
       }
     },
     offlineResult: function (event) {
-      alert('네트워크 연결이 끊어졌습니다')
+      if (isOnline == true) {
+        alert('네트워크 연결이 끊어졌습니다')
+        isOnline = false
+      }
     },
     getTree: function () {
       axios.getAsyncAxios('/v2/node/code', {}, (response) => {
