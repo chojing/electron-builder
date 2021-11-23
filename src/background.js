@@ -577,13 +577,12 @@ function WindowCreate (event, windowInfo) {
     parentWindow = g_windows[windowInfo.parent]
   }
   const position = parentWindow.getPosition()
-  const size = parentWindow.getSize()
   const window = new BrowserWindow({
     width: windowInfo.width,
     height: windowInfo.height,
     parent: parentWindow,
-    x: position[0] + size[0] + (g_windows.length * 20),
-    y: position[1] + (g_windows.length * 20),
+    x: position[0] + ((g_windows.length + 1) * 20),
+    y: position[1] + ((g_windows.length + 1) * 20),
     modal: windowInfo.modal,
     // resizable: false,
     minimizable: false,
