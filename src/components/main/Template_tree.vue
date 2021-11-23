@@ -12,6 +12,7 @@
        v-bind:data-path="item.path"
        v-bind:data-isserver="item.isserver"
        v-bind:data-isopen="item.isopen = true"
+       v-bind:data-path_ftpserverid="item.path_ftpserverid"
        >{{item.name}}</p>
     <ul :class="{hide:!item.isopen}">
       <templateTree v-bind:nodeList="item.children"/>
@@ -99,7 +100,6 @@ export default {
       // })
     },
     FileUploadPopup: function (ftpInfo, name) {
-      console.log('nodeList : ', this.nodeList)
       let ftpServerId = ftpInfo.path_ftpserverid
       if (ftpServerId == '') {
         alert('조회할 서버아이디가 없습니다.')
@@ -121,6 +121,8 @@ export default {
             modal: false
           })
           console.log('data send : ', data)
+        }, (err) => {
+          alert('오류가 발생했습니다! \n' + err)
         })
       }
     }

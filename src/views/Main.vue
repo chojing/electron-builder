@@ -36,8 +36,8 @@
             <input type="text" placeholder="전송타겟을 입력해주세요">
           </div>
         </div>
-        <div class="target-list mt40"  @click="hideContextMenu()" @contextmenu.prevent="showContextMenu($event)">
-          <ul class="one-list" id="targetContainer">
+        <div class="target-list mt40">
+          <ul class="one-list" id="targetContainer" @click="hideContextMenu()" @contextmenu.prevent="showContextMenu($event)">
             <templateTree v-bind:nodeList="nodeList" ref="templateTree"/>
           </ul>
         </div>
@@ -45,7 +45,7 @@
     </div>
   </main>
   <templateMenu/>
-  <templateContextMenu :nodeid="nodeid" :username="username"/>
+  <templateContextMenu :nodeid="nodeid" :username="username" :path_ftpserverid="path_ftpserverid" :nodename="nodename"/>
 </template>
 <script>
 import templateTree from '@/components/main/Template_tree'
@@ -72,6 +72,8 @@ export default {
       favoritsList: [],
       nodeList: [],
       nodeid: null,
+      path_ftpserverid: null,
+      nodename: null,
       active: false
     }
   },
@@ -146,11 +148,16 @@ export default {
     showContextMenu: function (e) {
       this.nodeid = ''
       document.getElementById('favorits-checkbox-id').checked = false
+      if (e.target.dataset.nodeid == undefined) {
+        this.hideContextMenu()
+      }
       if (e.target.dataset.haschild == 0 && e.target.dataset.nodeid) {
         var menu = document.getElementById('favorits-menu')
         menu.style.left = e.pageX + 'px'
         menu.style.top = e.pageY + 'px'
         this.nodeid = e.target.dataset.nodeid
+        this.path_ftpserverid = parseInt(e.target.dataset.path_ftpserverid)
+        this.nodename = e.target.dataset.name
         var userFavorits = this.favoritsList.map((obj) => obj['nodeid'])
         for (var idx in userFavorits) {
           let favoritsNodeid = userFavorits[idx]
@@ -165,7 +172,6 @@ export default {
       document.getElementById('favorits-menu').classList.remove('active')
     },
     FileUploadPopup: function (item) {
-      console.log('item : ', item)
       let name = ''
       if (Array.isArray(item.name)) {
         name = item.name[item.name.length - 1]

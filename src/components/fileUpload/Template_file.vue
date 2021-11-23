@@ -28,7 +28,7 @@ import baseDragDrop from '@/components/main/BaseDragDrop'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 const axios = require('@/assets/js/axios.js')
-const custom = require('@/assets/js/include.js')
+const include = require('@/assets/js/include.js')
 const FTPServer = function () {
   this.host = ''
   this.port = 0
@@ -108,7 +108,7 @@ export default {
         this.selfKey = key
         this.g_curWindowKey = key
         // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
-        console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
+        console.log('ftp 정보 : ', include.custom.proxy2map(this.targetFtpInfo))
       } else if (type == 'userTelData') {
         this.telValue.push(data)
         // console.log('담은 데이터', this.telValue)
@@ -118,7 +118,7 @@ export default {
       g_ftpSendData.fileList = value
       g_ftpSendData.title = this.$refs.baseDragDrop.$refs.title.value
       g_ftpSendData.comment = this.$refs.baseDragDrop.$refs.comment.value
-      // console.log('DragDropResult', custom.proxy2map(value))
+      // console.log('DragDropResult', include.custom.proxy2map(value))
     },
     doUpload: function () {
       this.transferid = null
@@ -128,7 +128,7 @@ export default {
       } else {
         g_ftpSendData.type = 'upload'
         g_ftpSendData.targetUrl = ''
-        // ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
+        // ipcRenderer.send('ftp-file-upload', include.custom.proxy2map(g_ftpSendData)) // eventName, SendData
 
         // transfer_tb insert data
         const transfer = {}
@@ -151,7 +151,7 @@ export default {
         axios.postAsyncAxios('/v2/transfers', JSON.stringify(transfer), null, (response) => {
           // console.log('post : ', response)
           this.transferid = response.data.transferid
-          ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
+          ipcRenderer.send('ftp-file-upload', include.custom.proxy2map(g_ftpSendData)) // eventName, SendData
 
           // 전송서버내역 추가
           axios.postAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + this.targetFtpInfo.ftpserverid, null, null, (response) => {})
