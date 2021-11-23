@@ -51,7 +51,7 @@
 import templateTree from '@/components/main/Template_tree'
 import templateMenu from '@/components/menu/Template_menu'
 import templateContextMenu from '@/components/main/Template_context_menu'
-const { axios, custom, ipcRenderer } = require('@/assets/js/include.js')
+const { axios, custom, ipcRenderer, log } = require('@/assets/js/include.js')
 export default {
   name: 'Main',
   el: '#mainView',
@@ -96,24 +96,12 @@ export default {
         this.c_node_type = response.data.c_node_type
         let param = {}
         param.nodetype = custom.code.codeToValue(this.c_node_type, 'normal')
-        console.log(param)
         axios.getAsyncAxios('/v2/nodes/tree', param, (response) => {
-          // console.log('response 값 : ', response)
-          // console.log('nodeid : ', response.data.results[0].nodeid)
-          this.nodeList = response.data.results.children
-          for (const result of response.data.results.children) {
-            console.log('result', result)
-            console.log('result children', result.children)
-            // for (const resultChildren of result.children) {
-            //   for (const children of resultChildren.children) {
-            //     console.log('Children isserver', children.isserver)
-            //     if (children.isserver == true) {
-            //       // this.nodeList = changeResponse.data.results.children
-            //     } else {
-            //     }
-            //   }
-            // }
+          for (let node of response.data.results.children) {
+            node.isopen = true
           }
+          this.nodeList = response.data.results.children
+          log.info('main', this.nodeList)
         })
       })
     },

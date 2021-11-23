@@ -11,9 +11,9 @@
        v-bind:data-name="item.name"
        v-bind:data-path="item.path"
        v-bind:data-isserver="item.isserver"
-       v-bind:data-isopen="item.isopen = true"
+       v-bind:data-isopen="item.isopen"
        >{{item.name}}</p>
-    <ul :class="{hide:!item.isopen}">
+    <ul v-if="item.haschild" :class="{hide:!item.isopen}">
       <templateTree v-bind:nodeList="item.children"/>
     </ul>
   </li>
@@ -21,9 +21,7 @@
 
 <script>
 import templateTree from '@/components/main/Template_tree'
-const electron = window.require('electron')
-const ipcRenderer = electron.ipcRenderer
-const axios = require('@/assets/js/axios.js')
+const { axios, ipcRenderer, log } = require('@/assets/js/include.js')
 export default {
   name: 'templateTree',
   components: {
@@ -37,6 +35,33 @@ export default {
       g_windowIndex: 0,
       timeoutId: null
     }
+  },
+  created () {
+    log.info('templateTree create start')
+    if (this.nodeList && this.nodeList.length > 0) {
+      let servernode = null
+      for (let node of this.nodeList) {
+        node.isopen = true
+        if (node.haschild) {
+          for (let childnode of node.children) {
+            if (childnode.isserver) {
+              servernode = childnode
+            }
+          }
+          if (servernode != null) {
+            let index = node.children.indexOf(servernode)
+            // server 삭제
+            node.children.splice(index, 1)
+            // server 삭제한 위치로 slice
+            let preList = node.children.slice(index - 1)
+            // server의 children을 server위치에 concat
+            preList = preList.concat(servernode.children)
+            node.children = preList.concat(node.children)
+          }
+        }
+      }
+    }
+    log.info('templateTree create end')
   },
   // setup (props) {
   //   console.log('test2', props.nodeList)
