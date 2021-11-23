@@ -4,9 +4,10 @@ const FileInfo = require('./fileinfo.js').FileInfo
 const FTPStream = require('./ftpStream').FTPStream
 let gfileData = new FileData()
 
-const Log = require('./log').Log
+// const Log = require('./log').Log
 // eslint-disable-next-line no-unused-vars
-let log = new Log()
+// let log = new Log()
+const log = require('electron-log')
 
 function FTPInfo (_event, _FTPSite, _popUpWnd) {
   this.event = _event || '' // 접속한 유저가 요청한 event를 등록해놓음. 나중에 result 할 때 필요함
@@ -69,7 +70,7 @@ FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _current
   curFtpStream.totalWorkIndex = _fileList.length
   let result = self.ftpStreamList[ftpStreamKey].work(_fileList, ftpServer, 0).catch(
     function (error) {
-      console.log(`FTPInfo_${_ftpType} Error!!!` + error)
+      log.error(`FTPInfo_${_ftpType} Error!!!` + error)
       self.SendMessage(undefined, ftpServer, 'error', error)
       return error
     }
@@ -99,15 +100,20 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMs
           _ftpData.isTotalComplete = true
         }
         self.m_NofiPopup.show('sbspds-anywhere_' + _ftpData.FTPtype, 'Success!\n' + _ftpData.srcPath)
+        log.info('FTP ', _ftpData.FTPtype, ' Finish success!')
       } else {
         self.m_NofiPopup.show('sbspds-anywhere_' + _ftpData.FTPtype, 'Fail!\n' + _ftpData.srcPath)
+        log.info('FTP ', _ftpData.FTPtype, ' Finish fail!')
       }
+      log.info('FTP Server : ', _curFtpServer)
+      log.info('FTP file : ', _ftpData.srcPath)
     } else if (_type == 'cancel') {
       self.m_NofiPopup.show('sbspds-anywhere' + _ftpData.FTPtype, 'Cancel!\n' + _ftpData.srcPath)
       if (_ftpData.cancelInfo === undefined) {
         return
       }
       if (_ftpData.FTPtype == 'upload') {
+        log.info('FTP ', _ftpData.FTPtype, ' Cancel delete start!')
         if (_ftpData.cancelInfo.isDelete == true) {
         // eslint-disable-next-line prefer-const
           let ftpStraem = new FTPStream()
@@ -119,15 +125,16 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMs
           if (_ftpData.cancelInfo.CompletePaths.length > 0) {
             for (let i = _ftpData.cancelInfo.CompletePaths.length - 1; i >= 0; i--) {
               ftpStraem.FTPDeleteFile(_ftpData.cancelInfo.CompletePaths[i], _curFtpServer)
-              console.log('delete!!')
             }
           }
         }
+        log.info('FTP ', _ftpData.FTPtype, ' Cancel delete end!')
+        log.info('FTP ', _ftpData.FTPtype, ' Cancel success!')
+        log.info('FTP Server : ', _curFtpServer)
       } else if (_ftpData.FTPtype == 'download') {
         if (_ftpData.cancelInfo.isDelete == true) {
         // 현재 파일 삭제
           let delFileName = _ftpData.cancelInfo.DelPath.fileName
-          console.log(delFileName)
           let fileInfo = new FileInfo()
           let deleteFilePath = _ftpData.destPath + delFileName
           fileInfo.DeleteFile(deleteFilePath)
@@ -136,9 +143,9 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMs
           if (_ftpData.cancelInfo.CompletePaths.length > 0) {
             for (let i = _ftpData.cancelInfo.CompletePaths.length - 1; i >= 0; i--) {
               fileInfo.DeleteFile(_ftpData.cancelInfo.CompletePaths[i])
-              console.log('delete!!')
             }
           }
+          log.info('Download cancel, File delete!!')
         }
       }
     }
@@ -192,13 +199,15 @@ FTPInfo_Type1.prototype.RequestFTPWork = async function (_ftpType, _connectionIn
   Promise.all(PromiseResult).then(value => {
     self.isFinish = true
     if (value[0] != true) {
+      // 실패했을 시, 다음 ftp가 있으면 연결 // 성공 시, 끝
       if (ftpServerFinish == true) {
+        log.info(self.clientSendData.ftpSite.siteName + ' is fail!')
         return false
       }
       // Connection List 순차적으로 연결 및 업로드 시도
       this.RequestFTPWork(_ftpType, _connectionIndex)
     } else {
-      console.log(currentFtpServer.host + ' is Success!')
+      log.info(self.clientSendData.ftpSite.siteName + ' is Success!')
       return true
     }
   })
@@ -224,10 +233,10 @@ FTPInfo_Type2.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData,
       self.isFinish = true
       for (let i = 0; i < value.length; i++) {
         if (value[i] != true) { // 실패
-          console.log(curName + ' is fail!')
+          log.error(curName + ' is fail!')
           result = value[i]
         } else {
-          console.log(curName + ' is Success!')
+          log.error(curName + ' is Success!')
         }
       }
       if (result == true) {

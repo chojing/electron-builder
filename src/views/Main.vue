@@ -51,7 +51,7 @@
 import templateTree from '@/components/main/Template_tree'
 import templateMenu from '@/components/menu/Template_menu'
 import templateContextMenu from '@/components/main/Template_context_menu'
-const { axios, custom, ipcRenderer } = require('@/assets/js/include.js')
+const { axios, custom, ipcRenderer, log } = require('@/assets/js/include.js')
 let isOnline = true
 
 export default {
@@ -63,6 +63,7 @@ export default {
     templateContextMenu
   },
   created () {
+    log.info('main page')
     window.addEventListener('online', this.updateOnlineStatus)
     window.addEventListener('offline', this.updateOnlineStatus)
     ipcRenderer.on('offline_result', this.offlineResult)
