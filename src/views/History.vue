@@ -1,7 +1,7 @@
 <template>
   <section class="history-container">
     <div class="wrap">
-      <h4 class="tti mb40">전송내역</h4>
+      <h4 class="tti mb20">전송내역</h4>
       <div class="send-box">
         <table>
           <thead>
@@ -13,13 +13,13 @@
           </tr>
           </thead>
           <tbody>
-            <templateHistory/>
+            <templateHistory :transferList="transferList"/>
           </tbody>
         </table>
       </div>
       <div class="paging mt10">
-<!--        <pagination class ="pagination"-->
-<!--                    :pageSetting="custom.page.pagination(total, limit, offset, this.page)"-->
+<!--        <pagination class ="pagination" ref="pagination"-->
+<!--                    :pageData="pageSet(total, limit, offset, this.page)"-->
 <!--                    @paging="getTransferList"/>-->
       </div>
     </div>
@@ -30,19 +30,21 @@
 <script>
 import templateHistory from '@/components/history/Template_history_list'
 import templateMenu from '@/components/menu/Template_menu'
-// const axios = require('@/assets/js/axios.js')
-// const custom = require('@/assets/js/custom.js')
+// import pagination from '@/components/includes/Template_pagination'
+const { axios, custom } = require('@/assets/js/include.js')
 export default {
   components: {
     templateHistory,
     templateMenu
+    // pagination
   },
   data () {
     return {
       transferList: [],
       page: 1,
-      limit: 10,
-      offset: 5
+      total: null,
+      limit: 9,
+      offset: 0
     }
   },
   created () {
@@ -53,27 +55,39 @@ export default {
       this.transferList = []
       const param = {}
       const condition = {}
-
+      condition.userid = parseInt(this.$store.state.userid)
       param.condition = condition
       const sort = {}
-      sort.transferid = 'desc'
+      sort.transferid = 'asc'
       param.sort = sort
       param.limit = this.limit
-      param.offset = this.offset
-      // axios.getAsyncAxios('/v2/transfers/', param, (response) => {
-      //   this.transferList = response.data.results
-      //   this.total = response.paging.total
-      //   this.offset = response.paging.offset
-      //   this.limit = response.paging.limit
-      //   console.log('transferList : ', this.transferList)
-      //
-      //   if (page == null) {
-      //
-      //   } else {
-      //     this.page = page
-      //   }
-      //   custom.page.pagination(this.total, this.limit, this.offset, page)
-      // })
+      param.offset = (page - 1) * this.limit
+      axios.getAsyncAxios('/v2/transfers', param, (response) => {
+        this.transferList = response.data.results
+        this.total = response.data.paging.total
+        this.offset = response.data.paging.offset
+        this.limit = response.data.paging.limit
+        console.log('transferList : ', this.transferList)
+        for (var idx in this.transferList) {
+          let item = this.transferList[idx]
+          item.filesize = custom.getFormatBytes(item.filesize)
+          if (item.status >= 2000 && item.status < 3000) {
+            item.dataPer = (parseInt(item.status) - 2000)
+          }
+        }
+
+        if (page == null) {
+
+        } else {
+          this.page = page
+        }
+        // pageSetting(this.total, this.limit, this.offset, page)
+      }, (err) => {
+        alert('오류가 발생했습니다! \n' + err)
+      })
+    },
+    pageSet: function (total, limit, offset, page) {
+      // pageSetting(total, limit, offset, page)
     }
   }
 }
