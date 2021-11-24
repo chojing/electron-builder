@@ -58,7 +58,7 @@ export default {
       condition.userid = parseInt(this.$store.state.userid)
       param.condition = condition
       const sort = {}
-      sort.transferid = 'asc'
+      sort.transferid = 'desc'
       param.sort = sort
       param.limit = this.limit
       param.offset = (page - 1) * this.limit

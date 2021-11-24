@@ -63,7 +63,7 @@ export default {
       condition.transferid = parseInt(this.transferid)
       param.condition = condition
       const sort = {}
-      sort.fileid = 'asc'
+      sort.fileid = 'desc'
       param.sort = sort
       param.limit = this.limit
       param.offset = (page - 1) * this.limit
