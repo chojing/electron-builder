@@ -20,7 +20,7 @@ async function login (id, password) {
     store.commit('commitUserid', response.data.result.userid)
     store.commit('commitApikey', response.data.result.apikey)
   }).catch(function (error) {
-    log.error('axios login ' + error)
+    log.error('axios login ', error.response)
     setError(error.response.data)
   })
 }
@@ -34,7 +34,7 @@ async function getSyncAxios (url, param, fail) {
   }).then(function (response) {
     result = response.data
   }).catch(function (error) {
-    log.error('axios get' + url + ' ' + error)
+    log.error('axios get', url, error.response)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -51,7 +51,7 @@ function getAsyncAxios (url, param, callback, fail) {
     if (typeof callback === 'function') callback(response)
     else alert(response)
   }).catch(function (error) {
-    log.error('axios get' + url + ' ' + error)
+    log.error('axios get', url, error.response)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -72,7 +72,7 @@ async function postSyncAxios (url, body, param, callback, fail) {
   }).then(function (response) {
     result = response.data
   }).catch(function (error) {
-    log.error('axios post' + url + ' ' + error)
+    log.error('axios post', url, error.response)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -93,7 +93,7 @@ function postAsyncAxios (url, body, param, callback, fail) {
     if (typeof callback === 'function') callback(response)
     else alert(response)
   }).catch(function (error) {
-    log.error('axios post' + url + ' ' + error)
+    log.error('axios post', url, error.response)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -114,7 +114,7 @@ async function putSyncAxios (url, body, param, callback, fail) {
   }).then(function (response) {
     result = response.data
   }).catch(function (error) {
-    log.error('axios put' + url + ' ' + error)
+    log.error('axios put', url, error.response)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -135,7 +135,7 @@ function putAsyncAxios (url, body, param, callback, fail) {
     if (typeof callback === 'function') callback(response)
     else alert(response)
   }).catch(function (error) {
-    log.error('axios put' + url + ' ' + error)
+    log.error('axios put', url, error.response)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -156,7 +156,7 @@ async function deleteSyncAxios (url, body, param, callback, fail) {
   }).then(function (response) {
     result = response.data
   }).catch(function (error) {
-    log.error('axios delete' + url + ' ' + error)
+    log.error('axios delete', url, error.response)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -177,13 +177,14 @@ function deleteAsyncAxios (url, body, param, callback, fail) {
     if (typeof callback === 'function') callback(response)
     else alert(response)
   }).catch(function (error) {
-    log.error('axios delete' + url + ' ' + error)
+    log.error('axios delete', url, error.response)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
 }
 
 function setError (xhr) {
+  log.error('setError', Object.keys(xhr), xhr.status)
   if (xhr.status === 401) {
     let msg = '에러 \n세션이 끊겼습니다.\n로그인 페이지로 이동합니다.'
     if (xhr.message !== null) {
@@ -198,7 +199,7 @@ function setError (xhr) {
       errorCode += xhr.message
 
       if (xhr.status >= 400) {
-        alert('에러\n' + errorCode)
+        alert('에러\n', errorCode)
       } else {
         alert(errorCode)
       }

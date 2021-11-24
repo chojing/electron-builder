@@ -25,12 +25,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in users" :key="user.usertel">
+            <tr v-for="user in users" :key="user.memberid">
               <td>
-                <div class="check"><input type="checkbox" v-model="selected" :value="user.usertel" :id="user.usertel"><label :for="user.usertel"></label></div>
+                <div class="check"><input type="checkbox" v-model="selected" :value="user.phonenumber" :id="user.memberid"><label :for="user.memberid"></label></div>
               </td>
-              <td class="name">{{user.username}}</td>
-              <td class="tel">{{user.usertel}}</td>
+              <td class="name">{{user.name}}</td>
+              <td class="tel">{{user.phonenumber}}</td>
             </tr>
           </tbody>
         </table>
@@ -47,8 +47,8 @@
     <div class="inner">
       <button @click="active = false" class="close"><i class="fas fa-times"></i></button>
       <div class="box flex-box mb20">
-        <input v-model="username" ref="usernameInput" type="text" placeholder="이름" id="info-name" class="name">
-        <input v-model="usertel" ref="usertelInput" type="tel" placeholder="연락처" id="info-tel">
+        <input v-model="name" ref="usernameInput" type="text" placeholder="이름" id="info-name" class="name">
+        <input v-model="phonenumber" ref="usertelInput" type="tel" placeholder="연락처" id="info-tel">
       </div>
       <div class="btn-box">
         <button @click="userAdd" id="addCheck" class="btn" type="button" >추가</button>
@@ -58,8 +58,7 @@
 </template>
 
 <script>
-const electron = window.require('electron')
-const ipcRenderer = electron.ipcRenderer
+const { axios, ipcRenderer, log } = require('@/assets/js/include.js')
 export default {
   name: 'UserInfo',
   data () {
@@ -72,6 +71,7 @@ export default {
     }
   },
   created () {
+    log.info('UserInfo create')
     ipcRenderer.on('receiveData', this.init)
   },
   computed: {
@@ -83,8 +83,8 @@ export default {
         var selected = []
         if (value) {
           this.users.forEach(function (user) {
-            selected.push(user.usertel)
-            console.log('유저번호=id: ' + user.usertel)
+            selected.push(user.phonenumber)
+            console.log('유저번호=id: ' + user.phonenumber)
             console.log('전체체크한 유저정보: ' + selected)
           })
         }
@@ -115,20 +115,27 @@ export default {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     userAdd: function () {
-      if (!/^[a-z0-9_-]{8,13}$/.test(this.usertel)) {
+      if (!/^[a-z0-9_-]{8,13}$/.test(this.phonenumber)) {
         alert('숫자만 입력해주세요.(8~13자리)')
         this.$refs.usertelInput.focus()
-      } else if (!this.usertel) {
+      } else if (!this.phonenumber) {
         alert('연락처를 입력해주세요.')
         this.$refs.usertelInput.focus()
-      } else if (!this.username) {
+      } else if (!this.name) {
         alert('이름을 입력해주세요.')
         this.$refs.usernameInput.focus()
       } else {
         this.active = false
-        this.users.push({ username: this.username, usertel: this.usertel })
-        this.username = ''
-        this.usertel = ''
+        let body = {
+          name: this.name,
+          phonenumber: this.phonenumber,
+          userid: this.$store.state.username
+        }
+        axios.postAsyncAxios('/v2/members', JSON.stringify(body), null, function (response) {
+
+        })
+        this.name = ''
+        this.phonenumber = ''
       }
     },
     userDel: function () {
