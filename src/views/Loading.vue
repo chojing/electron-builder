@@ -5,12 +5,12 @@
 
 </template>
 <script>
-const { ipcRenderer, axios, log } = require('@/assets/js/include.js')
+const { ipcRenderer, axios } = require('@/assets/js/include.js')
 
 export default {
   name: 'Loading',
   created () {
-    log.info('Loading', 'created')
+    // log.info('Loading', 'created')
     ipcRenderer.once('login-read-result', this.init)
     ipcRenderer.send('login-read') // 로그인 데이터를 받아옴
   },

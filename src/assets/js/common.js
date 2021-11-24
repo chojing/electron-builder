@@ -30,7 +30,42 @@ let code = {
     return this.convert(codelist, 'caption', 'codevalue', caption)
   }
 }
+
+function pageSetting (total, limit, offset, page) {
+  const totalPage = Math.ceil(total / limit)
+  var currentPage = page
+  var startIndex = (Math.ceil(currentPage / offset) - 1) * offset + 1
+  var endIndex = startIndex + offset > totalPage ? totalPage : startIndex + offset - 1
+  console.log('total : ', total, ' totalPage : ', totalPage, ' currentPage : ', currentPage, ' startIndex : ', startIndex, 'endIndex : ', endIndex)
+  console.log('offset : ', offset)
+  console.log('(Math.ceil(currentPage / offset) - 1) : ', (Math.ceil(currentPage / offset) - 1))
+  var list = []
+  for (let idx = startIndex; idx <= endIndex; idx++) {
+    list.push(idx)
+  }
+  let prev =
+    currentPage > 1 ? startIndex - 1 : null
+  if (prev <= 0 && prev !== null) {
+    prev = parseInt(currentPage, 10) - parseInt(1, 10)
+  }
+  let next =
+    totalPage !== currentPage ? endIndex + 1 : null
+  if (next >= totalPage && next !== null) {
+    next = parseInt(currentPage, 10) + parseInt(1, 10)
+  }
+  return { prev, next, list, currentPage, totalPage }
+}
+
+function getFormatBytes (bytes) {
+  if (bytes < 1024) return bytes + ' Bytes'
+  else if (bytes < 1048576) return (bytes / 1024).toFixed(3) + ' KB'
+  else if (bytes < 1073741824) return (bytes / 1048576).toFixed(3) + ' MB'
+  else if (bytes < 1073741824) return (bytes / 1048576).toFixed(3) + ' GB'
+  else return (bytes / 1099511627776).toFixed(3) + ' TB'
+}
 export {
   proxy2map,
-  code
+  code,
+  pageSetting,
+  getFormatBytes
 }
