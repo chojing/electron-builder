@@ -129,7 +129,7 @@ export default {
     getList: function () {
       const param = {}
       const condition = {}
-      condition.owner = this.$store.state.userid
+      condition.owner = this.$store.state.username
       condition.ismanual = 1
       param.condition = condition
       const sort = {}
@@ -137,6 +137,7 @@ export default {
       param.sort = sort
       param.limit = 0
       param.offset = 0
+      console.log('condition : ', condition)
       axios.getAsyncAxios('/v2/ftpservers', param, (response) => {
         // console.log(response)
         this.addSelect = response.data.results
