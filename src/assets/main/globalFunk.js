@@ -1,6 +1,6 @@
-const electron = require('electron')
-const app = electron.app
-const { Notification } = require('electron')
+// const electron = require('electron')
+// const app = electron.app
+// const { Notification } = require('electron')
 const _path = require('path')
 
 function FileData () {
@@ -67,16 +67,16 @@ function NotificationPopUp () {
 }
 
 NotificationPopUp.prototype.show = function (_title, _body) {
-  if (process.platform === 'win32') {
-    app.setAppUserModelId('sbspds-anywhere')
-  }
+//   if (process.platform === 'win32') {
+//     app.setAppUserModelId('sbspds-anywhere')
+//   }
 
-  new Notification({
-    title: _title,
-    body: _body,
-    icon: this.iconPath,
-    subtitle: this.subTitle
-  }).show()
+//   new Notification({
+//     title: _title,
+//     body: _body,
+//     icon: this.iconPath,
+//     subtitle: this.subTitle
+//   }).show()
 }
 
 function getNowyyyymmddhhiiss () {

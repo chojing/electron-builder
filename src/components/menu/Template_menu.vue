@@ -7,9 +7,9 @@
       <span>
          <router-link to="/history"><i class="fas fa-upload"></i></router-link>
       </span>
-      <span>
-         <router-link to="/receivedHistory"><i class="fas fa-download"></i></router-link>
-      </span>
+<!--      <span>-->
+<!--         <router-link to="/receivedHistory"><i class="fas fa-download"></i></router-link>-->
+<!--      </span>-->
       <span>
           <router-link to="/emergency"> <i class="fas fa-exclamation-triangle"></i></router-link>
       </span>

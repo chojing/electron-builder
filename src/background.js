@@ -580,7 +580,7 @@ function WindowCreate (event, windowInfo) {
     parentWindow = g_windows[windowInfo.parent]
   }
   const position = parentWindow.getPosition()
-  log.debug('WindowCreate g_windows.length', Object.keys(g_windows), Object.keys(g_windows).length)
+  // log.debug('WindowCreate g_windows.length', Object.keys(g_windows), Object.keys(g_windows).length)
   const window = new BrowserWindow({
     width: windowInfo.width,
     height: windowInfo.height,
@@ -745,5 +745,5 @@ ipcMain.on('offline', (event) => {
 })
 
 ipcMain.on('WriteLog', (event, msg) => {
-  log.info('Renderer : ', msg)
+  log.info(' [Renderer] : ', msg)
 })

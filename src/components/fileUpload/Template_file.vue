@@ -147,7 +147,7 @@ export default {
 
         // 전송내역 추가
         axios.postAsyncAxios('/v2/transfers', JSON.stringify(transfer), null, (response) => {
-          console.log('post : ', response)
+          // console.log('post : ', response)
           this.transferid = response.data.transferid
           ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
 
@@ -304,7 +304,13 @@ export default {
       if (errMsg.code === 530) {
         msg = '로그인한 계정 / 비밀번호를 확인해주세요'
         alert(msg)
-      } else if (errMsg.code == 'EHOSTUNREACH') { msg = 'FTP 서버와 연결할 수 없습니다.' } else {
+      } else if (errMsg.code == 'EHOSTUNREACH') {
+        msg = 'FTP 서버와 연결할 수 없습니다.'
+        alert(msg)
+      } else if (errMsg.code == 600) {
+        msg = 'FTP 경로에 문제가 발생했습니다.'
+        alert(msg)
+      } else {
         alert(errMsg.message)
       }
     }
