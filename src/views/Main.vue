@@ -131,10 +131,12 @@ export default {
         // console.log('favorits : ', favorits)
         for (var idx in favorits) {
           let hasDepth = favorits[idx]
-          if (hasDepth.indexOf('>') !== -1) {
-            var str = hasDepth.split('>')
-            // console.log('str : ', str)
-            this.favoritsList[idx].name = str
+          if (hasDepth !== undefined) {
+            if (hasDepth.indexOf('>') !== -1) {
+              var str = hasDepth.split('>')
+              // console.log('str : ', str)
+              this.favoritsList[idx].name = str
+            }
           }
         }
         // console.log('favoritsList : ', this.favoritsList)
