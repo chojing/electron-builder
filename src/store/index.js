@@ -57,7 +57,7 @@ export default createStore({
       context.commit('commitApikey', apikey)
     },
     clearStore (context) {
-      context.commit('crear')
+      context.commit('clear')
     }
   }
 })

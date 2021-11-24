@@ -89,7 +89,8 @@ export default {
       await axios.login(ID.value, PW.value)
       const apikey = this.$store.state.apikey
       // Result
-      if (apikey !== null) {
+      console.log(apikey)
+      if (apikey) {
         ipcRenderer.send('login-write', lginInfo)
         await this.$router.push('/main')
       }

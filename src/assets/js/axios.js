@@ -21,6 +21,9 @@ async function login (id, password) {
     store.commit('commitUserid', response.data.result.userid)
     store.commit('commitApikey', response.data.result.apikey)
   }).catch(function (error) {
+    store.commit('commitUsername', null)
+    store.commit('commitUserid', null)
+    store.commit('commitApikey', null)
     ipcRenderer.send('WriteLog', 'axios login ' + error)
     setError(error.response.data)
   })
@@ -195,11 +198,11 @@ function setError (xhr) {
     return false
   } else {
     let errorCode = '[ ERROR CODE : ' + xhr.status + ' ]'
-    if (xhr.message !== null) {
+    if (xhr.message) {
       errorCode += xhr.message
 
       if (xhr.status >= 400) {
-        alert('에러\n', errorCode)
+        alert('에러\n' + errorCode)
       } else {
         alert(errorCode)
       }
