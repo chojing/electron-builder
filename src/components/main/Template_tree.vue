@@ -22,7 +22,7 @@
 
 <script>
 import templateTree from '@/components/main/Template_tree'
-const { axios, ipcRenderer, log } = require('@/assets/js/include.js')
+const { axios, ipcRenderer } = require('@/assets/js/include.js')
 export default {
   name: 'templateTree',
   components: {
@@ -39,7 +39,7 @@ export default {
   },
   created () {
     if (this.nodeList && this.nodeList.length > 0) {
-      log.info('templateTree create start')
+    // log.info('templateTree create start')
       for (let node of this.nodeList) {
         let servernodeList = []
         node.isopen = true
@@ -63,7 +63,7 @@ export default {
           }
         }
       }
-      log.info('templateTree create end')
+    //   log.info('templateTree create end')
     }
   },
   // setup (props) {

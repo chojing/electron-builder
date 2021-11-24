@@ -149,7 +149,8 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
           if (err) {
             let error = new Error()
             error.message = err
-            log.err(err)
+            error.code = '600'
+            log.error('ftpStream > cwd > ', err)
             self.doError(curFileStream, ftpData, error, callPromiseResult)
             return false
           } else {

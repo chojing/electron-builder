@@ -30,7 +30,7 @@ const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 const axios = require('@/assets/js/axios.js')
 const include = require('@/assets/js/include.js')
-const { log } = require('@/assets/js/include.js')
+// const { log } = require('@/assets/js/include.js')
 // const log = require(ElectronLog)
 const FTPServer = function () {
   this.host = ''
@@ -78,7 +78,7 @@ export default {
     isTelUse: Boolean
   },
   created () {
-    log.info('file upload page')
+    // log.info('file upload page')
 
     // log.info('Template_file.vue start!')
     // const self = this
@@ -306,7 +306,13 @@ export default {
       if (errMsg.code === 530) {
         msg = '로그인한 계정 / 비밀번호를 확인해주세요'
         alert(msg)
-      } else if (errMsg.code == 'EHOSTUNREACH') { msg = 'FTP 서버와 연결할 수 없습니다.' } else {
+      } else if (errMsg.code == 'EHOSTUNREACH') {
+        msg = 'FTP 서버와 연결할 수 없습니다.'
+        alert(msg)
+      } else if (errMsg.code == 600) {
+        msg = 'FTP 경로에 문제가 발생했습니다.'
+        alert(msg)
+      } else {
         alert(errMsg.message)
       }
     }
