@@ -138,16 +138,7 @@ export default {
           if (ftpInfo.nodeid) {
             data.nodeid = ftpInfo.nodeid
           }
-          ipcRenderer.send('openWindow', {
-            key: ++this.g_windowIndex,
-            url: 'MainFileUpLoad',
-            data: data,
-            width: 500,
-            height: 800,
-            parent: '',
-            modal: false
-          })
-          console.log('data send : ', data)
+          this.callFileUploadPopup(data)
         })
       } else if (ftpSiteId > 0) {
         axios.getAsyncAxios('/v2/ftpsites/' + ftpSiteId, null, (response) => {
@@ -159,19 +150,22 @@ export default {
             if (ftpInfo.nodeid) {
               data.nodeid = ftpInfo.nodeid
             }
-            ipcRenderer.send('openWindow', {
-              key: ++this.g_windowIndex,
-              url: 'MainFileUpLoad',
-              data: data,
-              width: 500,
-              height: 800,
-              parent: '',
-              modal: false
-            })
-            console.log('data send : ', data)
+            this.callFileUploadPopup(data)
           })
         })
       }
+    },
+    callFileUploadPopup: function (data) {
+      ipcRenderer.send('openWindow', {
+        key: ++this.g_windowIndex,
+        url: 'MainFileUpLoad',
+        data: data,
+        width: 500,
+        height: 800,
+        parent: '',
+        modal: false
+      })
+      console.log('data send : ', data)
     }
   }
 }
