@@ -58,7 +58,7 @@
 </template>
 
 <script>
-const { axios, ipcRenderer, log } = require('@/assets/js/include.js')
+const { axios, ipcRenderer } = require('@/assets/js/include.js')
 export default {
   name: 'UserInfo',
   data () {
@@ -71,7 +71,7 @@ export default {
     }
   },
   created () {
-    log.info('UserInfo create')
+    // log.info('UserInfo create')
     ipcRenderer.on('receiveData', this.init)
   },
   computed: {

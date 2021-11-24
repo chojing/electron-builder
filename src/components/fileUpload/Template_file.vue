@@ -30,7 +30,7 @@ const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 const axios = require('@/assets/js/axios.js')
 const include = require('@/assets/js/include.js')
-const { log } = require('@/assets/js/include.js')
+// const { log } = require('@/assets/js/include.js')
 // const log = require(ElectronLog)
 const FTPServer = function () {
   this.host = ''
@@ -78,7 +78,7 @@ export default {
     isTelUse: Boolean
   },
   created () {
-    log.info('file upload page')
+    // log.info('file upload page')
 
     // log.info('Template_file.vue start!')
     // const self = this
