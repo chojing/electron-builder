@@ -13,7 +13,7 @@
     <div class="file-submit-box mt20 user-tel-box" :class="{hide:!isTelUse}">
       <div class="box flex-box">
         <input :value="this.telValue" class="input-box flex-1" type="text" placeholder="전송 확인 문자 연락처(다중)" v-bind:isTelUse="isTelUse" disabled>
-        <button @dblclick="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
+        <button @click="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
       </div>
     </div>
     <div class="btn-box center pt20">
