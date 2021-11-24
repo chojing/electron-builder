@@ -29,7 +29,7 @@ const starIcon = 'img/icons/mac/16x16.png'
 
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
-let g_windows = []
+let g_windows = {}
 let gWin = null
 let g_DOWNLOAD_FOLDER_PATH = ''
 const g_UPLOAD_FTP_FOLDER_PATH = '/konan/electron_test/'
@@ -577,12 +577,13 @@ function WindowCreate (event, windowInfo) {
     parentWindow = g_windows[windowInfo.parent]
   }
   const position = parentWindow.getPosition()
+  log.debug('WindowCreate g_windows.length', Object.keys(g_windows), Object.keys(g_windows).length)
   const window = new BrowserWindow({
     width: windowInfo.width,
     height: windowInfo.height,
     parent: parentWindow,
-    x: position[0] + ((g_windows.length + 1) * 20),
-    y: position[1] + ((g_windows.length + 1) * 20),
+    x: position[0] + ((Object.keys(g_windows).length + 1) * 20),
+    y: position[1] + ((Object.keys(g_windows).length + 1) * 20),
     modal: windowInfo.modal,
     // resizable: false,
     minimizable: false,
