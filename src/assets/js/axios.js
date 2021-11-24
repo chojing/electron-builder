@@ -2,6 +2,7 @@ import store from '@/store/index'
 import router from '@/router/index'
 import axios from 'axios'
 // const log = window.require('electron-log')
+const { ipcRenderer } = window.require('electron')
 axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
 axios.defaults.baseURL = store.state.server
 
@@ -20,7 +21,7 @@ async function login (id, password) {
     store.commit('commitUserid', response.data.result.userid)
     store.commit('commitApikey', response.data.result.apikey)
   }).catch(function (error) {
-    // log.error('axios login ' + error)
+    ipcRenderer.send('WriteLog', 'axios login ' + error)
     setError(error.response.data)
   })
 }
@@ -34,7 +35,7 @@ async function getSyncAxios (url, param, fail) {
   }).then(function (response) {
     result = response.data
   }).catch(function (error) {
-    // log.error('axios get' + url + ' ' + error)
+    ipcRenderer.send('WriteLog', 'axios get' + url + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -51,7 +52,7 @@ function getAsyncAxios (url, param, callback, fail) {
     if (typeof callback === 'function') callback(response)
     else alert(response)
   }).catch(function (error) {
-    // log.error('axios get' + url + ' ' + error)
+    ipcRenderer.send('WriteLog', 'axios get' + url + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -72,7 +73,7 @@ async function postSyncAxios (url, body, param, callback, fail) {
   }).then(function (response) {
     result = response.data
   }).catch(function (error) {
-    // log.error('axios post' + url + ' ' + error)
+    ipcRenderer.send('WriteLog', 'axios post' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -93,7 +94,7 @@ function postAsyncAxios (url, body, param, callback, fail) {
     if (typeof callback === 'function') callback(response)
     else alert(response)
   }).catch(function (error) {
-    // log.error('axios post' + url + ' ' + error)
+    ipcRenderer.send('WriteLog', 'axios post' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -114,7 +115,7 @@ async function putSyncAxios (url, body, param, callback, fail) {
   }).then(function (response) {
     result = response.data
   }).catch(function (error) {
-    // log.error('axios put' + url + ' ' + error)
+    ipcRenderer.send('WriteLog', 'axios put' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -135,7 +136,7 @@ function putAsyncAxios (url, body, param, callback, fail) {
     if (typeof callback === 'function') callback(response)
     else alert(response)
   }).catch(function (error) {
-    // log.error('axios put' + url + ' ' + error)
+    ipcRenderer.send('WriteLog', 'axios put' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -156,7 +157,7 @@ async function deleteSyncAxios (url, body, param, callback, fail) {
   }).then(function (response) {
     result = response.data
   }).catch(function (error) {
-    // log.error('axios delete' + url + ' ' + error)
+    ipcRenderer.send('WriteLog', 'axios delete' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -177,7 +178,7 @@ function deleteAsyncAxios (url, body, param, callback, fail) {
     if (typeof callback === 'function') callback(response)
     else alert(response)
   }).catch(function (error) {
-    // log.error('axios delete' + url + ' ' + error)
+    ipcRenderer.send('WriteLog', 'axios delete' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
