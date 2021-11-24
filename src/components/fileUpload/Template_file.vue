@@ -26,11 +26,7 @@
 <script>
 import baseDragDrop from '@/components/main/BaseDragDrop'
 // import ElectronLog from 'electron-log'
-const electron = window.require('electron')
-const ipcRenderer = electron.ipcRenderer
-const axios = require('@/assets/js/axios.js')
-const include = require('@/assets/js/include.js')
-const { log } = require('@/assets/js/include.js')
+const { ipcRenderer, axios, log, custom } = require('@/assets/js/include.js')
 // const log = require(ElectronLog)
 const FTPServer = function () {
   this.host = ''
@@ -113,7 +109,7 @@ export default {
         this.selfKey = key
         this.g_curWindowKey = key
         // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
-        console.log('ftp 정보 : ', include.custom.proxy2map(this.targetFtpInfo))
+        console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
       } else if (type == 'userTelData') {
         this.telValue.push(data)
         // console.log('담은 데이터', this.telValue)
@@ -156,7 +152,7 @@ export default {
         axios.postAsyncAxios('/v2/transfers', JSON.stringify(transfer), null, (response) => {
           // console.log('post : ', response)
           this.transferid = response.data.transferid
-          ipcRenderer.send('ftp-file-upload', include.custom.proxy2map(g_ftpSendData)) // eventName, SendData
+          ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
 
           // 전송서버내역 추가
           axios.postAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + this.targetFtpInfo.ftpserverid, null, null, (response) => {})

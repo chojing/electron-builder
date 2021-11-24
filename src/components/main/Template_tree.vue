@@ -128,29 +128,30 @@ export default {
     },
     FileUploadPopup: function (ftpInfo, name) {
       let ftpServerId = ftpInfo.path_ftpserverid
-      if (ftpServerId == '') {
-        alert('조회할 서버아이디가 없습니다.')
+      let ftpSiteId = ftpInfo.path_ftpsiteid
+      if (ftpServerId == '' && ftpSiteId) {
+        alert('조회할 FTP정보가 없습니다.')
       } else {
+        let data = {}
         axios.getAsyncAxios('/v2/ftpservers/' + ftpServerId, null, (response) => {
-          let data = {}
           data = response.data.result
           data.nodename = name
           if (ftpInfo.nodeid) {
             data.nodeid = ftpInfo.nodeid
           }
-          ipcRenderer.send('openWindow', {
-            key: ++this.g_windowIndex,
-            url: 'MainFileUpLoad',
-            data: data,
-            width: 500,
-            height: 800,
-            parent: '',
-            modal: false
-          })
-          console.log('data send : ', data)
         }, (err) => {
           alert('오류가 발생했습니다! \n' + err)
         })
+        ipcRenderer.send('openWindow', {
+          key: ++this.g_windowIndex,
+          url: 'MainFileUpLoad',
+          data: data,
+          width: 500,
+          height: 800,
+          parent: '',
+          modal: false
+        })
+        console.log('data send : ', data)
       }
     }
   }
