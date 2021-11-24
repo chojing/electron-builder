@@ -22,7 +22,7 @@
 
 <script>
 import templateTree from '@/components/main/Template_tree'
-const { axios, ipcRenderer, log } = require('@/assets/js/include.js')
+const { axios, ipcRenderer } = require('@/assets/js/include.js')
 export default {
   name: 'templateTree',
   components: {
@@ -39,7 +39,6 @@ export default {
   },
   created () {
     if (this.nodeList && this.nodeList.length > 0) {
-      log.info('templateTree create start')
       for (let node of this.nodeList) {
         let servernodeList = []
         node.isopen = true
@@ -63,7 +62,6 @@ export default {
           }
         }
       }
-      log.info('templateTree create end')
     }
   },
   // setup (props) {
@@ -87,7 +85,7 @@ export default {
         }, 400)
       } else if (!thishaschild == 1) {
         clearTimeout(this.timeoutId)
-        this.FileUploadPopup(item, name)
+        this.fileUploadPopup(item, name)
         this.timeoutId = null
       }
     },
@@ -126,32 +124,53 @@ export default {
       //   axios.setError(error.response.data)
       // })
     },
-    FileUploadPopup: function (ftpInfo, name) {
+    fileUploadPopup: function (ftpInfo, name) {
+      console.log(ftpInfo)
       let ftpServerId = ftpInfo.path_ftpserverid
       let ftpSiteId = ftpInfo.path_ftpsiteid
-      if (ftpServerId == '' && ftpSiteId) {
+      if (ftpServerId == 0 && ftpSiteId == 0) {
         alert('조회할 FTP정보가 없습니다.')
-      } else {
-        let data = {}
+      } else if (ftpServerId > 0) {
         axios.getAsyncAxios('/v2/ftpservers/' + ftpServerId, null, (response) => {
-          data = response.data.result
+          let data = {}
+          data.serverlist = [response.data.result]
           data.nodename = name
           if (ftpInfo.nodeid) {
             data.nodeid = ftpInfo.nodeid
           }
-        }, (err) => {
-          alert('오류가 발생했습니다! \n' + err)
+          ipcRenderer.send('openWindow', {
+            key: ++this.g_windowIndex,
+            url: 'MainFileUpLoad',
+            data: data,
+            width: 500,
+            height: 800,
+            parent: '',
+            modal: false
+          })
+          console.log('data send : ', data)
         })
-        ipcRenderer.send('openWindow', {
-          key: ++this.g_windowIndex,
-          url: 'MainFileUpLoad',
-          data: data,
-          width: 500,
-          height: 800,
-          parent: '',
-          modal: false
+      } else if (ftpSiteId > 0) {
+        axios.getAsyncAxios('/v2/ftpsites/' + ftpSiteId, null, (response) => {
+          let data = {}
+          data.site = response.data.result
+          axios.getAsyncAxios('/v2/ftpsites/' + ftpSiteId + '/ftpservers', null, (response) => {
+            data.serverlist = response.data.results
+            data.nodename = name
+            if (ftpInfo.nodeid) {
+              data.nodeid = ftpInfo.nodeid
+            }
+            ipcRenderer.send('openWindow', {
+              key: ++this.g_windowIndex,
+              url: 'MainFileUpLoad',
+              data: data,
+              width: 500,
+              height: 800,
+              parent: '',
+              modal: false
+            })
+            console.log('data send : ', data)
+          })
         })
-        console.log('data send : ', data)
       }
     }
   }

@@ -9,7 +9,7 @@
         <div class="target-list" style="background: #f5f5f5;border-radius: 5px;">
           <ul class="one-list">
             <!-- 수동FTP리스트 임시값 적용 // 추후에 맞는 값으로 변경해야함-->
-            <li v-for="item in targetFtpList" v-bind:key="item.ftpserferid" @dblclick="this.FileUploadPopup(item)">
+            <li v-for="item in targetFtpList" v-bind:key="item.ftpserferid" @dblclick="this.fileUploadPopup(item)">
               <p>{{item.name}}</p>
             </li>
           </ul>
@@ -49,7 +49,7 @@ export default {
         })
       })
     },
-    FileUploadPopup: function (ftpInfoItem) {
+    fileUploadPopup: function (ftpInfoItem) {
       const item = custom.proxy2map(ftpInfoItem)
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,

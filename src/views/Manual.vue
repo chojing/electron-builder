@@ -12,7 +12,7 @@
         </div>
         <div class="target-list" style="background: #f5f5f5;border-radius: 5px;">
           <ul class="one-list">
-            <li v-for="item in targetFtpList" v-bind:key="item.ftpserferid" @dblclick="this.FileUploadPopup(item)">
+            <li v-for="item in targetFtpList" v-bind:key="item.ftpserferid" @dblclick="this.fileUploadPopup(item)">
               <p>{{item.name}}</p>
             </li>
           </ul>
@@ -86,7 +86,7 @@ export default {
         modal: false
       })
     },
-    FileUploadPopup: function (ftpInfoItem) {
+    fileUploadPopup: function (ftpInfoItem) {
       const item = custom.proxy2map(ftpInfoItem)
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,

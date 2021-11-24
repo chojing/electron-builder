@@ -13,7 +13,7 @@
         <h4>즐겨찾기</h4>
         <div class="favorite-list">
           <div class="fa-item-link fa-item flex-column">
-            <button v-for="item in favoritsList" v-bind:key="item.nodeid" @dblclick="this.FileUploadPopup(item)" @click.prevent>
+            <button v-for="item in favoritsList" v-bind:key="item.nodeid" @dblclick="this.fileUploadPopup(item)" @click.prevent>
               <template v-if="Array.isArray(item.name)">
                 <template v-for="item in item.name" v-bind:key="item">
                   <span>{{item}}</span>
@@ -51,7 +51,7 @@
 import templateTree from '@/components/main/Template_tree'
 import templateMenu from '@/components/menu/Template_menu'
 import templateContextMenu from '@/components/main/Template_context_menu'
-const { axios, custom, ipcRenderer, log } = require('@/assets/js/include.js')
+const { axios, custom, ipcRenderer } = require('@/assets/js/include.js')
 let isOnline = true
 
 export default {
@@ -63,7 +63,6 @@ export default {
     templateContextMenu
   },
   created () {
-    log.info('main page')
     window.addEventListener('online', this.updateOnlineStatus)
     window.addEventListener('offline', this.updateOnlineStatus)
     ipcRenderer.on('offline_result', this.offlineResult)
@@ -110,7 +109,6 @@ export default {
             node.isopen = true
           }
           this.nodeList = response.data.results.children
-          log.info('main', this.nodeList)
         })
       })
     },
@@ -168,14 +166,14 @@ export default {
     hideContextMenu: function () {
       document.getElementById('favorits-menu').classList.remove('active')
     },
-    FileUploadPopup: function (item) {
+    fileUploadPopup: function (item) {
       let name = ''
       if (Array.isArray(item.name)) {
         name = item.name[item.name.length - 1]
       } else {
         name = item.name
       }
-      this.$refs.templateTree.FileUploadPopup(item, name)
+      this.$refs.templateTree.fileUploadPopup(item, name)
     }
   }
 }

@@ -43,7 +43,7 @@ export default {
       data.path_ftpserverid = this.path_ftpserverid
       data.nodeid = this.nodeid
       data.name = this.nodename
-      this.$parent.FileUploadPopup(data)
+      this.$parent.fileUploadPopup(data)
     }
   }
 }

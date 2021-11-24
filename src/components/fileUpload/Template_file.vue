@@ -26,9 +26,10 @@
 <script>
 import baseDragDrop from '@/components/main/BaseDragDrop'
 // import ElectronLog from 'electron-log'
-const { ipcRenderer, axios, log, custom } = require('@/assets/js/include.js')
+const { ipcRenderer, axios, custom } = require('@/assets/js/include.js')
 // const log = require(ElectronLog)
 const FTPServer = function () {
+  this.ftpserverid = 0
   this.host = ''
   this.port = 0
   this.username = ''
@@ -65,7 +66,6 @@ const FTPSendData = function () {
   // sms 정보
 }
 let g_ftpSendData = {}
-let g_CurftpDataServer
 export default {
   components: {
     baseDragDrop
@@ -74,9 +74,6 @@ export default {
     isTelUse: Boolean
   },
   created () {
-    log.info('file upload page')
-
-    // log.info('Template_file.vue start!')
     // const self = this
     ipcRenderer.on('receiveData', this.init)
     ipcRenderer.on('ftp-result', this.ftpResult)
@@ -105,7 +102,7 @@ export default {
     init: function (event, key, data, type) {
       if (type == 'init') {
         this.targetFtpInfo = data
-        this.ftpSet(data)
+        this.ftpSet(data.site, data.serverlist)
         this.selfKey = key
         this.g_curWindowKey = key
         // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
@@ -150,13 +147,16 @@ export default {
 
         // 전송내역 추가
         axios.postAsyncAxios('/v2/transfers', JSON.stringify(transfer), null, (response) => {
-          // console.log('post : ', response)
+          console.log('post : ', response)
           this.transferid = response.data.transferid
           ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
 
           // 전송서버내역 추가
-          axios.postAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + this.targetFtpInfo.ftpserverid, null, null, (response) => {})
-
+          console.log('Template_file', g_ftpSendData)
+          for (let server of g_ftpSendData.ftpSite.ftpServerList) {
+            axios.postAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + server.ftpserverid, null, null, (response) => {
+            })
+          }
           for (let idx in g_ftpSendData.fileList) {
             let item = g_ftpSendData.fileList[idx]
             // transfer_file_tb insert data
@@ -229,46 +229,48 @@ export default {
         this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
       }
     },
-    ftpSet: function (value) {
+    ftpSet: function (site, serverlist) {
       // eslint-disable-next-line no-const-assign
       g_ftpSendData = new FTPSendData()
-      const curFtpServer1 = new FTPServer()
-      curFtpServer1.host = value.host
-      curFtpServer1.port = value.port
-      curFtpServer1.username = value.username
-      curFtpServer1.password = value.password
-      curFtpServer1.name = value.name
-      curFtpServer1.rootpath = value.rootpath
-      curFtpServer1.passive = true // passive : true / active : false
-
-      // activeIp:
-      // ftp가 active 일 경우, 반드시 입력되어야 하는 값.
-      // active 모드인데 해당 ip값이 없을 경우, 에러
-      // 클라이언트측의 ip 이며, 127.0.0.1은 사용불가 (서버측 IP로 인식되어버림)
-      curFtpServer1.activeIp = ''
-
       const ftpSite = new FTPSite()
-      ftpSite.connectionType = '1'
-      ftpSite.siteName = 'konanSite'
-      // curFtpServer2.parentSiteName = ftpSite.siteName
-      // ftpSite.ftpServerList.push(curFtpServer2)
-      curFtpServer1.parentSiteName = ftpSite.siteName
-      ftpSite.ftpServerList.push(curFtpServer1)
+      if (site) {
+        ftpSite.connectionType = '2'
+        ftpSite.siteName = site.name
+      } else {
+        ftpSite.connectionType = '1'
+        ftpSite.siteName = 'konanSite'
+      }
+      for (let server of serverlist) {
+        // activeIp:
+        // ftp가 active 일 경우, 반드시 입력되어야 하는 값.
+        // active 모드인데 해당 ip값이 없을 경우, 에러
+        // 클라이언트측의 ip 이며, 127.0.0.1은 사용불가 (서버측 IP로 인식되어버림)
+        // curFtpServer2.parentSiteName = ftpSite.siteName
+        // ftpSite.ftpServerList.push(curFtpServer2)
+        const curFtpServer1 = new FTPServer()
+        curFtpServer1.ftpserverid = server.ftpserverid
+        curFtpServer1.host = server.host
+        curFtpServer1.port = server.port
+        curFtpServer1.username = server.username
+        curFtpServer1.password = server.password
+        curFtpServer1.name = server.name
+        curFtpServer1.rootpath = server.rootpath
+        curFtpServer1.passive = true // passive : true / active : false
+        curFtpServer1.parentSiteName = ftpSite.siteName
+        curFtpServer1.activeIp = ''
+        ftpSite.ftpServerList.push(curFtpServer1)
+      }
       g_ftpSendData.ftpSite = ftpSite
-
-      g_CurftpDataServer = curFtpServer1
     },
     doCancel: function () {
       console.log('cancel Test!')
 
       let isFileDelete = true
-      let cancelConnectionList = [] // ServerName
-      cancelConnectionList.push(g_CurftpDataServer)
       let cancelType = 'all' // all / path
 
       let cancelInfo = {
         cancelType: cancelType,
-        cancelConnectionList: cancelConnectionList,
+        cancelConnectionList: g_ftpSendData.ftpSite.ftpServerList,
         isDelete: isFileDelete,
         path: undefined // type 이 path일 경우만 기재
       }
