@@ -743,3 +743,7 @@ ipcMain.on('offline', (event) => {
   event.sender.send('offline_result')
   log.info('offline job success')
 })
+
+ipcMain.on('WriteLog', (event, msg) => {
+  log.info('Renderer : ', msg)
+})
