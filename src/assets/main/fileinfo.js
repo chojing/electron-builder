@@ -3,7 +3,6 @@ const electron = require('electron')
 const dialog = electron.dialog
 const fs = require('fs')
 const FileData = require('./globalFunk.js').FileData
-const _path = require('path')
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
 const log = require('electron-log')
@@ -63,7 +62,7 @@ FileInfo.prototype.GetAllFileInfo = function (_filePaths) {
     if (stats.isDirectory()) {
       fs.readdirSync(curPath).forEach(file => { // 파일 리스트 확인
         const curRepath = curPath + '/' + file
-        if (fs.lstatSync(_path.resolve(curPath, file)).isDirectory()) { // 파일 리스트중 디렉토리가 있는지 확인
+        if (fs.lstatSync(curRepath).isDirectory()) { // 파일 리스트중 디렉토리가 있는지 확인
           // 디렉토리
           rePathArr.push(curRepath)
           if (this.m_isSubDirFileRead) {

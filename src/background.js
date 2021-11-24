@@ -80,22 +80,25 @@ async function createWindow () {
     gWin.webContents.send('receiveData', 'main', undefined, 'init')
   })
   gWin.isShow = true
-
+  log.info('Window Config Setting')
   // StartFolder Create
   let fileInfo = new FileInfo()
   let path = getUserHome() + KONAN_ROOT_FOLDER
   fileInfo.CreateDir(path)
-
+  log.info('Login Info File Create')
   gWin.setMenu(null)
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await gWin.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
     if (!process.env.IS_TEST) gWin.webContents.openDevTools()
   } else {
+    log.info('Access Product Path')
     createProtocol('app')
+    log.info('Create Protocol')
     // Load the index.html when not in development
     await gWin.loadURL('app://./index.html')
     // gWin.webContents.openDevTools()
+    log.info('Request Index Page')
   }
 
   if (process.platform === 'darwin') {

@@ -9,97 +9,97 @@ const routes = [
   {
     path: '/test',
     name: 'test',
-    component: () => import('../views/Test.vue')
+    component: () => import('../views/Test')
   },
   {
     path: '/test2',
     name: 'test2',
-    component: () => import('../views/Test2.vue')
+    component: () => import('../views/Test2')
   },
   {
     path: '/loading',
     name: 'loading',
-    component: () => import('../views/Loading.vue')
+    component: () => import('../views/Loading')
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/Login.vue')
+    component: () => import('../views/Login')
   },
   {
     path: '/main',
     name: 'Main',
-    component: () => import('../views/Main.vue')
+    component: () => import('../views/Main')
   },
   {
     path: '/mainFileUpLoad',
     name: 'MainFileUpLoad',
-    component: () => import('../components/main/MainFileUpLoad.vue')
+    component: () => import('../components/main/MainFileUpLoad')
   },
   {
     path: '/emergency',
     name: 'Emergency',
-    component: () => import('../views/Emergency.vue')
+    component: () => import('../views/Emergency')
   },
   {
     path: '/emergencyFileUpLoad',
     name: 'EmergencyFileUpLoad',
-    component: () => import('../components/emergency/EmergencyFileUpLoad.vue')
+    component: () => import('../components/emergency/EmergencyFileUpLoad')
   },
   {
     path: '/manual',
     name: 'Manual',
-    component: () => import('../views/Manual.vue')
+    component: () => import('../views/Manual')
   },
   {
     path: '/manualFtp',
     name: 'ManualFtp',
-    component: () => import('../components/manual/ManualFtp.vue')
+    component: () => import('../components/manual/ManualFtp')
   },
   {
     path: '/manualFileUpload',
     name: 'ManualFileUpload',
-    component: () => import('../components/manual/ManualFileUpload.vue')
+    component: () => import('../components/manual/ManualFileUpload')
   },
   {
     path: '/history',
     name: 'History',
-    component: () => import('../views/History.vue')
+    component: () => import('../views/History')
   },
   {
     path: '/historyDetail',
     name: 'HistoryDetail',
-    component: () => import('../views/HistoryDetail.vue')
+    component: () => import('../views/HistoryDetail')
   },
   {
     path: '/receivedHistory',
     name: 'ReceivedHistory',
-    component: () => import('../views/ReceivedHistory.vue')
+    component: () => import('../views/ReceivedHistory')
   },
   {
     path: '/receivedHistoryDetail',
     name: 'ReceivedHistoryDetail',
-    component: () => import('../views/ReceivedHistoryDetail.vue')
+    component: () => import('../views/ReceivedHistoryDetail')
   },
   {
     path: '/template_history_list',
     name: 'Template_history_list',
-    component: () => import('../components/history/Template_history_list.vue')
+    component: () => import('../components/history/Template_history_list')
   },
   {
     path: '/template_fileUpLoad',
     name: 'Template_fileUpLoad',
-    component: () => import('../components/fileUpload/Template_file.vue')
+    component: () => import('../components/fileUpload/Template_file')
   },
   {
     path: '/template_tree',
     name: 'Template_tree',
-    component: () => import('../components/main/Template_tree.vue')
+    component: () => import('../components/main/Template_tree')
   },
   {
     path: '/userInfo',
     name: 'UserInfo',
-    component: () => import('../components/main/UserInfo.vue')
+    component: () => import('../components/main/UserInfo')
   }
 ]
 
