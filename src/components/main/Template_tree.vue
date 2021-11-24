@@ -55,7 +55,7 @@ export default {
             // server 삭제
             node.children.splice(index, 1)
             // server 삭제한 위치로 slice
-            let preList = node.children.splice(index - 1)
+            let preList = node.children.splice(index)
             // server의 children을 server위치에 concat
             preList = preList.concat(servernode.children)
             node.children = preList.concat(node.children)
