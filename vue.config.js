@@ -16,9 +16,9 @@ module.exports = {
             'en_US',
             'ko_KR'
           ],
-          language: '1042'
-        //   installerIcon: './public/img/icons/win/star.ico',
-        //   uninstallerIcon: './public/img/icons/win/star.ico'
+          language: '1042',
+          installerIcon: './public/img/icons/win/star.ico',
+          uninstallerIcon: './public/img/icons/win/star.ico'
         },
         linux: {
           target: ['AppImage', 'deb', 'rpm', 'zip', 'tar.gz']
@@ -34,5 +34,8 @@ module.exports = {
         }
       }
     }
+  },
+  configureWebpack: {
+    devtool: 'source-map'
   }
 }

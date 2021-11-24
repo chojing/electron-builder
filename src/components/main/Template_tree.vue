@@ -38,31 +38,33 @@ export default {
     }
   },
   created () {
-    log.info('templateTree create start')
     if (this.nodeList && this.nodeList.length > 0) {
-      let servernode = null
+      log.info('templateTree create start')
       for (let node of this.nodeList) {
+        let servernodeList = []
         node.isopen = true
         if (node.haschild) {
           for (let childnode of node.children) {
             if (childnode.isserver) {
-              servernode = childnode
+              servernodeList.push(childnode)
             }
           }
-          if (servernode != null) {
+        }
+        if (servernodeList.length > 0) {
+          for (let servernode of servernodeList) {
             let index = node.children.indexOf(servernode)
             // server 삭제
             node.children.splice(index, 1)
             // server 삭제한 위치로 slice
-            let preList = node.children.slice(index - 1)
+            let preList = node.children.splice(index - 1)
             // server의 children을 server위치에 concat
             preList = preList.concat(servernode.children)
             node.children = preList.concat(node.children)
           }
         }
       }
+      log.info('templateTree create end')
     }
-    log.info('templateTree create end')
   },
   // setup (props) {
   //   console.log('test2', props.nodeList)
