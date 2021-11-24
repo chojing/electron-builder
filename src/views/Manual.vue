@@ -60,7 +60,7 @@ export default {
       this.targetFtpList = []
       const param = {}
       const condition = {}
-      condition.owner = this.$store.state.userid
+      condition.owner = this.$store.state.username
       condition.ismanual = 1
       param.condition = condition
       const sort = {}

@@ -16,7 +16,7 @@
           </tr>
           </thead>
           <tbody>
-            <templateHistory/>
+            <templateReceivedHistory/>
           </tbody>
         </table>
       </div>
@@ -26,11 +26,11 @@
 </template>
 
 <script>
-import templateHistory from '@/components/history/Template_history_list'
+import templateReceivedHistory from '@/components/receivedHistory/Template_history_list'
 import templateMenu from '@/components/menu/Template_menu'
 export default {
   components: {
-    templateHistory,
+    templateReceivedHistory,
     templateMenu
   }
 }

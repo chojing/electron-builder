@@ -123,7 +123,7 @@ export default {
       g_ftpSendData.fileList = value
       g_ftpSendData.title = this.$refs.baseDragDrop.$refs.title.value
       g_ftpSendData.comment = this.$refs.baseDragDrop.$refs.comment.value
-      // console.log('DragDropResult', custom.proxy2map(value))
+      // console.log('DragDropResult', include.custom.proxy2map(value))
     },
     doUpload: function () {
       this.transferid = null
@@ -133,7 +133,7 @@ export default {
       } else {
         g_ftpSendData.type = 'upload'
         g_ftpSendData.targetUrl = ''
-        // ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
+        // ipcRenderer.send('ftp-file-upload', include.custom.proxy2map(g_ftpSendData)) // eventName, SendData
 
         // transfer_tb insert data
         const transfer = {}

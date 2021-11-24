@@ -1,7 +1,7 @@
 <template>
   <section class="history-detaile-container">
     <div class="wrap">
-      <h4 class="tti">전송내역 상세</h4>
+      <h4 class="tti">수신내역 상세</h4>
       <p class="targetName mt20">
         {{ ftpName }}
       </p>
@@ -16,7 +16,7 @@
           </tr>
           </thead>
           <tbody>
-            <templateDetailHistory />
+            <templateReceivedDetailHistory />
           </tbody>
         </table>
       </div>
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import templateDetailHistory from '@/components/receivedHistory/Template_history_detail_list'
+import templateReceivedDetailHistory from '@/components/receivedHistory/Template_history_detail_list'
 const { ipcRenderer } = require('@/assets/js/include.js')
 export default {
   data () {
@@ -40,7 +40,7 @@ export default {
     ipcRenderer.on('receiveData', this.init)
   },
   components: {
-    templateDetailHistory
+    templateReceivedDetailHistory
   },
   methods: {
     init: function (event, key, data) {
