@@ -184,6 +184,7 @@ function deleteAsyncAxios (url, body, param, callback, fail) {
 }
 
 function setError (xhr) {
+  // log.error('setError', Object.keys(xhr), xhr.status)
   if (xhr.status === 401) {
     let msg = '에러 \n세션이 끊겼습니다.\n로그인 페이지로 이동합니다.'
     if (xhr.message !== null) {
@@ -198,7 +199,7 @@ function setError (xhr) {
       errorCode += xhr.message
 
       if (xhr.status >= 400) {
-        alert('에러\n' + errorCode)
+        alert('에러\n', errorCode)
       } else {
         alert(errorCode)
       }
