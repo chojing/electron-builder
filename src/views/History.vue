@@ -82,8 +82,6 @@ export default {
           this.page = page
         }
         // pageSetting(this.total, this.limit, this.offset, page)
-      }, (err) => {
-        alert('오류가 발생했습니다! \n' + err)
       })
     },
     pageSet: function (total, limit, offset, page) {

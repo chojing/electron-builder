@@ -84,8 +84,6 @@ export default {
           this.page = page
         }
         // custom.pageSetting(this.total, this.limit, this.offset, page)
-      }, (err) => {
-        alert('오류가 발생했습니다! \n' + err)
       })
     },
     cancel: function () {
