@@ -3,6 +3,7 @@ import router from '@/router/index'
 import axios from 'axios'
 // const log = window.require('electron-log')
 const { ipcRenderer } = window.require('electron')
+const custom = require('@/assets/js/common.js')
 axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
 axios.defaults.baseURL = store.state.server
 
@@ -38,7 +39,7 @@ async function getSyncAxios (url, param, fail) {
   }).then(function (response) {
     result = response.data
   }).catch(function (error) {
-    ipcRenderer.send('WriteLog', 'axios get' + url + ' ' + param + ' ' + error)
+    ipcRenderer.send('WriteLog', 'axios get' + url + ' ' + custom.proxy2string(param) + ' ' + error)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
@@ -55,7 +56,7 @@ function getAsyncAxios (url, param, callback, fail) {
     if (typeof callback === 'function') callback(response)
     else alert(response)
   }).catch(function (error) {
-    ipcRenderer.send('WriteLog', 'axios get' + url + ' ' + param + ' ' + error)
+    ipcRenderer.send('WriteLog', 'axios get' + url + ' ' + custom.proxy2string(param) + ' ' + error)
     if (typeof fail === 'function') fail(error)
     else setError(error.response.data)
   })
