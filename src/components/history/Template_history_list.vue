@@ -9,7 +9,7 @@
         <div class="pro-bar">
           <span :class = "item.status_code" :style="{width:item.dataPer + '%'}"></span>
           <template v-if="item.status >= 2000 && item.status < 3000">
-            <b>{{item.dataPer}}%</b>
+            <b>{{item.dataPer}} %</b>
           </template>
           <template v-else>
             <b>{{item.status_caption}}</b>
@@ -18,6 +18,9 @@
       </div>
     </td>
   </tr>
+  <tr v-show="isShow">
+    <td colspan="4">조회 결과가 없습니다.</td>
+  </tr>
 </template>
 
 <script>
@@ -25,19 +28,17 @@ const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 export default {
   props: {
-    transferList: Array
+    transferList: Array,
+    isShow: Boolean
   },
   data () {
     return {
       g_windowIndex: 0,
-      selfKey: 'main',
-      targetNameValue: ''
+      selfKey: 'main'
     }
   },
   methods: {
-    init: function (event, key, data) {
-      this.targetNameValue = data.value
-    },
+    init: function (event, key, data) {},
     historyDetailPopup: function (transfername, transferid) {
       const data = {
         parentKey: this.g_curWindowKey,

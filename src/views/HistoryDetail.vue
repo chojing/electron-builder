@@ -14,9 +14,14 @@
           </tr>
           </thead>
           <tbody>
-            <templateDetailHistory :transferDetailList="transferDetailList"/>
+            <templateDetailHistory :transferDetailList="transferDetailList" :isShow="isShow"/>
           </tbody>
         </table>
+      </div>
+      <div class="paging mt20 mb20">
+        <pagination class ="pagination" ref="pagination"
+                    :pageData="pageSet(total, limit, this.page)"
+                    @paging="getTransferDetailList"/>
       </div>
       <button @click="cancel" type="button" id="cancel" class="btn h40 m-auto">확인</button>
     </div>
@@ -26,10 +31,12 @@
 
 <script>
 import templateDetailHistory from '@/components/history/Template_history_detail_list'
+import pagination from '@/components/includes/Template_pagination'
 const { ipcRenderer, axios, custom } = require('@/assets/js/include.js')
 export default {
   components: {
-    templateDetailHistory
+    templateDetailHistory,
+    pagination
   },
   data () {
     return {
@@ -42,7 +49,7 @@ export default {
       page: 1,
       total: null,
       limit: 10,
-      offset: 0
+      isShow: false
     }
   },
   created () {
@@ -57,6 +64,12 @@ export default {
       this.getTransferDetailList(1)
     },
     getTransferDetailList: function (page) {
+      if (page == null) {
+        this.page = 1
+      } else {
+        this.page = page
+      }
+
       this.transferDetailList = []
       const param = {}
       const condition = {}
@@ -70,7 +83,6 @@ export default {
       axios.getAsyncAxios('/v2/transferfiles', param, (response) => {
         this.transferDetailList = response.data.results
         this.total = response.data.paging.total
-        this.offset = response.data.paging.offset
         this.limit = response.data.paging.limit
         console.log('transferDetailList : ', this.transferDetailList)
 
@@ -78,13 +90,15 @@ export default {
           let item = this.transferDetailList[idx]
           item.filesize = custom.getFormatBytes(item.filesize)
         }
-        if (page == null) {
-
+        if (this.transferDetailList.length === 0) {
+          this.isShow = true
         } else {
-          this.page = page
+          this.isShow = false
         }
-        // custom.pageSetting(this.total, this.limit, this.offset, page)
       })
+    },
+    pageSet: function (total, limit, page) {
+      return custom.pageSetting(total, limit, page)
     },
     cancel: function () {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)

@@ -1,25 +1,35 @@
 <template>
-  <ul v-if="pageSetting.list.length">
-    <li @click="sendPage(1)"><i class="fa fa-angle-double-left" aria-hidden="true"></i></li>
-    <li @click="pageSetting.prev !== null ? sendPage(pageSetting.prev) : ''">
+  <ul v-if="pageData.list.length">
+    <template v-if="pageData.currentPage === 1">
+      <li><i class="fa fa-angle-double-left" aria-hidden="true"></i></li>
+    </template>
+    <template v-else>
+      <li @click="sendPage(1)"><i class="fa fa-angle-double-left" aria-hidden="true"></i></li>
+    </template>
+    <li @click="pageData.prev !== null ? sendPage(pageData.prev) : ''">
       <i class="fa fa-angle-left" aria-hidden="true"></i>
     </li>
-    <li :class="{ active: page === pageSetting.currentPage }"
-        v-for="page in pageSetting.list" :key="page"
+    <li :class="{ active: page === pageData.currentPage }"
+        v-for="page in pageData.list" :key="page"
         @click="sendPage(page)">
       {{ page }}
     </li>
-    <li @click="pageSetting.next !== null ? sendPage(pageSetting.next) : ''">
+    <li @click="pageData.next !== null ? sendPage(pageData.next) : ''">
       <i class="fa fa-angle-right" aria-hidden="true"></i>
     </li>
-    <li @click="sendPage(pageSetting.totalPage)"><i class="fa fa-angle-double-right" aria-hidden="true"></i></li>
+    <template v-if="pageData.currentPage === pageData.totalPage">
+      <li><i class="fa fa-angle-double-right" aria-hidden="true"></i></li>
+    </template>
+    <template v-else>
+      <li @click="sendPage(pageData.totalPage)"><i class="fa fa-angle-double-right" aria-hidden="true"></i></li>
+    </template>
   </ul>
 </template>
 
 <script>
 export default {
   name: 'Template_pagination',
-  props: ['pageSetting'],
+  props: ['pageData'],
   methods: {
     sendPage (page) {
       this.$emit('paging', page)

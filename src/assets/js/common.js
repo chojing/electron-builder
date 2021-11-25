@@ -31,14 +31,12 @@ let code = {
   }
 }
 
-function pageSetting (total, limit, offset, page) {
+function pageSetting (total, limit, page) {
   const totalPage = Math.ceil(total / limit)
+  var offset = 5
   var currentPage = page
   var startIndex = (Math.ceil(currentPage / offset) - 1) * offset + 1
   var endIndex = startIndex + offset > totalPage ? totalPage : startIndex + offset - 1
-  console.log('total : ', total, ' totalPage : ', totalPage, ' currentPage : ', currentPage, ' startIndex : ', startIndex, 'endIndex : ', endIndex)
-  console.log('offset : ', offset)
-  console.log('(Math.ceil(currentPage / offset) - 1) : ', (Math.ceil(currentPage / offset) - 1))
   var list = []
   for (let idx = startIndex; idx <= endIndex; idx++) {
     list.push(idx)

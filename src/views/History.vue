@@ -1,8 +1,8 @@
 <template>
   <section class="history-container">
     <div class="wrap">
-      <h4 class="tti mb20">전송내역</h4>
-      <div class="send-box">
+      <h4 class="tti mb15">전송내역</h4>
+      <div class="send-box" style="height: 527px;">
         <table>
           <thead>
           <tr>
@@ -13,14 +13,14 @@
           </tr>
           </thead>
           <tbody>
-            <templateHistory :transferList="transferList"/>
+            <templateHistory :transferList="transferList" :isShow="isShow"/>
           </tbody>
         </table>
       </div>
-      <div class="paging mt10">
-<!--        <pagination class ="pagination" ref="pagination"-->
-<!--                    :pageData="pageSet(total, limit, offset, this.page)"-->
-<!--                    @paging="getTransferList"/>-->
+      <div class="paging mt20 mb20">
+        <pagination class ="pagination" ref="pagination"
+                    :pageData="pageSet(total, limit, this.page)"
+                    @paging="getTransferList"/>
       </div>
     </div>
   </section>
@@ -30,28 +30,38 @@
 <script>
 import templateHistory from '@/components/history/Template_history_list'
 import templateMenu from '@/components/menu/Template_menu'
-// import pagination from '@/components/includes/Template_pagination'
+import pagination from '@/components/includes/Template_pagination'
 const { axios, custom } = require('@/assets/js/include.js')
 export default {
   components: {
     templateHistory,
-    templateMenu
-    // pagination
+    templateMenu,
+    pagination
   },
   data () {
     return {
+      setTimerInterval: 0,
       transferList: [],
       page: 1,
       total: null,
-      limit: 9,
-      offset: 0
+      limit: 10,
+      isShow: false
     }
   },
   created () {
     this.getTransferList(1)
   },
+  mounted () {
+    this.setTimer()
+  },
   methods: {
     getTransferList: function (page) {
+      if (page == null) {
+        this.page = 1
+      } else {
+        this.page = page
+      }
+
       this.transferList = []
       const param = {}
       const condition = {}
@@ -61,11 +71,11 @@ export default {
       sort.transferid = 'desc'
       param.sort = sort
       param.limit = this.limit
-      param.offset = (page - 1) * this.limit
+      param.offset = (this.page - 1) * this.limit
+
       axios.getAsyncAxios('/v2/transfers', param, (response) => {
         this.transferList = response.data.results
         this.total = response.data.paging.total
-        this.offset = response.data.paging.offset
         this.limit = response.data.paging.limit
         console.log('transferList : ', this.transferList)
         for (var idx in this.transferList) {
@@ -75,17 +85,27 @@ export default {
             item.dataPer = (parseInt(item.status) - 2000)
           }
         }
-
-        if (page == null) {
-
+        if (this.transferList.length === 0) {
+          this.isShow = true
         } else {
-          this.page = page
+          this.isShow = false
         }
-        // pageSetting(this.total, this.limit, this.offset, page)
       })
     },
-    pageSet: function (total, limit, offset, page) {
-      // pageSetting(total, limit, offset, page)
+    setTimer: function () {
+      var _this = this
+      let timer = 15 * 1000
+      this.setTimerInterval = setInterval(function () {
+        _this.getTransferList(_this.page)
+      }, timer)
+    },
+    pageSet: function (total, limit, page) {
+      return custom.pageSetting(total, limit, page)
+    }
+  },
+  watch: {
+    $route () {
+      clearInterval(this.setTimerInterval)
     }
   }
 }
