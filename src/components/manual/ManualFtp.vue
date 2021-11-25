@@ -186,6 +186,19 @@ export default {
     userUpData: function () {
       this.terms = true
       this.usrModifyFtp()
+      const ftpInfoData = {}
+      ftpInfoData.name = this.ftpInfo.name
+      ftpInfoData.host = this.ftpInfo.host
+      ftpInfoData.port = this.ftpInfo.port
+      ftpInfoData.username = this.ftpInfo.username
+      ftpInfoData.password = this.ftpInfo.password
+      ftpInfoData.rootpath = this.ftpInfo.rootpath
+      ftpInfoData.proxy = this.ftpInfo.proxy
+      ftpInfoData.mode = this.ftpInfo.mode
+      ftpInfoData.ismanual = this.ftpInfo.ismanual
+      ftpInfoData.owner = this.ftpInfo.owner
+      ftpInfoData.macvolume = this.ftpInfo.macvolume
+      ftpInfoData.winvolume = this.ftpInfo.winvolume
       if (!this.ftpInfo.name) {
         alert('서버명을 입력해주세요.')
         this.$refs.usernameInput.focus()
@@ -201,32 +214,19 @@ export default {
       } else if (!/^[0-9]*$/.test(this.ftpInfo.port)) {
         alert('PORT는 숫자만 입력해주세요.')
         this.$refs.userportInput.focus()
-      } else if (this.ftpInfo.ftpserverid == '') {
-        this.terms = false
-        console.log('추가 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
-        axios.postAsyncAxios('/v2/ftpservers', JSON.stringify(this.ftpInfo), null, (response) => {
-          console.log('post', response)
-          this.cancel()
-        })
-      } else {
+      } else if (this.ftpInfo.ftpserverid > 0) {
         console.log('수정 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
-        const ftpInfoData = {}
-        ftpInfoData.name = this.ftpInfo.name
-        ftpInfoData.host = this.ftpInfo.host
-        ftpInfoData.port = this.ftpInfo.port
-        ftpInfoData.username = this.ftpInfo.username
-        ftpInfoData.password = this.ftpInfo.password
-        ftpInfoData.rootpath = this.ftpInfo.rootpath
-        ftpInfoData.proxy = this.ftpInfo.proxy
-        ftpInfoData.mode = this.ftpInfo.mode
-        ftpInfoData.ismanual = this.ftpInfo.ismanual
-        ftpInfoData.owner = this.ftpInfo.owner
-        ftpInfoData.macvolume = this.ftpInfo.macvolume
-        ftpInfoData.winvolume = this.ftpInfo.winvolume
         // console.log('ftpInfoData : ', ftpInfoData)
         // console.log('ftpInfo : ', this.ftpInfo)
         axios.putAsyncAxios('/v2/ftpservers/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(ftpInfoData), null, (response) => {
           // console.log('put', response)
+          this.cancel()
+        })
+      } else {
+        this.terms = false
+        console.log('추가 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
+        axios.postAsyncAxios('/v2/ftpservers', JSON.stringify(ftpInfoData), null, (response) => {
+          console.log('post', response)
           this.cancel()
         })
       }
@@ -242,7 +242,7 @@ export default {
       this.ftpInfo.password = ''
       this.ftpInfo.rootpath = ''
       this.ftpInfo.proxy = ''
-      this.ftpInfo.ftpserverid = ''
+      this.ftpInfo.ftpserverid = '-1'
       // console.log('사용자지정 ', this.ftpInfo)
 
       this.isOptionClicked = true
