@@ -100,6 +100,11 @@ const routes = [
     path: '/userInfo',
     name: 'UserInfo',
     component: () => import('../components/main/UserInfo')
+  },
+  {
+    path: '/ftpSiteTransferProgress',
+    name: 'FtpSiteTransferProgress',
+    component: () => import('../components/main/FTPSiteTransferProgress')
   }
 ]
 

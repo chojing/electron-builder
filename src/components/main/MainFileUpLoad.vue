@@ -8,7 +8,7 @@
           </div>
         </div>
       </div>
-      <Template_file v-bind:isTelUse="isTelUse"/>
+      <Template_file v-bind:isTelUse="isTelUse" :isSite="isSite"/>
     </div>
   </section>
 </template>
@@ -27,7 +27,8 @@ export default {
     return {
       g_windowIndex: 0,
       targetNameValue: '',
-      isTelUse: true
+      isTelUse: true,
+      isSite: Boolean
     }
   },
   created () {
@@ -38,6 +39,7 @@ export default {
     init: function (event, key, data, type) {
       if (type == 'init') {
         this.targetNameValue = data.nodename
+        this.isSite = data.isSite
       }
     }
   }
