@@ -13,6 +13,7 @@
        v-bind:data-isserver="item.isserver"
        v-bind:data-isopen="item.isopen"
        v-bind:data-path_ftpserverid="item.path_ftpserverid"
+       v-bind:data-path_ftpsiteid="item.path_ftpsiteid"
        >{{item.name}}</p>
     <ul v-if="item.haschild" :class="{hide:!item.isopen}">
       <templateTree v-bind:nodeList="item.children"/>

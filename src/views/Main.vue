@@ -45,7 +45,8 @@
     </div>
   </main>
   <templateMenu/>
-  <templateContextMenu :nodeid="nodeid" :username="username" :path_ftpserverid="path_ftpserverid" :nodename="nodename"/>
+  <templateContextMenu :nodeid="nodeid" :username="username" :nodename="nodename"
+                       :path_ftpserverid="path_ftpserverid" :path_ftpsiteid="path_ftpsiteid"/>
 </template>
 <script>
 import templateTree from '@/components/main/Template_tree'
@@ -75,6 +76,7 @@ export default {
       nodeList: [],
       nodeid: null,
       path_ftpserverid: null,
+      path_ftpsiteid: null,
       nodename: null,
       active: false
     }
@@ -152,6 +154,7 @@ export default {
         menu.style.top = e.pageY + 'px'
         this.nodeid = e.target.dataset.nodeid
         this.path_ftpserverid = parseInt(e.target.dataset.path_ftpserverid)
+        this.path_ftpsiteid = parseInt(e.target.dataset.path_ftpsiteid)
         this.nodename = e.target.dataset.name
         var userFavorits = this.favoritsList.map((obj) => obj['nodeid'])
         for (var idx in userFavorits) {
