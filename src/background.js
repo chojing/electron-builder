@@ -226,9 +226,10 @@ ipcMain.on('open-directory-dialog', event => {
 })
 
 // eslint-disable-next-line camelcase
-ipcMain.on('drag-file', (event, p_filePaths) => {
+ipcMain.on('drag-file', (event, p_filePaths, isSubDirFileRead) => {
   // eslint-disable-next-line camelcase
   const filePath_fileInfo = new FileInfo()
+  filePath_fileInfo.m_isSubDirFileRead = isSubDirFileRead
   const resultPaths = requestGetAllFileInfo(p_filePaths, filePath_fileInfo)
   requetGetFileInfoResult(event, resultPaths)
 })

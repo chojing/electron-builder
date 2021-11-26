@@ -24,12 +24,17 @@
 </template>
 
 <script>
-const fileList = []
+const { ipcRenderer } = require('@/assets/js/include.js')
+let fileList = []
+let isSubDirFileRead = true
 export default {
   name: 'BaseDragDrop',
   props: {
     isUploading: Boolean,
     isUploadComplete: Boolean
+  },
+  created () {
+    ipcRenderer.on('open-dialog-result', this.DragDropFile_result)
   },
   data () {
     return {
@@ -59,24 +64,38 @@ export default {
       this.DragDropFile(event.target.files)
     },
     DragDropFile (files) {
-      // console.log(files)
       if (files.length) {
         for (let i = 0; i < files.length; i++) {
-          const inputfile = {
-            fileName: '',
-            key: '',
-            path: '',
-            size: 0
-          }
-          const file = files[i]
-          inputfile.path = file.path
-          inputfile.fileName = file.name
-          inputfile.size = file.size
-          fileList.push(inputfile)
+          fileList.push(files[i].path)
         }
-        this.printList()
-        this.$emit('valueReturn', fileList)
       }
+      ipcRenderer.send('drag-file', fileList, isSubDirFileRead)
+
+    //   // console.log(files)
+    //   if (files.length) {
+    //     for (let i = 0; i < files.length; i++) {
+    //       const inputfile = {
+    //         fileName: '',
+    //         key: '',
+    //         path: '',
+    //         size: 0
+    //       }
+    //       const file = files[i]
+    //       inputfile.path = file.path
+    //       inputfile.fileName = file.name
+    //       inputfile.size = file.size
+    //       fileList.push(inputfile)
+    //     }
+    //     this.printList()
+    //     this.$emit('valueReturn', fileList)
+    //   }
+    },
+    DragDropFile_result (event, isCancel, FileDatas) {
+      console.log('isCancel : ' + isCancel)
+      console.log('FileDatas : ' + FileDatas)
+      fileList = FileDatas
+      this.printList()
+      this.$emit('valueReturn', fileList)
     },
     btn_Del_Click (fileItem) {
       this.delFileList(fileItem)
