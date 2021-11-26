@@ -170,6 +170,7 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMs
   }
 }
 
+// 순차전송. 모든 FTPServer를 순차적으로 전송함
 function FTPInfo_Type1 () {
   FTPInfo.apply(this, arguments) // 모든 파라미터를 부모로 넘김
   // arguments : _key, _event, _FTPServerConfig
@@ -198,20 +199,24 @@ FTPInfo_Type1.prototype.RequestFTPWork = async function (_ftpType, _connectionIn
   // 모든 upload 가 끝나면 실행됨
   Promise.all(PromiseResult).then(value => {
     self.isFinish = true
-    if (value[0] != true) {
-      // 실패했을 시, 다음 ftp가 있으면 연결 // 성공 시, 끝
-      if (ftpServerFinish == true) {
-        log.info(self.clientSendData.ftpSite.siteName + ' is fail!')
-        return false
-      }
-      // Connection List 순차적으로 연결 및 업로드 시도
-      this.RequestFTPWork(_ftpType, _connectionIndex)
-    } else {
+    let isSuccess = false
+    if (value[0] != true) { // fail
+      log.info(self.clientSendData.ftpSite.siteName + ' is fail!')
+    } else { // success
       log.info(self.clientSendData.ftpSite.siteName + ' is Success!')
-      return true
+      isSuccess = true
     }
+
+    // next job start
+    if (ftpServerFinish == false) {
+      this.RequestFTPWork(_ftpType, _connectionIndex)
+    }
+
+    return isSuccess
   })
 }
+
+// 동시전송. 모든 FTPServer를 동시에 전송함
 
 function FTPInfo_Type2 () {
   FTPInfo.apply(this, arguments) // 모든 파라미터를 부모로 넘김
@@ -248,6 +253,52 @@ FTPInfo_Type2.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData,
       }
     })// end Promise.all
   })// end Promise
+}
+
+// 순차 전송이지만, A, B 서버 순으로 진행하고, A서버가 성공하면 B서버는 진행하지 않음.
+// 만약, A서버가 실패하면 B서버도 시도함. B서버로 시도했을때 성공하면, 본 Site는 성공으로 간주
+// 두 서버다 실패하면 실패
+function FTPInfo_Type3 () {
+  FTPInfo.apply(this, arguments) // 모든 파라미터를 부모로 넘김
+  // arguments : _key, _event, _FTPServerConfig
+}
+FTPInfo_Type3.prototype = new FTPInfo() // 상속 (관련 함수, 변수 모두 사용 가능)
+FTPInfo_Type3.prototype.RequestFTPWork = async function (_ftpType, _connectionIndex) {
+  let self = this
+
+  // 여기서 ftp 큐를 걸자
+  // await 빠져 나오면 그다음 큐
+  // 여기서 말하는 큐는 FTP 하나 전송 데이터(_FTPSendData).. FTPType이 있을수도 있으니까
+  let PromiseResult = []
+  let ftpServerFinish = false
+  let ftpServerCnt = this.clientSendData.ftpSite.ftpServerList.length
+  let currentFtpServer = this.clientSendData.ftpSite.ftpServerList[_connectionIndex]
+  let fileList = this.clientSendData.fileList
+
+  _connectionIndex = _connectionIndex + 1
+  if (_connectionIndex == ftpServerCnt) {
+    ftpServerFinish = true
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  let result = await self.doftp(_ftpType, PromiseResult, fileList, currentFtpServer)
+
+  // 모든 upload 가 끝나면 실행됨
+  Promise.all(PromiseResult).then(value => {
+    self.isFinish = true
+    if (value[0] != true) {
+      // 실패했을 시, 다음 ftp가 있으면 연결 // 성공 시, 끝
+      if (ftpServerFinish == true) {
+        log.info(self.clientSendData.ftpSite.siteName + ' is fail!')
+        return false
+      }
+      // Connection List 순차적으로 연결 및 업로드 시도
+      this.RequestFTPWork(_ftpType, _connectionIndex)
+    } else {
+      log.info(self.clientSendData.ftpSite.siteName + ' is Success!')
+      return true
+    }
+  })
 }
 
 function FTPData (_type, _file, _desPath, _fileName) {
