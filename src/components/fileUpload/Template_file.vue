@@ -12,9 +12,6 @@
         <b>{{totalDataPer}}%</b>
       </div>
     </div>
-    <div v-show="isSite">
-      <button class="btn blue h30" @click="ftpSiteProgress">전송진행</button>
-    </div>
     <div class="file-submit-box mt20 user-tel-box" :class="{hide:!isTelUse}">
       <div class="box flex-box">
         <input :value="this.telValue" class="input-box flex-1" type="text" placeholder="전송 확인 문자 연락처(다중)" v-bind:isTelUse="isTelUse" disabled>
