@@ -2,7 +2,7 @@
   <section class="file-container pb40">
     <div class="wrap">
       <h4 class="tti">수동 FTP</h4>
-      <Template_file v-bind:isTelUse="isTelUse"/>
+      <Template_file v-bind:isTelUse="isTelUse" :isSite="isSite"/>
     </div>
   </section>
 </template>
@@ -12,7 +12,8 @@ import Template_file from '@/components/fileUpload/Template_file'
 export default {
   data () {
     return {
-      isTelUse: false
+      isTelUse: false,
+      isSite: false
     }
   },
   components: {

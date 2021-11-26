@@ -90,6 +90,7 @@ export default {
       let data = {}
       data.serverlist = [ftpInfoItem]
       data.site = null
+      data.isSite = false
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
         url: 'ManualFileUpload',

@@ -138,6 +138,7 @@ export default {
           if (ftpInfo.nodeid) {
             data.nodeid = ftpInfo.nodeid
           }
+          data.isSite = false
           this.callFileUploadPopup(data)
         })
       } else if (ftpSiteId > 0) {
@@ -150,6 +151,7 @@ export default {
             if (ftpInfo.nodeid) {
               data.nodeid = ftpInfo.nodeid
             }
+            data.isSite = true
             this.callFileUploadPopup(data)
           })
         })

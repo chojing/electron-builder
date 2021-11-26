@@ -2,13 +2,18 @@
 <template>
     <!-- @valueReturn : 자식 컴포넌트에서 emit 의 이벤트명 / "DragDropResult" : 부모(여기)컴포넌트에서 function에 등록할 함수명 -->
     <baseDragDrop @valueReturn="DragDropResult" ref="baseDragDrop" :isUploading="isUploading" :isUploadComplete="isUploadComplete"/>
-    <div class="pro-bar mt15">
-      <span :style="{width:dataPer + '%'}"></span>
-      <b>{{dataPer}}%   ({{fileIndex}} / {{fileTotal}})</b>
+    <div v-show="!isSite">
+      <div class="pro-bar mt15">
+        <span :style="{width:dataPer + '%'}"></span>
+        <b>{{dataPer}}%   ({{fileIndex}} / {{fileTotal}})</b>
+      </div>
+      <div class="pro-bar" style="margin-top: 4px !important;">
+        <span :style="{width:totalDataPer + '%'}"></span>
+        <b>{{totalDataPer}}%</b>
+      </div>
     </div>
-    <div class="pro-bar" style="margin-top: 4px !important;">
-      <span :style="{width:totalDataPer + '%'}"></span>
-      <b>{{totalDataPer}}%</b>
+    <div v-show="isSite">
+      <button class="btn blue h30" @click="ftpSiteProgress">전송진행</button>
     </div>
     <div class="file-submit-box mt20 user-tel-box" :class="{hide:!isTelUse}">
       <div class="box flex-box">
@@ -71,10 +76,10 @@ export default {
     baseDragDrop
   },
   props: {
-    isTelUse: Boolean
+    isTelUse: Boolean,
+    isSite: Boolean
   },
   created () {
-    // const self = this
     ipcRenderer.on('receiveData', this.init)
     ipcRenderer.on('ftp-result', this.ftpResult)
     ipcRenderer.on('ftp-error', this.ftpError)
@@ -110,6 +115,29 @@ export default {
       } else if (type == 'userTelData') {
         this.telValue.push(data)
         // console.log('담은 데이터', this.telValue)
+      } else if (type == 'isFtpSiteCancel') {
+        // transfer_tb insert data
+        const transfer = {}
+        transfer.isfolder = false
+        transfer.userid = this.$store.state.userid
+        transfer.filepath = ''
+        transfer.status = 2000
+        transfer.transfername = this.g_ftpSendData.title
+        transfer.trasnferrequest = this.g_ftpSendData.comment
+        transfer.filesize = 0
+        for (let idx in this.g_ftpSendData.fileList) {
+          let item = this.g_ftpSendData.fileList[idx]
+          transfer.filesize += item.size
+        }
+        if (this.targetFtpInfo.nodeid) {
+          transfer.nodeid = this.targetFtpInfo.nodeid
+        }
+        transfer.status = 4000
+        axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
+          //   console.log('isCancel Success Put : ', response)
+        })
+        this.isUploading = false
+        this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
       }
     },
     DragDropResult: function (value) {
@@ -125,7 +153,6 @@ export default {
         alert('전송할 파일(폴더)를 선택해주세요.')
       } else {
         g_ftpSendData.type = 'upload'
-        g_ftpSendData.targetUrl = ''
         // ipcRenderer.send('ftp-file-upload', include.custom.proxy2map(g_ftpSendData)) // eventName, SendData
         let rootpathTitle = g_ftpSendData.title.replace(/[^a-z|A-Z|0-9|ㄱ-ㅎ|가-힣]/g, '_')
         for (let idx in g_ftpSendData.ftpSite.ftpServerList) {
@@ -153,6 +180,11 @@ export default {
         axios.postAsyncAxios('/v2/transfers', JSON.stringify(transfer), null, (response) => {
           // console.log('post : ', response)
           this.transferid = response.data.transferid
+          if (this.isSite) {
+            g_ftpSendData.targetUrl = 'FtpSiteTransferProgress'
+            g_ftpSendData.clientData.transferid = response.data.transferid
+            g_ftpSendData.clientData.nodeid = this.targetFtpInfo.nodeid
+          }
           ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
 
           // 전송서버내역 추가
@@ -177,7 +209,7 @@ export default {
       }
     },
     ftpResult: function (event, data) {
-      // console.log('ftpResult', data)
+      console.log('ftpResult', data)
       this.dataPer = data.ftpData.curWorkPersent // 현재 파일 업로드 진행 퍼센트
       this.totalDataPer = data.ftpData.totalWorkSize_Percent // 전체 파일 업로드 진행 퍼센트
       this.fileIndex = data.ftpData.workIndex + 1 // 현재 진행 중인 파일 인덱스
