@@ -127,7 +127,11 @@ export default {
         g_ftpSendData.type = 'upload'
         g_ftpSendData.targetUrl = ''
         // ipcRenderer.send('ftp-file-upload', include.custom.proxy2map(g_ftpSendData)) // eventName, SendData
-
+        let rootpathTitle = g_ftpSendData.title.replace(/[^a-z|A-Z|0-9|ㄱ-ㅎ|가-힣]/g, '_')
+        for (let idx in g_ftpSendData.ftpSite.ftpServerList) {
+          let server = g_ftpSendData.ftpSite.ftpServerList[idx]
+          server.rootpath = server.rootpath + rootpathTitle + '/'
+        }
         // transfer_tb insert data
         const transfer = {}
         transfer.isfolder = false
@@ -204,7 +208,7 @@ export default {
             transfer.status = 3000
           }
 
-          console.log(this.transferid)
+          // console.log(this.transferid)
           if ((!this.isResponse && this.transferid != null) || data.ftpData.totalWorkSize_Percent == 100) {
             this.isResponse = true
             axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {

@@ -87,11 +87,13 @@ export default {
       })
     },
     fileUploadPopup: function (ftpInfoItem) {
-      const item = custom.proxy2map(ftpInfoItem)
+      let data = {}
+      data.serverlist = [ftpInfoItem]
+      data.site = null
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
         url: 'ManualFileUpload',
-        data: item,
+        data: custom.proxy2map(data),
         width: 500,
         height: 700,
         parent: '',

@@ -268,7 +268,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .send-box .targetName{cursor: pointer;}
 .send-box .targetName:hover{color: #0082bb;}
 .pro-bar{position: relative;margin: 0 auto;width:100%;height:30px;overflow: hidden;border: 1px solid #eee; border-radius: 30px;background-color: #fff;}
-.pro-bar span{display: block;height: 100%;background-color: #0082bb;border-top-right-radius:20px;border-bottom-right-radius:20px;transition: width .3s linear;}
+.pro-bar span{display: block;height: 100%;background-color: #0082bb;border-top-right-radius:20px;border-bottom-right-radius:20px; /*transition: width .3s linear;*/}
 .pro-bar span.wait{background-color: #c1bd81;} .pro-bar span.running{background-color: #00d16a;}
 .pro-bar span.success{background-color: #288BFE;} .pro-bar span.fail{background-color: #f11835;}
 .pro-bar b{position: absolute;left: 50%;top: 50%;z-index: 10;transform: translate(-50%,-50%);font-size: 14px;text-shadow: 1px 1px 3px rgb(255 255 255 / 50%);}

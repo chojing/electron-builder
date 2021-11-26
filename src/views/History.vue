@@ -62,7 +62,6 @@ export default {
         this.page = page
       }
 
-      this.transferList = []
       const param = {}
       const condition = {}
       condition.userid = parseInt(this.$store.state.userid)
@@ -94,7 +93,7 @@ export default {
     },
     setTimer: function () {
       var _this = this
-      let timer = 15 * 1000
+      let timer = 1 * 1000
       this.setTimerInterval = setInterval(function () {
         _this.getTransferList(_this.page)
       }, timer)
