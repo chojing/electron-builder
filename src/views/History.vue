@@ -82,6 +82,8 @@ export default {
           item.filesize = custom.getFormatBytes(item.filesize)
           if (item.status >= 2000 && item.status < 3000) {
             item.dataPer = (parseInt(item.status) - 2000)
+          } else {
+            item.dataPer = 100
           }
         }
         if (this.transferList.length === 0) {
