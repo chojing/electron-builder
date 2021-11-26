@@ -5,10 +5,8 @@ const { shell } = require('electron')
 const fs = require('fs')
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
-// const Log = require('./log').Log
-// // eslint-disable-next-line no-unused-vars
-// let log = new Log()
 const log = require('electron-log')
+
 function FTPStream () {
   this.m_ftpClient
   this.m_ftpConnectConfig = undefined
@@ -49,6 +47,22 @@ FTPStream.prototype.connect = function (_ftpConnectConfig) {
 
   return new Promise((resolve, reject) => {
     self.m_ftpClient = new Client()
+    self.m_ftpClient._actv = function (cb) {
+      console.log('test1')
+      var self = this
+      if (self.options.activeIp == 'default') {
+        self.options.activeIp = self._socket.localAddress
+      }
+      var ip = self.options.activeIp.replace(/\./g, ',')
+      var port = parseInt(self._actvPort / 256) + ',' + (self._actvPort % 256)
+
+      this._send('PORT ' + ip + ',' + port, function (err, text, code) {
+        if (err) {
+          cb(new Error(err))
+        }
+        cb(undefined, self._socket)
+      })
+    }
     self.m_ftpClient.on('ready', () => {
       log.info('ftp ready')
       self.isFTPConnection = true
@@ -68,7 +82,7 @@ FTPStream.prototype.connect = function (_ftpConnectConfig) {
     this.m_ftpClient.on('error', (err) => {
       self.isFTPConnection = false
       log.error('ftp err', err)
-      reject(err)
+      self.emit('error', _ftpConnectConfig, err)
     })
 
     this.m_ftpClient.connect(config)

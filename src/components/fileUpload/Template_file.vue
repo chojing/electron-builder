@@ -135,7 +135,7 @@ export default {
         // transfer_tb insert data
         const transfer = {}
         transfer.isfolder = false
-        transfer.userid = this.$store.state.userid
+        transfer.userid = this.$store.state.username
         transfer.filepath = ''
         transfer.status = 1000
         transfer.transfername = g_ftpSendData.title
@@ -186,7 +186,7 @@ export default {
       // transfer_tb insert data
       const transfer = {}
       transfer.isfolder = false
-      transfer.userid = this.$store.state.userid
+      transfer.userid = this.$store.state.username
       transfer.filepath = ''
       transfer.status = 2000
       transfer.transfername = g_ftpSendData.title
@@ -238,7 +238,7 @@ export default {
       g_ftpSendData = new FTPSendData()
       const ftpSite = new FTPSite()
       if (site) {
-        ftpSite.connectionType = '2'
+        ftpSite.connectionType = '1'
         ftpSite.siteName = site.name
       } else {
         ftpSite.connectionType = '1'
@@ -261,9 +261,23 @@ export default {
         curFtpServer1.rootpath = server.rootpath
         curFtpServer1.passive = true // passive : true / active : false
         curFtpServer1.parentSiteName = ftpSite.siteName
-        curFtpServer1.activeIp = ''
+        curFtpServer1.activeIp = 'default'
         ftpSite.ftpServerList.push(curFtpServer1)
+
+        // const curFtpServer2 = new FTPServer()
+        // curFtpServer2.ftpserverid = server.ftpserverid
+        // curFtpServer2.host = '10.10.18.13'
+        // curFtpServer2.port = 21
+        // curFtpServer2.username = 'konan'
+        // curFtpServer2.password = 'konan415'
+        // curFtpServer2.name = 'jytest2'
+        // curFtpServer2.rootpath = server.rootpath
+        // curFtpServer2.passive = true // passive : true / active : false
+        // curFtpServer2.parentSiteName = ftpSite.siteName
+        // curFtpServer2.activeIp = ''
+        // ftpSite.ftpServerList.push(curFtpServer2)
       }
+
       g_ftpSendData.ftpSite = ftpSite
     },
     doCancel: function () {
@@ -313,6 +327,10 @@ export default {
         alert(msg)
       } else if (errMsg.code == 600) {
         msg = 'FTP 경로에 문제가 발생했습니다.'
+        alert(msg)
+      } else if (errMsg.code == 'ECONNABORTED') {
+        // 잘못된 acitve ip 의심
+        msg = 'FTP 서버와 연결이 끊어졌습니다.'
         alert(msg)
       } else {
         alert(errMsg.message)
