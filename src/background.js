@@ -226,9 +226,10 @@ ipcMain.on('open-directory-dialog', event => {
 })
 
 // eslint-disable-next-line camelcase
-ipcMain.on('drag-file', (event, p_filePaths) => {
+ipcMain.on('drag-file', (event, p_filePaths, isSubDirFileRead) => {
   // eslint-disable-next-line camelcase
   const filePath_fileInfo = new FileInfo()
+  filePath_fileInfo.m_isSubDirFileRead = isSubDirFileRead
   const resultPaths = requestGetAllFileInfo(p_filePaths, filePath_fileInfo)
   requetGetFileInfoResult(event, resultPaths)
 })
@@ -317,28 +318,31 @@ ipcMain.on('ftp-file-upload', async (event, _ftpSendData) => {
   }
 
   if (_ftpSendData.targetUrl === undefined || _ftpSendData.targetUrl === '') {
-    startUpload()
+    startUpload(event)
   } else {
     // 타 창으로 연결되는 부분. 현재 사용되지 않음
+    let parentKey = 'statusWindow_upload_' + _ftpSendData.clientData.parentKey
     // eslint-disable-next-line no-prototype-builtins
-    if (g_windows.hasOwnProperty('statusWindow_upload') == false) {
+    if (g_windows.hasOwnProperty(parentKey) == false) {
       let windowInfo = new WindowInfo()
-      windowInfo.SetStatusWindow('statusWindow_upload', _ftpSendData.targetUrl)
+      windowInfo.SetStatusWindow(parentKey, _ftpSendData.targetUrl)
+      windowInfo.data = {}
+      windowInfo.data.g_ftpSendData = _ftpSendData
+      windowInfo.data.g_ftpSendData.event = undefined
       WindowCreate(event, windowInfo)
-      _ftpSendData.popUpWindow = windowInfo
     } else {
-      g_windows['statusWindow_upload'].show()
-      _ftpSendData.popUpWindow = g_windows['statusWindow_upload']
+      g_windows[parentKey].show()
     }
   }
 })
 
-ipcMain.on('ftp-file-upload-start', function () {
-  startUpload()
+ipcMain.on('ftp-file-upload-start', function (event) {
+  startUpload(event)
 })
-function startUpload () {
+function startUpload (event) {
   log.info('FTP Upload start!')
   let ftpSendData = g_FTPWorkQueue.shift()
+  ftpSendData.event = event
   FTPConnectTypeBranch_new('upload', ftpSendData)
 }
 
@@ -371,10 +375,8 @@ ipcMain.on('ftp-file-download', (event, _ftpSendData) => {
     const windowInfo = new WindowInfo()
     windowInfo.SetStatusWindow('statusWindow_download', _ftpSendData.targetUrl)
     WindowCreate(event, windowInfo)
-    _ftpSendData.popUpWindow = windowInfo
   } else {
     g_windows['statusWindow_download'].show()
-    _ftpSendData.popUpWindow = g_windows['statusWindow_download']
   }
 })
 ipcMain.on('ftp-file-download-start', function () {
@@ -385,11 +387,10 @@ ipcMain.on('ftp-file-download-start', function () {
 function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
   let curType = ftpSendData.ftpSite.connectionType
   let tempDic = {}
-  let windowName = 'statusWindow_' + ftpSendData.type
   log.info('Start FTP ', _FTPType)
   log.info('SiteName : ', ftpSendData.ftpSite)
   if (curType == '1') {
-    let ftpInfo = new FTPInfo_Type1(ftpSendData.event, ftpSendData.ftpSite, g_windows[windowName])
+    let ftpInfo = new FTPInfo_Type1(ftpSendData.event, ftpSendData.ftpSite)
     g_FTPInfoDic[ftpSendData.ftpSite.siteName] = ftpInfo
     g_FTPInfoDic[ftpSendData.ftpSite.siteName].connectionType = curType
     ftpInfo.clientSendData = ftpSendData
@@ -399,7 +400,7 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
     let i = 0
     while (i >= 0) {
       let result
-      let ftpInfo = new FTPInfo_Type2(ftpSendData.event, ftpSendData.ftpSite, g_windows[windowName])
+      let ftpInfo = new FTPInfo_Type2(ftpSendData.event, ftpSendData.ftpSite)
       ftpInfo.clientSendData = ftpSendData
       tempDic[ftpSendData.ftpSite.ftpServerList[i].name] = ftpInfo // dic[10.10.18.29] = ftpInfo
       result = ftpInfo.RequestFTPWork(_FTPType, ftpSendData, i).catch(

@@ -47,12 +47,13 @@ export default {
     }
   },
   created () {
-    ipcRenderer.on('receiveData', this.init)
-    ipcRenderer.on('ftp-result', this.ftpResult)
+    let self = this
+    ipcRenderer.on('receiveData', self.init)
+    ipcRenderer.on('ftp-result', self.ftpResult)
   },
   methods: {
-    init: function (event, key, data) {
-      this.parentKey = data.parentKey
+    init: function (event, key, data, type) {
+      this.parentKey = data.g_ftpSendData.clientData.parentKey
       this.g_curWindowKey = key
       this.g_ftpSendData = data.g_ftpSendData
       for (let idx in data.g_ftpSendData.ftpSite.ftpServerList) {
@@ -63,18 +64,21 @@ export default {
           let item = data.g_ftpSendData.fileList[idy]
           obj.fileName = item.fileName
         }
-        this.ftpResult.push(obj)
+        this.ftpResultData.push(obj)
       }
       this.transferid = data.g_ftpSendData.clientData.transferid
       this.nodeid = data.g_ftpSendData.clientData.nodeid
       console.log('data', data)
+
+      // start FTP
+      ipcRenderer.send('ftp-file-upload-start')
     },
     ftpResult: function (event, data) {
       // console.log('ftpResult', data)
       for (let idx in this.ftpResultData) {
         let item = this.ftpResultData[idx]
         if (item.fileName == data.ftpData.fileName && item.ftpserverid == data.ftpServer.ftpserverid) {
-          item.dataPer = data.ftpData.dataPer
+          item.dataPer = data.ftpData.curWorkPersent
           item.isComplete = data.ftpData.isComplete
         }
       }
