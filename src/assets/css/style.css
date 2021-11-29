@@ -5,6 +5,7 @@
 i.fa{font-size : num}
 body{background-color: #fff;color: #333;min-width: 320px;font-family: 'Noto Sans', 'Noto Sans KR', sans-serif;letter-spacing: -1px;}
 button,input{outline: none;border: none;background-color: #fff;font-family: 'Noto Sans', 'Noto Sans KR', sans-serif;}
+textarea{font-family: 'Noto Sans', 'Noto Sans KR', sans-serif;}
 button:focus,
 input:focus,select:focus,input:active,textarea{outline: none;}
 button{cursor: pointer;}
