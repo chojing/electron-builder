@@ -4,8 +4,9 @@
       <h2>Anywhere 통합전송시스템</h2>
       <div class="head-top mt20">
         <div>
-          <div class="user-name">
+          <div class="user-name flex-box flex-center">
             <p><i class="fas fa-user"></i> {{username}}</p>
+            <button id="logoutBtn">Logout</button>
           </div>
         </div>
       </div>
