@@ -17,8 +17,8 @@ export default {
   props: {
     username: String,
     nodeid: String,
-    path_ftpserverid: Number,
-    path_ftpsiteid: Number,
+    pathftpserverid: Number,
+    pathftpsiteid: Number,
     nodename: String
   },
   methods: {
@@ -40,8 +40,8 @@ export default {
     },
     fileUploadPopup: function () {
       var data = {}
-      data.path_ftpserverid = this.path_ftpserverid
-      data.path_ftpsiteid = this.path_ftpsiteid
+      data.pathftpserverid = this.pathftpserverid
+      data.pathftpsiteid = this.pathftpsiteid
       data.nodeid = this.nodeid
       data.name = this.nodename
       this.$parent.fileUploadPopup(data)
