@@ -389,13 +389,13 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
   let tempDic = {}
   log.info('Start FTP ', _FTPType)
   log.info('SiteName : ', ftpSendData.ftpSite)
-  if (curType == '1') {
+  if (curType == 'sequential') {
     let ftpInfo = new FTPInfo_Type1(ftpSendData.event, ftpSendData.ftpSite)
     g_FTPInfoDic[ftpSendData.ftpSite.siteName] = ftpInfo
     g_FTPInfoDic[ftpSendData.ftpSite.siteName].connectionType = curType
     ftpInfo.clientSendData = ftpSendData
     ftpInfo.RequestFTPWork(_FTPType, 0)
-  } else if (curType == '2') {
+  } else if (curType == 'simultaneous') {
     let PromiseResult = []
     let i = 0
     while (i >= 0) {
