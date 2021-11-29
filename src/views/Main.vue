@@ -36,7 +36,7 @@
             <div class="search-btn"><button @click="active = !active" :aria-pressed="active ? 'true' : 'false'"><i class="fas fa-search"></i></button></div>
           </div>
           <div class="search-box mt10 mb20" :class="{show:active}">
-            <input type="text" placeholder="전송타겟을 입력해주세요">
+            <input id='targetSearchInput' @keyup.enter="this.targetSearch" type="text" placeholder="전송타겟을 입력해주세요">
           </div>
         </div>
         <div class="target-list mt40">
@@ -201,6 +201,36 @@ export default {
         name = item.name
       }
       this.$refs.templateTree.fileUploadPopup(item, name)
+    },
+    targetSearch: async function () {
+      let self = this
+      const targetInput = document.getElementById('targetSearchInput')
+      if (self.c_node_type == []) {
+        await self.nodeCodeSearch()
+      }
+      let code = custom.code.codeToValue(this.c_node_type, 'target')
+      this.targetNodeSearch(targetInput.value, code)
+    },
+    nodeCodeSearch: function () {
+      axios.getAsyncAxios('/v2/node/code', null, (response) => {
+        if (response.data !== undefined) {
+          this.c_node_type = response.data.c_node_type
+          return true
+        } else {
+          return false
+        }
+      })
+    },
+    targetNodeSearch: function (targetName, nodeTypeCode) {
+      let param = {}
+      param.name = targetName
+      param.nodetype = nodeTypeCode
+
+      axios.getAsyncAxios('/v2/nodes', param, (response) => {
+        if (response.data !== undefined) {
+          response.data.results
+        }
+      })
     }
   }
 }
