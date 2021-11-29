@@ -10,6 +10,9 @@ function FileInfo () {
   // Path
   this.m_resultPathArr = [] // 결과 fileData 객체의 Arr
   this.m_isSubDirFileRead = true // 하위 디렉토리 안까지 모든 파일 검색
+  this.m_MaxFileReadCount = 100
+  this.isMaxOver = false
+  this.filters = ['.txt', '.png', '.mp4']
 }
 util.inherits(FileInfo, EventEmitter)
 
@@ -48,15 +51,25 @@ FileInfo.prototype.GetFilePath = function (_win) {
 }
 FileInfo.prototype.PushFileData = function (_size, _path, _resultArr) {
   const curFileData = new FileData()
-  curFileData.size = _size
-  curFileData.path = _path
-  curFileData.fileName = curFileData.getFileFullName(_path)
-  _resultArr.push(curFileData)
+  let extention = curFileData.getOnlyFileExtention(_path)
+  if (this.filters.includes(extention)) {
+    curFileData.size = _size
+    curFileData.path = _path
+    curFileData.fileName = curFileData.getFileFullName(_path)
+    if (_resultArr.length < this.m_MaxFileReadCount + 1) { _resultArr.push(curFileData) }
+  }
 }
 FileInfo.prototype.GetAllFileInfo = function (_filePaths) {
   const rePathArr = []
   for (let i = 0; i < _filePaths.length; i++) {
-    const curPath = _filePaths[i] // file Path or dir Path
+    if (this.m_resultPathArr.length > this.m_MaxFileReadCount) {
+      this.isMaxOver = true
+      break
+    }
+    let curPath = _filePaths[i] // file Path or dir Path
+    if (typeof curPath === 'object') {
+      curPath = curPath.path
+    }
     const stats = fs.statSync(curPath)
 
     if (stats.isDirectory()) {
@@ -77,6 +90,7 @@ FileInfo.prototype.GetAllFileInfo = function (_filePaths) {
       this.PushFileData(stats.size, curPath, this.m_resultPathArr)
     }
   }
+  return { isMaxCapa: true }
 }
 FileInfo.prototype.CreateDir = function (_dirPath) {
   const isExists = fs.existsSync(_dirPath)

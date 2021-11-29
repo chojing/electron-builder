@@ -18,7 +18,7 @@
       </div>
     </div>
     <div class="btn-box center pt20">
-      <button v-on:click = "doCancel" class="btn h30" v-show="isUploading&&!isUploadComplete">전송 취소</button>
+      <button v-on:click = "doCancel" class="btn h30" v-show="isUploading&&!isUploadComplete">전송취소</button>
       <button v-on:click = "doClose" class="btn h30" v-show="!isUploading&&isUploadComplete">전송완료</button>
     </div>
   </section>
@@ -26,7 +26,8 @@
 
 <script>
 import templateProgress from '@/components/main/Template_ftpSiteTransferProgress_list'
-const { axios, ipcRenderer } = require('@/assets/js/include.js')
+const { axios, ipcRenderer, custom } = require('@/assets/js/include.js')
+let serverResultList = {}
 export default {
   components: {
     templateProgress
@@ -58,90 +59,107 @@ export default {
       this.g_ftpSendData = data.g_ftpSendData
       for (let idx in data.g_ftpSendData.ftpSite.ftpServerList) {
         let server = data.g_ftpSendData.ftpSite.ftpServerList[idx]
-        let obj = {}
-        obj.ftpserverid = server.ftpserverid
+        serverResultList[server.name] = { totalPercent: 0 }
         for (let idy in data.g_ftpSendData.fileList) {
           let item = data.g_ftpSendData.fileList[idy]
+          let obj = {}
+          obj.ftpserverid = server.ftpserverid
+          obj.ftpservername = server.name
           obj.fileName = item.fileName
+          obj.dataPer = 0
+          this.ftpResultData.push(obj)
         }
-        this.ftpResultData.push(obj)
       }
       this.transferid = data.g_ftpSendData.clientData.transferid
       this.nodeid = data.g_ftpSendData.clientData.nodeid
-      console.log('data', data)
+      // console.log('data', data)
 
       // start FTP
       ipcRenderer.send('ftp-file-upload-start')
     },
     ftpResult: function (event, data) {
       // console.log('ftpResult', data)
-      for (let idx in this.ftpResultData) {
-        let item = this.ftpResultData[idx]
+      let self = this
+      for (let idx in self.ftpResultData) {
+        let item = self.ftpResultData[idx]
         if (item.fileName == data.ftpData.fileName && item.ftpserverid == data.ftpServer.ftpserverid) {
           item.dataPer = data.ftpData.curWorkPersent
-          item.isComplete = data.ftpData.isComplete
         }
       }
       // transfer_tb insert data
       const transfer = {}
       transfer.isfolder = false
-      transfer.userid = this.$store.state.userid
+      transfer.userid = self.$store.state.username
       transfer.filepath = ''
       transfer.status = 2000
-      transfer.transfername = this.g_ftpSendData.title
-      transfer.trasnferrequest = this.g_ftpSendData.comment
+      transfer.transfername = self.g_ftpSendData.title
+      transfer.trasnferrequest = self.g_ftpSendData.comment
       transfer.filesize = 0
-      for (let idx in this.g_ftpSendData.fileList) {
-        let item = this.g_ftpSendData.fileList[idx]
+      for (let idx in self.g_ftpSendData.fileList) {
+        let item = self.g_ftpSendData.fileList[idx]
         transfer.filesize += item.size
       }
       if (this.nodeid) {
-        transfer.nodeid = this.nodeid
+        transfer.nodeid = self.nodeid
       }
 
-      if (!data.ftpData.isTotalComplete) {
-        if (this.tempCurrentPercent !== parseInt(data.ftpData.totalWorkSize_Percent)) {
-          this.tempCurrentPercent = parseInt(data.ftpData.totalWorkSize_Percent)
-          transfer.status += parseInt(data.ftpData.totalWorkSize_Percent)
-          if (data.ftpData.totalWorkSize_Percent == 100) {
+      serverResultList[data.ftpServer.name].totalPercent = data.ftpData.totalWorkSize_Percent
+      let total = 0
+      for (var idx in serverResultList) {
+        total += parseInt(serverResultList[idx].totalPercent)
+      }
+
+      let sitePercent = 0
+      if (total === 0) {
+        sitePercent = 0
+      } else {
+        sitePercent = total / self.g_ftpSendData.ftpSite.ftpServerList.length
+      }
+      if (!data.ftpData.isTotalComplete || Math.floor(sitePercent) !== 100) {
+        if (self.tempCurrentPercent !== Math.floor(sitePercent)) {
+          self.tempCurrentPercent = Math.floor(sitePercent)
+          transfer.status += Math.floor(sitePercent)
+          if (sitePercent == 100) {
             transfer.status = 3000
           }
 
-          if ((!this.isResponse && this.transferid != null) || data.ftpData.totalWorkSize_Percent == 100) {
-            this.isResponse = true
-            axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
+          // console.log('transfer.status : ', transfer.status, ' sitePercent : ', sitePercent)
+          if ((!self.isResponse && self.transferid != null) || Math.floor(sitePercent) == 100) {
+            self.isResponse = true
+            axios.putAsyncAxios('/v2/transfers/' + self.transferid, JSON.stringify(transfer), null, (response) => {
               // console.log('Success Put : ', response)
-              this.isResponse = false
+              self.isResponse = false
             })
           }
         }
-      } else if (data.ftpData.isTotalComplete) {
-        this.isUploadComplete = true
-        this.isUploading = false
+      } else if (data.ftpData.isTotalComplete && Math.floor(sitePercent) === 100) {
+        self.isUploadComplete = true
+        self.isUploading = false
       }
     },
     doCancel: function () {
       console.log('cancel Test!')
-
+      let self = this
       let isFileDelete = true
       let cancelType = 'all' // all / path
 
       let cancelInfo = {
         cancelType: cancelType,
-        cancelConnectionList: this.g_ftpSendData.ftpSite.ftpServerList,
+        cancelConnectionList: self.g_ftpSendData.ftpSite.ftpServerList,
         isDelete: isFileDelete,
         path: undefined // type 이 path일 경우만 기재
       }
-      ipcRenderer.send('ftp-cancel', cancelInfo)
+      ipcRenderer.send('ftp-cancel', custom.proxy2map(cancelInfo))
 
       console.log('cancel request!')
-      ipcRenderer.send('sendData', this.parentKey, null, 'isFtpSiteCancel')
-      ipcRenderer.send('closeWindow', this.g_curWindowKey)
+      ipcRenderer.send('sendData', self.parentKey, null, 'isFtpSiteCancel')
+      ipcRenderer.send('closeWindow', self.g_curWindowKey)
     },
     doClose: function () {
-      if (this.isUploading == false && this.isUploadComplete == true) {
-        ipcRenderer.send('closeWindow', this.g_curWindowKey)
-        ipcRenderer.send('closeWindow', this.parentKey)
+      let self = this
+      if (self.isUploading == false && self.isUploadComplete == true) {
+        ipcRenderer.send('closeWindow', self.g_curWindowKey)
+        ipcRenderer.send('closeWindow', self.parentKey)
       }
     }
   }

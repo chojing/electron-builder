@@ -1,6 +1,7 @@
 <!-- 전송내역 -->
 <template>
   <tr v-for="item in transferDetailList" v-bind:key="item.id">
+    <td>{{item.ftpservername}}</td>
     <td>{{item.filename}}</td>
     <td>{{item.filesize}}</td>
   </tr>

@@ -85,6 +85,7 @@ export default {
     return {
       g_windowIndex: 0,
       selfKey: '',
+      c_ftpmode: [],
       targetFtpInfo: '',
       fileList: [],
       telValue: [],
@@ -104,9 +105,12 @@ export default {
     init: function (event, key, data, type) {
       if (type == 'init') {
         this.targetFtpInfo = data
-        this.ftpSet(data.site, data.serverlist)
         this.selfKey = key
         this.g_curWindowKey = key
+        axios.getAsyncAxios('/v2/ftpserver/code', {}, (response) => {
+          this.c_ftpmode = response.data.c_ftpmode
+          this.ftpSet(data.site, data.serverlist)
+        })
         // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
         console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
       } else if (type == 'userTelData') {
@@ -116,22 +120,21 @@ export default {
         // transfer_tb insert data
         const transfer = {}
         transfer.isfolder = false
-        transfer.userid = this.$store.state.userid
+        transfer.userid = this.$store.state.username
         transfer.filepath = ''
-        transfer.status = 2000
-        transfer.transfername = this.g_ftpSendData.title
-        transfer.trasnferrequest = this.g_ftpSendData.comment
+        transfer.status = 4000
+        transfer.transfername = g_ftpSendData.title
+        transfer.trasnferrequest = g_ftpSendData.comment
         transfer.filesize = 0
-        for (let idx in this.g_ftpSendData.fileList) {
-          let item = this.g_ftpSendData.fileList[idx]
+        for (let idx in g_ftpSendData.fileList) {
+          let item = g_ftpSendData.fileList[idx]
           transfer.filesize += item.size
         }
         if (this.targetFtpInfo.nodeid) {
           transfer.nodeid = this.targetFtpInfo.nodeid
         }
-        transfer.status = 4000
         axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
-          //   console.log('isCancel Success Put : ', response)
+          // console.log('isCancel Success Put : ', response)
         })
         this.isUploading = false
         this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
@@ -270,11 +273,11 @@ export default {
       g_ftpSendData = new FTPSendData()
       const ftpSite = new FTPSite()
       if (site) {
-        ftpSite.connectionType = '1'
         ftpSite.siteName = site.name
+        ftpSite.connectionType = site.mode_code
       } else {
-        ftpSite.connectionType = '1'
         ftpSite.siteName = 'konanSite'
+        ftpSite.connectionType = 'sequential'
       }
       for (let server of serverlist) {
         // activeIp:
@@ -291,7 +294,11 @@ export default {
         curFtpServer1.password = server.password
         curFtpServer1.name = server.name
         curFtpServer1.rootpath = server.rootpath
-        curFtpServer1.passive = true // passive : true / active : false
+        if (custom.code.valueToCode(this.c_ftpmode, server.mode) === 'active') {
+          curFtpServer1.passive = false // passive : true / active : false
+        } else {
+          curFtpServer1.passive = true // 모드 : 기본, 수동 분기될 시 변경해야함
+        }
         curFtpServer1.parentSiteName = ftpSite.siteName
         curFtpServer1.activeIp = 'default'
         ftpSite.ftpServerList.push(curFtpServer1)
@@ -309,7 +316,6 @@ export default {
         // curFtpServer2.activeIp = ''
         // ftpSite.ftpServerList.push(curFtpServer2)
       }
-
       g_ftpSendData.ftpSite = ftpSite
     },
     doCancel: function () {

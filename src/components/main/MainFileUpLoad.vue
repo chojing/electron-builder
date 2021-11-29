@@ -28,7 +28,7 @@ export default {
       g_windowIndex: 0,
       targetNameValue: '',
       isTelUse: true,
-      isSite: Boolean
+      isSite: this.init()
     }
   },
   created () {

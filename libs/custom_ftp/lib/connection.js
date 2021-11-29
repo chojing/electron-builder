@@ -50,6 +50,7 @@ var /* TYPE = {
       552: 'Requested file action aborted / Exceeded storage allocation (for current directory or dataset)',
       553: 'Requested action not taken / File name not allowed'
     }, */
+// eslint-disable-next-line node/no-deprecated-api
 var bytesNOOP = new Buffer('NOOP\r\n')
 
 var FTP = module.exports = function () {
@@ -1031,8 +1032,15 @@ FTP.prototype._store = function (cmd, input, zcomp, cb) {
               if (err) { dest.end(input) } else { fs.createReadStream(input).pipe(dest) }
             })
           } else {
-            input.pipe(dest)
-            input.resume()
+            // #jy 2021.11.29
+            // active socket 이 늦게들어와 dest가 undefined가 됨
+            // 해당 발생 시, try, catch 및 알려주는 emit 추가함
+            try {
+              input.pipe(dest)
+              input.resume()
+            } catch (e) {
+              self.emit('error', new Error('connection is unstable.'))
+            }
           }
         } else {
           if (zcomp) { self._send('MODE S', cb, true) } else { cb() }

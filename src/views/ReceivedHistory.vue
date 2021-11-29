@@ -7,6 +7,12 @@
       </select>
       <div class="send-box">
         <table>
+          <colgroup>
+            <col width="30%">
+            <col width="25%">
+            <col width="25%">
+            <col width="20%">
+          </colgroup>
           <thead>
           <tr>
             <th>Target</th>

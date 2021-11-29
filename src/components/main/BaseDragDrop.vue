@@ -93,9 +93,12 @@ export default {
     onChange () {
       this.$emit('valueReturn', fileList)
     },
-    DragDropFile_result (event, isCancel, FileDatas) {
+    DragDropFile_result (event, isCancel, FileDatas, isFileOver) {
       console.log('isCancel : ' + isCancel)
       console.log('FileDatas : ' + FileDatas)
+      if (isFileOver == true) {
+        alert('파일은 100개를 초과할 수 없습니다.')
+      }
       fileList = FileDatas
       this.printList()
       this.$emit('valueReturn', fileList)

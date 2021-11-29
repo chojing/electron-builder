@@ -4,8 +4,11 @@
       <h2>Anywhere 통합전송시스템</h2>
       <div class="head-top mt20">
         <div>
-          <div class="user-name">
+          <div class="user-name flex-box flex-center">
             <p><i class="fas fa-user"></i> {{username}}</p>
+            <div class="btn-box">
+              <button id="logoutBtn" class="btn h30" @click="logoutCheck">Logout</button>
+            </div>
           </div>
         </div>
       </div>
@@ -43,6 +46,14 @@
         </div>
       </article>
     </div>
+    <div class="logoutCheckPop" v-show="isLogoutCheck">
+      <p>로그아웃 하시겠습니까?</p>
+      <div class="btn-box">
+        <button class="btn h30" @click="logout">확인</button>
+        <button class="btn h30 blue">취소</button>
+      </div>
+    </div>
+    <div class="bg" v-show="isLogoutCheck"></div>
   </main>
   <templateMenu/>
   <templateContextMenu :nodeid="nodeid" :username="username" :nodename="nodename"
@@ -78,7 +89,8 @@ export default {
       pathftpserverid: null,
       pathftpsiteid: null,
       nodename: null,
-      active: false
+      active: false,
+      isLogoutCheck: false
     }
   },
   mounted () {
@@ -86,6 +98,18 @@ export default {
     this.getFavorits()
   },
   methods: {
+    logoutCheck: function () {
+      this.isLogoutCheck = true
+    },
+    logout: function () {
+      axios.deleteAsyncAxios('/v2/users/apikey', null, null, (response) => {
+        alert('로그아웃 되었습니다.')
+        this.goTo('Login?logout')
+      })
+    },
+    goTo: function (page) {
+      this.$router.push(page)
+    },
     updateOnlineStatus: function () {
       if (navigator.onLine == true) {
         console.log('online')

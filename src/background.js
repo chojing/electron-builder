@@ -230,8 +230,9 @@ ipcMain.on('drag-file', (event, p_filePaths, isSubDirFileRead) => {
   // eslint-disable-next-line camelcase
   const filePath_fileInfo = new FileInfo()
   filePath_fileInfo.m_isSubDirFileRead = isSubDirFileRead
-  const resultPaths = requestGetAllFileInfo(p_filePaths, filePath_fileInfo)
-  requetGetFileInfoResult(event, resultPaths)
+  const resultFileInfo = requestGetAllFileInfo(p_filePaths, filePath_fileInfo)
+  resultFileInfo.m_resultPathArr
+  requetGetFileInfoResult(event, resultFileInfo.m_resultPathArr, resultFileInfo.isMaxOver)
 })
 function requestGetFilePaths (_win, _isDir) {
   let result
@@ -254,15 +255,15 @@ function requestGetFilePaths (_win, _isDir) {
 // eslint-disable-next-line camelcase
 function requestGetAllFileInfo (p_filePaths, p_fileInfo) {
   p_fileInfo.GetAllFileInfo(p_filePaths)
-  return p_fileInfo.m_resultPathArr
+  return p_fileInfo
 }
-function requetGetFileInfoResult (event, FileDatas) {
+function requetGetFileInfoResult (event, FileDatas, isfileOver = false) {
   const isCancel = false
   if (FileDatas === undefined) {
-    event.sender.send('open-dialog-result', isCancel, undefined)
+    event.sender.send('open-dialog-result', isCancel, undefined, isfileOver)
     return
   }
-  event.sender.send('open-dialog-result', isCancel, FileDatas)
+  event.sender.send('open-dialog-result', isCancel, FileDatas, isfileOver)
 }
 // copy
 ipcMain.on('files-copy', (event, filePaths) => {
@@ -389,13 +390,13 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
   let tempDic = {}
   log.info('Start FTP ', _FTPType)
   log.info('SiteName : ', ftpSendData.ftpSite)
-  if (curType == '1') {
+  if (curType == 'sequential') {
     let ftpInfo = new FTPInfo_Type1(ftpSendData.event, ftpSendData.ftpSite)
     g_FTPInfoDic[ftpSendData.ftpSite.siteName] = ftpInfo
     g_FTPInfoDic[ftpSendData.ftpSite.siteName].connectionType = curType
     ftpInfo.clientSendData = ftpSendData
     ftpInfo.RequestFTPWork(_FTPType, 0)
-  } else if (curType == '2') {
+  } else if (curType == 'simultaneous') {
     let PromiseResult = []
     let i = 0
     while (i >= 0) {
@@ -464,9 +465,9 @@ function ftpCancelBranch (cancelInfo) {
     FTPInfo = g_FTPInfoDic[DicKey]
   }
 
-  if (g_FTPInfoDic[DicKey].connectionType == '1') {
+  if (g_FTPInfoDic[DicKey].connectionType == 'sequential') {
     ftpCancel(FTPInfo, cancelInfo)
-  } else if (g_FTPInfoDic[DicKey].connectionType == '2') {
+  } else if (g_FTPInfoDic[DicKey].connectionType == 'simultaneous') {
     for (let i = 0; i < cancelInfo.cancelConnectionList.length; i++) {
       FTPInfo = g_FTPInfoDic[DicKey][cancelInfo.cancelConnectionList[i].serverName]
       ftpCancel(FTPInfo, cancelInfo)
