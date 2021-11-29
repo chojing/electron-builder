@@ -6,7 +6,9 @@
         <div>
           <div class="user-name flex-box flex-center">
             <p><i class="fas fa-user"></i> {{username}}</p>
-            <button id="logoutBtn">Logout</button>
+            <div class="btn-box">
+              <button id="logoutBtn" class="btn h30">Logout</button>
+            </div>
           </div>
         </div>
       </div>
