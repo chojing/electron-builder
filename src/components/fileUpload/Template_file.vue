@@ -120,7 +120,7 @@ export default {
         // transfer_tb insert data
         const transfer = {}
         transfer.isfolder = false
-        transfer.userid = this.$store.state.userid
+        transfer.userid = this.$store.state.username
         transfer.filepath = ''
         transfer.status = 2000
         transfer.transfername = this.g_ftpSendData.title

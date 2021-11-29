@@ -4,6 +4,12 @@
       <h4 class="tti mb15">전송내역</h4>
       <div class="send-box" style="height: 527px;">
         <table>
+          <colgroup>
+            <col width="30%">
+            <col width="25%">
+            <col width="25%">
+            <col width="20%">
+          </colgroup>
           <thead>
           <tr>
             <th>전송명</th>

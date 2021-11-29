@@ -5,6 +5,7 @@
 i.fa{font-size : num}
 body{background-color: #fff;color: #333;min-width: 320px;font-family: 'Noto Sans', 'Noto Sans KR', sans-serif;letter-spacing: -1px;}
 button,input{outline: none;border: none;background-color: #fff;font-family: 'Noto Sans', 'Noto Sans KR', sans-serif;}
+textarea{font-family: 'Noto Sans', 'Noto Sans KR', sans-serif;}
 button:focus,
 input:focus,select:focus,input:active,textarea{outline: none;}
 button{cursor: pointer;}
@@ -271,13 +272,12 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .pro-bar span{display: block;height: 100%;background-color: #0082bb;/*border-top-right-radius:20px;border-bottom-right-radius:20px;transition: width .3s linear;*/}
 .pro-bar span.wait{background-color: #d8d8d8;}
 .pro-bar span.running{background-color: #00d16a;}
-.pro-bar span.success{background-color: #288BFE;}
+.pro-bar span.success{background-color: #0082bb;}
 .pro-bar span.fail{background-color: #f11835;}
 .pro-bar b{position: absolute;left: 50%;top: 50%;z-index: 10;transform: translate(-50%,-50%);font-size: 14px;text-shadow: 1px 1px 3px rgb(255 255 255 / 50%);}
 .history-detaile-container .targetName{font-size: 17px;font-weight: 600;}
 
 .history-container select{padding: 0 5px; width: 100%;height: 40px;border: 1px solid #eee;border-radius: 5px;}
-#logoutBtn{padding:4px 10px; border:1px solid #666;border-radius: 5px;background: #fff;letter-spacing: -1px;}
 
 @media screen and (min-height: 700px){
   .user-list{height: 100vh;}
