@@ -18,6 +18,7 @@ export default {
     username: String,
     nodeid: String,
     path_ftpserverid: Number,
+    path_ftpsiteid: Number,
     nodename: String
   },
   methods: {
@@ -38,9 +39,9 @@ export default {
       }
     },
     fileUploadPopup: function () {
-      // console.log('this.path_ftpserverid : ', this.path_ftpserverid)
       var data = {}
       data.path_ftpserverid = this.path_ftpserverid
+      data.path_ftpsiteid = this.path_ftpsiteid
       data.nodeid = this.nodeid
       data.name = this.nodename
       this.$parent.fileUploadPopup(data)
