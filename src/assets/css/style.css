@@ -97,7 +97,7 @@ header .logo{text-align: center;}
 }
 .paging ul {
   text-align:center;
-  margin:0;
+  margin:20px 0 30px;
   display:block;
 }
 .paging li {
@@ -105,10 +105,10 @@ header .logo{text-align: center;}
   height:23px;
   line-height:22px;
   border-radius:5px;
-  border:1px solid #0073a5;
+  border:1px solid #d8d8d8;
   display:inline-block;
   font-size:14px;
-  color:#0073a5;
+  color: #393939;
   font-weight:500;
   margin-right:5px;
   cursor:pointer;
@@ -119,12 +119,12 @@ header .logo{text-align: center;}
   margin-right:0;
 }
 .paging li.active {
-  background-color:#0073a5;
+  background-color:#393939;
   color:#fff;
 }
 .paging li:hover {
   color:#fff;
-  background-color:#0073a5;
+  background-color:#393939;
 }
 .paging {
   position:relative;
