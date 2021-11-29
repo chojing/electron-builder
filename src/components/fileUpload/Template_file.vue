@@ -274,11 +274,9 @@ export default {
       g_ftpSendData = new FTPSendData()
       const ftpSite = new FTPSite()
       if (site) {
-        ftpSite.connectionType = '1'
         ftpSite.siteName = site.name
         ftpSite.connectionType = site.mode_code
       } else {
-        ftpSite.connectionType = '1'
         ftpSite.siteName = 'konanSite'
         ftpSite.connectionType = 'sequential'
       }
