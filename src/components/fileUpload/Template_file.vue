@@ -147,6 +147,7 @@ export default {
       // console.log('DragDropResult', include.custom.proxy2map(value))
     },
     doUpload: function () {
+      let self = this
       this.transferid = null
       console.log('request FTP Start')
       if (Object.keys(g_ftpSendData.fileList).length === 0) {
@@ -179,9 +180,11 @@ export default {
         // 전송내역 추가
         axios.postAsyncAxios('/v2/transfers', JSON.stringify(transfer), null, (response) => {
           // console.log('post : ', response)
-          this.transferid = response.data.transferid
-          if (this.isSite) {
+          self.transferid = response.data.transferid
+          if (self.isSite) {
             g_ftpSendData.targetUrl = 'FtpSiteTransferProgress'
+            g_ftpSendData.clientData = {}
+            g_ftpSendData.clientData.parentKey = this.selfKey
             g_ftpSendData.clientData.transferid = response.data.transferid
             g_ftpSendData.clientData.nodeid = this.targetFtpInfo.nodeid
           }

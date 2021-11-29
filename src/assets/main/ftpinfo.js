@@ -9,7 +9,7 @@ let gfileData = new FileData()
 // let log = new Log()
 const log = require('electron-log')
 
-function FTPInfo (_event, _FTPSite, _popUpWnd) {
+function FTPInfo (_event, _FTPSite) {
   this.event = _event || '' // 접속한 유저가 요청한 event를 등록해놓음. 나중에 result 할 때 필요함
   this.m_FTPSite = _FTPSite || ''
   this.m_NofiPopup = new NotificationPopUp()
@@ -17,8 +17,6 @@ function FTPInfo (_event, _FTPSite, _popUpWnd) {
   this.clientSendData
   this.isFinish = false
   this.isEthernetConnect = true
-
-  this.m_popUpWnd = _popUpWnd || ''
 }
 
 FTPInfo.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData, _connectionIndex) {
@@ -153,17 +151,10 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMs
       ftpServer: _curFtpServer,
       ftpData: _ftpData
     }
-    if (self.m_popUpWnd === undefined || self.m_popUpWnd === '') {
-      if (self.event.sender.isDestroyed() == false) {
-        // if (self.isEthernetConnect == true) {
-        self.event.sender.send('ftp-result', result)
-        // }
-      }
-    } else {
-      // 현재 사용되지 않음
-      if (self.m_popUpWnd.isShow == true) {
-        self.m_popUpWnd.webContents.send('ftp-result', result)
-      }
+    if (self.event.sender.isDestroyed() == false) {
+      // if (self.isEthernetConnect == true) {
+      self.event.sender.send('ftp-result', result)
+      // }
     }
   } catch (e) {
     log.info('SendMessage >> ' + e.message)
