@@ -12,8 +12,8 @@
        v-bind:data-path="item.path"
        v-bind:data-isserver="item.isserver"
        v-bind:data-isopen="item.isopen"
-       v-bind:data-path_ftpserverid="item.path_ftpserverid"
-       v-bind:data-path_ftpsiteid="item.path_ftpsiteid"
+       v-bind:data-pathftpserverid="item.pathftpserverid"
+       v-bind:data-pathftpsiteid="item.pathftpsiteid"
        >{{item.name}}</p>
     <ul v-if="item.haschild" :class="{hide:!item.isopen}">
       <templateTree v-bind:nodeList="item.children"/>
@@ -127,8 +127,8 @@ export default {
     },
     fileUploadPopup: function (ftpInfo, name) {
       console.log(ftpInfo)
-      let ftpServerId = ftpInfo.path_ftpserverid
-      let ftpSiteId = ftpInfo.path_ftpsiteid
+      let ftpServerId = ftpInfo.pathftpserverid
+      let ftpSiteId = ftpInfo.pathftpsiteid
       if (ftpServerId == 0 && ftpSiteId == 0) {
         alert('조회할 FTP정보가 없습니다.')
       } else if (ftpServerId > 0) {
