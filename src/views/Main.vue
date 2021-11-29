@@ -33,10 +33,24 @@
         <div class="search-form">
           <div class="flex-center">
             <h4>전송 Target</h4>
-            <div class="search-btn"><button @click="active = !active" :aria-pressed="active ? 'true' : 'false'"><i class="fas fa-search"></i></button></div>
+            <div class="search-btn"><button id='searchButton' @click="this.searchBtnClick" :aria-pressed="active ? 'true' : 'false'"><i class="fas fa-search"></i></button></div>
           </div>
           <div class="search-box mt10 mb20" :class="{show:active}">
             <input id='targetSearchInput' @keyup.enter="this.targetSearch" type="text" placeholder="전송타겟을 입력해주세요">
+<div class="favorite-list">
+          <div class="fa-item-link fa-item flex-column">
+            <button v-for="item in searchList" v-bind:key="item.nodeid" @dblclick="this.fileUploadPopup(item)" @click.prevent>
+              <template v-if="Array.isArray(item.name)">
+                <template v-for="item in item.name" v-bind:key="item">
+                  <span>{{item}}</span>
+                </template>
+              </template>
+              <template v-else>
+                <span>{{item.name}}</span>
+              </template>
+            </button>
+          </div>
+        </div>
           </div>
         </div>
         <div class="target-list mt40">
@@ -84,6 +98,7 @@ export default {
       username: this.$store.state.username,
       c_node_type: [],
       favoritsList: [],
+      searchList: [],
       nodeList: [],
       nodeid: null,
       pathftpserverid: null,
@@ -228,9 +243,28 @@ export default {
 
       axios.getAsyncAxios('/v2/nodes', param, (response) => {
         if (response.data !== undefined) {
-          response.data.results
+          this.searchList = response.data.results
+          var target = this.searchList.map((obj) => obj['pathname'])
+          // console.log('favorits : ', favorits)
+          for (var idx in target) {
+            let hasDepth = target[idx]
+            if (hasDepth !== undefined) {
+              if (hasDepth.indexOf('>') !== -1) {
+                var str = hasDepth.split('>')
+                // console.log('str : ', str)
+                this.searchList[idx].name = str
+              }
+            }
+          }
         }
       })
+    },
+    searchBtnClick: function () {
+      this.active = !this.active
+      const targetInput = document.getElementById('targetSearchInput')
+      targetInput.value = ''
+      targetInput.placeholder = '전송타겟을 입력해주세요'
+      this.searchList = []
     }
   }
 }
