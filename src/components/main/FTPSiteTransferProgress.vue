@@ -64,6 +64,7 @@ export default {
           let item = data.g_ftpSendData.fileList[idy]
           let obj = {}
           obj.ftpserverid = server.ftpserverid
+          obj.ftpservername = server.name
           obj.fileName = item.fileName
           obj.dataPer = 0
           this.ftpResultData.push(obj)
@@ -131,7 +132,7 @@ export default {
             })
           }
         }
-      } else if (data.ftpData.isTotalComplete && Math.floor(sitePercent) !== 100) {
+      } else if (data.ftpData.isTotalComplete && Math.floor(sitePercent) === 100) {
         self.isUploadComplete = true
         self.isUploading = false
       }

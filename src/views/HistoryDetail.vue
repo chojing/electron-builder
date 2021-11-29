@@ -9,6 +9,7 @@
         <table>
           <thead>
           <tr>
+            <th>서버명</th>
             <th>파일명</th>
             <th>파일크기</th>
           </tr>
@@ -18,11 +19,6 @@
           </tbody>
         </table>
       </div>
-      <div class="paging mt20 mb20">
-        <pagination class ="pagination" ref="pagination"
-                    :pageData="pageSet(total, limit, this.page)"
-                    @paging="getTransferDetailList"/>
-      </div>
       <button @click="cancel" type="button" id="cancel" class="btn h40 m-auto">확인</button>
     </div>
   </section>
@@ -31,12 +27,10 @@
 
 <script>
 import templateDetailHistory from '@/components/history/Template_history_detail_list'
-import pagination from '@/components/includes/Template_pagination'
 const { ipcRenderer, axios, custom } = require('@/assets/js/include.js')
 export default {
   components: {
-    templateDetailHistory,
-    pagination
+    templateDetailHistory
   },
   data () {
     return {
@@ -46,9 +40,6 @@ export default {
       transfername: '',
       transferid: '',
       transferDetailList: [],
-      page: 1,
-      total: null,
-      limit: 10,
       isShow: false
     }
   },
@@ -61,29 +52,14 @@ export default {
       this.transferid = data.transferid
       this.parentKey = data.parentKey
       this.g_curWindowKey = key
-      this.getTransferDetailList(1)
+      this.getTransferDetailList()
     },
-    getTransferDetailList: function (page) {
-      if (page == null) {
-        this.page = 1
-      } else {
-        this.page = page
-      }
-
+    getTransferDetailList: function () {
       this.transferDetailList = []
       const param = {}
-      const condition = {}
-      condition.transferid = parseInt(this.transferid)
-      param.condition = condition
-      const sort = {}
-      sort.fileid = 'desc'
-      param.sort = sort
-      param.limit = this.limit
-      param.offset = (page - 1) * this.limit
+      param.transferid = this.transferid
       axios.getAsyncAxios('/v2/transferfiles', param, (response) => {
         this.transferDetailList = response.data.results
-        this.total = response.data.paging.total
-        this.limit = response.data.paging.limit
         console.log('transferDetailList : ', this.transferDetailList)
 
         for (var idx in this.transferDetailList) {
@@ -96,9 +72,6 @@ export default {
           this.isShow = false
         }
       })
-    },
-    pageSet: function (total, limit, page) {
-      return custom.pageSetting(total, limit, page)
     },
     cancel: function () {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)

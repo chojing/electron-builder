@@ -1,7 +1,7 @@
 <!-- 전송내역 -->
 <template>
   <tr v-for="item in ftpResultData" v-bind:key="item.ftpserverid">
-      <td>{{item.ftpserverid}}</td>
+      <td>{{item.ftpservername}}</td>
       <td>{{item.fileName}}</td>
     <td>
       <div>

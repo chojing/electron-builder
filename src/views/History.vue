@@ -70,7 +70,7 @@ export default {
 
       const param = {}
       const condition = {}
-      condition.userid = parseInt(this.$store.state.userid)
+      condition.userid = this.$store.state.username
       param.condition = condition
       const sort = {}
       sort.transferid = 'desc'
