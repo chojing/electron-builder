@@ -230,8 +230,9 @@ ipcMain.on('drag-file', (event, p_filePaths, isSubDirFileRead) => {
   // eslint-disable-next-line camelcase
   const filePath_fileInfo = new FileInfo()
   filePath_fileInfo.m_isSubDirFileRead = isSubDirFileRead
-  const resultPaths = requestGetAllFileInfo(p_filePaths, filePath_fileInfo)
-  requetGetFileInfoResult(event, resultPaths)
+  const resultFileInfo = requestGetAllFileInfo(p_filePaths, filePath_fileInfo)
+  resultFileInfo.m_resultPathArr
+  requetGetFileInfoResult(event, resultFileInfo.m_resultPathArr, resultFileInfo.isMaxOver)
 })
 function requestGetFilePaths (_win, _isDir) {
   let result
@@ -254,15 +255,15 @@ function requestGetFilePaths (_win, _isDir) {
 // eslint-disable-next-line camelcase
 function requestGetAllFileInfo (p_filePaths, p_fileInfo) {
   p_fileInfo.GetAllFileInfo(p_filePaths)
-  return p_fileInfo.m_resultPathArr
+  return p_fileInfo
 }
-function requetGetFileInfoResult (event, FileDatas) {
+function requetGetFileInfoResult (event, FileDatas, isfileOver = false) {
   const isCancel = false
   if (FileDatas === undefined) {
-    event.sender.send('open-dialog-result', isCancel, undefined)
+    event.sender.send('open-dialog-result', isCancel, undefined, isfileOver)
     return
   }
-  event.sender.send('open-dialog-result', isCancel, FileDatas)
+  event.sender.send('open-dialog-result', isCancel, FileDatas, isfileOver)
 }
 // copy
 ipcMain.on('files-copy', (event, filePaths) => {

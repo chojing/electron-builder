@@ -124,7 +124,7 @@ export default {
           }
 
           // console.log('transfer.status : ', transfer.status, ' sitePercent : ', sitePercent)
-          if ((!self.isResponse && self.transferid != null) || Math.floor(sitePercent) !== 100) {
+          if ((!self.isResponse && self.transferid != null) || Math.floor(sitePercent) == 100) {
             self.isResponse = true
             axios.putAsyncAxios('/v2/transfers/' + self.transferid, JSON.stringify(transfer), null, (response) => {
               // console.log('Success Put : ', response)
