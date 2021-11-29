@@ -43,7 +43,8 @@ export default {
       isUploading: true,
       isUploadComplete: false,
       isResponse: false,
-      tempCurrentPercent: -1
+      tempCurrentPercent: -1,
+      serverResultList: {}
     }
   },
   created () {
@@ -58,6 +59,7 @@ export default {
       this.g_ftpSendData = data.g_ftpSendData
       for (let idx in data.g_ftpSendData.ftpSite.ftpServerList) {
         let server = data.g_ftpSendData.ftpSite.ftpServerList[idx]
+        this.serverResultList[server.name] = {}
         for (let idy in data.g_ftpSendData.fileList) {
           let item = data.g_ftpSendData.fileList[idy]
           let obj = {}
@@ -81,7 +83,6 @@ export default {
         let item = self.ftpResultData[idx]
         if (item.fileName == data.ftpData.fileName && item.ftpserverid == data.ftpServer.ftpserverid) {
           item.dataPer = data.ftpData.curWorkPersent
-          item.isComplete = data.ftpData.isComplete
         }
       }
       // transfer_tb insert data
@@ -101,15 +102,27 @@ export default {
         transfer.nodeid = self.nodeid
       }
 
-      if (!data.ftpData.isTotalComplete) {
-        if (self.tempCurrentPercent !== parseInt(data.ftpData.totalWorkSize_Percent)) {
-          self.tempCurrentPercent = parseInt(data.ftpData.totalWorkSize_Percent)
-          transfer.status += parseInt(data.ftpData.totalWorkSize_Percent)
-          if (data.ftpData.totalWorkSize_Percent == 100) {
+      self.serverResultList[data.ftpServer.name].totalPercent = data.ftpData.totalWorkSize_Percent
+      let total = 0
+      for (let i = 0; i < self.serverResultList.length; i++) {
+        total += self.serverResultList[i].totalPercent
+      }
+      let sitePercent = 0
+      if (total === 0) {
+        sitePercent = 0
+      } else {
+        sitePercent = total / self.g_ftpSendData.ftpSite.ftpServerList.length
+      }
+      console.log('total : ', total, ' sitePercent : ', sitePercent)
+      if (sitePercent !== 100) {
+        if (self.tempCurrentPercent !== sitePercent) {
+          self.tempCurrentPercent = sitePercent
+          transfer.status += sitePercent
+          if (sitePercent == 100) {
             transfer.status = 3000
           }
 
-          if ((!self.isResponse && self.transferid != null) || data.ftpData.totalWorkSize_Percent == 100) {
+          if ((!self.isResponse && self.transferid != null) || self.totalPercent == 100) {
             self.isResponse = true
             axios.putAsyncAxios('/v2/transfers/' + self.transferid, JSON.stringify(transfer), null, (response) => {
               // console.log('Success Put : ', response)
@@ -117,7 +130,7 @@ export default {
             })
           }
         }
-      } else if (data.ftpData.isTotalComplete) {
+      } else if (sitePercent === 100) {
         self.isUploadComplete = true
         self.isUploading = false
       }
