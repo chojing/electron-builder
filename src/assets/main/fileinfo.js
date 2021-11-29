@@ -56,7 +56,10 @@ FileInfo.prototype.PushFileData = function (_size, _path, _resultArr) {
 FileInfo.prototype.GetAllFileInfo = function (_filePaths) {
   const rePathArr = []
   for (let i = 0; i < _filePaths.length; i++) {
-    const curPath = _filePaths[i] // file Path or dir Path
+    let curPath = _filePaths[i] // file Path or dir Path
+    if (typeof curPath === 'object') {
+      curPath = curPath.path
+    }
     const stats = fs.statSync(curPath)
 
     if (stats.isDirectory()) {

@@ -157,6 +157,7 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
       callPromiseResult('reject', 'uploadFile undefined')
     }
 
+    ftpData.destPath = ftpData.destPath.replace('//', '/')
     self.m_ftpClient.cwd(ftpData.destPath, (err, path) => {
       if (path === undefined) { // 폴더 없음
         self.m_ftpClient.mkdir(ftpData.destPath, true, function (err) {
