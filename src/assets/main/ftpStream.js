@@ -37,8 +37,7 @@ FTPStream.prototype.connect = function (_ftpConnectConfig) {
       user: _ftpConnectConfig.username,
       password: _ftpConnectConfig.password,
       passive: _ftpConnectConfig.passive,
-      activeIp: _ftpConnectConfig.activeIp,
-      keepalive: 10000
+      activeIp: _ftpConnectConfig.activeIp
     }
     log.info(config)
   } else {
@@ -48,7 +47,6 @@ FTPStream.prototype.connect = function (_ftpConnectConfig) {
   return new Promise((resolve, reject) => {
     self.m_ftpClient = new Client()
     self.m_ftpClient._actv = function (cb) {
-      console.log('test1')
       var self = this
       if (self.options.activeIp == 'default') {
         self.options.activeIp = self._socket.localAddress
@@ -56,7 +54,7 @@ FTPStream.prototype.connect = function (_ftpConnectConfig) {
       var ip = self.options.activeIp.replace(/\./g, ',')
       var port = parseInt(self._actvPort / 256) + ',' + (self._actvPort % 256)
 
-      this._send('PORT ' + ip + ',' + port, function (err, text, code) {
+      self._send('PORT ' + ip + ',' + port, function (err, text, code) {
         if (err) {
           cb(new Error(err))
         }
@@ -69,17 +67,17 @@ FTPStream.prototype.connect = function (_ftpConnectConfig) {
       self.m_ftpConnectConfig = config
       resolve('true')
     })
-    this.m_ftpClient.on('close', () => {
+    self.m_ftpClient.on('close', () => {
       self.isFTPConnection = false
       log.info('ftp close')
       // reject("close");
     })
-    this.m_ftpClient.on('end', () => {
+    self.m_ftpClient.on('end', () => {
       self.isFTPConnection = false
       log.info('ftp end')
       // reject("end");
     })
-    this.m_ftpClient.on('error', (err) => {
+    self.m_ftpClient.on('error', (err) => {
       self.isFTPConnection = false
       log.error('ftp err', err)
       self.emit('error', _ftpConnectConfig, err)
@@ -157,17 +155,28 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
       callPromiseResult('reject', 'uploadFile undefined')
     }
 
-    ftpData.destPath = ftpData.destPath.replace('//', '/')
-    self.m_ftpClient.cwd(ftpData.destPath, (err, path) => {
+    let fullPath = curDescPath
+    var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'))
+    // eslint-disable-next-line no-unused-vars
+    var preFolders = fullPath.substring(0, startIndex)
+
+    // preFolders = preFolders.replace('//', '/')
+    preFolders = checkFolderPath(preFolders)
+    self.m_ftpClient.cwd(preFolders, (err, path) => {
       if (path === undefined) { // 폴더 없음
-        self.m_ftpClient.mkdir(ftpData.destPath, true, function (err) {
+        self.m_ftpClient.mkdir(preFolders, true, function (err) {
           if (err) {
-            let error = new Error()
-            error.message = err
-            error.code = '600'
-            log.error('ftpStream > cwd > ', err)
-            self.doError(curFileStream, ftpData, error, callPromiseResult)
-            return false
+            if (err.code == '550') {
+              console.log('폴더있음!')
+              self.ftpUploadPut(curFileStream, curDescPath, callPromiseResult, ftpData)
+            } else {
+              let error = new Error()
+              error.message = err
+              error.code = '600'
+              log.error('ftpStream > cwd > ', err)
+              self.doError(curFileStream, ftpData, error, callPromiseResult)
+              return false
+            }
           } else {
             self.ftpUploadPut(curFileStream, curDescPath, callPromiseResult, ftpData)
           }
@@ -177,6 +186,19 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
       }
     })
   }
+}
+function checkFolderPath (preFolders) {
+  let flag = true
+  while (flag == true) {
+    if (preFolders.indexOf('//') != -1) {
+      preFolders = preFolders.replace('//', '/')
+      console.log('성공!')
+    } else {
+      console.log('실패!')
+      flag = false
+    }
+  }
+  return preFolders
 }
 FTPStream.prototype.ftpUploadPut = function (curFileStream, curDescPath, callPromiseResult, ftpData) {
   let self = this
