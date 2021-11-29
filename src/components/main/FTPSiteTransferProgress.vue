@@ -27,6 +27,7 @@
 <script>
 import templateProgress from '@/components/main/Template_ftpSiteTransferProgress_list'
 const { axios, ipcRenderer } = require('@/assets/js/include.js')
+let serverResultList = {}
 export default {
   components: {
     templateProgress
@@ -43,8 +44,7 @@ export default {
       isUploading: true,
       isUploadComplete: false,
       isResponse: false,
-      tempCurrentPercent: -1,
-      serverResultList: {}
+      tempCurrentPercent: -1
     }
   },
   created () {
@@ -59,7 +59,7 @@ export default {
       this.g_ftpSendData = data.g_ftpSendData
       for (let idx in data.g_ftpSendData.ftpSite.ftpServerList) {
         let server = data.g_ftpSendData.ftpSite.ftpServerList[idx]
-        this.serverResultList[server.name] = {}
+        serverResultList[server.name] = { totalPercent: 0 }
         for (let idy in data.g_ftpSendData.fileList) {
           let item = data.g_ftpSendData.fileList[idy]
           let obj = {}
@@ -102,11 +102,12 @@ export default {
         transfer.nodeid = self.nodeid
       }
 
-      self.serverResultList[data.ftpServer.name].totalPercent = data.ftpData.totalWorkSize_Percent
+      serverResultList[data.ftpServer.name].totalPercent = data.ftpData.totalWorkSize_Percent
       let total = 0
-      for (let i = 0; i < self.serverResultList.length; i++) {
-        total += self.serverResultList[i].totalPercent
+      for (var key in serverResultList) {
+        total += parseInt(serverResultList[key].totalPercent)
       }
+
       let sitePercent = 0
       if (total === 0) {
         sitePercent = 0
@@ -122,7 +123,7 @@ export default {
             transfer.status = 3000
           }
 
-          if ((!self.isResponse && self.transferid != null) || self.totalPercent == 100) {
+          if ((!self.isResponse && self.transferid != null) || sitePercent == 100) {
             self.isResponse = true
             axios.putAsyncAxios('/v2/transfers/' + self.transferid, JSON.stringify(transfer), null, (response) => {
               // console.log('Success Put : ', response)
