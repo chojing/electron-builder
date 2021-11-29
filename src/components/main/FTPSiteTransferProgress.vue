@@ -26,7 +26,7 @@
 
 <script>
 import templateProgress from '@/components/main/Template_ftpSiteTransferProgress_list'
-const { axios, ipcRenderer } = require('@/assets/js/include.js')
+const { axios, ipcRenderer, custom } = require('@/assets/js/include.js')
 let serverResultList = {}
 export default {
   components: {
@@ -77,7 +77,7 @@ export default {
       ipcRenderer.send('ftp-file-upload-start')
     },
     ftpResult: function (event, data) {
-      console.log('ftpResult', data)
+      // console.log('ftpResult', data)
       let self = this
       for (let idx in self.ftpResultData) {
         let item = self.ftpResultData[idx]
@@ -114,7 +114,7 @@ export default {
       } else {
         sitePercent = total / self.g_ftpSendData.ftpSite.ftpServerList.length
       }
-      console.log('total : ', total, ' sitePercent : ', sitePercent)
+      // console.log('total : ', total, ' sitePercent : ', sitePercent)
       if (sitePercent !== 100) {
         if (self.tempCurrentPercent !== sitePercent) {
           self.tempCurrentPercent = sitePercent
@@ -148,7 +148,7 @@ export default {
         isDelete: isFileDelete,
         path: undefined // type 이 path일 경우만 기재
       }
-      ipcRenderer.send('ftp-cancel', cancelInfo)
+      ipcRenderer.send('ftp-cancel', custom.proxy2map(cancelInfo))
 
       console.log('cancel request!')
       ipcRenderer.send('sendData', self.parentKey, null, 'isFtpSiteCancel')

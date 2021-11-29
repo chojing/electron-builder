@@ -464,9 +464,9 @@ function ftpCancelBranch (cancelInfo) {
     FTPInfo = g_FTPInfoDic[DicKey]
   }
 
-  if (g_FTPInfoDic[DicKey].connectionType == '1') {
+  if (g_FTPInfoDic[DicKey].connectionType == 'sequential') {
     ftpCancel(FTPInfo, cancelInfo)
-  } else if (g_FTPInfoDic[DicKey].connectionType == '2') {
+  } else if (g_FTPInfoDic[DicKey].connectionType == 'simultaneous') {
     for (let i = 0; i < cancelInfo.cancelConnectionList.length; i++) {
       FTPInfo = g_FTPInfoDic[DicKey][cancelInfo.cancelConnectionList[i].serverName]
       ftpCancel(FTPInfo, cancelInfo)
