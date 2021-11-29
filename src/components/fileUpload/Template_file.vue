@@ -122,20 +122,19 @@ export default {
         transfer.isfolder = false
         transfer.userid = this.$store.state.username
         transfer.filepath = ''
-        transfer.status = 2000
-        transfer.transfername = this.g_ftpSendData.title
-        transfer.trasnferrequest = this.g_ftpSendData.comment
+        transfer.status = 4000
+        transfer.transfername = g_ftpSendData.title
+        transfer.trasnferrequest = g_ftpSendData.comment
         transfer.filesize = 0
-        for (let idx in this.g_ftpSendData.fileList) {
-          let item = this.g_ftpSendData.fileList[idx]
+        for (let idx in g_ftpSendData.fileList) {
+          let item = g_ftpSendData.fileList[idx]
           transfer.filesize += item.size
         }
         if (this.targetFtpInfo.nodeid) {
           transfer.nodeid = this.targetFtpInfo.nodeid
         }
-        transfer.status = 4000
         axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
-          //   console.log('isCancel Success Put : ', response)
+          // console.log('isCancel Success Put : ', response)
         })
         this.isUploading = false
         this.$refs.closeBtn.innerText = this.isUploadComplete ? '전송완료' : '닫기'
