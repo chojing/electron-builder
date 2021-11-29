@@ -2,11 +2,11 @@
   <div>
       <h4>전송제목</h4>
       <div class="file-tti-box mb40">
-        <input class="input-box" type="text" value="" ref="title" :disabled='isDisabled'>
+        <input class="input-box" type="text" value="" ref="title" :disabled='isDisabled' @change="onChange">
       </div>
       <h4>Optional(요청내역)</h4>
       <div class="file-list-box mb20">
-        <textarea ref="comment" :disabled='isDisabled'></textarea>
+        <textarea ref="comment" :disabled='isDisabled' @change="onChange"></textarea>
       </div>
       <h4>파일(폴더) 전송</h4>
       <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop" :class="isDisabled ? 'disabled' : ''">
@@ -89,6 +89,9 @@ export default {
     //     this.printList()
     //     this.$emit('valueReturn', fileList)
     //   }
+    },
+    onChange () {
+      this.$emit('valueReturn', fileList)
     },
     DragDropFile_result (event, isCancel, FileDatas) {
       console.log('isCancel : ' + isCancel)

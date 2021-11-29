@@ -26,7 +26,7 @@ async function login (id, password) {
     store.commit('commitUserid', null)
     store.commit('commitApikey', null)
     ipcRenderer.send('WriteLog', 'axios login ' + error)
-    setError(error.response.data)
+    setError(error)
   })
 }
 async function getSyncAxios (url, param, fail) {
@@ -41,7 +41,7 @@ async function getSyncAxios (url, param, fail) {
   }).catch(function (error) {
     ipcRenderer.send('WriteLog', 'axios get' + url + ' ' + custom.proxy2string(param) + ' ' + error)
     if (typeof fail === 'function') fail(error)
-    else setError(error.response.data)
+    else setError(error)
   })
   console.log('axios', result)
   return result
@@ -58,7 +58,7 @@ function getAsyncAxios (url, param, callback, fail) {
   }).catch(function (error) {
     ipcRenderer.send('WriteLog', 'axios get' + url + ' ' + custom.proxy2string(param) + ' ' + error)
     if (typeof fail === 'function') fail(error)
-    else setError(error.response.data)
+    else setError(error)
   })
 }
 
@@ -79,7 +79,7 @@ async function postSyncAxios (url, body, param, callback, fail) {
   }).catch(function (error) {
     ipcRenderer.send('WriteLog', 'axios post' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
-    else setError(error.response.data)
+    else setError(error)
   })
   return result
 }
@@ -100,7 +100,7 @@ function postAsyncAxios (url, body, param, callback, fail) {
   }).catch(function (error) {
     ipcRenderer.send('WriteLog', 'axios post' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
-    else setError(error.response.data)
+    else setError(error)
   })
 }
 
@@ -121,7 +121,7 @@ async function putSyncAxios (url, body, param, callback, fail) {
   }).catch(function (error) {
     ipcRenderer.send('WriteLog', 'axios put' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
-    else setError(error.response.data)
+    else setError(error)
   })
   return result
 }
@@ -142,7 +142,7 @@ function putAsyncAxios (url, body, param, callback, fail) {
   }).catch(function (error) {
     ipcRenderer.send('WriteLog', 'axios put' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
-    else setError(error.response.data)
+    else setError(error)
   })
 }
 
@@ -163,7 +163,7 @@ async function deleteSyncAxios (url, body, param, callback, fail) {
   }).catch(function (error) {
     ipcRenderer.send('WriteLog', 'axios delete' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
-    else setError(error.response.data)
+    else setError(error)
   })
   return result
 }
@@ -184,31 +184,36 @@ function deleteAsyncAxios (url, body, param, callback, fail) {
   }).catch(function (error) {
     ipcRenderer.send('WriteLog', 'axios delete' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
-    else setError(error.response.data)
+    else setError(error)
   })
 }
 
-function setError (xhr) {
-  if (xhr.status === 401) {
-    let msg = '에러 \n세션이 끊겼습니다.\n로그인 페이지로 이동합니다.'
-    if (xhr.message) {
-      msg = xhr.message
-    }
-    alert(msg)
-    router.push({ name: 'Login' })
-    return false
-  } else {
-    let errorCode = '[ ERROR CODE : ' + xhr.status + ' ]'
-    if (xhr.message) {
-      errorCode += xhr.message
-
-      if (xhr.status >= 400) {
-        alert('에러\n' + errorCode)
-      } else {
-        alert(errorCode)
+function setError (error) {
+  if (error.response) {
+    let xhr = error.response.data
+    if (xhr.status === 401) {
+      let msg = '에러 \n세션이 끊겼습니다.\n로그인 페이지로 이동합니다.'
+      if (xhr.message) {
+        msg = xhr.message
       }
+      alert(msg)
+      router.push({ name: 'Login' })
+      return false
+    } else {
+      let errorCode = '[ ERROR CODE : ' + xhr.status + ' ]'
+      if (xhr.message) {
+        errorCode += xhr.message
+
+        if (xhr.status >= 400) {
+          alert('에러\n' + errorCode)
+        } else {
+          alert(errorCode)
+        }
+      }
+      return false
     }
-    return false
+  } else {
+    alert(error)
   }
 }
 
