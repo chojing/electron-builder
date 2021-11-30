@@ -161,10 +161,11 @@ export default {
           if (this.targetFtpInfo.nodepath) {
             if (this.targetFtpInfo.nodepath.indexOf('/') !== -1) {
               let nodepathStr = this.targetFtpInfo.nodepath.substr(1)
-              server.rootpath = server.rootpath + nodepathStr + '/' + rootpathTitle + '/'
+              server.rootpath = server.rootpath + nodepathStr + '/' + rootpathTitle
             }
           } else {
-            server.rootpath = server.rootpath + rootpathTitle + '/'
+            server.rootpath = server.rootpath + rootpathTitle
+            console.log('server.rootpath : ', server.rootpath)
           }
         }
 
@@ -202,8 +203,8 @@ export default {
           }
           for (let idx in g_ftpSendData.ftpSite.ftpServerList) {
             let server = g_ftpSendData.ftpSite.ftpServerList[idx]
-            for (let idx in g_ftpSendData.fileList) {
-              let item = g_ftpSendData.fileList[idx]
+            for (let idy in g_ftpSendData.fileList) {
+              let item = g_ftpSendData.fileList[idy]
               // transfer_file_tb insert data
               const transferFile = {}
               transferFile.transferid = this.transferid
