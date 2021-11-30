@@ -6,7 +6,7 @@
     <td>{{item.filesize}}</td>
   </tr>
   <tr v-show="isShow">
-    <td colspan="2">조회 결과가 없습니다.</td>
+정    <td colspan="3">조회 결과가 없습니다.</td>
   </tr>
 </template>
 

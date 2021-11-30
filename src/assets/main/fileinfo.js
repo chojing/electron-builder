@@ -12,7 +12,7 @@ function FileInfo () {
   this.m_isSubDirFileRead = true // 하위 디렉토리 안까지 모든 파일 검색
   this.m_MaxFileReadCount = 100
   this.isMaxOver = false
-  this.filters = ['.txt', '.png', '.mp4']
+  this.filters = ['.mov', '.mxf', '.mp4']
 }
 util.inherits(FileInfo, EventEmitter)
 
@@ -49,13 +49,17 @@ FileInfo.prototype.GetFilePath = function (_win) {
   const result = this.OpenDialog(false, _win)
   return result
 }
-FileInfo.prototype.PushFileData = function (_size, _path, _resultArr) {
+FileInfo.prototype.PushFileData = function (_size, _path, _resultArr, _name = undefined) {
   const curFileData = new FileData()
   let extention = curFileData.getOnlyFileExtention(_path)
   if (this.filters.includes(extention)) {
     curFileData.size = _size
     curFileData.path = _path
-    curFileData.fileName = curFileData.getFileFullName(_path)
+    if (_name !== undefined) {
+      curFileData.fileName = _name
+    } else {
+      curFileData.fileName = curFileData.getFileFullName(_path)
+    }
     if (_resultArr.length < this.m_MaxFileReadCount + 1) { _resultArr.push(curFileData) }
   }
 }
@@ -68,26 +72,27 @@ FileInfo.prototype.GetAllFileInfo = function (_filePaths) {
     }
     let curPath = _filePaths[i] // file Path or dir Path
     if (typeof curPath === 'object') {
-      curPath = curPath.path
-    }
-    const stats = fs.statSync(curPath)
-
-    if (stats.isDirectory()) {
-      fs.readdirSync(curPath).forEach(file => { // 파일 리스트 확인
-        const curRepath = curPath + '/' + file
-        if (fs.lstatSync(curRepath).isDirectory()) { // 파일 리스트중 디렉토리가 있는지 확인
-          // 디렉토리
-          rePathArr.push(curRepath)
-          if (this.m_isSubDirFileRead) {
-            this.GetAllFileInfo(rePathArr, this)
-          }
-        } else {
-          // 파일. 위의 stats는 폴더의 정보이기 때문에 재 statSync 검색함
-          this.PushFileData(fs.statSync(curRepath).size, curRepath, this.m_resultPathArr)
-        }
-      })
+      this.PushFileData(curPath.size, curPath.path, this.m_resultPathArr, curPath.fileName)
     } else {
-      this.PushFileData(stats.size, curPath, this.m_resultPathArr)
+      const stats = fs.statSync(curPath)
+
+      if (stats.isDirectory()) {
+        fs.readdirSync(curPath).forEach(file => { // 파일 리스트 확인
+          const curRepath = curPath + '/' + file
+          if (fs.lstatSync(curRepath).isDirectory()) { // 파일 리스트중 디렉토리가 있는지 확인
+          // 디렉토리
+            rePathArr.push(curRepath)
+            if (this.m_isSubDirFileRead) {
+              this.GetAllFileInfo(rePathArr, this)
+            }
+          } else {
+          // 파일. 위의 stats는 폴더의 정보이기 때문에 재 statSync 검색함
+            this.PushFileData(fs.statSync(curRepath).size, curRepath, this.m_resultPathArr)
+          }
+        })
+      } else {
+        this.PushFileData(stats.size, curPath, this.m_resultPathArr)
+      }
     }
   }
   return { isMaxCapa: true }

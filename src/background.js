@@ -31,7 +31,6 @@ const starIcon = 'img/icons/mac/16x16.png'
 const KONAN_ROOT_FOLDER = '//.konan'
 let g_windows = {}
 let gWin = null
-let g_DOWNLOAD_FOLDER_PATH = ''
 const g_UPLOAD_FTP_FOLDER_PATH = '/konan/electron_test/'
 let g_curUserInfo
 let g_NotificationPopUp = new NotificationPopUp()
@@ -359,7 +358,6 @@ ipcMain.on('ftp-file-download', (event, _ftpSendData) => {
   if (desFolderPath === undefined) {
     return false
   }
-  g_DOWNLOAD_FOLDER_PATH = desFolderPath
   _ftpSendData.desFolderPath = desFolderPath
 
   _ftpSendData.event = event
@@ -429,13 +427,9 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
     })// end Promise.all
   }
 }
-ipcMain.on('open-file-explore', event => {
-  // eslint-disable-next-line camelcase
-  if (g_DOWNLOAD_FOLDER_PATH === undefined) {
-    return
-  }
+ipcMain.on('open-file-explore', (event, path) => {
   let ftpStream = new FTPStream()
-  ftpStream.downloadFolderOpen(g_DOWNLOAD_FOLDER_PATH)
+  ftpStream.downloadFolderOpen(path)
 })
 
 ipcMain.on('ftp-cancel', (event, cancelInfo) => {
