@@ -141,7 +141,7 @@ export default {
         url: 'UserPwModify',
         data: data,
         width: 350,
-        height: 300,
+        height: 400,
         parent: '',
         modal: true
       })

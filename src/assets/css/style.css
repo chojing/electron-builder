@@ -248,10 +248,11 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .userPwModify h2{font-size: 18px;text-align: center;font-weight: 500;}
 .userPwModify .userInfo{margin-top:30px;}
 .userPwModify .userInfo ul{}
-.userPwModify .userInfo ul li{height: 30px;margin-bottom: 10px;}
+.userPwModify .userInfo ul li{margin-bottom: 10px;}
+.userPwModify .userInfo ul li div{height: 30px;}
 .userPwModify .userInfo ul li b{width: 120px; font-size: 14px;font-weight: 500;}
 .userPwModify .userInfo ul li input{width: calc(100% - 130px);}
-
+.userPwModify .userInfo .error{font-size: 12px;}
 
 @media screen and (min-height: 700px){
   .user-list{height: 100vh;}
