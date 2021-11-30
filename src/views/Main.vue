@@ -129,7 +129,6 @@ export default {
   mounted () {
     this.getTree()
     this.getFavorits()
-    console.log('userStore :::', this.$store.state)
   },
   methods: {
     pwModify: function () {
