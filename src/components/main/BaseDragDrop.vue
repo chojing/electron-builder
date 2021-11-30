@@ -85,14 +85,6 @@ export default {
           inputfile.path = file.path
           inputfile.size = file.size
 
-          // /check
-          if (inputfile.fileName.indexOf('/') != -1) {
-            // /가 존재한다면
-            let oldfileName = inputfile.fileName
-            inputfile.fileName = inputfile.fileName.replace('/', '_')
-            inputfile.path = inputfile.path.replace(oldfileName, inputfile.fileName)
-          }
-
           fileList.push(inputfile)
         }
         ipcRenderer.send('drag-file', fileList, isSubDirFileRead)
@@ -132,8 +124,8 @@ export default {
       this.$emit('valueReturn', fileList)
     },
     DragDropFile_result (event, isCancel, FileDatas, isFileOver) {
-      console.log('isCancel : ' + isCancel)
-      console.log('FileDatas : ' + FileDatas)
+      console.log('isCancel : ', isCancel)
+      console.log('FileDatas : ', FileDatas)
       if (isFileOver == true) {
         alert('파일은 100개를 초과할 수 없습니다.')
       }

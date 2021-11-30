@@ -66,6 +66,9 @@ FileInfo.prototype.PushFileData = function (_size, _path, _resultArr, _name = un
         curFileData.fileName = curFileData.getFileFullName(_path)
       }
     }
+    var pointIndex = _path.indexOf(curFileData.fileName)
+    let dirPath = _path.substring(0, pointIndex)
+    curFileData.folderPath = dirPath
     if (_resultArr.length < this.m_MaxFileReadCount + 1) { _resultArr.push(curFileData) }
   }
 }
