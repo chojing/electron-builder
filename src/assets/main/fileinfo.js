@@ -13,6 +13,8 @@ function FileInfo () {
   this.m_MaxFileReadCount = 100
   this.isMaxOver = false
   this.filters = ['.mov', '.mxf', '.mp4', '.txt']
+
+  this.fileFunk = new FileData()
 }
 util.inherits(FileInfo, EventEmitter)
 
@@ -81,8 +83,7 @@ FileInfo.prototype.GetAllFileInfo = function (_filePaths, baseDir = '') {
       const stats = fs.statSync(curPath)
 
       if (stats.isDirectory()) {
-        let fileData = new FileData()
-        baseDir += fileData.getFilePathInfo(curPath, 'name') + '/'
+        baseDir += this.fileFunk.getFilePathInfo(curPath, 'name') + '/'
         fs.readdirSync(curPath).forEach(file => { // 파일 리스트 확인
           const curRepath = curPath + '/' + file
           if (fs.lstatSync(curRepath).isDirectory()) { // 파일 리스트중 디렉토리가 있는지 확인
@@ -144,13 +145,12 @@ util.inherits(FileCopyInfo, EventEmitter)
 
 FileCopyInfo.prototype.FileCopy = function (_win, _originPaths) {
   const curFileInfo = new FileInfo()
-  const curFileData = new FileData()
   const result = curFileInfo.OpenDialog(true, _win) // 복사할 파일이 위치할 폴더 경로
   if (result === undefined) {
 
   } else {
     for (let i = 0; i < _originPaths.length; i++) {
-      const strDesFilePath = result[0] + '/' + curFileData.getOnlyFileName(_originPaths[i].path) + this.m_CopyText + curFileData.getOnlyFileExtention(_originPaths[i].path)
+      const strDesFilePath = result[0] + '/' + this.fileFunk.getOnlyFileName(_originPaths[i].path) + this.m_CopyText + this.fileFunk.getOnlyFileExtention(_originPaths[i].path)
       if (fs.existsSync(strDesFilePath)) { // 선택한 폴더에 같은 이름의 복사할 파일이 있는 경우
         if (!this.m_isOverwrite) {
           this.emit('copyDuplicate', _originPaths[i].path, strDesFilePath)

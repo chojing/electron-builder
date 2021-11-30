@@ -77,13 +77,22 @@ export default {
             size: 0
           }
           const file = files[i]
-          inputfile.path = file.path
           if (event.target.id === 'folder') {
             inputfile.fileName = file.webkitRelativePath
           } else {
             inputfile.fileName = file.name
           }
+          inputfile.path = file.path
           inputfile.size = file.size
+
+          // /check
+          if (inputfile.fileName.indexOf('/') != -1) {
+            // /가 존재한다면
+            let oldfileName = inputfile.fileName
+            inputfile.fileName = inputfile.fileName.replace('/', '_')
+            inputfile.path = inputfile.path.replace(oldfileName, inputfile.fileName)
+          }
+
           fileList.push(inputfile)
         }
         ipcRenderer.send('drag-file', fileList, isSubDirFileRead)
