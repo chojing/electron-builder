@@ -139,6 +139,7 @@ export default {
           if (ftpInfo.nodeid) {
             data.nodeid = ftpInfo.nodeid
           }
+          data.nodepath = ftpInfo.path
           data.isSite = false
           this.callFileUploadPopup(data)
         })
@@ -152,6 +153,7 @@ export default {
             if (ftpInfo.nodeid) {
               data.nodeid = ftpInfo.nodeid
             }
+            data.nodepath = ftpInfo.path
             data.isSite = true
             this.callFileUploadPopup(data)
           })
