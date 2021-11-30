@@ -12,7 +12,7 @@ function FileInfo () {
   this.m_isSubDirFileRead = true // 하위 디렉토리 안까지 모든 파일 검색
   this.m_MaxFileReadCount = 100
   this.isMaxOver = false
-  this.filters = ['.txt', '.png', '.mp4']
+  this.filters = ['.mov', '.mxf', '.mp4']
 }
 util.inherits(FileInfo, EventEmitter)
 
