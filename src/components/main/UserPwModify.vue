@@ -12,21 +12,21 @@
         </li>
         <li>
           <div class="flex-center">
-            <b>새로운 비밀번호</b>
-            <input v-model="newPassword" @input="newPasswordCheckFn" class="flex-1 input-box" placeholder="새로운 비밀번호">
+            <b>새 비밀번호</b>
+            <input v-model="newPassword" @input="newPasswordCheckFn" class="flex-1 input-box" placeholder="새 비밀번호">
           </div>
           <em id="errorText2" class="error"></em>
         </li>
         <li>
           <div class="flex-center">
-            <b>새로운 비밀번호</b>
-            <input v-model="newPasswordCheck" @input="newPasswordCheckFn2" class="flex-1 input-box" placeholder="새로운 비밀번호 확인">
+            <b>새 비밀번호</b>
+            <input v-model="newPasswordCheck" @input="newPasswordCheckFn2" class="flex-1 input-box" placeholder="새 비밀번호 확인">
           </div>
           <em id="errorText3" class="error"></em>
         </li>
       </ul>
       <div class="center mt30">
-        <button @click="passwordCheck" type="button" class="btn blue h30">확인</button>
+        <button @click="passwordModify" type="button" class="btn blue h30">확인</button>
         <button @click="cancel" type="button" id="cancel" class="btn h30">취소</button>
       </div>
     </div>
@@ -67,7 +67,10 @@ export default {
         ERROR_TEXT_3.innerHTML = '비밀번호가 일치하지 않습니다.'
       }
     },
-    passwordCheck: function () {
+    passwordModify: function () {
+      console.log('기존 비밀번호 : ', this.userPassword)
+      console.log('새 비밀번호 : ', this.newPassword)
+      console.log('새 비밀번호확인 : ', this.newPasswordCheck)
       if (!this.userPassword || !this.newPassword || !this.newPasswordCheck) {
         alert('필수 입력 사항입니다.')
       }
