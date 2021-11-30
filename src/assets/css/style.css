@@ -217,7 +217,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .userInfo-container .info-box table .name{text-align: center;}
 #addCheck{}
 
-.bg{display: none; position: fixed;top: 0;bottom: 0;left: 0;right: 0;background: rgba(0,0,0,.5);z-index: 9000;}
+.bg{display: none; position: fixed;top: 0;bottom: 0;left: 0;right: 0;background: rgba(0,0,0,.5);z-index: 9900;}
 .bg.view{display: block;}
 .user-info-add{display: none; position: fixed;z-index: 9999;top: 50%;left:50%;transform: translate(-50%,-50%);}
 .user-info-add.view{display: block;}
