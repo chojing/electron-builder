@@ -58,11 +58,10 @@ FileInfo.prototype.PushFileData = function (_size, _path, _resultArr, _name = un
     if (_name !== undefined) {
       curFileData.fileName = _name
     } else {
-      if(_baseDir !== undefined){
+      if (_baseDir !== undefined) {
         curFileData.fileName = _baseDir + curFileData.getFileFullName(_path)
-      }
-      else{
-      curFileData.fileName = curFileData.getFileFullName(_path)
+      } else {
+        curFileData.fileName = curFileData.getFileFullName(_path)
       }
     }
     if (_resultArr.length < this.m_MaxFileReadCount + 1) { _resultArr.push(curFileData) }
@@ -83,7 +82,7 @@ FileInfo.prototype.GetAllFileInfo = function (_filePaths, baseDir = '') {
 
       if (stats.isDirectory()) {
         let fileData = new FileData()
-        baseDir += fileData.getFilePathInfo(curPath,'name') + '/'
+        baseDir += fileData.getFilePathInfo(curPath, 'name') + '/'
         fs.readdirSync(curPath).forEach(file => { // 파일 리스트 확인
           const curRepath = curPath + '/' + file
           if (fs.lstatSync(curRepath).isDirectory()) { // 파일 리스트중 디렉토리가 있는지 확인
