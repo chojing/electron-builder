@@ -66,6 +66,7 @@ FileInfo.prototype.PushFileData = function (_size, _path, _resultArr, _name = un
         curFileData.fileName = curFileData.getFileFullName(_path)
       }
     }
+    curFileData.fileName = checkFolderPath(curFileData.fileName)
 
     // 선택폴더부터
     // var pointIndex = _path.indexOf(curFileData.fileName)
@@ -74,6 +75,17 @@ FileInfo.prototype.PushFileData = function (_size, _path, _resultArr, _name = un
     curFileData.folderPath = curFileData.getFileFullName(_path)
     if (_resultArr.length < this.m_MaxFileReadCount + 1) { _resultArr.push(curFileData) }
   }
+}
+function checkFolderPath (preFolders) {
+  let flag = true
+  while (flag == true) {
+    if (preFolders.indexOf('//') != -1) {
+      preFolders = preFolders.replace('//', '/')
+    } else {
+      flag = false
+    }
+  }
+  return preFolders
 }
 FileInfo.prototype.GetAllFileInfo = function (_filePaths, baseDir = '') {
   const rePathArr = []
