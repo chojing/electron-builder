@@ -16,9 +16,9 @@
           <input class="flex-1 input-box" placeholder="새로운 비밀번호 확인">
         </li>
       </ul>
-      <div class="btn-box">
+      <div class="center mt30">
         <button type="button" class="btn blue h30">확인</button>
-        <button type="button" id="cancel" class="btn h30">취소</button>
+        <button @click="cancel" type="button" id="cancel" class="btn h30">취소</button>
       </div>
     </div>
   </section>
@@ -29,13 +29,16 @@ const { ipcRenderer } = require('@/assets/js/include.js')
 export default {
   name: 'UserPwModify',
   data () {
+    return {
+      g_curWindowKey: ''
+    }
+  },
+  created () {
+    ipcRenderer.on('receiveData', this.init)
   },
   methods: {
     init: function (event, key, data, type) {
       if (type == 'init') {
-        console.log('부모키', data)
-        this.parentKey = data.parentKey
-        // eslint-disable-next-line camelcase
         this.g_curWindowKey = key
       }
     },
