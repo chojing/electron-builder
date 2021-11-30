@@ -161,10 +161,11 @@ export default {
           if (this.targetFtpInfo.nodepath) {
             if (this.targetFtpInfo.nodepath.indexOf('/') !== -1) {
               let nodepathStr = this.targetFtpInfo.nodepath.substr(1)
-              server.rootpath = server.rootpath + nodepathStr + '/' + rootpathTitle + '/'
+              server.rootpath = server.rootpath + nodepathStr + '/' + rootpathTitle
             }
           } else {
-            server.rootpath = server.rootpath + rootpathTitle + '/'
+            server.rootpath = server.rootpath + rootpathTitle
+            console.log('server.rootpath : ', server.rootpath)
           }
         }
 
