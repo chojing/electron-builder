@@ -19,7 +19,7 @@ export default {
       this.$store.commit('commitServer', _loginData.server)
       this.$store.commit('commitUsername', _loginData.id)
       this.$store.commit('commitAutologin', _loginData.autologin)
-      if (_loginData !== undefined && _loginData.autologin) {
+      if (_loginData !== undefined && _loginData.autologin && _loginData.pw) {
         // 자동로그인 체크시
         setTimeout(() => {
           this.login(_loginData.id, _loginData.pw)
