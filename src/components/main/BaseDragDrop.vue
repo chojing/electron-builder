@@ -24,7 +24,6 @@
             <button @click="btn_Del_Click(fileItem)">X</button>
           </div>
         </div>
-<!--        <input type="file" id="file" name="file" @change="onUpload" multiple/>-->
       </div>
   </div>
 </template>
@@ -78,9 +77,9 @@ export default {
           }
           const file = files[i]
           if (event.target.id === 'folder') {
-            inputfile.fileName = file.webkitRelativePath
+            inputfile.fileName = '/' + file.webkitRelativePath
           } else {
-            inputfile.fileName = file.name
+            inputfile.fileName = '/' + file.name
           }
           inputfile.path = file.path
           inputfile.size = file.size
