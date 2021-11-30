@@ -134,7 +134,6 @@ FTPStream.prototype.work = async function (_srcPaths, _ftpConnectConfig, index) 
 FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
   let self = this
   let curPath = ftpData.srcPath
-  let curDescPath = ftpData.destPath + ftpData.fileName
 
   if (self.isFTPConnection == false) {
     let err = new Error()
@@ -155,13 +154,15 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
       callPromiseResult('reject', 'uploadFile undefined')
     }
 
-    let fullPath = curDescPath
-    var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'))
+    let fullPath = ftpData.destPath + ftpData.fileName
+    fullPath = fullPath.replace(/\\/g, '/')
+    var startIndex = fullPath.lastIndexOf('/')
     // eslint-disable-next-line no-unused-vars
     var preFolders = fullPath.substring(0, startIndex)
-
-    // preFolders = preFolders.replace('//', '/')
     preFolders = checkFolderPath(preFolders)
+    let curDescPath = ftpData.destPath + ftpData.fileName
+    curDescPath = checkFolderPath(curDescPath)
+
     self.m_ftpClient.cwd(preFolders, (err, path) => {
       if (path === undefined) { // 폴더 없음
         self.m_ftpClient.mkdir(preFolders, true, function (err) {
@@ -187,6 +188,7 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
     })
   }
 }
+// eslint-disable-next-line no-unused-vars
 function checkFolderPath (preFolders) {
   let flag = true
   while (flag == true) {

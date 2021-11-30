@@ -46,14 +46,17 @@ FileData.prototype.getFilePathInfo = function (_FilePath, _searchType) {
   let resultStr
   _searchType = _searchType.toLowerCase()
   if (_FilePath) {
-    var pointIndex = (_FilePath.indexOf('\\') >= 0 ? _FilePath.lastIndexOf('\\') : _FilePath.lastIndexOf('/'))
+    let filePath = _FilePath.replace(/\\/g, '/')
+    var pointIndex = filePath.lastIndexOf('/')
     if (_searchType === 'path') {
-      resultStr = _FilePath.substring(0, pointIndex)
+      resultStr = filePath.substring(0, pointIndex)
       return resultStr
     } else if (_searchType === 'name') {
-      resultStr = _FilePath.substring(pointIndex)
-      if (resultStr.indexOf('\\') === 0 || resultStr.indexOf('/') === 0) {
-        resultStr = resultStr.substring(1)
+      resultStr = filePath.substring(pointIndex)
+      if (resultStr.indexOf('/') === 0) {
+        let len = resultStr.substring(-1)
+        console.log(len)
+        // resultStr = resultStr.substring
       }
     }
   }

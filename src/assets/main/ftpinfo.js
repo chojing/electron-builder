@@ -2,6 +2,7 @@ const FileData = require('./globalFunk.js').FileData
 const NotificationPopUp = require('./globalFunk.js').NotificationPopUp
 const FileInfo = require('./fileinfo.js').FileInfo
 const FTPStream = require('./ftpStream').FTPStream
+// eslint-disable-next-line no-unused-vars
 let gfileData = new FileData()
 
 // const Log = require('./log').Log
@@ -55,7 +56,7 @@ FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _current
   for (let j = 0; j < _fileList.length; j++) {
     let curFile = _fileList[j]
     let curPath = curFile.path
-    let curFileName = gfileData.getFileFullName(curPath)
+    let curFileName = curFile.fileName
     let ftpData = new FTPData(_ftpType, curFile, desFolderPath, curFileName)
 
     // 전체 취소를 위한 전체 작업 담기
