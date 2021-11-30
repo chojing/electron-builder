@@ -43,7 +43,8 @@ export default {
     }
   },
   created () {
-    ipcRenderer.on('receiveData', this.popInit)
+    ipcRenderer.on('receiveData', this.init)
+    ipcRenderer.once('login-read-result', this.passwordModify)
     ipcRenderer.send('login-read')
   },
   mounted () {
@@ -67,15 +68,16 @@ export default {
         ERROR_TEXT_3.innerHTML = '비밀번호가 일치하지 않습니다.'
       }
     },
-    passwordModify: function () {
+    passwordModify: function (event, _loginData) {
       console.log('기존 비밀번호 : ', this.userPassword)
       console.log('새 비밀번호 : ', this.newPassword)
       console.log('새 비밀번호확인 : ', this.newPasswordCheck)
+      console.log('_loginData.pw', _loginData.pw)
       if (!this.userPassword || !this.newPassword || !this.newPasswordCheck) {
         alert('필수 입력 사항입니다.')
       }
     },
-    popInit: function (event, key, data, type) {
+    init: function (event, key, data, type) {
       if (type == 'init') {
         this.g_curWindowKey = key
       }
