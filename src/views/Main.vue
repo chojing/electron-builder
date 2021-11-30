@@ -38,19 +38,30 @@
           <div class="search-box mt10 mb20" :class="{show:active}">
             <input id='targetSearchInput' @keyup.enter="this.targetSearch" type="text" placeholder="전송타겟을 입력해주세요">
             <div class="favorite-list">
-              <div class="fa-item-link fa-item flex-column">
-                <button v-for="item in searchList" v-bind:key="item.nodeid" @dblclick="this.fileUploadPopup(item)" @click.prevent>
-                  <template v-if="Array.isArray(item.name)">
-                    <template v-for="item in item.name" v-bind:key="item">
-                      <span>{{item}}</span>
+              <div class="fa-item-link fa-item flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
+                <template v-for="list in searchList" v-bind:key="list.nodeid">
+                  <div :data-nodeid="list.nodeid" :data-haschild="list.haschild"
+                       :data-pathftpserverid="list.pathftpserverid" :data-pathftpsiteid="list.pathftpsiteid"
+                       :data-name="list.nodename" :data-path="list.path"
+                       @contextmenu.prevent="showContextMenu($event)">
+                    <button @dblclick="this.fileUploadPopup(list)">
+                      <template v-if="Array.isArray(list.name)">
+                        <template v-for="item in list.name" v-bind:key="item">
+                          <span>
+                            {{item}}
+                          </span>
+                        </template>
+                      </template>
+                      <template v-else>
+                        <span>
+                          {{list.name}}
+                        </span>
+                      </template>
+                    </button>
+                    <template v-if="(Object.keys(this.searchList).length === 0) && isSearch">
+                      <span>검색 결과가 없습니다.</span>
                     </template>
-                  </template>
-                  <template v-else>
-                    <span>{{item.name}}</span>
-                  </template>
-                </button>
-                <template v-if="(Object.keys(this.searchList).length === 0) && isSearch">
-                  <span>검색 결과가 없습니다.</span>
+                  </div>
                 </template>
               </div>
             </div>
@@ -73,7 +84,7 @@
     <div class="bg view" v-show="isLogoutCheck"></div>
   </main>
   <templateMenu/>
-  <templateContextMenu :nodeid="nodeid" :username="username" :nodename="nodename"
+  <templateContextMenu :nodeid="nodeid" :username="username" :nodename="nodename" :nodepath="nodepath"
                        :pathftpserverid="pathftpserverid" :pathftpsiteid="pathftpsiteid"/>
 </template>
 <script>
@@ -107,6 +118,7 @@ export default {
       pathftpserverid: null,
       pathftpsiteid: null,
       nodename: null,
+      nodepath: null,
       active: false,
       isSearch: false,
       isLogoutCheck: false
@@ -195,17 +207,27 @@ export default {
     showContextMenu: function (e) {
       this.nodeid = ''
       document.getElementById('favorits-checkbox-id').checked = false
-      if (e.target.dataset.nodeid == undefined) {
+      if (e.currentTarget.nodeid == undefined || e.target.dataset.nodeid == undefined) {
         this.hideContextMenu()
       }
-      if (e.target.dataset.haschild == 0 && e.target.dataset.nodeid) {
+      if ((e.target.dataset.haschild == 0 && e.target.dataset.nodeid) ||
+        (e.currentTarget.dataset.haschild == 0 && e.currentTarget.dataset.nodeid)) {
         var menu = document.getElementById('favorits-menu')
         menu.style.left = e.pageX + 'px'
         menu.style.top = e.pageY + 'px'
-        this.nodeid = e.target.dataset.nodeid
-        this.pathftpserverid = parseInt(e.target.dataset.pathftpserverid)
-        this.pathftpsiteid = parseInt(e.target.dataset.pathftpsiteid)
-        this.nodename = e.target.dataset.name
+        if (e.target.dataset.haschild == 0 && e.target.dataset.nodeid) {
+          this.nodeid = e.target.dataset.nodeid
+          this.pathftpserverid = parseInt(e.target.dataset.pathftpserverid)
+          this.pathftpsiteid = parseInt(e.target.dataset.pathftpsiteid)
+          this.nodename = e.target.dataset.name
+          this.nodepath = e.target.dataset.path
+        } else if ((e.currentTarget.dataset.haschild == 0 && e.currentTarget.dataset.nodeid)) {
+          this.nodeid = e.currentTarget.dataset.nodeid
+          this.pathftpserverid = parseInt(e.currentTarget.dataset.pathftpserverid)
+          this.pathftpsiteid = parseInt(e.currentTarget.dataset.pathftpsiteid)
+          this.nodename = e.currentTarget.dataset.name
+          this.nodepath = e.currentTarget.dataset.path
+        }
         var userFavorits = this.favoritsList.map((obj) => obj['nodeid'])
         for (var idx in userFavorits) {
           let favoritsNodeid = userFavorits[idx]
@@ -255,7 +277,7 @@ export default {
         if (response.data !== undefined) {
           if (Object.keys(response.data.results).length !== 0) {
             this.searchList = response.data.results
-            console.log('if ', Object.keys(this.searchList).length !== 0)
+            // console.log('if ', response.data.results)
             var target = this.searchList.map((obj) => obj['pathname'])
             for (var idx in target) {
               let hasDepth = target[idx]
@@ -264,6 +286,7 @@ export default {
                   var str = hasDepth.split('>')
                   // console.log('str : ', str)
                   this.searchList[idx].name = str
+                  this.searchList[idx].nodename = str[str.length - 1]
                 }
               }
             }

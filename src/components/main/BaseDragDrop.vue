@@ -91,6 +91,7 @@ export default {
         // this.printList()
         // this.$emit('valueReturn', fileList)
       }
+      event.target.value = ''
     },
     DragDropFile (files) {
       console.log('folder')

@@ -19,7 +19,8 @@ export default {
     nodeid: String,
     pathftpserverid: Number,
     pathftpsiteid: Number,
-    nodename: String
+    nodename: String,
+    nodepath: String
   },
   methods: {
     editFavoritsMenu: function (e) {
@@ -44,6 +45,7 @@ export default {
       data.pathftpsiteid = this.pathftpsiteid
       data.nodeid = this.nodeid
       data.name = this.nodename
+      data.path = this.nodepath
       this.$parent.fileUploadPopup(data)
     }
   }
