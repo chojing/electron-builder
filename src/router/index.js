@@ -102,6 +102,11 @@ const routes = [
     component: () => import('../components/main/UserInfo')
   },
   {
+    path: '/userPwModify',
+    name: 'UserPwModify',
+    component: () => import('../components/main/UserPwModify')
+  },
+  {
     path: '/ftpSiteTransferProgress',
     name: 'FtpSiteTransferProgress',
     component: () => import('../components/main/FTPSiteTransferProgress')

@@ -32,7 +32,7 @@
 </template>
 
 <script>
-const { ipcRenderer, axios, custom } = require('@/assets/js/include.js')
+const { ipcRenderer, axios } = require('@/assets/js/include.js')
 
 export default {
   name: 'Login',
@@ -83,7 +83,6 @@ export default {
         document.getElementById('autologin-checkbox-id').checked = this.$store.state.autologin
       }
       // logout 한 후
-      console.log('dddddd::: ', custom.proxy2map(this.$store.state.autologin))
       const isAutoLogin = document.getElementById('autologin-checkbox-id').checked
       const urlLogout = window.location.href.split('/')[4]
       console.log('urlLogout', urlLogout)

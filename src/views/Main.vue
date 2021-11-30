@@ -7,6 +7,7 @@
           <div class="user-name flex-box flex-center">
             <p><i class="fas fa-user"></i> {{username}}</p>
             <div class="btn-box">
+              <button id="pwModify" class="btn h30" @click="pwModify">비밀번호 변경</button>
               <button id="logoutBtn" class="btn h30" @click="logoutCheck">Logout</button>
             </div>
           </div>
@@ -98,6 +99,7 @@ export default {
   },
   data () {
     return {
+      g_windowIndex: 0,
       username: this.$store.state.username,
       c_node_type: [],
       favoritsList: [],
@@ -115,9 +117,24 @@ export default {
   mounted () {
     this.getTree()
     this.getFavorits()
-    console.log('sssss::::', this.$store.state)
+    console.log('userStore :::', this.$store.state)
   },
   methods: {
+    pwModify: function () {
+      const name = 'test'
+      const data = {
+        value: name
+      }
+      ipcRenderer.send('openWindow', {
+        key: ++this.g_windowIndex,
+        url: 'UserPwModify',
+        data: data,
+        width: 350,
+        height: 300,
+        parent: '',
+        modal: true
+      })
+    },
     logoutCheck: function () {
       this.isLogoutCheck = true
     },
@@ -128,19 +145,6 @@ export default {
         this.goTo('Login?Logout')
       })
     },
-    // logout: function () {
-    //   const Logout = 'Logout'
-    //
-    //   this.$store.commit('commitApikey', {
-    //     apikey: ''
-    //   })
-    //   axios.deleteAsyncAxios('/v2/users/apikey', null, null, (response) => {
-    //     alert('로그아웃 되었습니다.')
-    //     // this.goTo('Login?Logout')
-    //     // this.$router.push({ path: '/Login/:Logout', name: 'Login', params: { autoLoginReset: this.$store.state.autologin, Logout: 'Logout' } })
-    //     this.$router.push({ path: `/Login/${Logout}`, name: 'Login', params: { Logout: 'Logout' } })
-    //   })
-    // },
     logoutCancel: function () {
       this.isLogoutCheck = false
     },
