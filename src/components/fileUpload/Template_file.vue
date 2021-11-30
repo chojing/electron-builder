@@ -149,6 +149,8 @@ export default {
     doUpload: function () {
       let self = this
       this.transferid = null
+      const transfer = {}
+      const transferFile = {}
       console.log('request FTP Start')
       if (Object.keys(g_ftpSendData.fileList).length === 0) {
         alert('전송할 파일(폴더)를 선택해주세요.')
@@ -159,9 +161,9 @@ export default {
         for (let idx in g_ftpSendData.ftpSite.ftpServerList) {
           let server = g_ftpSendData.ftpSite.ftpServerList[idx]
           server.rootpath = server.rootpath + rootpathTitle + '/'
+          transferFile.filepath = server.rootpath + rootpathTitle + '/'
         }
         // transfer_tb insert data
-        const transfer = {}
         transfer.isfolder = false
         transfer.userid = this.$store.state.username
         transfer.filepath = ''
@@ -199,7 +201,6 @@ export default {
           for (let idx in g_ftpSendData.fileList) {
             let item = g_ftpSendData.fileList[idx]
             // transfer_file_tb insert data
-            const transferFile = {}
             transferFile.transferid = this.transferid
             transferFile.filename = item.fileName
             transferFile.filesize = item.size

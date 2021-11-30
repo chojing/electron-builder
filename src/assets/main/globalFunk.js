@@ -43,21 +43,21 @@ FileData.prototype.getExtensionORFilename = function (_filename, _searchType) {
 
 // searchType : path / name
 FileData.prototype.getFilePathInfo = function (_FilePath, _searchType) {
-  let filename
+  let resultStr
   _searchType = _searchType.toLowerCase()
   if (_FilePath) {
     var pointIndex = (_FilePath.indexOf('\\') >= 0 ? _FilePath.lastIndexOf('\\') : _FilePath.lastIndexOf('/'))
     if (_searchType === 'path') {
-      filename = _FilePath.substring(0, pointIndex)
-      return filename
+      resultStr = _FilePath.substring(0, pointIndex)
+      return resultStr
     } else if (_searchType === 'name') {
-      filename = _FilePath.substring(pointIndex)
-      if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
-        filename = filename.substring(1)
+      resultStr = _FilePath.substring(pointIndex)
+      if (resultStr.indexOf('\\') === 0 || resultStr.indexOf('/') === 0) {
+        resultStr = resultStr.substring(1)
       }
     }
   }
-  return filename
+  return resultStr
 }
 
 function NotificationPopUp () {

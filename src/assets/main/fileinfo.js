@@ -12,7 +12,9 @@ function FileInfo () {
   this.m_isSubDirFileRead = true // 하위 디렉토리 안까지 모든 파일 검색
   this.m_MaxFileReadCount = 100
   this.isMaxOver = false
-  this.filters = ['.mov', '.mxf', '.mp4']
+  this.filters = ['.mov', '.mxf', '.mp4', '.txt']
+
+  this.fileFunk = new FileData()
 }
 util.inherits(FileInfo, EventEmitter)
 
@@ -49,7 +51,7 @@ FileInfo.prototype.GetFilePath = function (_win) {
   const result = this.OpenDialog(false, _win)
   return result
 }
-FileInfo.prototype.PushFileData = function (_size, _path, _resultArr, _name = undefined) {
+FileInfo.prototype.PushFileData = function (_size, _path, _resultArr, _name = undefined, _baseDir = undefined) {
   const curFileData = new FileData()
   let extention = curFileData.getOnlyFileExtention(_path)
   if (this.filters.includes(extention)) {
@@ -58,12 +60,19 @@ FileInfo.prototype.PushFileData = function (_size, _path, _resultArr, _name = un
     if (_name !== undefined) {
       curFileData.fileName = _name
     } else {
-      curFileData.fileName = curFileData.getFileFullName(_path)
+      if (_baseDir !== undefined) {
+        curFileData.fileName = _baseDir + curFileData.getFileFullName(_path)
+      } else {
+        curFileData.fileName = curFileData.getFileFullName(_path)
+      }
     }
+    var pointIndex = _path.indexOf(curFileData.fileName)
+    let dirPath = _path.substring(0, pointIndex)
+    curFileData.folderPath = dirPath
     if (_resultArr.length < this.m_MaxFileReadCount + 1) { _resultArr.push(curFileData) }
   }
 }
-FileInfo.prototype.GetAllFileInfo = function (_filePaths) {
+FileInfo.prototype.GetAllFileInfo = function (_filePaths, baseDir = '') {
   const rePathArr = []
   for (let i = 0; i < _filePaths.length; i++) {
     if (this.m_resultPathArr.length > this.m_MaxFileReadCount) {
@@ -77,17 +86,18 @@ FileInfo.prototype.GetAllFileInfo = function (_filePaths) {
       const stats = fs.statSync(curPath)
 
       if (stats.isDirectory()) {
+        baseDir += this.fileFunk.getFilePathInfo(curPath, 'name') + '/'
         fs.readdirSync(curPath).forEach(file => { // 파일 리스트 확인
           const curRepath = curPath + '/' + file
           if (fs.lstatSync(curRepath).isDirectory()) { // 파일 리스트중 디렉토리가 있는지 확인
           // 디렉토리
             rePathArr.push(curRepath)
             if (this.m_isSubDirFileRead) {
-              this.GetAllFileInfo(rePathArr, this)
+              this.GetAllFileInfo(rePathArr, baseDir)
             }
           } else {
           // 파일. 위의 stats는 폴더의 정보이기 때문에 재 statSync 검색함
-            this.PushFileData(fs.statSync(curRepath).size, curRepath, this.m_resultPathArr)
+            this.PushFileData(fs.statSync(curRepath).size, curRepath, this.m_resultPathArr, undefined, baseDir)
           }
         })
       } else {
@@ -138,13 +148,12 @@ util.inherits(FileCopyInfo, EventEmitter)
 
 FileCopyInfo.prototype.FileCopy = function (_win, _originPaths) {
   const curFileInfo = new FileInfo()
-  const curFileData = new FileData()
   const result = curFileInfo.OpenDialog(true, _win) // 복사할 파일이 위치할 폴더 경로
   if (result === undefined) {
 
   } else {
     for (let i = 0; i < _originPaths.length; i++) {
-      const strDesFilePath = result[0] + '/' + curFileData.getOnlyFileName(_originPaths[i].path) + this.m_CopyText + curFileData.getOnlyFileExtention(_originPaths[i].path)
+      const strDesFilePath = result[0] + '/' + this.fileFunk.getOnlyFileName(_originPaths[i].path) + this.m_CopyText + this.fileFunk.getOnlyFileExtention(_originPaths[i].path)
       if (fs.existsSync(strDesFilePath)) { // 선택한 폴더에 같은 이름의 복사할 파일이 있는 경우
         if (!this.m_isOverwrite) {
           this.emit('copyDuplicate', _originPaths[i].path, strDesFilePath)

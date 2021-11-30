@@ -77,13 +77,14 @@ export default {
             size: 0
           }
           const file = files[i]
-          inputfile.path = file.path
           if (event.target.id === 'folder') {
             inputfile.fileName = file.webkitRelativePath
           } else {
             inputfile.fileName = file.name
           }
+          inputfile.path = file.path
           inputfile.size = file.size
+
           fileList.push(inputfile)
         }
         ipcRenderer.send('drag-file', fileList, isSubDirFileRead)
@@ -123,8 +124,8 @@ export default {
       this.$emit('valueReturn', fileList)
     },
     DragDropFile_result (event, isCancel, FileDatas, isFileOver) {
-      console.log('isCancel : ' + isCancel)
-      console.log('FileDatas : ' + FileDatas)
+      console.log('isCancel : ', isCancel)
+      console.log('FileDatas : ', FileDatas)
       if (isFileOver == true) {
         alert('파일은 100개를 초과할 수 없습니다.')
       }
