@@ -117,6 +117,10 @@ export default {
       this.isLogoutCheck = true
     },
     logout: function () {
+      this.$store.commit('commitApikey', {
+        apikey: ''
+      })
+      console.log('apikey2', this.$store.state.apikey)
       axios.deleteAsyncAxios('/v2/users/apikey', null, null, (response) => {
         alert('로그아웃 되었습니다.')
         this.goTo('Login?logout')
