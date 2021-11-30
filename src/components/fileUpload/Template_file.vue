@@ -203,8 +203,8 @@ export default {
           }
           for (let idx in g_ftpSendData.ftpSite.ftpServerList) {
             let server = g_ftpSendData.ftpSite.ftpServerList[idx]
-            for (let idx in g_ftpSendData.fileList) {
-              let item = g_ftpSendData.fileList[idx]
+            for (let idy in g_ftpSendData.fileList) {
+              let item = g_ftpSendData.fileList[idy]
               // transfer_file_tb insert data
               const transferFile = {}
               transferFile.transferid = this.transferid
