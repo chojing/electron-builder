@@ -149,21 +149,27 @@ export default {
     doUpload: function () {
       let self = this
       this.transferid = null
-      const transfer = {}
-      const transferFile = {}
       console.log('request FTP Start')
       if (Object.keys(g_ftpSendData.fileList).length === 0) {
         alert('전송할 파일(폴더)를 선택해주세요.')
       } else {
         g_ftpSendData.type = 'upload'
         // ipcRenderer.send('ftp-file-upload', include.custom.proxy2map(g_ftpSendData)) // eventName, SendData
-        let rootpathTitle = g_ftpSendData.title.replace(/[^a-z|A-Z|0-9|ㄱ-ㅎ|가-힣]/g, '_')
+        let rootpathTitle = g_ftpSendData.title.replace(/[^a-z|A-Z|0-9|ㄱ-ㅎ|가-힣|.]/g, '_')
         for (let idx in g_ftpSendData.ftpSite.ftpServerList) {
           let server = g_ftpSendData.ftpSite.ftpServerList[idx]
-          server.rootpath = server.rootpath + rootpathTitle + '/'
-          transferFile.filepath = server.rootpath + rootpathTitle + '/'
+          if (this.targetFtpInfo.nodepath) {
+            if (this.targetFtpInfo.nodepath.indexOf('/') !== -1) {
+              let nodepathStr = this.targetFtpInfo.nodepath.substr(1)
+              server.rootpath = server.rootpath + nodepathStr + '/' + rootpathTitle + '/'
+            }
+          } else {
+            server.rootpath = server.rootpath + rootpathTitle + '/'
+          }
         }
+
         // transfer_tb insert data
+        const transfer = {}
         transfer.isfolder = false
         transfer.userid = this.$store.state.username
         transfer.filepath = ''
@@ -171,10 +177,6 @@ export default {
         transfer.transfername = g_ftpSendData.title
         transfer.trasnferrequest = g_ftpSendData.comment
         transfer.filesize = 0
-        for (let idx in g_ftpSendData.fileList) {
-          let item = g_ftpSendData.fileList[idx]
-          transfer.filesize += item.size
-        }
         if (this.targetFtpInfo.nodeid) {
           transfer.nodeid = this.targetFtpInfo.nodeid
         }
@@ -198,14 +200,19 @@ export default {
             axios.postAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + server.ftpserverid, null, null, (response) => {
             })
           }
-          for (let idx in g_ftpSendData.fileList) {
-            let item = g_ftpSendData.fileList[idx]
-            // transfer_file_tb insert data
-            transferFile.transferid = this.transferid
-            transferFile.filename = item.fileName
-            transferFile.filesize = item.size
-            // 전송상세내역 추가
-            axios.postAsyncAxios('/v2/transferfiles', JSON.stringify(transferFile), null, (response) => {})
+          for (let idx in g_ftpSendData.ftpSite.ftpServerList) {
+            let server = g_ftpSendData.ftpSite.ftpServerList[idx]
+            for (let idx in g_ftpSendData.fileList) {
+              let item = g_ftpSendData.fileList[idx]
+              // transfer_file_tb insert data
+              const transferFile = {}
+              transferFile.transferid = this.transferid
+              transferFile.filename = item.fileName
+              transferFile.filesize = item.size
+              transferFile.filepath = server.rootpath
+              // 전송상세내역 추가
+              axios.postAsyncAxios('/v2/transferfiles', JSON.stringify(transferFile), null, (response) => {})
+            }
           }
         })
         console.log('ftpserverid : ', this.targetFtpInfo.ftpserverid)
