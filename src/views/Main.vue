@@ -64,10 +64,10 @@
       <p>로그아웃 하시겠습니까?</p>
       <div class="btn-box">
         <button class="btn h30" @click="logout">확인</button>
-        <button class="btn h30 blue">취소</button>
+        <button class="btn h30 blue" @click="logoutCancel">취소</button>
       </div>
     </div>
-    <div class="bg" v-show="isLogoutCheck"></div>
+    <div class="bg view" v-show="isLogoutCheck"></div>
   </main>
   <templateMenu/>
   <templateContextMenu :nodeid="nodeid" :username="username" :nodename="nodename"
@@ -121,6 +121,9 @@ export default {
         alert('로그아웃 되었습니다.')
         this.goTo('Login?logout')
       })
+    },
+    logoutCancel: function () {
+      this.isLogoutCheck = false
     },
     goTo: function (page) {
       this.$router.push(page)
