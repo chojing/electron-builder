@@ -67,9 +67,32 @@ export default {
     onUpload (event) {
       console.log('fileArray', fileList)
       this.dataPer = 0
-      this.DragDropFile(event.target.files)
+      let files = event.target.files
+      if (files.length) {
+        for (let i = 0; i < files.length; i++) {
+          const inputfile = {
+            fileName: '',
+            key: '',
+            path: '',
+            size: 0
+          }
+          const file = files[i]
+          inputfile.path = file.path
+          if (event.target.id === 'folder') {
+            inputfile.fileName = file.webkitRelativePath
+          } else {
+            inputfile.fileName = file.name
+          }
+          inputfile.size = file.size
+          fileList.push(inputfile)
+        }
+        ipcRenderer.send('drag-file', fileList, isSubDirFileRead)
+        // this.printList()
+        // this.$emit('valueReturn', fileList)
+      }
     },
     DragDropFile (files) {
+      console.log('folder')
       if (files.length) {
         for (let i = 0; i < files.length; i++) {
           fileList.push(files[i].path)
