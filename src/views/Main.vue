@@ -37,20 +37,23 @@
           </div>
           <div class="search-box mt10 mb20" :class="{show:active}">
             <input id='targetSearchInput' @keyup.enter="this.targetSearch" type="text" placeholder="전송타겟을 입력해주세요">
-<div class="favorite-list">
-          <div class="fa-item-link fa-item flex-column">
-            <button v-for="item in searchList" v-bind:key="item.nodeid" @dblclick="this.fileUploadPopup(item)" @click.prevent>
-              <template v-if="Array.isArray(item.name)">
-                <template v-for="item in item.name" v-bind:key="item">
-                  <span>{{item}}</span>
+            <div class="favorite-list">
+              <div class="fa-item-link fa-item flex-column">
+                <button v-for="item in searchList" v-bind:key="item.nodeid" @dblclick="this.fileUploadPopup(item)" @click.prevent>
+                  <template v-if="Array.isArray(item.name)">
+                    <template v-for="item in item.name" v-bind:key="item">
+                      <span>{{item}}</span>
+                    </template>
+                  </template>
+                  <template v-else>
+                    <span>{{item.name}}</span>
+                  </template>
+                </button>
+                <template v-if="(Object.keys(this.searchList).length === 0) && isSearch">
+                  <span>검색 결과가 없습니다.</span>
                 </template>
-              </template>
-              <template v-else>
-                <span>{{item.name}}</span>
-              </template>
-            </button>
-          </div>
-        </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="target-list mt40">
@@ -105,6 +108,7 @@ export default {
       pathftpsiteid: null,
       nodename: null,
       active: false,
+      isSearch: false,
       isLogoutCheck: false
     }
   },
@@ -241,29 +245,34 @@ export default {
     },
     targetNodeSearch: function (targetName, nodeTypeCode) {
       let param = {}
-      param.name = targetName
+      param.name_keyword = targetName
       param.nodetype = nodeTypeCode
-
       axios.getAsyncAxios('/v2/nodes', param, (response) => {
         if (response.data !== undefined) {
-          this.searchList = response.data.results
-          var target = this.searchList.map((obj) => obj['pathname'])
-          // console.log('favorits : ', favorits)
-          for (var idx in target) {
-            let hasDepth = target[idx]
-            if (hasDepth !== undefined) {
-              if (hasDepth.indexOf('>') !== -1) {
-                var str = hasDepth.split('>')
-                // console.log('str : ', str)
-                this.searchList[idx].name = str
+          if (Object.keys(response.data.results).length !== 0) {
+            this.searchList = response.data.results
+            console.log('if ', Object.keys(this.searchList).length !== 0)
+            var target = this.searchList.map((obj) => obj['pathname'])
+            for (var idx in target) {
+              let hasDepth = target[idx]
+              if (hasDepth !== undefined) {
+                if (hasDepth.indexOf('>') !== -1) {
+                  var str = hasDepth.split('>')
+                  // console.log('str : ', str)
+                  this.searchList[idx].name = str
+                }
               }
             }
+          } else {
+            this.searchList = []
           }
         }
+        this.isSearch = true
       })
     },
     searchBtnClick: function () {
       this.active = !this.active
+      this.isSearch = false
       const targetInput = document.getElementById('targetSearchInput')
       targetInput.value = ''
       targetInput.placeholder = '전송타겟을 입력해주세요'
