@@ -188,11 +188,11 @@ export default {
         axios.postAsyncAxios('/v2/transfers', JSON.stringify(transfer), null, (response) => {
           // console.log('post : ', response)
           self.transferid = response.data.transferid
+          g_ftpSendData.clientData = {}
+          g_ftpSendData.clientData.transferid = response.data.transferid
           if (self.isSite) {
             g_ftpSendData.targetUrl = 'FtpSiteTransferProgress'
-            g_ftpSendData.clientData = {}
             g_ftpSendData.clientData.parentKey = this.selfKey
-            g_ftpSendData.clientData.transferid = response.data.transferid
             g_ftpSendData.clientData.nodeid = this.targetFtpInfo.nodeid
           }
           ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
@@ -286,6 +286,9 @@ export default {
       if (site) {
         ftpSite.siteName = site.name
         ftpSite.connectionType = site.mode_code
+        // test
+        ftpSite.connectionType = 'simultaneous'
+        // end
       } else {
         ftpSite.siteName = 'konanSite'
         ftpSite.connectionType = 'sequential'
