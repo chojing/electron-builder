@@ -88,6 +88,8 @@ header .logo{text-align: center;}
 .search-form .search-box{display: none;}
 .search-form .search-box.show{display: block;}
 .search-form .search-box input{padding: 0 5px;width: 100%;height: 35px;border:1px solid #eee;border-radius: 5px;}
+.search-form .search-box .favorite-list{margin-top:10px;}
+.search-form .search-box .favorite-list span:last-of-type::before{display: none;}
 
 /** pagination **/
 .pagination{display: block;margin: 0;}
@@ -116,7 +118,11 @@ main .target-list ul li{padding: 5px 0 0;}
 .favorite-list span:last-of-type:after{display: none;}
 .favorite-list span:last-of-type::before{content: '';display: inline-block;vertical-align: baseline;width: 10px;height: 10px;margin-right: 2px;background:url('../images/star-solid.svg') no-repeat center 0/100% auto;}
 main .favorite-list .fa-item{margin: 0 0 10px;}
-main .favorite-list button:hover{border-color: #0073a5;}
+main .favorite-list button:hover,
+.emergency-container .favorite-list button:hover{border-color: #0073a5;}
+/*긴급전송*/
+.emergency-container{}
+.emergency-container .favorite-list span:last-of-type::before{display: none;}
 
 #favorits-menu {top: 0;left: 0;margin: 0;padding: 0;display: none;list-style: none;position: absolute;z-index: 2147483647;border: 1px solid #ebebeb;border-bottom-width: 0px;border-radius: 5px;overflow: hidden;}
 #favorits-menu.active {display: block;}
@@ -255,6 +261,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .userPwModify .userInfo ul li b{width: 120px; font-size: 14px;font-weight: 500;}
 .userPwModify .userInfo ul li input{width: calc(100% - 130px);}
 .userPwModify .userInfo .error{font-size: 12px;}
+
 
 @media screen and (min-height: 700px){
   .user-list{height: 100vh;}

@@ -40,7 +40,7 @@ export default {
   data () {
     return {
       g_curWindowKey: '',
-      username: this.$store.state.username,
+      realname: this.$store.state.realname,
       userPw: '',
       userId: ''
     }
