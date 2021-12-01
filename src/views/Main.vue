@@ -41,7 +41,7 @@
             <div class="favorite-list">
               <div class="fa-item-link fa-item flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
                 <template v-for="list in searchList" v-bind:key="list.nodeid">
-                  <div :data-nodeid="list.nodeid" :data-haschild="list.haschild"
+                  <div v-if="!list.isEmergency" :data-nodeid="list.nodeid" :data-haschild="list.haschild"
                        :data-pathftpserverid="list.pathftpserverid" :data-pathftpsiteid="list.pathftpsiteid"
                        :data-name="list.nodename" :data-path="list.path"
                        @contextmenu.prevent="showContextMenu($event)">
@@ -126,7 +126,8 @@ export default {
       active: false,
       isSearch: false,
       isUserPwModifyClose: false,
-      isLogoutCheck: false
+      isLogoutCheck: false,
+      rootNodeId: 0
     }
   },
   mounted () {
@@ -199,6 +200,7 @@ export default {
             node.isopen = true
           }
           this.nodeList = response.data.results.children
+          this.rootNodeId = response.data.results.nodeid
         })
       })
     },
@@ -294,16 +296,20 @@ export default {
           if (Object.keys(response.data.results).length !== 0) {
             this.searchList = response.data.results
             // console.log('if ', response.data.results)
-            var target = this.searchList.map((obj) => obj['pathname'])
-            for (var idx in target) {
-              let hasDepth = target[idx]
-              if (hasDepth !== undefined) {
-                if (hasDepth.indexOf('>') !== -1) {
-                  var str = hasDepth.split('>')
-                  // console.log('str : ', str)
-                  this.searchList[idx].name = str
-                  this.searchList[idx].nodename = str[str.length - 1]
+
+            for (var target of this.searchList) {
+              if (target.pathnodeid.startsWith('/' + this.rootNodeId + '/') == true) {
+                let hasDepth = target.pathname
+                if (hasDepth !== undefined) {
+                  if (hasDepth.indexOf('>') !== -1) {
+                    var str = hasDepth.split('>')
+                    // console.log('str : ', str)
+                    target.name = str
+                    target.nodename = str[str.length - 1]
+                  }
                 }
+              } else {
+                target.isEmergency = 1
               }
             }
           } else {
