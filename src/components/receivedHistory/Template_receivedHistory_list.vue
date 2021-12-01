@@ -1,9 +1,25 @@
 <!-- 수신내역 -->
 <template>
   <tr v-for="item in receivedList" v-bind:key="item.transferid">
-    <td @click="receivedHistoryDetailPopup(item.transfername, item.transferid)" class="targetName">{{item.transfername}}</td>
-    <td>{{item.pathname}}</td>
-    <td>{{item.userid_realname}}</td>
+    <td @click="receivedHistoryDetailPopup(item.transfername, item.transferid)" class="targetName">
+      <Tooltip :tooltipText="item.transfername" position="top">
+        <p class="ellipsis-w140">
+          {{item.transfername}}
+        </p>
+      </Tooltip>
+    </td>
+    <td>
+      <Tooltip :tooltipText="item.pathname" position="top">
+        <p class="ellipsis-w140">
+        {{item.pathname}}
+        </p>
+      </Tooltip>
+    </td>
+    <td>
+      <Tooltip :tooltipText="item.userid_realname" position="top">
+        {{item.userid_realname}}
+      </Tooltip>
+    </td>
     <td>
       <div>
         <div class="pro-bar">
@@ -24,9 +40,12 @@
 </template>
 
 <script>
-const electron = window.require('electron')
-const ipcRenderer = electron.ipcRenderer
+import Tooltip from '@/components/Tooltip'
+const { ipcRenderer } = require('@/assets/js/include.js')
 export default {
+  components: {
+    Tooltip
+  },
   props: {
     receivedList: Array,
     isShow: Boolean

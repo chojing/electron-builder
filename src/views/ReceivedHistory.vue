@@ -1,17 +1,18 @@
 <template>
   <section class="history-container">
     <div class="wrap">
-      <h4 class="tti mb40">수신내역</h4>
+      <h4 class="tti mb20">수신내역</h4>
       <div class="btn-box">
-        <button id="mainnode" class="btn h30" :data-nodeid="this.nodeHome1" @click="selectNodeHome(this.nodeHome1)">home1</button>
-        <button id="subnode" class="btn h30" :data-nodeid="this.nodeHome2" @click="selectNodeHome(this.nodeHome2)">home2</button>
+        <button id="mainnode" class="btn h30 active" :data-nodeid="this.nodeHome1" v-bind:class="{active:false}" @click="selectNodeHome($event, this.nodeHome1)">home1</button>
+        <button id="subnode" class="btn h30" :data-nodeid="this.nodeHome2" @click="selectNodeHome($event, this.nodeHome2)">home2</button>
+<!--        <button id="usernode" class="btn h30" @click="selectNodeHome($event)">사용자정의</button>-->
       </div>
-      <div class="send-box">
+      <div class="send-box wid600" style="height: 484px">
         <table>
           <colgroup>
-            <col width="25%">
-            <col width="30%">
-            <col width="20%">
+            <col width="150px">
+            <col width="150px">
+            <col width="*">
             <col width="20%">
           </colgroup>
           <thead>
@@ -57,8 +58,9 @@ export default {
       receivedList: [],
       page: 1,
       total: null,
-      limit: 8,
-      isShow: false
+      limit: 9,
+      isShow: false,
+      isActive: false
     }
   },
   created () {
@@ -117,11 +119,29 @@ export default {
         } else {
           this.isShow = false
         }
-        console.log('this.receivedList', this.receivedList)
+        // console.log('this.receivedList', this.receivedList)
       })
     },
-    selectNodeHome: function (nodeid) {
+    selectNodeHome: function (e, nodeid) {
       this.selectedNodeid = nodeid
+      const mainnodeBtn = document.getElementById('mainnode')
+      const subnodeBtn = document.getElementById('subnode')
+      // const usernodeBtn = document.getElementById('usernode')
+      if (e.target.id === mainnodeBtn.id) {
+        mainnodeBtn.classList.add('active')
+        subnodeBtn.classList.remove('active')
+        // usernodeBtn.classList.remove('active')
+      } else if (e.target.id === subnodeBtn.id) {
+        subnodeBtn.classList.add('active')
+        mainnodeBtn.classList.remove('active')
+        // usernodeBtn.classList.remove('active')
+      }
+      // else if (e.target.id === usernodeBtn.id) {
+      //   usernodeBtn.classList.add('active')
+      //   mainnodeBtn.classList.remove('active')
+      //   subnodeBtn.classList.remove('active')
+      // }
+
       this.getReceivedList(1)
     },
     setTimer: function () {
