@@ -39,17 +39,24 @@ export default {
   name: 'UserPwModify',
   data () {
     return {
-      g_curWindowKey: ''
+      g_curWindowKey: '',
+      realname: this.$store.state.realname,
+      userPw: '',
+      userId: ''
     }
   },
   created () {
     ipcRenderer.on('receiveData', this.init)
-    ipcRenderer.once('login-read-result', this.passwordModify)
+    ipcRenderer.once('login-read-result', this.loginDataPw)
     ipcRenderer.send('login-read')
   },
   mounted () {
   },
   methods: {
+    loginDataPw: function (event, _loginData) {
+      this.userId = _loginData.id
+      this.userPw = _loginData.pw
+    },
     newPasswordCheckFn: function () {
       const ERROR_TEXT_2 = document.getElementById('errorText2')
       if (!/^[a-z0-9_-]{3,13}$/.test(this.newPassword)) {
@@ -68,14 +75,22 @@ export default {
         ERROR_TEXT_3.innerHTML = '비밀번호가 일치하지 않습니다.'
       }
     },
-    passwordModify: function (event, _loginData) {
-      console.log('기존 비밀번호 : ', this.userPassword)
-      console.log('새 비밀번호 : ', this.newPassword)
-      console.log('새 비밀번호확인 : ', this.newPasswordCheck)
-      console.log('_loginData.pw', _loginData.pw)
+    passwordModify: function () {
+      console.log('Id', this.userId)
+      console.log('ㅂㅣ번', this.userPw)
+      console.log('이름', this.username)
+      // console.log('기존 비밀번호 : ', this.userPassword)
+      // console.log('새 비밀번호 : ', this.newPassword)
+      // console.log('새 비밀번호확인 : ', this.newPasswordCheck)
       if (!this.userPassword || !this.newPassword || !this.newPasswordCheck) {
         alert('필수 입력 사항입니다.')
+        if (this.userPw === this.userPassword) {
+          console.log('비번 일치')
+        }
       }
+      // axios.putAsyncAxios('/v2/users/'+ userName + this.userPw, null, function (response) {
+      //   // dd
+      // })
     },
     init: function (event, key, data, type) {
       if (type == 'init') {

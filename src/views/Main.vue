@@ -5,7 +5,7 @@
       <div class="head-top mt20">
         <div>
           <div class="user-name flex-box flex-center">
-            <p><i class="fas fa-user"></i> {{username}}</p>
+            <p><i class="fas fa-user"></i> {{username}} <span>({{realname}})</span></p>
             <div class="btn-box">
               <button id="pwModify" class="btn h30" @click="pwModify">비밀번호 변경</button>
               <button id="logoutBtn" class="btn h30" @click="logoutCheck">Logout</button>
@@ -112,6 +112,7 @@ export default {
     return {
       g_windowIndex: 0,
       username: this.$store.state.username,
+      realname: this.$store.state.realname,
       c_node_type: [],
       favoritsList: [],
       searchList: [],
@@ -129,6 +130,7 @@ export default {
   mounted () {
     this.getTree()
     this.getFavorits()
+    // console.log('$store::', this.$store.state)
   },
   methods: {
     pwModify: function () {
