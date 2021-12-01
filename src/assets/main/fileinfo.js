@@ -14,7 +14,7 @@ function FileInfo () {
   this.m_isSubDirFileRead = true // 하위 디렉토리 안까지 모든 파일 검색
   this.m_MaxFileReadCount = 100
   this.isMaxOver = false
-  this.filters = ['.mov', '.mxf', '.mp4', '.txt']
+  this.filters = ['.mov', '.mxf', '.mp4', '.txt'] // filter check 를 file 모드로 사용시에 본 filter는 사용되지 않음
 
   this.fileFunk = new FileData()
 }
