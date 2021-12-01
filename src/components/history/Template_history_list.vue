@@ -2,7 +2,7 @@
 <template>
   <tr v-for="item in transferList" v-bind:key="item.id">
     <td @click="historyDetailPopup(item.transfername, item.transferid)" class="targetName">{{item.transfername}}</td>
-가    <td>{{item.pathname}}</td>
+    <td>{{item.pathname}}</td>
     <td>{{item.filesize}}</td>
     <td>
       <div>
