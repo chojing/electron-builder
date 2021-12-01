@@ -6,27 +6,27 @@
         <li>
           <div class="flex-center">
             <b>기존 비밀번호</b>
-            <input v-model="userPassword" class="flex-1 input-box" placeholder="기존 비밀번호">
+            <input v-model="userPassword" class="flex-1 input-box" placeholder="기존 비밀번호" type="password">
           </div>
           <em id="errorText1" class="error"></em>
         </li>
         <li>
           <div class="flex-center">
             <b>새 비밀번호</b>
-            <input v-model="newPassword" @input="newPasswordCheckFn" class="flex-1 input-box" placeholder="새 비밀번호">
+            <input v-model="newPassword" @input="newPasswordCheckFn" class="flex-1 input-box" placeholder="새 비밀번호" type="password">
           </div>
           <em id="errorText2" class="error"></em>
         </li>
         <li>
           <div class="flex-center">
             <b>새 비밀번호</b>
-            <input v-model="newPasswordCheck" @input="newPasswordCheckFn2" class="flex-1 input-box" placeholder="새 비밀번호 확인">
+            <input v-model="newPasswordCheck" @input="newPasswordCheckFn2" class="flex-1 input-box" placeholder="새 비밀번호 확인" type="password">
           </div>
           <em id="errorText3" class="error"></em>
         </li>
       </ul>
       <div class="center mt30">
-        <button @click="passwordModify" type="button" class="btn blue h30">확인</button>
+        <button @click="passwordModify" type="button" class="btn blue h30">저장</button>
         <button @click="cancel" type="button" id="cancel" class="btn h30">취소</button>
       </div>
     </div>
@@ -34,15 +34,19 @@
 </template>
 
 <script>
-const { ipcRenderer } = require('@/assets/js/include.js')
+const { axios, ipcRenderer } = require('@/assets/js/include.js')
 export default {
   name: 'UserPwModify',
   data () {
     return {
       g_curWindowKey: '',
-      realname: this.$store.state.realname,
+      parentKey: '',
+      userRealname: this.$store.state.realname,
       userPw: '',
-      userId: ''
+      userId: '',
+      userPassword: '',
+      newPassword: '',
+      newPasswordCheck: ''
     }
   },
   created () {
@@ -78,28 +82,38 @@ export default {
     passwordModify: function () {
       console.log('Id', this.userId)
       console.log('ㅂㅣ번', this.userPw)
-      console.log('이름', this.username)
-      // console.log('기존 비밀번호 : ', this.userPassword)
-      // console.log('새 비밀번호 : ', this.newPassword)
-      // console.log('새 비밀번호확인 : ', this.newPasswordCheck)
+      console.log('userRealname', this.userRealname)
+      const ERROR_TEXT_1 = document.getElementById('errorText1')
       if (!this.userPassword || !this.newPassword || !this.newPasswordCheck) {
         alert('필수 입력 사항입니다.')
-        if (this.userPw === this.userPassword) {
-          console.log('비번 일치')
-        }
       }
-      // axios.putAsyncAxios('/v2/users/'+ userName + this.userPw, null, function (response) {
-      //   // dd
-      // })
+      if (this.userPw === this.userPassword && this.newPassword === this.newPasswordCheck) {
+        ERROR_TEXT_1.style.display = 'none'
+        let self = this
+        const param = {}
+        const name = this.userId
+        param.oldpassword = this.userPw
+        param.password = this.newPassword
+        param.realname = this.userRealname
+        console.log('비번 일치', param)
+        axios.putAsyncAxios('/v2/users/' + name + '/' + 'password', '', param, function (response) {
+          alert('비밀번호가 변경되었습니다.')
+          const data = true
+          ipcRenderer.send('sendData', 'main', data, 'isUserPwModifyClose')
+          ipcRenderer.send('closeWindow', self.g_curWindowKey)
+        })
+      } else {
+        ERROR_TEXT_1.style.display = 'block'
+        ERROR_TEXT_1.innerHTML = '비밀번호를 확인해주세요.'
+      }
     },
     init: function (event, key, data, type) {
       if (type == 'init') {
+        this.parentKey = data.parentKey
         this.g_curWindowKey = key
       }
     },
     cancel: function () {
-      // const data = true
-      // ipcRenderer.send('sendData', this.parentKey, data, 'isManualFtpClose')
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     }
   }
