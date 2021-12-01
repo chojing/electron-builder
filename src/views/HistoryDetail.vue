@@ -5,7 +5,7 @@
       <p class="targetName mt20">
         전송명  :  {{ transfername }}
       </p>
-      <div class="send-box h480">
+      <div class="send-box wid600 h480">
         <table>
           <colgroup>
             <col width="100px">
