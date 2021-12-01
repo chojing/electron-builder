@@ -555,6 +555,19 @@ ipcMain.on('login-read', event => {
   log.info('NODE_ENV', lastloginInfo)
 
   event.sender.send('login-read-result', lastloginInfo)
+
+  const filterFolderPath = getUserHome() + KONAN_ROOT_FOLDER
+  let filterPath = filterFolderPath + '//filterData.json'
+  const filterData = g_JSON.ReadUserJSON(filterPath)
+  if (filterData === undefined) {
+    log.info('no filter. Create default filter file.')
+    let filter = ['.mov', '.mxf', '.mp4', '.txt']
+    let temp = {}
+    temp.filter = filter
+    g_JSON.WriteFilterJSON(filterFolderPath, temp)
+  } else {
+    globalFunk.g_filter = filterData.filter
+  }
 })
 
 ipcMain.on('login-write', (event, _loginInfo) => {

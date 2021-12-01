@@ -2,7 +2,11 @@
 <template>
   <tr v-for="item in transferList" v-bind:key="item.transferid">
     <td @click="historyDetailPopup(item.transfername, item.transferid)" class="targetName"><p class="ellipsis-w140">{{item.transfername}}</p></td>
-    <td><p class="ellipsis-w140">{{item.pathname}}</p></td>
+    <td>
+      <Tooltip :tooltipText="item.pathname" position="top">
+        <p class="ellipsis-w140">{{item.pathname}}</p>
+      </Tooltip>
+    </td>
     <td>{{item.filesize}}</td>
     <td>
       <div>
@@ -24,9 +28,12 @@
 </template>
 
 <script>
-const electron = window.require('electron')
-const ipcRenderer = electron.ipcRenderer
+import Tooltip from '@/components/Tooltip'
+const { ipcRenderer } = require('@/assets/js/include.js')
 export default {
+  components: {
+    Tooltip
+  },
   props: {
     transferList: Array,
     isShow: Boolean

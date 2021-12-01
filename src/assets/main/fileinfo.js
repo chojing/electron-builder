@@ -3,6 +3,8 @@ const electron = require('electron')
 const dialog = electron.dialog
 const fs = require('fs')
 const FileData = require('./globalFunk.js').FileData
+// eslint-disable-next-line no-unused-vars
+const g_globalFunk = require('./globalFunk.js')
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
 const log = require('electron-log')
@@ -12,7 +14,7 @@ function FileInfo () {
   this.m_isSubDirFileRead = true // 하위 디렉토리 안까지 모든 파일 검색
   this.m_MaxFileReadCount = 100
   this.isMaxOver = false
-  this.filters = ['.mov', '.mxf', '.mp4', '.txt']
+  this.filters = ['.mov', '.mxf', '.mp4', '.txt'] // filter check 를 file 모드로 사용시에 본 filter는 사용되지 않음
 
   this.fileFunk = new FileData()
 }
@@ -54,7 +56,8 @@ FileInfo.prototype.GetFilePath = function (_win) {
 FileInfo.prototype.PushFileData = function (_size, _path, _resultArr, _name = undefined, _baseDir = undefined) {
   const curFileData = new FileData()
   let extention = curFileData.getOnlyFileExtention(_path)
-  if (this.filters.includes(extention)) {
+  // if (this.filters.includes(extention)) { // hard coding
+  if (g_globalFunk.g_filter.includes(extention)) { // text file
     curFileData.size = _size
     curFileData.path = _path
     if (_name !== undefined) {
