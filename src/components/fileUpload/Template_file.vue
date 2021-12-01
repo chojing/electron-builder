@@ -36,6 +36,7 @@ const FTPServer = function () {
   this.port = 0
   this.username = ''
   this.password = ''
+  this.ogRootpath = ''
   this.rootpath = '' // homeDir
   this.name = '' // ServerName
   this.parentSiteName = ''
@@ -150,16 +151,28 @@ export default {
       let self = this
       this.transferid = null
       console.log('request FTP Start')
-      if (Object.keys(g_ftpSendData.fileList).length === 0) {
+      if (g_ftpSendData.title == '') {
+        alert('전송제목을 입력해주세요.')
+      } else if (Object.keys(g_ftpSendData.fileList).length === 0) {
         alert('전송할 파일(폴더)를 선택해주세요.')
       } else {
         g_ftpSendData.type = 'upload'
         // ipcRenderer.send('ftp-file-upload', include.custom.proxy2map(g_ftpSendData)) // eventName, SendData
-        let rootpathTitle = g_ftpSendData.title.replace(/[^a-z|A-Z|0-9|ㄱ-ㅎ|가-힣]/g, '_')
+        let rootpathTitle = g_ftpSendData.title.replace(/[^a-z|A-Z|0-9|ㄱ-ㅎ|가-힣|.]/g, '_')
         for (let idx in g_ftpSendData.ftpSite.ftpServerList) {
           let server = g_ftpSendData.ftpSite.ftpServerList[idx]
-          server.rootpath = server.rootpath + rootpathTitle + '/'
+          server.rootpath = server.ogRootpath
+          if (this.targetFtpInfo.nodepath) {
+            if (this.targetFtpInfo.nodepath.indexOf('/') !== -1) {
+              let nodepathStr = this.targetFtpInfo.nodepath.substr(1)
+              server.rootpath = server.rootpath + nodepathStr + '/' + rootpathTitle
+            }
+          } else {
+            server.rootpath = server.rootpath + rootpathTitle
+          }
+          console.log('server.rootpath : ', server.rootpath)
         }
+
         // transfer_tb insert data
         const transfer = {}
         transfer.isfolder = false
@@ -169,10 +182,6 @@ export default {
         transfer.transfername = g_ftpSendData.title
         transfer.trasnferrequest = g_ftpSendData.comment
         transfer.filesize = 0
-        for (let idx in g_ftpSendData.fileList) {
-          let item = g_ftpSendData.fileList[idx]
-          transfer.filesize += item.size
-        }
         if (this.targetFtpInfo.nodeid) {
           transfer.nodeid = this.targetFtpInfo.nodeid
         }
@@ -181,11 +190,11 @@ export default {
         axios.postAsyncAxios('/v2/transfers', JSON.stringify(transfer), null, (response) => {
           // console.log('post : ', response)
           self.transferid = response.data.transferid
+          g_ftpSendData.clientData = {}
+          g_ftpSendData.clientData.transferid = response.data.transferid
           if (self.isSite) {
             g_ftpSendData.targetUrl = 'FtpSiteTransferProgress'
-            g_ftpSendData.clientData = {}
             g_ftpSendData.clientData.parentKey = this.selfKey
-            g_ftpSendData.clientData.transferid = response.data.transferid
             g_ftpSendData.clientData.nodeid = this.targetFtpInfo.nodeid
           }
           ipcRenderer.send('ftp-file-upload', custom.proxy2map(g_ftpSendData)) // eventName, SendData
@@ -203,6 +212,10 @@ export default {
             transferFile.transferid = this.transferid
             transferFile.filename = item.fileName
             transferFile.filesize = item.size
+            for (let idy in g_ftpSendData.ftpSite.ftpServerList) {
+              let server = g_ftpSendData.ftpSite.ftpServerList[idy]
+              transferFile.filepath = server.rootpath
+            }
             // 전송상세내역 추가
             axios.postAsyncAxios('/v2/transferfiles', JSON.stringify(transferFile), null, (response) => {})
           }
@@ -275,6 +288,9 @@ export default {
       if (site) {
         ftpSite.siteName = site.name
         ftpSite.connectionType = site.mode_code
+        // test
+        ftpSite.connectionType = 'simultaneous'
+        // end
       } else {
         ftpSite.siteName = 'konanSite'
         ftpSite.connectionType = 'sequential'
@@ -293,6 +309,7 @@ export default {
         curFtpServer1.username = server.username
         curFtpServer1.password = server.password
         curFtpServer1.name = server.name
+        curFtpServer1.ogRootpath = server.rootpath
         curFtpServer1.rootpath = server.rootpath
         if (custom.code.valueToCode(this.c_ftpmode, server.mode) === 'active') {
           curFtpServer1.passive = false // passive : true / active : false
@@ -327,11 +344,11 @@ export default {
       let cancelInfo = {
         cancelType: cancelType,
         cancelConnectionList: g_ftpSendData.ftpSite.ftpServerList,
+        transferid: this.transferid,
         isDelete: isFileDelete,
         path: undefined // type 이 path일 경우만 기재
       }
       ipcRenderer.send('ftp-cancel', cancelInfo)
-
       console.log('cancel request!')
     },
     doClose: function () {

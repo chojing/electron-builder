@@ -8,17 +8,22 @@
       <div class="file-list-box mb20">
         <textarea ref="comment" :disabled='isDisabled' @change="onChange"></textarea>
       </div>
-      <h4>파일(폴더) 전송</h4>
+      <div class="flex-center">
+        <h4>파일(폴더) 전송</h4>
+        <div class="file-select mb10">
+          <input type="file" id="file" name="file" @change="onUpload" multiple/>
+          <label for="file" class="btn h30">파일선택</label>
+          <input type="file" id="folder" name="folder" @change="onUpload" webkitdirectory multiple/>
+          <label for="folder" class="btn h30">폴더선택</label>
+        </div>
+      </div>
       <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop" :class="isDisabled ? 'disabled' : ''">
         <div class="drag">
-          <label for="file">
-            <div v-for="fileItem in fileListVue" :key="fileItem.index" class="fileName">
-              <span>{{fileItem.fileName}}</span>
-              <button @click="btn_Del_Click(fileItem)">X</button>
-            </div>
-          </label>
+          <div v-for="fileItem in fileListVue" :key="fileItem.index" class="fileName">
+            <span>{{fileItem.fileName}}</span>
+            <button @click="btn_Del_Click(fileItem)">X</button>
+          </div>
         </div>
-        <input type="file" id="file" name="file" @change="onUpload" multiple/>
       </div>
   </div>
 </template>
@@ -61,9 +66,34 @@ export default {
     onUpload (event) {
       console.log('fileArray', fileList)
       this.dataPer = 0
-      this.DragDropFile(event.target.files)
+      let files = event.target.files
+      if (files.length) {
+        for (let i = 0; i < files.length; i++) {
+          const inputfile = {
+            fileName: '',
+            key: '',
+            path: '',
+            size: 0
+          }
+          const file = files[i]
+          if (event.target.id === 'folder') {
+            inputfile.fileName = '/' + file.webkitRelativePath
+          } else {
+            inputfile.fileName = '/' + file.name
+          }
+          inputfile.path = file.path
+          inputfile.size = file.size
+
+          fileList.push(inputfile)
+        }
+        ipcRenderer.send('drag-file', fileList, isSubDirFileRead)
+        // this.printList()
+        // this.$emit('valueReturn', fileList)
+      }
+      event.target.value = ''
     },
     DragDropFile (files) {
+      console.log('folder')
       if (files.length) {
         for (let i = 0; i < files.length; i++) {
           fileList.push(files[i].path)
@@ -94,8 +124,8 @@ export default {
       this.$emit('valueReturn', fileList)
     },
     DragDropFile_result (event, isCancel, FileDatas, isFileOver) {
-      console.log('isCancel : ' + isCancel)
-      console.log('FileDatas : ' + FileDatas)
+      console.log('isCancel : ', isCancel)
+      console.log('FileDatas : ', FileDatas)
       if (isFileOver == true) {
         alert('파일은 100개를 초과할 수 없습니다.')
       }

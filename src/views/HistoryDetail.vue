@@ -10,6 +10,7 @@
           <thead>
           <tr>
             <th>서버명</th>
+            <th>파일경로</th>
             <th>파일명</th>
             <th>파일크기</th>
           </tr>
@@ -40,6 +41,7 @@ export default {
       transfername: '',
       transferid: '',
       transferDetailList: [],
+      transferDetailNameList: [],
       isShow: false
     }
   },
@@ -65,6 +67,17 @@ export default {
         for (var idx in this.transferDetailList) {
           let item = this.transferDetailList[idx]
           item.filesize = custom.getFormatBytes(item.filesize)
+          if (item.filename.indexOf('/') !== -1) {
+            let nameStr = item.filename.split('/')
+            for (let i = 1; i < nameStr.length; i++) {
+              if (i != nameStr.length - 1) {
+                item.filepath += ('/' + nameStr[i])
+              } else if (i == (nameStr.length - 1)) {
+                item.filepath += '/'
+              }
+            }
+            item.filename = nameStr[nameStr.length - 1]
+          }
         }
         if (this.transferDetailList.length === 0) {
           this.isShow = true

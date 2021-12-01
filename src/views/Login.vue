@@ -20,15 +20,12 @@
         </div>
         <div class="auto-login">
           <label for="autologin-checkbox-id"> auto login
-            <input id = "autologin-checkbox-id" type="checkbox"/>
+            <input id ="autologin-checkbox-id" type="checkbox"/>
           </label>
         </div>
         <div>
           <Tooltip tooltipText="xptmxm" position="top"><p>tooltip-top</p></Tooltip>
           <button id="json-id" @click="this.login">Login</button>
-<!--          <button id="popup" @click="this.popup">Popup</button>-->
-<!--          <button id="testpage" @click="this.testpage">TestPage</button>-->
-<!--          <p v-tooltip:top>tooltip-top</p>-->
         </div>
       </div>
     </section>
@@ -38,6 +35,7 @@
 <script>
 import Tooltip from '@/components/Tooltip'
 const { ipcRenderer, axios } = require('@/assets/js/include.js')
+
 export default {
   name: 'Login',
   components: {
@@ -50,6 +48,17 @@ export default {
   },
   mounted () {
     this.init()
+    // this.$store.commit('commitAutologin', {
+    //   autologin: this.$route.params.autoLoginReset
+    // })
+    // console.log('autologin', this.$store.state.autologin)
+    // console.log('autoLoginReset', this.$route.params.autoLoginReset)
+    // if (this.$route.params.autoLoginReset === false) {
+    //   document.getElementById('autologin-checkbox-id').checked = this.$route.params.autoLoginRese
+    // }
+  },
+  created () {
+    ipcRenderer.send('login-read')
   },
   methods: {
     init: function () {
@@ -78,13 +87,28 @@ export default {
         // false일 경우 자동체크가 되지않음.
         document.getElementById('autologin-checkbox-id').checked = this.$store.state.autologin
       }
+      // logout 한 후
+      const isAutoLogin = document.getElementById('autologin-checkbox-id').checked
+      const urlLogout = window.location.href.split('/')[4]
+      // console.log('urlLogout', urlLogout)
+      // console.log('href', window.location.href)
+      const loginInfoReset = {
+        pw: '',
+        id: ID.value,
+        autologin: isAutoLogin
+      }
+      if (urlLogout === 'Login?Logout') {
+        console.log('logout 성공')
+        console.log('inputReset', loginInfoReset)
+        ipcRenderer.send('login-write', loginInfoReset)
+      }
     },
     login: async function () {
       // auto login check
       const isAutoLogin = document.getElementById('autologin-checkbox-id').checked
       const ID = document.getElementById('username')
       const PW = document.getElementById('password')
-      const lginInfo = {
+      const loginInfo = {
         id: ID.value,
         pw: PW.value,
         autologin: isAutoLogin
@@ -96,7 +120,8 @@ export default {
       PW.focus()
       // Result
       if (apikey) {
-        ipcRenderer.send('login-write', lginInfo)
+        this.$store.commit('commitAutologin', isAutoLogin)
+        ipcRenderer.send('login-write', loginInfo)
         await this.$router.push('/main')
       }
     },

@@ -1,9 +1,9 @@
-<!-- 전송내역 -->
+<!-- 수신내역 -->
 <template>
-  <tr v-for="item in transferList" v-bind:key="item.transferid">
-    <td @click="historyDetailPopup(item.transfername, item.transferid)" class="targetName">{{item.transfername}}</td>
+  <tr v-for="item in receivedList" v-bind:key="item.transferid">
+    <td @click="receivedHistoryDetailPopup(item.transfername, item.transferid)" class="targetName">{{item.transfername}}</td>
     <td>{{item.pathname}}</td>
-    <td>{{item.filesize}}</td>
+    <td>{{item.userid_realname}}</td>
     <td>
       <div>
         <div class="pro-bar">
@@ -28,18 +28,18 @@ const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 export default {
   props: {
-    transferList: Array,
+    receivedList: Array,
     isShow: Boolean
   },
   data () {
     return {
-      g_windowIndex: 0,
+      g_curWindowKey: 0,
       selfKey: 'main'
     }
   },
   methods: {
     init: function (event, key, data) {},
-    historyDetailPopup: function (transfername, transferid) {
+    receivedHistoryDetailPopup: function (transfername, transferid) {
       const data = {
         parentKey: this.g_curWindowKey,
         transfername: transfername,
@@ -47,7 +47,7 @@ export default {
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
-        url: 'HistoryDetail',
+        url: 'ReceivedHistoryDetail',
         data: data,
         width: 600,
         height: 700,

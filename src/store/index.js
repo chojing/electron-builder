@@ -8,6 +8,7 @@ export default createStore({
   state: {
     server: null,
     username: null,
+    realname: null,
     userid: null,
     autologin: false,
     apikey: null
@@ -19,6 +20,11 @@ export default createStore({
     commitUsername (state, username) {
       if (username != null && username != undefined) {
         state.username = username
+      }
+    },
+    commitUserRealname (state, realname) {
+      if (realname != null && realname != undefined) {
+        state.realname = realname
       }
     },
     commitUserid (state, userid) {
@@ -34,6 +40,7 @@ export default createStore({
       state = {
         server: null,
         username: null,
+        realname: null,
         userid: null,
         autologin: false,
         apikey: null
@@ -46,6 +53,9 @@ export default createStore({
     },
     setUsername (context, username) {
       context.commit('commitUsername', username)
+    },
+    setRealname (context, realname) {
+      context.commit('commitUserRealname', realname)
     },
     setUserid (context, userid) {
       context.commit('commitUserid', userid)
