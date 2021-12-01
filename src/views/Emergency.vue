@@ -31,7 +31,7 @@
     </div>
   </section>
   <templateMenu/>
-  <templateContextMenu :nodeid="nodeid" :username="username" :nodename="nodename" :nodepath="nodepath"
+  <templateContextMenu :nodeid="nodeid" :nodename="nodename" :nodepath="nodepath"
                        :pathftpserverid="pathftpserverid" :pathftpsiteid="pathftpsiteid" :isMain="isMain"/>
 </template>
 <script>
@@ -144,7 +144,7 @@ export default {
     showContextMenu: function (e) {
       this.nodeid = ''
       document.getElementById('favorits-checkbox-id').checked = false
-      if (e.currentTarget.nodeid == undefined) {
+      if (e.currentTarget.dataset.nodeid == undefined) {
         this.hideContextMenu()
       }
       if (e.currentTarget.dataset.haschild == 0 && e.currentTarget.dataset.nodeid) {
