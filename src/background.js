@@ -566,7 +566,6 @@ ipcMain.on('login-read', event => {
     temp.filter = filter
     g_JSON.WriteFilterJSON(filterFolderPath, temp)
   } else {
-    console.log(filterData.filter)
     globalFunk.g_filter = filterData.filter
   }
 })
