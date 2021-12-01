@@ -2,6 +2,8 @@
 // const app = electron.app
 // const { Notification } = require('electron')
 const _path = require('path')
+// eslint-disable-next-line no-unused-vars
+let g_filter = []
 
 function FileData () {
   this.path = ''

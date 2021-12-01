@@ -3,6 +3,8 @@ const electron = require('electron')
 const dialog = electron.dialog
 const fs = require('fs')
 const FileData = require('./globalFunk.js').FileData
+// eslint-disable-next-line no-unused-vars
+const g_globalFunk = require('./globalFunk.js')
 const util = require('util')
 const EventEmitter = require('events').EventEmitter
 const log = require('electron-log')
@@ -54,7 +56,8 @@ FileInfo.prototype.GetFilePath = function (_win) {
 FileInfo.prototype.PushFileData = function (_size, _path, _resultArr, _name = undefined, _baseDir = undefined) {
   const curFileData = new FileData()
   let extention = curFileData.getOnlyFileExtention(_path)
-  if (this.filters.includes(extention)) {
+  // if (this.filters.includes(extention)) { // hard coding
+  if (g_globalFunk.g_filter.includes(extention)) { // text file
     curFileData.size = _size
     curFileData.path = _path
     if (_name !== undefined) {
