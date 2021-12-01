@@ -1,9 +1,9 @@
 <!-- 수신내역 -->
 <template>
   <tr v-for="item in receivedDetailList" v-bind:key="item.fileid">
-    <td>{{item.ftpservername}}</td>
-    <td>{{item.filepath}}</td>
-    <td>{{item.filename}}</td>
+    <td><p class="ellipsis-w">{{item.ftpservername}}</p></td>
+    <td><p class="ellipsis-w140">{{item.filepath}}</p></td>
+    <td><p class="ellipsis-w">{{item.filename}}</p></td>
     <td>{{item.filesize}}</td>
   </tr>
   <tr v-show="isShow">
