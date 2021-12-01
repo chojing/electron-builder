@@ -321,8 +321,10 @@ FTPStream.prototype.doCheckRecursive_work = function (_ftpData, _curFileStream, 
     })
   )
 }
-FTPStream.prototype.downloadFolderOpen = function (_path) {
-  shell.openExternal(_path)
+FTPStream.prototype.downloadFolderOpen = async function (_path, cb) {
+  shell.openExternal(_path).catch(e => {
+    cb(e)
+  })
 }
 FTPStream.prototype.cancel = function (_cancelInfo) {
   let self = this

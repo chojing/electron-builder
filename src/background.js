@@ -384,16 +384,28 @@ ipcMain.on('ftp-file-download-start', function () {
   FTPConnectTypeBranch_new('download', ftpSendData)
 })
 function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
+  let transferid = ftpSendData.clientData.transferid
   let curType = ftpSendData.ftpSite.connectionType
   let tempDic = {}
   log.info('Start FTP ', _FTPType)
   log.info('SiteName : ', ftpSendData.ftpSite)
   if (curType == 'sequential') {
+    let PromiseResult = []
     let ftpInfo = new FTPInfo_Type1(ftpSendData.event, ftpSendData.ftpSite)
-    g_FTPInfoDic[ftpSendData.ftpSite.siteName] = ftpInfo
-    g_FTPInfoDic[ftpSendData.ftpSite.siteName].connectionType = curType
+    let strKey = ftpSendData.ftpSite.siteName + transferid
+    console.log(strKey)
+    g_FTPInfoDic[ftpSendData.ftpSite.siteName + transferid] = ftpInfo
+    g_FTPInfoDic[ftpSendData.ftpSite.siteName + transferid].connectionType = curType
     ftpInfo.clientSendData = ftpSendData
-    ftpInfo.RequestFTPWork(_FTPType, 0)
+    let result = ftpInfo.RequestFTPWork(_FTPType, 0)
+    PromiseResult.push(result)
+    Promise.all(PromiseResult).then(value => {
+      if (value[0] !== undefined) {
+        delete g_FTPInfoDic[value[0].deleteKey]
+      } else {
+        log.info(ftpSendData.ftpSite.siteName + ftpSendData.clientData.transferid + ' problem')
+      }
+    })// end Promise.all
   } else if (curType == 'simultaneous') {
     let PromiseResult = []
     let i = 0
@@ -415,21 +427,31 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
       }
     }// end while
 
-    g_FTPInfoDic[ftpSendData.ftpSite.siteName] = tempDic
-    g_FTPInfoDic[ftpSendData.ftpSite.siteName].connectionType = curType
+    g_FTPInfoDic[ftpSendData.ftpSite.siteName + transferid] = tempDic
+    g_FTPInfoDic[ftpSendData.ftpSite.siteName + transferid].connectionType = curType
 
     // 모든 작업이 다 완료되었을 때 출력 (모든 커넥션 작업 완료.) 2번타입일경우에만.
 
     Promise.all(PromiseResult).then(value => {
-      // eslint-disable-next-line no-unused-vars
-      let isError = false
-      log.info(ftpSendData.ftpSite.siteName + ' Success : ' + isError)
+      let result = true
+      for (let i = 0; i < value.length; i++) {
+        let tempRst = value[i].result
+        if (tempRst == false) {
+          result = false
+        }
+      }
+      if (result == false) {
+        log.info(ftpSendData.ftpSite.siteName + ftpSendData.clientData.transferid + ' problem')
+      }
+      delete g_FTPInfoDic[ftpSendData.ftpSite.siteName + ftpSendData.clientData.transferid]
     })// end Promise.all
   }
 }
 ipcMain.on('open-file-explore', (event, path) => {
   let ftpStream = new FTPStream()
-  ftpStream.downloadFolderOpen(path)
+  ftpStream.downloadFolderOpen(path, e => {
+    event.sender.send('open-file-explore-error', e)
+  })
 })
 
 ipcMain.on('ftp-cancel', (event, cancelInfo) => {
@@ -450,25 +472,33 @@ ipcMain.on('ftp-download-cancel-path', (event, cancelInfo) => {
 // _cancelType : all / path
 function ftpCancelBranch (cancelInfo) {
   let CurCancelServer = cancelInfo.cancelConnectionList[0]
+  let transferid = cancelInfo.transferid
   let DicKey = CurCancelServer.parentSiteName
   let FTPInfo
-  if (g_FTPInfoDic[DicKey] === undefined) {
+  if (g_FTPInfoDic[DicKey + transferid] === undefined) {
     // 현재 작업중인 FTP가 없음
     return
   } else {
-    FTPInfo = g_FTPInfoDic[DicKey]
+    FTPInfo = g_FTPInfoDic[DicKey + transferid]
   }
-
-  if (g_FTPInfoDic[DicKey].connectionType == 'sequential') {
-    ftpCancel(FTPInfo, cancelInfo)
-  } else if (g_FTPInfoDic[DicKey].connectionType == 'simultaneous') {
+  let result = true
+  if (g_FTPInfoDic[DicKey + transferid].connectionType == 'sequential') {
+    result = ftpCancel(FTPInfo, cancelInfo)
+  } else if (g_FTPInfoDic[DicKey + transferid].connectionType == 'simultaneous') {
     for (let i = 0; i < cancelInfo.cancelConnectionList.length; i++) {
-      FTPInfo = g_FTPInfoDic[DicKey][cancelInfo.cancelConnectionList[i].serverName]
-      ftpCancel(FTPInfo, cancelInfo)
+      FTPInfo = g_FTPInfoDic[DicKey + transferid][cancelInfo.cancelConnectionList[i].name]
+      let tempResult = ftpCancel(FTPInfo, cancelInfo)
+      if (tempResult == false) {
+        result = false
+      }
     }
+  }
+  if (result == false) {
+    log.info('cancel fail ', g_FTPInfoDic[DicKey + transferid])
   }
 }
 function ftpCancel (_FtpInfo, _cancelInfo) {
+  let result = true
   if (_FtpInfo === undefined) {
     log.info('Cancel Fail! no ftpInfo')
     return
@@ -482,8 +512,12 @@ function ftpCancel (_FtpInfo, _cancelInfo) {
   }
   let KeyList = Object.keys(_FtpInfo.ftpStreamList)
   for (let i = 0; i < KeyList.length; i++) {
-    _FtpInfo.ftpStreamList[KeyList[i]].cancel(_cancelInfo)
+    let tmpResult = _FtpInfo.ftpStreamList[KeyList[i]].cancel(_cancelInfo)
+    if (tmpResult == false) {
+      result = false
+    }
   }
+  return result
 }
 // #endregion
 // #region Login
@@ -590,7 +624,6 @@ function WindowCreate (event, windowInfo) {
     webPreferences: {
       nodeIntegration: true, // api 접근 허용 여부
       contextIsolation: false
-      // preload: g_path.join(app.getAppPath(), 'preload.js')
     },
     // eslint-disable-next-line no-undef
     icon: _path.join(__static, starIcon)
