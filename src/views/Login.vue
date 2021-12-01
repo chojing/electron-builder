@@ -85,15 +85,15 @@ export default {
       // logout 한 후
       const isAutoLogin = document.getElementById('autologin-checkbox-id').checked
       const urlLogout = window.location.href.split('/')[4]
-      console.log('urlLogout', urlLogout)
-      console.log('href', window.location.href)
+      // console.log('urlLogout', urlLogout)
+      // console.log('href', window.location.href)
       const loginInfoReset = {
         pw: '',
         id: ID.value,
         autologin: isAutoLogin
       }
       if (urlLogout === 'Login?Logout') {
-        console.log('logout 체크')
+        console.log('logout 성공')
         console.log('inputReset', loginInfoReset)
         ipcRenderer.send('login-write', loginInfoReset)
       }

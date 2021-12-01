@@ -152,6 +152,8 @@ export default {
       console.log('request FTP Start')
       if (Object.keys(g_ftpSendData.fileList).length === 0) {
         alert('전송할 파일(폴더)를 선택해주세요.')
+      } else if (g_ftpSendData.title == '') {
+        alert('전송제목을 입력해주세요.')
       } else {
         g_ftpSendData.type = 'upload'
         // ipcRenderer.send('ftp-file-upload', include.custom.proxy2map(g_ftpSendData)) // eventName, SendData
@@ -201,19 +203,19 @@ export default {
             axios.postAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + server.ftpserverid, null, null, (response) => {
             })
           }
-          for (let idx in g_ftpSendData.ftpSite.ftpServerList) {
-            let server = g_ftpSendData.ftpSite.ftpServerList[idx]
-            for (let idy in g_ftpSendData.fileList) {
-              let item = g_ftpSendData.fileList[idy]
-              // transfer_file_tb insert data
-              const transferFile = {}
-              transferFile.transferid = this.transferid
-              transferFile.filename = item.fileName
-              transferFile.filesize = item.size
+          for (let idx in g_ftpSendData.fileList) {
+            let item = g_ftpSendData.fileList[idx]
+            // transfer_file_tb insert data
+            const transferFile = {}
+            transferFile.transferid = this.transferid
+            transferFile.filename = item.fileName
+            transferFile.filesize = item.size
+            for (let idy in g_ftpSendData.ftpSite.ftpServerList) {
+              let server = g_ftpSendData.ftpSite.ftpServerList[idy]
               transferFile.filepath = server.rootpath
-              // 전송상세내역 추가
-              axios.postAsyncAxios('/v2/transferfiles', JSON.stringify(transferFile), null, (response) => {})
             }
+            // 전송상세내역 추가
+            axios.postAsyncAxios('/v2/transferfiles', JSON.stringify(transferFile), null, (response) => {})
           }
         })
         console.log('ftpserverid : ', this.targetFtpInfo.ftpserverid)

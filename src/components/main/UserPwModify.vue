@@ -3,21 +3,30 @@
     <h2>비밀번호 변경</h2>
     <div class="userInfo">
       <ul>
-        <li class="flex-center">
-          <b>기존 비밀번호</b>
-          <input class="flex-1 input-box" placeholder="기존 비밀번호">
+        <li>
+          <div class="flex-center">
+            <b>기존 비밀번호</b>
+            <input v-model="userPassword" class="flex-1 input-box" placeholder="기존 비밀번호">
+          </div>
+          <em id="errorText1" class="error"></em>
         </li>
-        <li class="flex-center">
-          <b>새로운 비밀번호</b>
-          <input class="flex-1 input-box" placeholder="새로운 비밀번호">
+        <li>
+          <div class="flex-center">
+            <b>새 비밀번호</b>
+            <input v-model="newPassword" @input="newPasswordCheckFn" class="flex-1 input-box" placeholder="새 비밀번호">
+          </div>
+          <em id="errorText2" class="error"></em>
         </li>
-        <li class="flex-center">
-          <b>새로운 비밀번호</b>
-          <input class="flex-1 input-box" placeholder="새로운 비밀번호 확인">
+        <li>
+          <div class="flex-center">
+            <b>새 비밀번호</b>
+            <input v-model="newPasswordCheck" @input="newPasswordCheckFn2" class="flex-1 input-box" placeholder="새 비밀번호 확인">
+          </div>
+          <em id="errorText3" class="error"></em>
         </li>
       </ul>
       <div class="center mt30">
-        <button type="button" class="btn blue h30">확인</button>
+        <button @click="passwordModify" type="button" class="btn blue h30">확인</button>
         <button @click="cancel" type="button" id="cancel" class="btn h30">취소</button>
       </div>
     </div>
@@ -30,13 +39,59 @@ export default {
   name: 'UserPwModify',
   data () {
     return {
-      g_curWindowKey: ''
+      g_curWindowKey: '',
+      username: this.$store.state.username,
+      userPw: '',
+      userId: ''
     }
   },
   created () {
     ipcRenderer.on('receiveData', this.init)
+    ipcRenderer.once('login-read-result', this.loginDataPw)
+    ipcRenderer.send('login-read')
+  },
+  mounted () {
   },
   methods: {
+    loginDataPw: function (event, _loginData) {
+      this.userId = _loginData.id
+      this.userPw = _loginData.pw
+    },
+    newPasswordCheckFn: function () {
+      const ERROR_TEXT_2 = document.getElementById('errorText2')
+      if (!/^[a-z0-9_-]{3,13}$/.test(this.newPassword)) {
+        ERROR_TEXT_2.style.display = 'block'
+        ERROR_TEXT_2.innerHTML = '최소 3자리 이상 입력해주세요.'
+      } else {
+        ERROR_TEXT_2.style.display = 'none'
+      }
+    },
+    newPasswordCheckFn2: function () {
+      const ERROR_TEXT_3 = document.getElementById('errorText3')
+      if (this.newPasswordCheck === this.newPassword) {
+        ERROR_TEXT_3.style.display = 'none'
+      } else {
+        ERROR_TEXT_3.style.display = 'block'
+        ERROR_TEXT_3.innerHTML = '비밀번호가 일치하지 않습니다.'
+      }
+    },
+    passwordModify: function () {
+      console.log('Id', this.userId)
+      console.log('ㅂㅣ번', this.userPw)
+      console.log('이름', this.username)
+      // console.log('기존 비밀번호 : ', this.userPassword)
+      // console.log('새 비밀번호 : ', this.newPassword)
+      // console.log('새 비밀번호확인 : ', this.newPasswordCheck)
+      if (!this.userPassword || !this.newPassword || !this.newPasswordCheck) {
+        alert('필수 입력 사항입니다.')
+        if (this.userPw === this.userPassword) {
+          console.log('비번 일치')
+        }
+      }
+      // axios.putAsyncAxios('/v2/users/'+ userName + this.userPw, null, function (response) {
+      //   // dd
+      // })
+    },
     init: function (event, key, data, type) {
       if (type == 'init') {
         this.g_curWindowKey = key
