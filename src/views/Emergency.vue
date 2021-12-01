@@ -7,36 +7,53 @@
             <h4>전송 Target</h4>
         </div>
         <div class="favorite-list">
-          <div class="fa-item-link fa-item flex-column">
-            <button v-for="item in nodeList" v-bind:key="item.nodeid" @dblclick="this.fileUploadPopup(item)" @click.prevent>
-              <template v-if="Array.isArray(item.name)">
-                <template v-for="item in item.name" v-bind:key="item">
-                  <span>{{item}}</span>
-                </template>
-              </template>
-              <template v-else>
-                <span>{{item.name}}</span>
-              </template>
-            </button>
+          <div class="fa-item-link fa-item flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
+            <template v-for="item in nodeList" v-bind:key="item.nodeid">
+              <div :data-nodeid="item.nodeid" :data-haschild="item.haschild"
+                   :data-pathftpserverid="item.pathftpserverid" :data-pathftpsiteid="item.pathftpsiteid"
+                   :data-name="item.nodename" :data-path="item.path"
+                   @contextmenu.prevent="showContextMenu($event)">
+                <button @dblclick="this.fileUploadPopup(item)" @click.prevent>
+                  <template v-if="Array.isArray(item.name)">
+                    <template v-for="item in item.name" v-bind:key="item">
+                      <span>{{item}}</span>
+                    </template>
+                  </template>
+                  <template v-else>
+                    <span>{{item.name}}</span>
+                  </template>
+                </button>
+              </div>
+            </template>
           </div>
-</div>
+      </div>
       </article>
     </div>
   </section>
   <templateMenu/>
+  <templateContextMenu :nodeid="nodeid" :nodename="nodename" :nodepath="nodepath"
+                       :pathftpserverid="pathftpserverid" :pathftpsiteid="pathftpsiteid" :isMain="isMain"/>
 </template>
 <script>
 import templateMenu from '@/components/menu/Template_menu'
+import templateContextMenu from '@/components/main/Template_context_menu'
 const { ipcRenderer, axios, custom } = require('@/assets/js/include.js')
 export default {
   name: 'Emergency',
   components: {
-    templateMenu
+    templateMenu,
+    templateContextMenu
   },
   data () {
     return {
       g_windowIndex: 0,
-      nodeList: []
+      nodeList: [],
+      nodeid: null,
+      pathftpserverid: null,
+      pathftpsiteid: null,
+      nodename: null,
+      nodepath: null,
+      isMain: false
     }
   },
   mounted () {
@@ -45,6 +62,7 @@ export default {
   methods: {
     getTree: function () {
       axios.getAsyncAxios('/v2/node/code', {}, (response) => {
+        console.log()
         this.c_node_type = response.data.c_node_type
         let param = {}
         param.nodetype = custom.code.codeToValue(this.c_node_type, 'emergency')
@@ -122,6 +140,29 @@ export default {
           })
         })
       }
+    },
+    showContextMenu: function (e) {
+      this.nodeid = ''
+      document.getElementById('favorits-checkbox-id').checked = false
+      if (e.currentTarget.dataset.nodeid == undefined) {
+        this.hideContextMenu()
+      }
+      if (e.currentTarget.dataset.haschild == 0 && e.currentTarget.dataset.nodeid) {
+        var menu = document.getElementById('favorits-menu')
+        menu.style.left = e.pageX + 'px'
+        menu.style.top = e.pageY + 'px'
+        if ((e.currentTarget.dataset.haschild == 0 && e.currentTarget.dataset.nodeid)) {
+          this.nodeid = e.currentTarget.dataset.nodeid
+          this.pathftpserverid = parseInt(e.currentTarget.dataset.pathftpserverid)
+          this.pathftpsiteid = parseInt(e.currentTarget.dataset.pathftpsiteid)
+          this.nodename = e.currentTarget.dataset.name
+          this.nodepath = e.currentTarget.dataset.path
+        }
+        menu.classList.add('active')
+      }
+    },
+    hideContextMenu: function () {
+      document.getElementById('favorits-menu').classList.remove('active')
     },
     callFileUploadPopup: function (paramData) {
       ipcRenderer.send('openWindow', {

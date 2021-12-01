@@ -86,7 +86,7 @@
   </main>
   <templateMenu/>
   <templateContextMenu :nodeid="nodeid" :username="username" :nodename="nodename" :nodepath="nodepath"
-                       :pathftpserverid="pathftpserverid" :pathftpsiteid="pathftpsiteid"/>
+                       :pathftpserverid="pathftpserverid" :pathftpsiteid="pathftpsiteid" :isMain="isMain"/>
 </template>
 <script>
 import templateTree from '@/components/main/Template_tree'
@@ -122,6 +122,7 @@ export default {
       pathftpsiteid: null,
       nodename: null,
       nodepath: null,
+      isMain: true,
       active: false,
       isSearch: false,
       isUserPwModifyClose: false,

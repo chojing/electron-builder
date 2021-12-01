@@ -1,13 +1,6 @@
-const FileData = require('./globalFunk.js').FileData
 const NotificationPopUp = require('./globalFunk.js').NotificationPopUp
 const FileInfo = require('./fileinfo.js').FileInfo
 const FTPStream = require('./ftpStream').FTPStream
-// eslint-disable-next-line no-unused-vars
-let gfileData = new FileData()
-
-// const Log = require('./log').Log
-// eslint-disable-next-line no-unused-vars
-// let log = new Log()
 const log = require('electron-log')
 
 function FTPInfo (_event, _FTPSite) {
@@ -23,9 +16,6 @@ function FTPInfo (_event, _FTPSite) {
 FTPInfo.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData, _connectionIndex) {
   let self = this
   let PromiseResult = []
-  // 여기서 ftp 큐를 걸자
-  // await 빠져 나오면 그다음 큐
-  // 여기서 말하는 큐는 FTP 하나 전송 데이터(_FTPSendData).. FTPType이 있을수도 있으니까
 
   // eslint-disable-next-line no-unused-vars
   let result = await self.doftp(_ftpType, PromiseResult, _FTPSendData.fileList, _connectionIndex)
@@ -170,46 +160,47 @@ function FTPInfo_Type1 () {
 FTPInfo_Type1.prototype = new FTPInfo() // 상속 (관련 함수, 변수 모두 사용 가능)
 FTPInfo_Type1.prototype.RequestFTPWork = async function (_ftpType, _connectionIndex) {
   let self = this
+  return new Promise((resolve, reject) => {
+    let PromiseResult = []
+    let ftpServerFinish = false
+    let ftpServerCnt = this.clientSendData.ftpSite.ftpServerList.length
+    let currentFtpServer = this.clientSendData.ftpSite.ftpServerList[_connectionIndex]
+    let fileList = this.clientSendData.fileList
 
-  // 여기서 ftp 큐를 걸자
-  // await 빠져 나오면 그다음 큐
-  // 여기서 말하는 큐는 FTP 하나 전송 데이터(_FTPSendData).. FTPType이 있을수도 있으니까
-  let PromiseResult = []
-  let ftpServerFinish = false
-  let ftpServerCnt = this.clientSendData.ftpSite.ftpServerList.length
-  let currentFtpServer = this.clientSendData.ftpSite.ftpServerList[_connectionIndex]
-  let fileList = this.clientSendData.fileList
-
-  _connectionIndex = _connectionIndex + 1
-  if (_connectionIndex == ftpServerCnt) {
-    ftpServerFinish = true
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  let result = await self.doftp(_ftpType, PromiseResult, fileList, currentFtpServer)
-
-  // 모든 upload 가 끝나면 실행됨
-  Promise.all(PromiseResult).then(value => {
-    self.isFinish = true
-    let isSuccess = false
-    if (value[0] != true) { // fail
-      log.info(self.clientSendData.ftpSite.siteName + ' is fail!')
-    } else { // success
-      log.info(self.clientSendData.ftpSite.siteName + ' is Success!')
-      isSuccess = true
+    _connectionIndex = _connectionIndex + 1
+    if (_connectionIndex == ftpServerCnt) {
+      ftpServerFinish = true
     }
 
-    // next job start
-    if (ftpServerFinish == false) {
-      this.RequestFTPWork(_ftpType, _connectionIndex)
-    }
+    // eslint-disable-next-line no-unused-vars
+    let result = self.doftp(_ftpType, PromiseResult, fileList, currentFtpServer)
 
-    return isSuccess
-  })
+    // 모든 upload 가 끝나면 실행됨
+    Promise.all(PromiseResult).then(value => {
+      self.isFinish = true
+      let isSuccess = false
+      if (value[0] != true) { // fail
+        log.info(self.clientSendData.ftpSite.siteName + ' is fail!')
+      } else { // success
+        log.info(self.clientSendData.ftpSite.siteName + ' is Success!')
+        isSuccess = true
+      }
+
+      // next job start
+      if (ftpServerFinish == false) {
+        this.RequestFTPWork(_ftpType, _connectionIndex)
+      } else {
+        let result = {
+          isSuccess: isSuccess,
+          deleteKey: self.clientSendData.ftpSite.siteName + self.clientSendData.clientData.transferid
+        }
+        resolve(result)
+      }
+    })
+  })// end Promise
 }
 
 // 동시전송. 모든 FTPServer를 동시에 전송함
-
 function FTPInfo_Type2 () {
   FTPInfo.apply(this, arguments) // 모든 파라미터를 부모로 넘김
   // arguments : _key, _event, _FTPServerConfig
@@ -233,7 +224,7 @@ FTPInfo_Type2.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData,
           log.error(curName + ' is fail!')
           result = value[i]
         } else {
-          log.error(curName + ' is Success!')
+          log.info(curName + ' is Success!')
         }
       }
       if (result == true) {
@@ -258,9 +249,6 @@ FTPInfo_Type3.prototype = new FTPInfo() // 상속 (관련 함수, 변수 모두 
 FTPInfo_Type3.prototype.RequestFTPWork = async function (_ftpType, _connectionIndex) {
   let self = this
 
-  // 여기서 ftp 큐를 걸자
-  // await 빠져 나오면 그다음 큐
-  // 여기서 말하는 큐는 FTP 하나 전송 데이터(_FTPSendData).. FTPType이 있을수도 있으니까
   let PromiseResult = []
   let ftpServerFinish = false
   let ftpServerCnt = this.clientSendData.ftpSite.ftpServerList.length

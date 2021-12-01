@@ -3,7 +3,7 @@
     <li class = "favorits-menu-list" :nodeid="nodeid" @click="fileUploadPopup">
       전송
     </li>
-    <li class = "favorits-menu-list" :nodeid="nodeid">
+    <li class = "favorits-menu-list" :nodeid="nodeid" v-show="isMain">
       즐겨찾기
       <input id = "favorits-checkbox-id" type="checkbox" class ="ml10" @click="editFavoritsMenu($event)"/>
     </li>
@@ -20,7 +20,8 @@ export default {
     pathftpserverid: Number,
     pathftpsiteid: Number,
     nodename: String,
-    nodepath: String
+    nodepath: String,
+    isMain: Boolean
   },
   methods: {
     editFavoritsMenu: function (e) {
