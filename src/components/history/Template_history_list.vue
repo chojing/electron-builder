@@ -1,13 +1,21 @@
 <!-- 전송내역 -->
 <template>
   <tr v-for="item in transferList" v-bind:key="item.transferid">
-    <td @click="historyDetailPopup(item.transfername, item.transferid)" class="targetName">{{item.transfername}}</td>
+    <td @click="historyDetailPopup(item.transfername, item.transferid)" class="targetName">
+      <Tooltip :tooltipText="item.transfername" position="top">
+        {{item.transfername}}
+      </Tooltip>
+    </td>
     <td>
       <Tooltip :tooltipText="item.pathname" position="top">
         {{item.pathname}}
       </Tooltip>
     </td>
-    <td>{{item.filesize}}</td>
+    <td>
+      <Tooltip :tooltipText="item.filesize" position="top">
+        {{item.filesize}}
+      </Tooltip>
+    </td>
     <td>
       <div>
         <div class="pro-bar">

@@ -1,13 +1,21 @@
 <!-- 수신내역 -->
 <template>
   <tr v-for="item in receivedList" v-bind:key="item.transferid">
-    <td @click="receivedHistoryDetailPopup(item.transfername, item.transferid)" class="targetName">{{item.transfername}}</td>
+    <td @click="receivedHistoryDetailPopup(item.transfername, item.transferid)" class="targetName">
+      <Tooltip :tooltipText="item.transfername" position="top">
+      {{item.transfername}}
+      </Tooltip>
+    </td>
     <td>
       <Tooltip :tooltipText="item.pathname" position="top">
         {{item.pathname}}
       </Tooltip>
     </td>
-    <td>{{item.userid_realname}}</td>
+    <td>
+      <Tooltip :tooltipText="item.userid_realname" position="top">
+        {{item.userid_realname}}
+      </Tooltip>
+    </td>
     <td>
       <div>
         <div class="pro-bar">

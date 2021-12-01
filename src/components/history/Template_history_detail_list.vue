@@ -1,9 +1,21 @@
 <!-- 전송내역 -->
 <template>
   <tr v-for="item in transferDetailList" v-bind:key="item.fileid">
-    <td>{{item.ftpservername}}</td>
-    <td>{{item.filepath}}</td>
-    <td>{{item.filename}}</td>
+    <td>
+      <Tooltip :tooltipText="item.ftpservername" position="top">
+        {{item.ftpservername}}
+      </Tooltip>
+    </td>
+    <td>
+      <Tooltip :tooltipText="item.filepath" position="top">
+        {{item.filepath}}
+      </Tooltip>
+    </td>
+    <td>
+      <Tooltip :tooltipText="item.filename" position="top">
+        {{item.filename}}
+      </Tooltip>
+    </td>
     <td>{{item.filesize}}</td>
   </tr>
   <tr v-show="isShow">
@@ -12,7 +24,11 @@
 </template>
 
 <script>
+import Tooltip from '@/components/Tooltip'
 export default {
+  components: {
+    Tooltip
+  },
   props: {
     transferDetailList: Array,
     isShow: Boolean
