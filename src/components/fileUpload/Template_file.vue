@@ -338,6 +338,7 @@ export default {
       let cancelInfo = {
         cancelType: cancelType,
         cancelConnectionList: g_ftpSendData.ftpSite.ftpServerList,
+        transferid: this.transferid,
         isDelete: isFileDelete,
         path: undefined // type 이 path일 경우만 기재
       }
