@@ -103,6 +103,8 @@ main{padding: 40px 0 100px;}
 main h2{text-align: center;font-size: 20px;color: #0073a5;}
 main h4{padding: 20px 0 10px; font-size: 15px;font-weight: 600;}
 main .head-top{padding:10px; border: 1px solid #eee;border-radius: 5px;}
+main .user-name p{font-size: 16px;}
+main .user-name p span{padding-left:3px;display: inline-block;vertical-align: middle;font-size: 13px;}
 main .target-list{height: 250px;overflow-y: auto;}
 main .target-list ul{padding:5px 15px 0 15px;}
 main .target-list ul.hide{display: none}

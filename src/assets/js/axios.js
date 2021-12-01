@@ -19,10 +19,12 @@ async function login (id, password) {
     }
   }).then(function (response) {
     store.commit('commitUsername', response.data.result.username)
+    store.commit('commitUserRealname', response.data.result.realname)
     store.commit('commitUserid', response.data.result.userid)
     store.commit('commitApikey', response.data.result.apikey)
   }).catch(function (error) {
     store.commit('commitUsername', null)
+    store.commit('commitUserRealname', null)
     store.commit('commitUserid', null)
     store.commit('commitApikey', null)
     ipcRenderer.send('WriteLog', 'axios login ' + error)
