@@ -1,9 +1,27 @@
 <!-- 수신내역 -->
 <template>
   <tr v-for="item in receivedDetailList" v-bind:key="item.fileid">
-    <td><p class="ellipsis-w">{{item.ftpservername}}</p></td>
-    <td><p class="ellipsis-w140">{{item.filepath}}</p></td>
-    <td><p class="ellipsis-w">{{item.filename}}</p></td>
+    <td>
+      <Tooltip :tooltipText="item.ftpservername" position="top">
+        <p class="ellipsis-w">
+        {{item.ftpservername}}
+        </p>
+      </Tooltip>
+    </td>
+    <td>
+      <Tooltip :tooltipText="item.filepath" position="top">
+        <p class="ellipsis-w140">
+        {{item.filepath}}
+        </p>
+      </Tooltip>
+    </td>
+    <td>
+      <Tooltip :tooltipText="item.filename" position="top">
+        <p class="ellipsis-w">
+        {{item.filename}}
+        </p>
+      </Tooltip>
+    </td>
     <td>{{item.filesize}}</td>
   </tr>
   <tr v-show="isShow">
@@ -12,7 +30,11 @@
 </template>
 
 <script>
+import Tooltip from '@/components/Tooltip'
 export default {
+  components: {
+    Tooltip
+  },
   props: {
     receivedDetailList: Array,
     isShow: Boolean

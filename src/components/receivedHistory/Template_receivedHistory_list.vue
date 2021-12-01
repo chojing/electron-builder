@@ -1,13 +1,25 @@
 <!-- 수신내역 -->
 <template>
   <tr v-for="item in receivedList" v-bind:key="item.transferid">
-    <td @click="receivedHistoryDetailPopup(item.transfername, item.transferid)" class="targetName"><p class="ellipsis-w140">{{item.transfername}}</p></td>
-    <td>
-      <Tooltip :tooltipText="item.pathname" position="top">
-        <p class="ellipsis-w140">{{item.pathname}}</p>
+    <td @click="receivedHistoryDetailPopup(item.transfername, item.transferid)" class="targetName">
+      <Tooltip :tooltipText="item.transfername" position="top">
+        <p class="ellipsis-w140">
+          {{item.transfername}}
+        </p>
       </Tooltip>
     </td>
-    <td>{{item.userid_realname}}</td>
+    <td>
+      <Tooltip :tooltipText="item.pathname" position="top">
+        <p class="ellipsis-w140">
+        {{item.pathname}}
+        </p>
+      </Tooltip>
+    </td>
+    <td>
+      <Tooltip :tooltipText="item.userid_realname" position="top">
+        {{item.userid_realname}}
+      </Tooltip>
+    </td>
     <td>
       <div>
         <div class="pro-bar">
