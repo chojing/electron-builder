@@ -3,50 +3,87 @@
     <div class="wrap">
       <h4 class="tti">수신내역 상세</h4>
       <p class="targetName mt20">
-        {{ ftpName }}
+        전송명  :  {{ transfername }}
       </p>
       <div class="send-box">
         <table>
           <thead>
           <tr>
-            <th>사이트</th>
-            <th>서버</th>
+            <th>서버명</th>
+            <th>파일경로</th>
             <th>파일명</th>
-            <th>상태</th>
+            <th>파일크기</th>
           </tr>
           </thead>
           <tbody>
-            <templateReceivedDetailHistory />
+            <templateReceivedDetailHistory :receivedDetailList="receivedDetailList" :isShow="isShow"/>
           </tbody>
         </table>
       </div>
       <button @click="cancel" type="button" id="cancel" class="btn h40 m-auto">확인</button>
     </div>
   </section>
-
 </template>
 
 <script>
-import templateReceivedDetailHistory from '@/components/receivedHistory/Template_history_detail_list'
-const { ipcRenderer } = require('@/assets/js/include.js')
+import templateReceivedDetailHistory from '@/components/receivedHistory/Template_receivedHistory_detail_list'
+const { ipcRenderer, axios, custom } = require('@/assets/js/include.js')
 export default {
+  components: {
+    templateReceivedDetailHistory
+  },
   data () {
     return {
       g_windowIndex: 0,
-      ftpName: ''
+      parentKey: '',
+      g_curWindowKey: '',
+      transfername: '',
+      transferid: '',
+      receivedDetailList: [],
+      receivedDetailNameList: [],
+      isShow: false
     }
   },
   created () {
     ipcRenderer.on('receiveData', this.init)
   },
-  components: {
-    templateReceivedDetailHistory
-  },
   methods: {
     init: function (event, key, data) {
-      // eslint-disable-next-line camelcase
-      this.ftpName = data.value
+      this.transfername = data.transfername
+      this.transferid = data.transferid
+      this.parentKey = data.parentKey
       this.g_curWindowKey = key
+      this.getReceivedDetail()
+    },
+    getReceivedDetail: function () {
+      this.receivedDetailList = []
+      const param = {}
+      param.transferid = this.transferid
+      axios.getAsyncAxios('/v2/transferfiles', param, (response) => {
+        this.receivedDetailList = response.data.results
+        console.log('receivedDetailList : ', this.receivedDetailList)
+
+        for (var idx in this.receivedDetailList) {
+          let item = this.receivedDetailList[idx]
+          item.filesize = custom.getFormatBytes(item.filesize)
+          if (item.filename.indexOf('/') !== -1) {
+            let nameStr = item.filename.split('/')
+            for (let i = 1; i < nameStr.length; i++) {
+              if (i != nameStr.length - 1) {
+                item.filepath += ('/' + nameStr[i])
+              } else if (i == (nameStr.length - 1)) {
+                item.filepath += '/'
+              }
+            }
+            item.filename = nameStr[nameStr.length - 1]
+          }
+        }
+        if (this.receivedDetailList.length === 0) {
+          this.isShow = true
+        } else {
+          this.isShow = false
+        }
+      })
     },
     cancel: function () {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
