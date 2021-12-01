@@ -36,6 +36,7 @@ const FTPServer = function () {
   this.port = 0
   this.username = ''
   this.password = ''
+  this.ogRootpath = ''
   this.rootpath = '' // homeDir
   this.name = '' // ServerName
   this.parentSiteName = ''
@@ -150,16 +151,17 @@ export default {
       let self = this
       this.transferid = null
       console.log('request FTP Start')
-      if (Object.keys(g_ftpSendData.fileList).length === 0) {
-        alert('전송할 파일(폴더)를 선택해주세요.')
-      } else if (g_ftpSendData.title == '') {
+      if (g_ftpSendData.title == '') {
         alert('전송제목을 입력해주세요.')
+      } else if (Object.keys(g_ftpSendData.fileList).length === 0) {
+        alert('전송할 파일(폴더)를 선택해주세요.')
       } else {
         g_ftpSendData.type = 'upload'
         // ipcRenderer.send('ftp-file-upload', include.custom.proxy2map(g_ftpSendData)) // eventName, SendData
         let rootpathTitle = g_ftpSendData.title.replace(/[^a-z|A-Z|0-9|ㄱ-ㅎ|가-힣|.]/g, '_')
         for (let idx in g_ftpSendData.ftpSite.ftpServerList) {
           let server = g_ftpSendData.ftpSite.ftpServerList[idx]
+          server.rootpath = server.ogRootpath
           if (this.targetFtpInfo.nodepath) {
             if (this.targetFtpInfo.nodepath.indexOf('/') !== -1) {
               let nodepathStr = this.targetFtpInfo.nodepath.substr(1)
@@ -167,8 +169,8 @@ export default {
             }
           } else {
             server.rootpath = server.rootpath + rootpathTitle
-            console.log('server.rootpath : ', server.rootpath)
           }
+          console.log('server.rootpath : ', server.rootpath)
         }
 
         // transfer_tb insert data
@@ -307,6 +309,7 @@ export default {
         curFtpServer1.username = server.username
         curFtpServer1.password = server.password
         curFtpServer1.name = server.name
+        curFtpServer1.ogRootpath = server.rootpath
         curFtpServer1.rootpath = server.rootpath
         if (custom.code.valueToCode(this.c_ftpmode, server.mode) === 'active') {
           curFtpServer1.passive = false // passive : true / active : false
@@ -346,7 +349,6 @@ export default {
         path: undefined // type 이 path일 경우만 기재
       }
       ipcRenderer.send('ftp-cancel', cancelInfo)
-
       console.log('cancel request!')
     },
     doClose: function () {

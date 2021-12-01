@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './Index.vue'
+import './assets/css/_tooltip.scss'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
