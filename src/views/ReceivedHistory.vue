@@ -5,7 +5,7 @@
       <div class="btn-box">
         <button id="mainnode" class="btn h30 active" :data-nodeid="this.nodeHome1" v-bind:class="{active:false}" @click="selectNodeHome($event, this.nodeHome1)">home1</button>
         <button id="subnode" class="btn h30" :data-nodeid="this.nodeHome2" @click="selectNodeHome($event, this.nodeHome2)">home2</button>
-<!--        <button id="usernode" class="btn h30" @click="selectNodeHome($event)">사용자정의</button>-->
+        <button id="usernode" class="btn h30" @click="selectNodeHome($event)">사용자지정</button>
       </div>
       <div class="send-box wid600" style="height: 484px">
         <table>
@@ -66,6 +66,7 @@ export default {
     }
   },
   created () {
+    this.getNodeHome()
     ipcRenderer.on('receiveData', this.init)
   },
   mounted () {
@@ -73,25 +74,25 @@ export default {
   },
   methods: {
     init: function (event, key, data, type) {
-      if (type == 'userAppointed') {
+      if (type == 'init') {
+        this.getNodeHome()
+      } else if (type == 'selectUserAppointed') {
         this.selectedNodeid = data.nodeid
         this.getReceivedList(1)
-      } else {
-        console.log('type : ', type)
-        this.getNodeHome()
+      } else if (type == 'closeUserAppointed') {
+        const mainnodeBtn = document.getElementById('mainnode')
+        const usernodeBtn = document.getElementById('usernode')
+        mainnodeBtn.classList.add('active')
+        usernodeBtn.classList.remove('active')
+        this.selectedNodeid = data.home1nodeid
+        this.getReceivedList(1)
       }
     },
     getNodeHome: function () {
       let self = this
       axios.getAsyncAxios('/v2/users/' + this.$store.state.username, null, (response) => {
-        for (let idx in response.data.result.metaset.metafield) {
-          let item = response.data.result.metaset.metafield[idx]
-          if (item.fieldname === 'mainnodeid') {
-            self.nodeHome1 = item.fieldvalue
-          } else if (item.fieldname === 'subnodeid') {
-            self.nodeHome2 = item.fieldvalue
-          }
-        }
+        self.nodeHome1 = response.data.result.metaset.result.mainnodeid
+        self.nodeHome2 = response.data.result.metaset.result.subnodeid
         self.selectedNodeid = self.nodeHome1
         self.getReceivedList(1)
       })
@@ -137,29 +138,38 @@ export default {
       this.selectedNodeid = nodeid
       const mainnodeBtn = document.getElementById('mainnode')
       const subnodeBtn = document.getElementById('subnode')
-      // const usernodeBtn = document.getElementById('usernode')
+      const usernodeBtn = document.getElementById('usernode')
+      let isUsernode = Boolean
       if (e.target.id === mainnodeBtn.id) {
         mainnodeBtn.classList.add('active')
         subnodeBtn.classList.remove('active')
-        // usernodeBtn.classList.remove('active')
+        usernodeBtn.classList.remove('active')
+        isUsernode = false
       } else if (e.target.id === subnodeBtn.id) {
         subnodeBtn.classList.add('active')
         mainnodeBtn.classList.remove('active')
-        // usernodeBtn.classList.remove('active')
+        usernodeBtn.classList.remove('active')
+        isUsernode = false
+      } else if (e.target.id === usernodeBtn.id) {
+        usernodeBtn.classList.add('active')
+        mainnodeBtn.classList.remove('active')
+        subnodeBtn.classList.remove('active')
+        isUsernode = true
       }
-      // else if (e.target.id === usernodeBtn.id) {
-      //   usernodeBtn.classList.add('active')
-      //   mainnodeBtn.classList.remove('active')
-      //   subnodeBtn.classList.remove('active')
-      // }
-
-      this.getReceivedList(1)
+      if (!isUsernode) {
+        this.getReceivedList(1)
+      } else {
+        this.userAppointedPopup()
+      }
     },
     userAppointedPopup: function () {
-      const data = {}
+      const data = {
+        parentKey: this.selfKey,
+        home1nodeid: this.nodeHome1
+      }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
-        url: 'HistoryDetail',
+        url: 'UserAppointed',
         data: data,
         width: 600,
         height: 700,

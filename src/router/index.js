@@ -110,6 +110,11 @@ const routes = [
     path: '/ftpSiteTransferProgress',
     name: 'FtpSiteTransferProgress',
     component: () => import('../components/main/FTPSiteTransferProgress')
+  },
+  {
+    path: '/userAppointed',
+    name: 'UserAppointed',
+    component: () => import('../components/receivedHistory/Template_userAppointed')
   }
 ]
 
