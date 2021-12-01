@@ -106,7 +106,7 @@ export default {
   created () {
     window.addEventListener('online', this.updateOnlineStatus)
     window.addEventListener('offline', this.updateOnlineStatus)
-    ipcRenderer.on('offline_result', this.offlineResult)
+    ipcRenderer.once('offline_result', this.offlineResult)
   },
   data () {
     return {
@@ -124,19 +124,27 @@ export default {
       nodepath: null,
       active: false,
       isSearch: false,
+      isUserPwModifyClose: false,
       isLogoutCheck: false
     }
   },
   mounted () {
     this.getTree()
     this.getFavorits()
-    // console.log('$store::', this.$store.state)
+    console.log('$store::', this.$store.state)
   },
   methods: {
+    init: function (event, key, data, type) {
+      if (type == 'isUserPwModifyClose') {
+        this.isUserPwModifyClose = data
+        if (this.isUserPwModifyClose) {
+          this.logout()
+        }
+      }
+    },
     pwModify: function () {
-      const name = 'test'
       const data = {
-        value: name
+        parentKey: this.selfKey
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
@@ -147,11 +155,13 @@ export default {
         parent: '',
         modal: true
       })
+      ipcRenderer.once('receiveData', this.init)
     },
     logoutCheck: function () {
       this.isLogoutCheck = true
     },
     logout: function () {
+      console.trace()
       this.$store.commit('commitApikey', '')
       axios.deleteAsyncAxios('/v2/users/apikey', null, null, (response) => {
         alert('로그아웃 되었습니다.')
@@ -192,16 +202,6 @@ export default {
         })
       })
     },
-    // getTree: function () {
-    //   axios.getSyncAxios('/v2/nodes', null, (response) => {
-    //     axios.getSyncAxios('/nodes/' + response.data.result.nodename, null, (response) => {
-    //       this.nodeList = response.data.results
-    //     })
-    //   }, function (error) {
-    //     this.nodeList = []
-    //     axios.setError(error.response.data)
-    //   })
-    // }
     getFavorits: function () {
       axios.getAsyncAxios('/v2/users/' + this.username + '/favorits', null, (response) => {
         this.favoritsList = response.data.results
