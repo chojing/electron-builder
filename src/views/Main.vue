@@ -59,10 +59,10 @@
                         </span>
                       </template>
                     </button>
-                    <template v-if="(Object.keys(this.searchList).length === 0) && isSearch">
-                      <span>검색 결과가 없습니다.</span>
-                    </template>
                   </div>
+                </template>
+                <template v-if="(Object.keys(this.searchList).length === 0) && isSearch">
+                  <span>검색 결과가 없습니다.</span>
                 </template>
               </div>
             </div>

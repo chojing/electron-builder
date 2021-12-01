@@ -1,6 +1,6 @@
-<!-- 전송내역 -->
+<!-- 수신내역 -->
 <template>
-  <tr v-for="item in transferDetailList" v-bind:key="item.fileid">
+  <tr v-for="item in receivedDetailList" v-bind:key="item.fileid">
     <td>{{item.ftpservername}}</td>
     <td>{{item.filepath}}</td>
     <td>{{item.filename}}</td>
@@ -14,7 +14,7 @@
 <script>
 export default {
   props: {
-    transferDetailList: Array,
+    receivedDetailList: Array,
     isShow: Boolean
   }
 }
