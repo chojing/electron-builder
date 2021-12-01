@@ -41,7 +41,7 @@
 import templateReceivedHistory from '@/components/receivedHistory/Template_receivedHistory_list'
 import templateMenu from '@/components/menu/Template_menu'
 import pagination from '@/components/includes/Template_pagination'
-const { axios, custom } = require('@/assets/js/include.js')
+const { axios, custom, ipcRenderer } = require('@/assets/js/include.js')
 export default {
   components: {
     templateReceivedHistory,
@@ -51,6 +51,8 @@ export default {
   data () {
     return {
       setTimerInterval: 0,
+      g_windowIndex: 0,
+      selfKey: 'main',
       nodeHome1: null,
       nodeHome2: null,
       selectedNodeid: null,
@@ -62,12 +64,21 @@ export default {
     }
   },
   created () {
-    this.getNodeHome()
+    ipcRenderer.on('receiveData', this.init)
   },
   mounted () {
     this.setTimer()
   },
   methods: {
+    init: function (event, key, data, type) {
+      if (type == 'userAppointed') {
+        this.selectedNodeid = data.nodeid
+        this.getReceivedList(1)
+      } else {
+        console.log('type : ', type)
+        this.getNodeHome()
+      }
+    },
     getNodeHome: function () {
       let self = this
       axios.getAsyncAxios('/v2/users/' + this.$store.state.username, null, (response) => {
@@ -123,6 +134,18 @@ export default {
     selectNodeHome: function (nodeid) {
       this.selectedNodeid = nodeid
       this.getReceivedList(1)
+    },
+    userAppointedPopup: function () {
+      const data = {}
+      ipcRenderer.send('openWindow', {
+        key: ++this.g_windowIndex,
+        url: 'HistoryDetail',
+        data: data,
+        width: 600,
+        height: 700,
+        parent: '',
+        modal: true
+      })
     },
     setTimer: function () {
       var _this = this
