@@ -3,12 +3,16 @@
   <tr v-for="item in receivedList" v-bind:key="item.transferid">
     <td @click="receivedHistoryDetailPopup(item.transfername, item.transferid)" class="targetName">
       <Tooltip :tooltipText="item.transfername" position="top">
-      {{item.transfername}}
+        <p class="ellipsis-w140">
+          {{item.transfername}}
+        </p>
       </Tooltip>
     </td>
     <td>
       <Tooltip :tooltipText="item.pathname" position="top">
+        <p class="ellipsis-w140">
         {{item.pathname}}
+        </p>
       </Tooltip>
     </td>
     <td>

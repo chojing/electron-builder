@@ -13,8 +13,8 @@ function WindowInfo (_key, _url, _data, _width = 700, _height = 1000) {
 WindowInfo.prototype.SetStatusWindow = function (_key, _targetUrl) {
   this.key = _key
   this.url = _targetUrl
-  this.width = 400
   this.width = 500
+  this.height = 700
 
   this.modal = true
 }

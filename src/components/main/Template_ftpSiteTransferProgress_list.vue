@@ -1,8 +1,8 @@
 <!-- 전송내역 -->
 <template>
   <tr v-for="item in ftpResultData" v-bind:key="item.ftpserverid">
-      <td>{{item.ftpservername}}</td>
-      <td>{{item.fileName}}</td>
+      <td><p class="ellipsis-w">{{item.ftpservername}}</p></td>
+      <td><p class="ellipsis-w140">{{item.fileName}}</p></td>
     <td>
       <div>
           <div class="pro-bar">

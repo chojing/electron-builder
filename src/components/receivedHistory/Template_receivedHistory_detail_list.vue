@@ -3,17 +3,23 @@
   <tr v-for="item in receivedDetailList" v-bind:key="item.fileid">
     <td>
       <Tooltip :tooltipText="item.ftpservername" position="top">
+        <p class="ellipsis-w">
         {{item.ftpservername}}
+        </p>
       </Tooltip>
     </td>
     <td>
       <Tooltip :tooltipText="item.filepath" position="top">
+        <p class="ellipsis-w140">
         {{item.filepath}}
+        </p>
       </Tooltip>
     </td>
     <td>
       <Tooltip :tooltipText="item.filename" position="top">
+        <p class="ellipsis-w">
         {{item.filename}}
+        </p>
       </Tooltip>
     </td>
     <td>{{item.filesize}}</td>

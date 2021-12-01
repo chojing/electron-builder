@@ -33,9 +33,18 @@ header .logo{text-align: center;}
 /*input*/
 .input-box{padding: 0 5px;display: inline-block;vertical-align: top;width: calc(100% - 60px);height: 100%;border: 1px solid #eee;border-radius: 10px;}
 .input-box::placeholder{color: #b8b8b8;}
+/*말줄임표 1줄*/
+.ellipsis-w{width:80px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.ellipsis-w140{width:140px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.ellipsis-w160{width:160px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+
+/**/
+.wid600{min-width:500px;max-width: 700px;}
+.h480{height: 460px;overflow: hidden;overflow-y: auto;}
 /*button*/
 .btn{margin-left: 10px;display: inline-block;vertical-align: top;padding: 0 10px;min-width: 50px;height: 100%;border-radius: 10px;background-color: #eee;transition: background-color .2s, color .2s;}
-.btn:hover{background-color: #222;color: #fff;}
+.btn:hover,
+.btn.active{background-color: #222;color: #fff;}
 .btn.blue{background-color: #9dc1d1;}
 .btn.blue:hover{background-color: #2d4b58;}
 .backBtn{cursor: pointer;position: absolute;left:4%;top:10px;z-index: 999;}

@@ -2,8 +2,13 @@
   <section class="history-container">
     <div class="wrap">
       <h4 class="tti mb15">전송 진행사항</h4>
-      <div class="send-box" style="height: 527px;">
+      <div class="send-box wid600 h480">
         <table>
+          <colgroup>
+            <col width="100px">
+            <col width="170px">
+            <col width="*">
+          </colgroup>
           <thead>
           <tr>
             <th>서버명</th>
