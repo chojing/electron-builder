@@ -289,7 +289,7 @@ export default {
         ftpSite.siteName = site.name
         ftpSite.connectionType = site.mode_code
         // test
-        ftpSite.connectionType = 'simultaneous'
+        ftpSite.connectionType = 'sequential'
         // end
       } else {
         ftpSite.siteName = 'konanSite'
