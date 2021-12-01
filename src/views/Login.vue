@@ -24,9 +24,11 @@
           </label>
         </div>
         <div>
+          <Tooltip tooltipText="xptmxm" position="top"><p>tooltip-top</p></Tooltip>
           <button id="json-id" @click="this.login">Login</button>
 <!--          <button id="popup" @click="this.popup">Popup</button>-->
 <!--          <button id="testpage" @click="this.testpage">TestPage</button>-->
+<!--          <p v-tooltip:top>tooltip-top</p>-->
         </div>
       </div>
     </section>
@@ -34,10 +36,13 @@
 </template>
 
 <script>
+import Tooltip from '@/components/Tooltip'
 const { ipcRenderer, axios } = require('@/assets/js/include.js')
-
 export default {
   name: 'Login',
+  components: {
+    Tooltip
+  },
   data () {
     return {
       g_windowIndex: 0
