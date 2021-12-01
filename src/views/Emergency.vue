@@ -58,11 +58,13 @@ export default {
               }
               for (let i = 0; i < this.nodeList.length; i++) {
                 let resultTarget = this.findEmergencyLastTarget(this.nodeList[i])
-                this.nodeList[i] = resultTarget
-                let hasDepth = resultTarget.pathname
-                if (hasDepth.indexOf('>') !== -1) {
-                  var str = hasDepth.split('>')
-                  this.nodeList[i].name = str
+                if (resultTarget !== undefined) {
+                  this.nodeList[i] = resultTarget
+                  let hasDepth = resultTarget.pathname
+                  if (hasDepth.indexOf('>') !== -1) {
+                    var str = hasDepth.split('>')
+                    this.nodeList[i].name = str
+                  }
                 }
               }
             } else {
@@ -76,10 +78,8 @@ export default {
       let work = true
       while (work) {
         if (target.haschild_boolean == false) {
-        // 마지막 타겟
           work = false
         } else {
-        // 하위 타겟이 존재. 재귀 대상
           target = target.children[0]
         }
 
@@ -87,16 +87,7 @@ export default {
           work = false
         }
       }
-
       return target
-    //   if (target.haschild_boolean == false) {
-    //     // 마지막 타겟
-    //     return target
-    //   } else {
-    //     // 하위 타겟이 존재. 재귀 대상
-    //     let nextTarget = target.children
-    //     this.findEmergencyLastTarget(nextTarget)
-    //   }
     },
     fileUploadPopup: function (ftpInfoItem) {
       const ftpInfo = custom.proxy2map(ftpInfoItem)
