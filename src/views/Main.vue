@@ -132,7 +132,6 @@ export default {
   mounted () {
     this.getTree()
     this.getFavorits()
-    console.log('$store::', this.$store.state)
   },
   methods: {
     init: function (event, key, data, type) {

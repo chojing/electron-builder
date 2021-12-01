@@ -6,21 +6,21 @@
         <li>
           <div class="flex-center">
             <b>기존 비밀번호</b>
-            <input v-model="userPassword" class="flex-1 input-box" placeholder="기존 비밀번호">
+            <input v-model="userPassword" class="flex-1 input-box" placeholder="기존 비밀번호" type="password">
           </div>
           <em id="errorText1" class="error"></em>
         </li>
         <li>
           <div class="flex-center">
             <b>새 비밀번호</b>
-            <input v-model="newPassword" @input="newPasswordCheckFn" class="flex-1 input-box" placeholder="새 비밀번호">
+            <input v-model="newPassword" @input="newPasswordCheckFn" class="flex-1 input-box" placeholder="새 비밀번호" type="password">
           </div>
           <em id="errorText2" class="error"></em>
         </li>
         <li>
           <div class="flex-center">
             <b>새 비밀번호</b>
-            <input v-model="newPasswordCheck" @input="newPasswordCheckFn2" class="flex-1 input-box" placeholder="새 비밀번호 확인">
+            <input v-model="newPasswordCheck" @input="newPasswordCheckFn2" class="flex-1 input-box" placeholder="새 비밀번호 확인" type="password">
           </div>
           <em id="errorText3" class="error"></em>
         </li>
