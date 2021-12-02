@@ -67,15 +67,20 @@ export default {
         let param = {}
         param.nodetype = custom.code.codeToValue(this.c_node_type, 'emergency')
         axios.getAsyncAxios('/v2/nodes/tree', param, (response) => {
+          let tempList = []
           if (response.data !== undefined) {
             if (Object.keys(response.data.results).length !== 0) {
               if (typeof response.data.results === 'object') {
-                this.nodeList.push(response.data.results)
+                tempList.push(response.data.results)
               } else {
-                this.nodeList = response.data.results
+                tempList = response.data.results
               }
+              for (let i = 0; i < tempList.length; i++) {
+                this.findEmergencyLastTarget(tempList[i])
+              }
+              console.log(this.nodeList)
               for (let i = 0; i < this.nodeList.length; i++) {
-                let resultTarget = this.findEmergencyLastTarget(this.nodeList[i])
+                let resultTarget = this.nodeList[i]
                 if (resultTarget !== undefined) {
                   this.nodeList[i] = resultTarget
                   let hasDepth = resultTarget.pathname
@@ -93,19 +98,18 @@ export default {
       })
     },
     findEmergencyLastTarget: function (target) {
-      let work = true
-      while (work) {
-        if (target.haschild_boolean == false) {
-          work = false
-        } else {
-          target = target.children[0]
-        }
-
-        if (target === undefined) {
-          work = false
+      if (target.haschild_boolean == false) {
+        this.nodeList.push(target)
+      } else {
+        if (target.children !== undefined) {
+          let cnt = target.children.length
+          if (cnt > 0) {
+            for (let i = 0; i < cnt; i++) {
+              this.findEmergencyLastTarget(target.children[i])
+            }
+          }
         }
       }
-      return target
     },
     fileUploadPopup: function (ftpInfoItem) {
       const ftpInfo = custom.proxy2map(ftpInfoItem)
