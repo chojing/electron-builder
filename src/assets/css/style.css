@@ -56,9 +56,9 @@ header .logo{text-align: center;}
 /*margin*/
 .m-auto{display: block; margin: 0 auto;}
 .ml10{margin-left: 10px;}
-.mt10{margin-top:10px;}.mt15{margin-top: 15px;}.mt20{margin-top:20px;}.mt30{margin-top:30px;}.mt40{margin-top:40px;}.mb10{margin-bottom: 10px;}.mb15{margin-bottom: 15px;}.mb20{margin-bottom: 20px;}.mb25{margin-bottom: 25px;}.mb30{margin-bottom: 30px;}.mb35{margin-bottom: 35px;}.mb40{margin-bottom: 40px;}
+.mt10{margin-top:10px;}.mt15{margin-top: 15px;}.mt20{margin-top:20px;}.mt25{margin-top:25px;}.mt30{margin-top:30px;}.mt40{margin-top:40px;}.mb10{margin-bottom: 10px;}.mb15{margin-bottom: 15px;}.mb20{margin-bottom: 20px;}.mb25{margin-bottom: 25px;}.mb30{margin-bottom: 30px;}.mb35{margin-bottom: 35px;}.mb40{margin-bottom: 40px;}
 /*padding*/
-.pd40{padding: 40px 0;}.pt20{padding-top: 20px;}.pb40{padding-bottom: 40px;}
+.pd25{padding: 25px 0;}.pd30{padding: 30px 0;}.pd40{padding: 40px 0;}.pt20{padding-top: 20px;}.pb40{padding-bottom: 40px;}
 /*height*/
 .h30{height: 30px;}.h40{height: 40px;}.h50{height: 50px;}
 /*align*/
