@@ -10,7 +10,7 @@
             <button class="btn h30" @click="manualFtpPopup">관리</button>
           </div>
         </div>
-        <div class="target-list" style="background: #f5f5f5;border-radius: 5px;">
+        <div class="target-list h500" style="background: #f5f5f5;border-radius: 5px;">
           <ul class="one-list">
             <li v-for="item in targetFtpList" v-bind:key="item.ftpserferid" @dblclick="this.fileUploadPopup(item)">
               <p>{{item.name}}</p>

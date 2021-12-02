@@ -42,6 +42,7 @@ header .logo{text-align: center;}
 .wid600{min-width:500px;max-width: 700px;}
 .wid400{min-width:400px;max-width: 700px;}
 .h480{height: 460px;overflow: hidden;overflow-y: auto;}
+.h500{height: 500px;overflow: hidden;overflow-y: auto;}
 /*button*/
 .btn{margin-left: 10px;display: inline-block;vertical-align: top;padding: 0 10px;min-width: 50px;height: 100%;border-radius: 10px;background-color: #eee;transition: background-color .2s, color .2s;}
 .btn:hover,
