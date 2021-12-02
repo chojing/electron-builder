@@ -1,7 +1,7 @@
 
 *{margin: 0;padding: 0;box-sizing:border-box;}
 i.fa{font-size : num}
-body{background-color: #fff;color: #333;min-width: 320px;font-family: sans-serif;letter-spacing: -1px;min-width: 500px;}
+body{background-color: #fff;color: #333;min-width: 320px;font-family: sans-serif;letter-spacing: -1px;}
 button,input{outline: none;border: none;background-color: #fff;font-family: sans-serif;}
 textarea{font-family: sans-serif;}
 button:focus,
