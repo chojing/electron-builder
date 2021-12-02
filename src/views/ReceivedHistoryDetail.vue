@@ -45,6 +45,7 @@ export default {
       g_curWindowKey: '',
       transfername: '',
       transferid: '',
+      gIsMac: false,
       receivedDetailList: [],
       receivedDetailNameList: [],
       isShow: false
@@ -59,6 +60,11 @@ export default {
       this.transferid = data.transferid
       this.parentKey = data.parentKey
       this.g_curWindowKey = key
+      var agent = window.navigator.userAgent.toLowerCase()
+      console.log('agent : ', agent)
+      if (agent.indexOf('mac') != -1 || agent.indexOf('macintosh') != -1) {
+        this.gIsMac = true
+      }
       this.getReceivedDetail()
     },
     getReceivedDetail: function () {
@@ -83,7 +89,18 @@ export default {
             }
             item.filename = nameStr[nameStr.length - 1]
           }
+          axios.getAsyncAxios('/v2/ftpservers/' + item.ftpserverid, null, (response) => {
+            let self = this
+            if (self.gIsMac) {
+              item.gIsMac = true
+              item.volume = response.data.result.macvolume
+            } else {
+              item.gIsMac = false
+              item.volume = response.data.result.winvolume
+            }
+          })
         }
+        console.log('ddddddd : ', this.receivedDetailList)
         if (this.receivedDetailList.length === 0) {
           this.isShow = true
         } else {
