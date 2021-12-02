@@ -98,6 +98,7 @@ export default {
       g_curWindowKey: '',
       isUploading: false,
       isUploadComplete: false,
+      isCancel: false,
       isResponse: false,
       tempCurrentPercent: -1
     }
@@ -257,7 +258,7 @@ export default {
           }
 
           // console.log(this.transferid)
-          if ((!this.isResponse && this.transferid != null) || data.ftpData.totalWorkSize_Percent == 100) {
+          if ((!this.isResponse && this.transferid != null && !this.isCancel) || data.ftpData.totalWorkSize_Percent == 100) {
             this.isResponse = true
             axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
               // console.log('Success Put : ', response)
@@ -337,7 +338,8 @@ export default {
     },
     doCancel: function () {
       console.log('cancel Test!')
-
+      let self = this
+      self.isCancel = true
       let isFileDelete = true
       let cancelType = 'all' // all / path
 
