@@ -286,3 +286,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 #userAppointed-container .target-list ul{padding:5px 15px 0 15px;}
 #userAppointed-container .target-list ul.hide{display: none}
 #userAppointed-container .target-list ul li{padding: 5px 0 0;}
+
+/* 수신내역 파일경로 */
+.send-box .filePath{cursor: pointer;}
+.send-box .filePath:hover{color: #0082bb;}
