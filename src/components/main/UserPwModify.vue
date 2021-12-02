@@ -6,21 +6,21 @@
         <li>
           <div class="flex-center">
             <b>기존 비밀번호</b>
-            <input v-model="userPassword" class="flex-1 input-box" placeholder="기존 비밀번호" type="password">
+            <input v-model="userPassword" @input="userPasswordCheckFn" class="flex-1 input-box" placeholder="기존 비밀번호" type="text">
           </div>
           <em id="errorText1" class="error"></em>
         </li>
         <li>
           <div class="flex-center">
             <b>새 비밀번호</b>
-            <input v-model="newPassword" @input="newPasswordCheckFn" class="flex-1 input-box" placeholder="새 비밀번호" type="password">
+            <input v-model="newPassword" @input="newPasswordCheckFn" class="flex-1 input-box" placeholder="새 비밀번호" type="text">
           </div>
           <em id="errorText2" class="error"></em>
         </li>
         <li>
           <div class="flex-center">
             <b>새 비밀번호</b>
-            <input v-model="newPasswordCheck" @input="newPasswordCheckFn2" class="flex-1 input-box" placeholder="새 비밀번호 확인" type="password">
+            <input v-model="newPasswordCheck" @input="newPasswordCheckFn2" class="flex-1 input-box" placeholder="새 비밀번호 확인" type="text">
           </div>
           <em id="errorText3" class="error"></em>
         </li>
@@ -61,14 +61,26 @@ export default {
       this.userId = _loginData.id
       this.userPw = _loginData.pw
     },
+    userPasswordCheckFn: function () {
+      const ERROR_TEXT_1 = document.getElementById('errorText1')
+      if (this.userPw === this.userPassword) {
+        ERROR_TEXT_1.style.display = 'none'
+      } else {
+        ERROR_TEXT_1.style.display = 'block'
+        ERROR_TEXT_1.innerHTML = '비밀번호가 일치하지 않습니다.'
+      }
+    },
     newPasswordCheckFn: function () {
       const ERROR_TEXT_2 = document.getElementById('errorText2')
+      console.log('기존', this.newPassword)
+      console.log('새비번', this.newPasswordCheck)
       if (!/^[a-z0-9_-]{3,13}$/.test(this.newPassword)) {
         ERROR_TEXT_2.style.display = 'block'
         ERROR_TEXT_2.innerHTML = '최소 3자리 이상 입력해주세요.'
       } else {
         ERROR_TEXT_2.style.display = 'none'
       }
+      this.newPasswordCheckFn2()
     },
     newPasswordCheckFn2: function () {
       const ERROR_TEXT_3 = document.getElementById('errorText3')
@@ -80,9 +92,6 @@ export default {
       }
     },
     passwordModify: function () {
-      console.log('Id', this.userId)
-      console.log('ㅂㅣ번', this.userPw)
-      console.log('userRealname', this.userRealname)
       const ERROR_TEXT_1 = document.getElementById('errorText1')
       if (!this.userPassword || !this.newPassword || !this.newPasswordCheck) {
         alert('필수 입력 사항입니다.')
@@ -104,7 +113,7 @@ export default {
         })
       } else {
         ERROR_TEXT_1.style.display = 'block'
-        ERROR_TEXT_1.innerHTML = '비밀번호를 확인해주세요.'
+        ERROR_TEXT_1.innerHTML = '비밀번호가 일치하지 않습니다.'
       }
     },
     init: function (event, key, data, type) {
