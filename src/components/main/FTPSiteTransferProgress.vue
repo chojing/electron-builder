@@ -49,6 +49,7 @@ export default {
       isUploading: true,
       isUploadComplete: false,
       isResponse: false,
+      isCancel: false,
       tempCurrentPercent: -1
     }
   },
@@ -129,7 +130,7 @@ export default {
           }
 
           // console.log('transfer.status : ', transfer.status, ' sitePercent : ', sitePercent)
-          if ((!self.isResponse && self.transferid != null) || Math.floor(sitePercent) == 100) {
+          if ((!self.isResponse && self.transferid != null && !self.isCancel) || Math.floor(sitePercent) == 100) {
             self.isResponse = true
             axios.putAsyncAxios('/v2/transfers/' + self.transferid, JSON.stringify(transfer), null, (response) => {
               // console.log('Success Put : ', response)
@@ -145,6 +146,7 @@ export default {
     doCancel: function () {
       console.log('cancel Test!')
       let self = this
+      self.isCancel = true
       let isFileDelete = true
       let cancelType = 'all' // all / path
 

@@ -77,15 +77,15 @@ export default {
       if (type == 'init') {
         this.getNodeHome()
       } else if (type == 'selectUserAppointed') {
+        const mainnodeBtn = document.getElementById('mainnode')
+        const subnodeBtn = document.getElementById('subnode')
+        const usernodeBtn = document.getElementById('usernode')
+        usernodeBtn.classList.add('active')
+        mainnodeBtn.classList.remove('active')
+        subnodeBtn.classList.remove('active')
         this.selectedNodeid = data.nodeid
         this.getReceivedList(1)
       } else if (type == 'closeUserAppointed') {
-        const mainnodeBtn = document.getElementById('mainnode')
-        const usernodeBtn = document.getElementById('usernode')
-        mainnodeBtn.classList.add('active')
-        usernodeBtn.classList.remove('active')
-        this.selectedNodeid = data.home1nodeid
-        this.getReceivedList(1)
       }
     },
     getNodeHome: function () {
@@ -135,37 +135,35 @@ export default {
       })
     },
     selectNodeHome: function (e, nodeid) {
-      this.selectedNodeid = nodeid
       const mainnodeBtn = document.getElementById('mainnode')
       const subnodeBtn = document.getElementById('subnode')
       const usernodeBtn = document.getElementById('usernode')
-      let isUsernode = Boolean
+      let isUsernode = true
       if (e.target.id === mainnodeBtn.id) {
+        this.selectedNodeid = nodeid
         mainnodeBtn.classList.add('active')
         subnodeBtn.classList.remove('active')
         usernodeBtn.classList.remove('active')
-        isUsernode = false
       } else if (e.target.id === subnodeBtn.id) {
+        this.selectedNodeid = nodeid
         subnodeBtn.classList.add('active')
         mainnodeBtn.classList.remove('active')
         usernodeBtn.classList.remove('active')
-        isUsernode = false
       } else if (e.target.id === usernodeBtn.id) {
-        usernodeBtn.classList.add('active')
-        mainnodeBtn.classList.remove('active')
-        subnodeBtn.classList.remove('active')
-        isUsernode = true
-      }
-      if (!isUsernode) {
-        this.getReceivedList(1)
-      } else {
         this.userAppointedPopup()
+        isUsernode = false
+        // usernodeBtn.classList.add('active')
+        // mainnodeBtn.classList.remove('active')
+        // subnodeBtn.classList.remove('active')
+        // isUsernode = true
+      }
+      if (isUsernode) {
+        this.getReceivedList(1)
       }
     },
     userAppointedPopup: function () {
       const data = {
-        parentKey: this.selfKey,
-        home1nodeid: this.nodeHome1
+        parentKey: this.selfKey
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,

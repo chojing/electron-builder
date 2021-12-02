@@ -26,7 +26,6 @@ export default {
       g_windowIndex: 0,
       parentKey: '',
       g_curWindowKey: '',
-      home1nodeid: '',
       c_node_type: [],
       nodeList: [],
       rootNodeId: 0
@@ -42,7 +41,6 @@ export default {
   methods: {
     init: function (event, key, data, type) {
       this.parentKey = data.parentKey
-      this.home1nodeid = data.home1nodeid
       this.g_curWindowKey = key
     },
     getTree: function () {
@@ -68,9 +66,7 @@ export default {
     },
     doClose: function () {
       let self = this
-      let data = {}
-      data.home1nodeid = this.home1nodeid
-      ipcRenderer.send('sendData', self.parentKey, data, 'closeUserAppointed')
+      ipcRenderer.send('sendData', self.parentKey, null, 'closeUserAppointed')
       ipcRenderer.send('closeWindow', self.g_curWindowKey)
     }
   }

@@ -82,7 +82,7 @@ export default {
         this.transferList = response.data.results
         this.total = response.data.paging.total
         this.limit = response.data.paging.limit
-        console.log('transferList : ', this.transferList)
+        // console.log('transferList : ', this.transferList)
         for (var idx in this.transferList) {
           let item = this.transferList[idx]
           item.filesize = custom.getFormatBytes(item.filesize)
