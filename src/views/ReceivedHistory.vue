@@ -132,6 +132,8 @@ export default {
           this.isShow = false
         }
         // console.log('this.receivedList', this.receivedList)
+      }, (err) => {
+        clearInterval(this.setTimerInterval)
       })
     },
     selectNodeHome: function (e, nodeid) {

@@ -97,6 +97,8 @@ export default {
         } else {
           this.isShow = false
         }
+      }, (err) => {
+        clearInterval(this.setTimerInterval)
       })
     },
     setTimer: function () {
