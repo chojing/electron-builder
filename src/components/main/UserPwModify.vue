@@ -94,7 +94,7 @@ export default {
     passwordModify: function () {
       const ERROR_TEXT_1 = document.getElementById('errorText1')
       if (!this.userPassword || !this.newPassword || !this.newPasswordCheck) {
-        alert('필수 입력 사항입니다.')
+        ipcRenderer.send('alert','필수 입력 사항입니다.')
       }
       if (this.userPw === this.userPassword && this.newPassword === this.newPasswordCheck) {
         ERROR_TEXT_1.style.display = 'none'
@@ -106,7 +106,7 @@ export default {
         param.realname = this.userRealname
         console.log('비번 일치', param)
         axios.putAsyncAxios('/v2/users/' + name + '/' + 'password', '', param, function (response) {
-          alert('비밀번호가 변경되었습니다.')
+          ipcRenderer.send('alert','비밀번호가 변경되었습니다.')
           const data = true
           ipcRenderer.send('sendData', 'main', data, 'isUserPwModifyClose')
           ipcRenderer.send('closeWindow', self.g_curWindowKey)

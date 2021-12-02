@@ -154,9 +154,9 @@ export default {
       self.isCancel = false
       console.log('request FTP Start')
       if (g_ftpSendData.title == '') {
-        alert('전송제목을 입력해주세요.')
+        ipcRenderer.send('alert','전송제목을 입력해주세요.')
       } else if (Object.keys(g_ftpSendData.fileList).length === 0) {
-        alert('전송할 파일(폴더)를 선택해주세요.')
+        ipcRenderer.send('alert','전송할 파일(폴더)를 선택해주세요.')
       } else {
         g_ftpSendData.type = 'upload'
         // ipcRenderer.send('ftp-file-upload', include.custom.proxy2map(g_ftpSendData)) // eventName, SendData

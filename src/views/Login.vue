@@ -65,7 +65,7 @@ export default {
       const urlError = urlsp[1]
 
       if (urlError === 'error') {
-        // alert('로그인정보를 확인해주세요.');
+        // ipcRenderer.send('alert','로그인정보를 확인해주세요.');
         // PW.focus();
         PW.setAttribute('autofocus', 'autofocus')
         ERROR_TEXT.style.display = 'block'
