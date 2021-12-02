@@ -8,7 +8,7 @@
         </p>
       </Tooltip>
     </td>
-    <td>
+    <td @click="fileOpen(item)">
       <Tooltip :tooltipText="item.filepath" position="top">
         <p class="ellipsis-w140">
         {{item.filepath}}
@@ -38,6 +38,13 @@ export default {
   props: {
     receivedDetailList: Array,
     isShow: Boolean
+  },
+  methods: {
+    fileOpen: function (item) {
+      console.log('gIsMac : ', item.gIsMac)
+      console.log('Volume : ', item.volume)
+      console.log('filepath : ', item.filepath)
+    }
   }
 }
 </script>
