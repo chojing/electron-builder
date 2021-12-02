@@ -81,6 +81,8 @@ export default {
           } else {
             inputfile.fileName = '/' + file.name
           }
+
+          inputfile.fileName.normalize()
           inputfile.path = file.path
           inputfile.size = file.size
 
