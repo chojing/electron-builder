@@ -141,17 +141,21 @@ export default {
       axios.getAsyncAxios('/v2/ftpservers', param, (response) => {
         console.log('결과', response.data)
         this.addSelect = response.data.results
-        this.ftpSelected = this.addSelect[0].name
-        this.ftpInfo.name = this.addSelect[0].name
-        this.ftpInfo.host = this.addSelect[0].host
-        this.ftpInfo.port = this.addSelect[0].port
-        this.ftpInfo.username = this.addSelect[0].username
-        this.ftpInfo.password = this.addSelect[0].password
-        this.ftpInfo.rootpath = this.addSelect[0].rootpath
-        this.ftpInfo.proxy = this.addSelect[0].proxy
-        this.ftpInfo.mode = this.addSelect[0].mode_code
-        // this.ftpInfo.mode = custom.code.valueToCode(this.c_ftpmode, this.addSelect[0].mode)
-        this.ftpInfo.ftpserverid = this.addSelect[0].ftpserverid
+        if (Object.keys(response.data.results).length !== 0) {
+          this.ftpSelected = this.addSelect[0].name
+          this.ftpInfo.name = this.addSelect[0].name
+          this.ftpInfo.host = this.addSelect[0].host
+          this.ftpInfo.port = this.addSelect[0].port
+          this.ftpInfo.username = this.addSelect[0].username
+          this.ftpInfo.password = this.addSelect[0].password
+          this.ftpInfo.rootpath = this.addSelect[0].rootpath
+          this.ftpInfo.proxy = this.addSelect[0].proxy
+          this.ftpInfo.mode = this.addSelect[0].mode_code
+          // this.ftpInfo.mode = custom.code.valueToCode(this.c_ftpmode, this.addSelect[0].mode)
+          this.ftpInfo.ftpserverid = this.addSelect[0].ftpserverid
+        } else {
+          ipcRenderer.send('alert', '조회결과가 없습니다.')
+        }
       })
       // })
     },
