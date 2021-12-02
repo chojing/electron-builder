@@ -207,15 +207,16 @@ function setError (error) {
         errorCode += xhr.message
 
         if (xhr.status >= 400) {
-          ipcRenderer.send('error','에러\n' + errorCode)
+          ipcRenderer.send('error', '에러\n' + errorCode)
         } else {
-          ipcRenderer.send('error',errorCode)
+          ipcRenderer.send('error', errorCode)
         }
       }
       return false
     }
   } else {
-    ipcRenderer.send('error',error)
+    ipcRenderer.send('WriteLog', error)
+    alert(error)
   }
 }
 
