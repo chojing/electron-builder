@@ -69,7 +69,7 @@ FileInfo.prototype.PushFileData = function (_size, _path, _resultArr, _name = un
         curFileData.fileName = curFileData.getFileFullName(_path)
       }
     }
-    curFileData.fileName = checkFolderPath(curFileData.fileName)
+    curFileData.fileName = g_globalFunk.checkFolderPath(curFileData.fileName)
     if (!(_resultArr.find(element => element.fileName === curFileData.fileName))) {
       if (_resultArr.length < this.m_MaxFileReadCount + 1) {
         _resultArr.push(curFileData)
@@ -77,17 +77,7 @@ FileInfo.prototype.PushFileData = function (_size, _path, _resultArr, _name = un
     }
   }
 }
-function checkFolderPath (preFolders) {
-  let flag = true
-  while (flag == true) {
-    if (preFolders.indexOf('//') != -1) {
-      preFolders = preFolders.replace('//', '/')
-    } else {
-      flag = false
-    }
-  }
-  return preFolders
-}
+
 FileInfo.prototype.GetAllFileInfo = function (_filePaths, baseDir = '') {
   const rePathArr = []
   for (let i = 0; i < _filePaths.length; i++) {
