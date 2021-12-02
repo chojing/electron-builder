@@ -2,12 +2,12 @@
   <section class="history-container">
     <div class="wrap">
       <h4 class="tti mb15">전송 진행사항</h4>
-      <div class="send-box wid400 h480">
+      <div class="send-box h480">
         <table>
           <colgroup>
+            <col width="18%">
+            <col width="auto">
             <col width="140px">
-            <col width="180px">
-            <col width="*">
           </colgroup>
           <thead>
           <tr>
