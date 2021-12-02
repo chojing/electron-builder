@@ -171,6 +171,9 @@ export default {
           } else {
             server.rootpath = server.rootpath + rootpathTitle
           }
+          if (server.rootpath.indexOf('//') != -1) {
+            server.rootpath = server.rootpath.replace('//', '/')
+          }
           console.log('server.rootpath : ', server.rootpath)
         }
 
