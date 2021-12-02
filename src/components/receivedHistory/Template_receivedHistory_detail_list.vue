@@ -45,8 +45,9 @@ export default {
     fileopen: function (item) {
       // console.log('gIsMac : ', item.gIsMac, ' Volume : ', item.volume, ' filepath : ', item.filepath)
       let path = item.volume + item.filepath
+      // console.log('path : ', path)
       this.$emit('selectftpserverinfo', item)
-      ipcRenderer.send('closeWinopen-file-exploredow', path)
+      ipcRenderer.send('open-file-explore', path)
     }
   }
 }

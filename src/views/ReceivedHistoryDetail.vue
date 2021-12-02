@@ -115,7 +115,7 @@ export default {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     ftpError: function (err) {
-      console.log(err)
+      console.log('err', err)
       // let msg = ''
     }
   }
