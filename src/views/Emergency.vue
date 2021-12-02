@@ -7,7 +7,7 @@
             <h4>전송 Target</h4>
         </div>
         <div class="favorite-list">
-          <div class="fa-item-link fa-item flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
+          <div class="fa-item-link fa-item flex-column h500" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
             <template v-for="item in nodeList" v-bind:key="item.nodeid">
               <div :data-nodeid="item.nodeid" :data-haschild="item.haschild"
                    :data-pathftpserverid="item.pathftpserverid" :data-pathftpsiteid="item.pathftpsiteid"
