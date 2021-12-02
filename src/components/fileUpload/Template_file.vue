@@ -151,6 +151,7 @@ export default {
     doUpload: function () {
       let self = this
       this.transferid = null
+      self.isCancel = false
       console.log('request FTP Start')
       if (g_ftpSendData.title == '') {
         alert('전송제목을 입력해주세요.')
