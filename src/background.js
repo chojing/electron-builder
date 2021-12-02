@@ -790,3 +790,42 @@ ipcMain.on('offline', (event) => {
 ipcMain.on('WriteLog', (event, msg) => {
   log.info(' [Renderer] : ', msg)
 })
+
+ipcMain.on('info', (event, message, resultPath) => {
+  const options = {
+    type: 'info', // 종류
+    buttons: ['확인', '취소'], // 버튼 스타일
+    title: 'Anywhere', // 제목
+    message: message,
+    checkboxChecked: false // 체크박스(메시지를 저장합니다 이런 기능)
+  }
+  dialog.showMessageBox(null, options).then(result => {
+    if (result.response === 0) {
+      // 확인
+      event.sender.send(resultPath, true)
+    } else if (result.response === 1) {
+      // 취소
+      event.sender.send(resultPath, false)
+    }
+  })
+})
+ipcMain.on('alert', (event, message) => {
+  const options = {
+    type: 'warning', // 종류
+    buttons: ['확인'], // 버튼 스타일
+    title: 'Anywhere', // 제목
+    message: message,
+    checkboxChecked: false // 체크박스(메시지를 저장합니다 이런 기능)
+  }
+  dialog.showMessageBox(null, options)
+})
+ipcMain.on('error', (event, message) => {
+  const options = {
+    type: 'error', // 종류
+    buttons: ['확인'], // 버튼 스타일
+    title: 'Anywhere', // 제목
+    message: message,
+    checkboxChecked: false // 체크박스(메시지를 저장합니다 이런 기능)
+  }
+  dialog.showMessageBox(null, options)
+})
