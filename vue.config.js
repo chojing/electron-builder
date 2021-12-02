@@ -29,8 +29,8 @@ module.exports = {
           // eslint-disable-next-line no-template-curly-in-string
           artifactName: '${productName}-${version}-${os}.${ext}',
           category: 'public.app-category.utilities',
-          provisioningProfile: 'embedded.provisionprofile'
-          // icon: './public/img/icons/mac/test_im_your_father_mac.icns'
+          provisioningProfile: 'embedded.provisionprofile',
+          icon: './public/img/icons/mac/star.icns'
         }
       }
     }
