@@ -111,6 +111,19 @@ function getNowyyyymmddhhiiss () {
   return year + month + day + hour + minute + second
 }
 
+function checkFolderPath (preFolders) {
+  let flag = true
+  while (flag == true) {
+    if (preFolders.indexOf('//') != -1) {
+      preFolders = preFolders.replace('//', '/')
+    } else {
+      flag = false
+    }
+  }
+  return preFolders
+}
+
 exports.NotificationPopUp = NotificationPopUp
 exports.FileData = FileData
 exports.getNowyyyymmddhhiiss = getNowyyyymmddhhiiss
+exports.checkFolderPath = checkFolderPath

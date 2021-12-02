@@ -6,7 +6,7 @@
         <p>{{item.ftpservername}}</p>
       </Tooltip>
     </td>
-    <td @click="fileopen(item)" class="ellipsis">
+    <td @click="fileopen(item)" class="filePath ellipsis">
       <Tooltip :tooltipText="item.filepath" position="top">
         <p>
         {{item.filepath}}

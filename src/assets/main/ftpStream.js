@@ -322,6 +322,7 @@ FTPStream.prototype.doCheckRecursive_work = function (_ftpData, _curFileStream, 
   )
 }
 FTPStream.prototype.downloadFolderOpen = async function (_path, cb) {
+  _path = checkFolderPath(_path)
   shell.openExternal(_path).catch(e => {
     cb(e)
   })
