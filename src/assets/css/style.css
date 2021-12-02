@@ -1,7 +1,7 @@
 
 *{margin: 0;padding: 0;box-sizing:border-box;}
 i.fa{font-size : num}
-body{background-color: #fff;color: #333;min-width: 320px;font-family: sans-serif;letter-spacing: -1px;}
+body{background-color: #fff;color: #333;min-width: 320px;font-family: sans-serif;letter-spacing: -1px;min-width: 500px;}
 button,input{outline: none;border: none;background-color: #fff;font-family: sans-serif;}
 textarea{font-family: sans-serif;}
 button:focus,
@@ -35,7 +35,8 @@ header .logo{text-align: center;}
 .input-box::placeholder{color: #b8b8b8;}
 /*말줄임표 1줄*/
 .ellipsis{max-width: 0;text-align: left}
-.ellipsis span{overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.ellipsis p{overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width:100%;}
+
 .ellipsis-w{width:80px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;text-align: left}
 .ellipsis-w140{width:140px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;text-align: left}
 .ellipsis-w160{width:160px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;text-align: left}
