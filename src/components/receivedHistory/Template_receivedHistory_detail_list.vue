@@ -3,9 +3,7 @@
   <tr v-for="item in receivedDetailList" v-bind:key="item.fileid">
     <td class="ellipsis">
       <Tooltip :tooltipText="item.ftpservername" position="top">
-        <p>
-        {{item.ftpservername}}
-        </p>
+        <p>{{item.ftpservername}}</p>
       </Tooltip>
     </td>
     <td @click="fileopen(item)" class="ellipsis">
