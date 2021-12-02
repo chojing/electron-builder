@@ -35,7 +35,8 @@ header .logo{text-align: center;}
 .input-box::placeholder{color: #b8b8b8;}
 /*말줄임표 1줄*/
 .ellipsis{max-width: 0;text-align: left}
-.ellipsis span{overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.ellipsis p{overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width:100%;}
+
 .ellipsis-w{width:80px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;text-align: left}
 .ellipsis-w140{width:140px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;text-align: left}
 .ellipsis-w160{width:160px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;text-align: left}

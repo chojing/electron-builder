@@ -7,12 +7,12 @@
         <button id="subnode" class="btn h30" :data-nodeid="this.nodeHome2" @click="selectNodeHome($event, this.nodeHome2)">home2</button>
         <button id="usernode" class="btn h30" @click="selectNodeHome($event)">사용자지정</button>
       </div>
-      <div class="send-box wid600" style="height: 484px">
+      <div class="send-box" style="height: 484px">
         <table>
           <colgroup>
-            <col width="150px">
+            <col width="18%">
             <col width="auto">
-            <col width="160px">
+            <col width="18%">
             <col width="140px">
           </colgroup>
           <thead>

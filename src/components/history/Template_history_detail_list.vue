@@ -1,28 +1,30 @@
 <!-- 전송내역 -->
 <template>
   <tr v-for="item in transferDetailList" v-bind:key="item.fileid">
-    <td>
+    <td class="ellipsis">
       <Tooltip :tooltipText="item.ftpservername" position="top">
-        <p class="ellipsis-w">
-        {{item.ftpservername}}
-        </p>
+        <p>{{item.ftpservername}}</p>
       </Tooltip>
     </td>
-    <td>
+    <td class="ellipsis">
       <Tooltip :tooltipText="item.filepath" position="top">
-        <p class="ellipsis-w140">
-        {{item.filepath}}
-        </p>
+        <p>{{item.filepath}}</p>
       </Tooltip>
     </td>
-    <td>
+    <td class="ellipsis">
       <Tooltip :tooltipText="item.filename" position="top">
-        <p class="ellipsis-w">
+        <p>
         {{item.filename}}
         </p>
       </Tooltip>
     </td>
-    <td>{{item.filesize}}</td>
+    <td class="ellipsis">
+      <Tooltip :tooltipText="item.filesize" position="top">
+      <p>
+        {{item.filesize}}
+      </p>
+      </Tooltip>
+    </td>
   </tr>
   <tr v-show="isShow">
     <td colspan="4">조회 결과가 없습니다.</td>

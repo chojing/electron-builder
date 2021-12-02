@@ -70,8 +70,6 @@ FileInfo.prototype.PushFileData = function (_size, _path, _resultArr, _name = un
       }
     }
     curFileData.fileName = checkFolderPath(curFileData.fileName)
-    curFileData.path.normalize()
-    curFileData.fileName.normalize()
     if (!(_resultArr.find(element => element.fileName === curFileData.fileName))) {
       if (_resultArr.length < this.m_MaxFileReadCount + 1) {
         _resultArr.push(curFileData)

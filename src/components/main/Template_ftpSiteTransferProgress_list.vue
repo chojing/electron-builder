@@ -1,8 +1,16 @@
 <!-- 전송내역 -->
 <template>
   <tr v-for="item in ftpResultData" v-bind:key="item.ftpserverid">
-      <td><p class="ellipsis-w">{{item.ftpservername}}</p></td>
-      <td><p class="ellipsis-w160">{{item.fileName}}</p></td>
+    <td class="ellipsis">
+      <Tooltip :tooltipText="item.ftpservername" position="top">
+        <p>{{item.ftpservername}}</p>
+      </Tooltip>
+    </td>
+    <td class="ellipsis">
+      <Tooltip :tooltipText="item.fileName" position="top">
+        <p>{{item.fileName}}</p>
+      </Tooltip>
+    </td>
     <td>
       <div>
           <div class="pro-bar">
@@ -15,7 +23,11 @@
 </template>
 
 <script>
+import Tooltip from '@/components/Tooltip'
 export default {
+  components: {
+    Tooltip
+  },
   props: {
     ftpResultData: Object
   },
