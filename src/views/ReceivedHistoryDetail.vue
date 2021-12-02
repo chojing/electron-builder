@@ -22,7 +22,7 @@
           </tr>
           </thead>
           <tbody>
-            <templateReceivedDetailHistory :receivedDetailList="receivedDetailList" :isShow="isShow"/>
+            <templateReceivedDetailHistory @selectftpserverinfo="selectResult" :receivedDetailList="receivedDetailList" :isShow="isShow"/>
           </tbody>
         </table>
       </div>
@@ -45,6 +45,7 @@ export default {
       g_curWindowKey: '',
       transfername: '',
       transferid: '',
+      selectFtpserverInfo: '',
       gIsMac: false,
       receivedDetailList: [],
       receivedDetailNameList: [],
@@ -53,6 +54,7 @@ export default {
   },
   created () {
     ipcRenderer.on('receiveData', this.init)
+    ipcRenderer.on('open-file-explore-error', this.ftpError)
   },
   methods: {
     init: function (event, key, data) {
@@ -61,7 +63,7 @@ export default {
       this.parentKey = data.parentKey
       this.g_curWindowKey = key
       var agent = window.navigator.userAgent.toLowerCase()
-      console.log('agent : ', agent)
+      // console.log('agent : ', agent)
       if (agent.indexOf('mac') != -1 || agent.indexOf('macintosh') != -1) {
         this.gIsMac = true
       }
@@ -73,7 +75,6 @@ export default {
       param.transferid = this.transferid
       axios.getAsyncAxios('/v2/transferfiles', param, (response) => {
         this.receivedDetailList = response.data.results
-        console.log('receivedDetailList : ', this.receivedDetailList)
 
         for (var idx in this.receivedDetailList) {
           let item = this.receivedDetailList[idx]
@@ -100,7 +101,6 @@ export default {
             }
           })
         }
-        console.log('ddddddd : ', this.receivedDetailList)
         if (this.receivedDetailList.length === 0) {
           this.isShow = true
         } else {
@@ -108,8 +108,15 @@ export default {
         }
       })
     },
+    selectResult: function (val) {
+      this.selectFtpserverInfo = val
+    },
     cancel: function () {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
+    },
+    ftpError: function (err) {
+      console.log(err)
+      // let msg = ''
     }
   }
 }

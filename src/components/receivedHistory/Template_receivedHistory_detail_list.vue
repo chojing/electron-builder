@@ -8,7 +8,7 @@
         </p>
       </Tooltip>
     </td>
-    <td @click="fileOpen(item)">
+    <td @click="fileopen(item)">
       <Tooltip :tooltipText="item.filepath" position="top">
         <p class="ellipsis-w140">
         {{item.filepath}}
@@ -31,7 +31,9 @@
 
 <script>
 import Tooltip from '@/components/Tooltip'
+const { ipcRenderer } = require('@/assets/js/include.js')
 export default {
+  emits: ['selectftpserverinfo'],
   components: {
     Tooltip
   },
@@ -40,10 +42,11 @@ export default {
     isShow: Boolean
   },
   methods: {
-    fileOpen: function (item) {
-      console.log('gIsMac : ', item.gIsMac)
-      console.log('Volume : ', item.volume)
-      console.log('filepath : ', item.filepath)
+    fileopen: function (item) {
+      // console.log('gIsMac : ', item.gIsMac, ' Volume : ', item.volume, ' filepath : ', item.filepath)
+      let path = item.volume + item.filepath
+      this.$emit('selectftpserverinfo', item)
+      ipcRenderer.send('closeWinopen-file-exploredow', path)
     }
   }
 }
