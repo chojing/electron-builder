@@ -17,7 +17,7 @@
     </td>
     <td>
       <Tooltip :tooltipText="item.filename" position="top">
-        <p class="ellipsis-w">
+        <p class="ellipsis-w140">
         {{item.filename}}
         </p>
       </Tooltip>

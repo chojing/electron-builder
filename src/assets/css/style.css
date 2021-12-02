@@ -34,12 +34,13 @@ header .logo{text-align: center;}
 .input-box{padding: 0 5px;display: inline-block;vertical-align: top;width: calc(100% - 60px);height: 100%;border: 1px solid #eee;border-radius: 10px;}
 .input-box::placeholder{color: #b8b8b8;}
 /*말줄임표 1줄*/
-.ellipsis-w{width:80px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
-.ellipsis-w140{width:140px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
-.ellipsis-w160{width:160px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.ellipsis-w{width:80px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;text-align: left}
+.ellipsis-w140{width:140px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;text-align: left}
+.ellipsis-w160{width:160px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;text-align: left}
 
 /**/
 .wid600{min-width:500px;max-width: 700px;}
+.wid400{min-width:400px;max-width: 700px;}
 .h480{height: 460px;overflow: hidden;overflow-y: auto;}
 /*button*/
 .btn{margin-left: 10px;display: inline-block;vertical-align: top;padding: 0 10px;min-width: 50px;height: 100%;border-radius: 10px;background-color: #eee;transition: background-color .2s, color .2s;}
@@ -243,7 +244,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .send-box th{padding: 10px;background-color: #333;border: 1px solid #fff;font-size: 15px;font-weight: normal;color: #fff;}
 .send-box th:first-of-type{border-left: #e9e9e9;}
 .send-box th:last-of-type{border-right: #e9e9e9;}
-.send-box td{padding: 9px;font-size: 14px;border: 1px solid #eee; text-align: center;}
+.send-box td{padding: 9px;font-size: 14px;border: 1px solid #eee; text-align: left;}
 .send-box tr:nth-of-type(even){background-color: #f4faff;}
 .send-box .targetName{cursor: pointer;}
 .send-box .targetName:hover{color: #0082bb;}

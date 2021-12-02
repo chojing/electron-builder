@@ -2,7 +2,7 @@
 <template>
   <tr v-for="item in ftpResultData" v-bind:key="item.ftpserverid">
       <td><p class="ellipsis-w">{{item.ftpservername}}</p></td>
-      <td><p class="ellipsis-w140">{{item.fileName}}</p></td>
+      <td><p class="ellipsis-w160">{{item.fileName}}</p></td>
     <td>
       <div>
           <div class="pro-bar">

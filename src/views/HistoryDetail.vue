@@ -10,7 +10,7 @@
           <colgroup>
             <col width="100px">
             <col width="170px">
-            <col width="100px">
+            <col width="140px">
             <col width="*">
           </colgroup>
           <thead>
