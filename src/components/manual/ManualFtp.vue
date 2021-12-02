@@ -104,7 +104,7 @@ export default {
         proxy: '',
         mode: '',
         ismanual: 1,
-        owner: 'konan',
+        owner: '',
         macvolume: '',
         winvolume: ''
       },
@@ -125,6 +125,7 @@ export default {
   },
   methods: {
     getList: function () {
+      this.ftpInfo.owner = this.$store.state.username
       const param = {}
       const condition = {}
       condition.owner = this.$store.state.username
@@ -153,8 +154,6 @@ export default {
           this.ftpInfo.mode = this.addSelect[0].mode_code
           // this.ftpInfo.mode = custom.code.valueToCode(this.c_ftpmode, this.addSelect[0].mode)
           this.ftpInfo.ftpserverid = this.addSelect[0].ftpserverid
-        } else {
-          ipcRenderer.send('alert', '조회결과가 없습니다.')
         }
       })
       // })
