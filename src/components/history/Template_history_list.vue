@@ -1,21 +1,19 @@
 <!-- 전송내역 -->
 <template>
   <tr v-for="item in transferList" v-bind:key="item.transferid">
-    <td @click="historyDetailPopup(item.transfername, item.transferid)" class="targetName">
+    <td @click="historyDetailPopup(item.transfername, item.transferid)" class="targetName ellipsis">
       <Tooltip :tooltipText="item.transfername" position="top">
-        <p class="ellipsis-w140">
-        {{item.transfername}}
-        </p>
+        <p>{{item.transfername}}</p>
       </Tooltip>
     </td>
-    <td>
+    <td class="ellipsis">
       <Tooltip :tooltipText="item.pathname" position="top">
-        <p class="ellipsis-w140">{{item.pathname}}</p>
+        <p>{{item.pathname}}</p>
       </Tooltip>
     </td>
-    <td>
+    <td class="ellipsis">
       <Tooltip :tooltipText="item.filesize" position="top">
-        {{item.filesize}}
+        <p>{{item.filesize}}</p>
       </Tooltip>
     </td>
     <td>
