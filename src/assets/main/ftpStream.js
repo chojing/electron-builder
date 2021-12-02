@@ -194,9 +194,7 @@ function checkFolderPath (preFolders) {
   while (flag == true) {
     if (preFolders.indexOf('//') != -1) {
       preFolders = preFolders.replace('//', '/')
-      console.log('성공!')
     } else {
-      console.log('실패!')
       flag = false
     }
   }
@@ -322,10 +320,21 @@ FTPStream.prototype.doCheckRecursive_work = function (_ftpData, _curFileStream, 
   )
 }
 FTPStream.prototype.downloadFolderOpen = async function (_path, cb) {
-  _path = checkFolderPath(_path)
-  shell.openPath(_path).catch(e => {
+  try {
+    const stats = fs.statSync(_path)
+    console.log(stats)
+    if (stats.isDirectory()) {
+      _path = checkFolderPath(_path)
+      shell.openPath(_path).catch(e => {
+        cb(e)
+      })
+    } else {
+      let result = { message: 'not folder' }
+      cb(result)
+    }
+  } catch (e) {
     cb(e)
-  })
+  }
 }
 FTPStream.prototype.cancel = function (_cancelInfo) {
   let self = this
