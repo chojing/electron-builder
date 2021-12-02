@@ -99,7 +99,9 @@ export default {
     },
     findEmergencyLastTarget: function (target) {
       if (target.haschild_boolean == false) {
-        this.nodeList.push(target)
+        if (target.nodetype_code == 'target') {
+          this.nodeList.push(target)
+        }
       } else {
         if (target.children !== undefined) {
           let cnt = target.children.length
