@@ -1,24 +1,28 @@
 <template>
-  <li v-for="item in nodeList" v-bind:key="item.nodeid">
-    <p @click="this.onClick(item, item.name)"
-       v-bind:data-nodeid="item.nodeid"
-       v-bind:data-haschild="item.haschild"
-       v-bind:data-ftpserverid="item.ftpserverid"
-       v-bind:data-ftpsiteid="item.ftpsiteid"
-       v-bind:data-nodetype-caption="item.nodetype_caption"
-       v-bind:data-isabs="item.isabs"
-       v-bind:data-isabs_boolean="item.isabs_boolean"
-       v-bind:data-name="item.name"
-       v-bind:data-path="item.path"
-       v-bind:data-isserver="item.isserver"
-       v-bind:data-isopen="item.isopen"
-       v-bind:data-pathftpserverid="item.pathftpserverid"
-       v-bind:data-pathftpsiteid="item.pathftpsiteid"
-       >{{item.name}}</p>
-    <ul v-if="item.haschild" :class="{hide:!item.isopen}">
-      <templateTree v-bind:nodeList="item.children"/>
-    </ul>
-  </li>
+  <div>
+    <template v-for="item in nodeList" v-bind:key="item">
+      <li v-if="item != undefined">
+        <p @click="this.onClick(item, item.name)"
+           v-bind:data-nodeid="item.nodeid"
+           v-bind:data-haschild="item.haschild"
+           v-bind:data-ftpserverid="item.ftpserverid"
+           v-bind:data-ftpsiteid="item.ftpsiteid"
+           v-bind:data-nodetype-caption="item.nodetype_caption"
+           v-bind:data-isabs="item.isabs"
+           v-bind:data-isabs_boolean="item.isabs_boolean"
+           v-bind:data-name="item.name"
+           v-bind:data-path="item.path"
+           v-bind:data-isserver="item.isserver"
+           v-bind:data-isopen="item.isopen"
+           v-bind:data-pathftpserverid="item.pathftpserverid"
+           v-bind:data-pathftpsiteid="item.pathftpsiteid"
+           >{{item.name}}</p>
+        <ul v-if="item.haschild" :class="{hide:!item.isopen}">
+          <templateTree v-bind:nodeList="item.children"/>
+        </ul>
+      </li>
+    </template>
+  </div>
 </template>
 
 <script>
@@ -39,27 +43,30 @@ export default {
     }
   },
   created () {
+    // console.log('nodelist : ', this.nodeList)
     if (this.nodeList && this.nodeList.length > 0) {
       for (let node of this.nodeList) {
         let servernodeList = []
         // node.isopen = true
-        if (node.haschild) {
-          for (let childnode of node.children) {
-            if (childnode.isserver) {
-              servernodeList.push(childnode)
+        if (node != undefined) {
+          if (node.haschild) {
+            for (let childnode of node.children) {
+              if (childnode.isserver) {
+                servernodeList.push(childnode)
+              }
             }
           }
-        }
-        if (servernodeList.length > 0) {
-          for (let servernode of servernodeList) {
-            let index = node.children.indexOf(servernode)
-            // server 삭제
-            node.children.splice(index, 1)
-            // server 삭제한 위치로 slice
-            let preList = node.children.splice(index)
-            // server의 children을 server위치에 concat
-            preList = preList.concat(servernode.children)
-            node.children = preList.concat(node.children)
+          if (servernodeList.length > 0) {
+            for (let servernode of servernodeList) {
+              let index = node.children.indexOf(servernode)
+              // server 삭제
+              node.children.splice(index, 1)
+              // server 삭제한 위치로 slice
+              let preList = node.children.splice(index)
+              // server의 children을 server위치에 concat
+              preList = preList.concat(servernode.children)
+              node.children = preList.concat(node.children)
+            }
           }
         }
       }

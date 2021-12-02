@@ -95,6 +95,9 @@ export default {
         self.nodeHome2 = response.data.result.metaset.result.subnodeid
         self.selectedNodeid = self.nodeHome1
         self.getReceivedList(1)
+      }, (err) => {
+        clearInterval(this.setTimerInterval)
+        self.getReceivedList(1)
       })
     },
     getReceivedList: function (page) {
