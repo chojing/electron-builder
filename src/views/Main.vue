@@ -165,7 +165,7 @@ export default {
       console.trace()
       this.$store.commit('commitApikey', '')
       axios.deleteAsyncAxios('/v2/users/apikey', null, null, (response) => {
-        ipcRenderer.send('alert','로그아웃 되었습니다.')
+        ipcRenderer.send('alert', '로그아웃 되었습니다.')
         this.goTo('Login?Logout')
       })
     },
@@ -186,7 +186,7 @@ export default {
     },
     offlineResult: function (event) {
       if (isOnline == true) {
-        ipcRenderer.send('alert','네트워크 연결이 끊어졌습니다')
+        ipcRenderer.send('alert', '네트워크 연결이 끊어졌습니다')
         isOnline = false
       }
     },

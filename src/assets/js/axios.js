@@ -56,7 +56,7 @@ function getAsyncAxios (url, param, callback, fail) {
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
-    else ipcRenderer.send('alert',response)
+    else ipcRenderer.send('alert', response)
   }).catch(function (error) {
     ipcRenderer.send('WriteLog', 'axios get' + url + ' ' + custom.proxy2string(param) + ' ' + error)
     if (typeof fail === 'function') fail(error)
@@ -98,7 +98,7 @@ function postAsyncAxios (url, body, param, callback, fail) {
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
-    else ipcRenderer.send('alert',response)
+    else ipcRenderer.send('alert', response)
   }).catch(function (error) {
     ipcRenderer.send('WriteLog', 'axios post' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
@@ -140,7 +140,7 @@ function putAsyncAxios (url, body, param, callback, fail) {
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
-    else ipcRenderer.send('alert',response)
+    else ipcRenderer.send('alert', response)
   }).catch(function (error) {
     ipcRenderer.send('WriteLog', 'axios put' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
@@ -182,7 +182,7 @@ function deleteAsyncAxios (url, body, param, callback, fail) {
     }
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
-    else ipcRenderer.send('alert',response)
+    else ipcRenderer.send('alert', response)
   }).catch(function (error) {
     ipcRenderer.send('WriteLog', 'axios delete' + url + ' ' + body + ' ' + param + ' ' + error)
     if (typeof fail === 'function') fail(error)
@@ -198,7 +198,7 @@ function setError (error) {
       if (xhr.message) {
         msg = xhr.message
       }
-      ipcRenderer.send('alert',msg)
+      ipcRenderer.send('alert', msg)
       router.push({ name: 'Login' })
       return false
     } else {

@@ -130,13 +130,13 @@ export default {
     },
     userAdd: function () {
       if (!/^[a-z0-9_-]{8,13}$/.test(this.phonenumber)) {
-        ipcRenderer.send('alert','숫자만 입력해주세요.(8~13자리)')
+        ipcRenderer.send('alert', '숫자만 입력해주세요.(8~13자리)')
         this.$refs.usertelInput.focus()
       } else if (!this.phonenumber) {
-        ipcRenderer.send('alert','연락처를 입력해주세요.')
+        ipcRenderer.send('alert', '연락처를 입력해주세요.')
         this.$refs.usertelInput.focus()
       } else if (!this.name) {
-        ipcRenderer.send('alert','이름을 입력해주세요.')
+        ipcRenderer.send('alert', '이름을 입력해주세요.')
         this.$refs.usernameInput.focus()
       } else {
         this.active = false

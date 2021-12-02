@@ -127,7 +127,7 @@ export default {
       console.log('isCancel : ', isCancel)
       console.log('FileDatas : ', FileDatas)
       if (isFileOver == true) {
-        ipcRenderer.send('alert','파일은 100개를 초과할 수 없습니다.')
+        ipcRenderer.send('alert', '파일은 100개를 초과할 수 없습니다.')
       }
       fileList = FileDatas
       this.printList()

@@ -206,19 +206,19 @@ export default {
       ftpInfoData.macvolume = this.ftpInfo.macvolume
       ftpInfoData.winvolume = this.ftpInfo.winvolume
       if (!this.ftpInfo.name) {
-        ipcRenderer.send('alert','서버명을 입력해주세요.')
+        ipcRenderer.send('alert', '서버명을 입력해주세요.')
         this.$refs.usernameInput.focus()
       } else if (!this.ftpInfo.host) {
-        ipcRenderer.send('alert','HOST를 입력해주세요.')
+        ipcRenderer.send('alert', 'HOST를 입력해주세요.')
         this.$refs.userhostInput.focus()
       } else if (!this.ftpInfo.username) {
-        ipcRenderer.send('alert','아이디를 입력해주세요.')
+        ipcRenderer.send('alert', '아이디를 입력해주세요.')
         this.$refs.useridInput.focus()
       } else if (!this.ftpInfo.password) {
-        ipcRenderer.send('alert','비밀번호를 입력해주세요.')
+        ipcRenderer.send('alert', '비밀번호를 입력해주세요.')
         this.$refs.userpwInput.focus()
       } else if (!/^[0-9]*$/.test(this.ftpInfo.port)) {
-        ipcRenderer.send('alert','PORT는 숫자만 입력해주세요.')
+        ipcRenderer.send('alert', 'PORT는 숫자만 입력해주세요.')
         this.$refs.userportInput.focus()
       } else if (this.ftpInfo.ftpserverid > 0) {
         console.log('수정 ftpserverid확인 : ', this.ftpInfo.ftpserverid)

@@ -130,7 +130,7 @@ export default {
       let ftpServerId = ftpInfo.pathftpserverid
       let ftpSiteId = ftpInfo.pathftpsiteid
       if (ftpServerId == 0 && ftpSiteId == 0) {
-        ipcRenderer.send('alert','조회할 FTP정보가 없습니다.')
+        ipcRenderer.send('alert', '조회할 FTP정보가 없습니다.')
       } else if (ftpServerId > 0) {
         axios.getAsyncAxios('/v2/ftpservers/' + ftpServerId, null, (response) => {
           let data = {}
