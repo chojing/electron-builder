@@ -42,7 +42,7 @@ export default {
     if (this.nodeList && this.nodeList.length > 0) {
       for (let node of this.nodeList) {
         let servernodeList = []
-        node.isopen = true
+        // node.isopen = true
         if (node.haschild) {
           for (let childnode of node.children) {
             if (childnode.isserver) {

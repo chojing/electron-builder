@@ -11,9 +11,9 @@
         <table>
           <colgroup>
             <col width="150px">
-            <col width="150px">
-            <col width="*">
-            <col width="20%">
+            <col width="auto">
+            <col width="160px">
+            <col width="140px">
           </colgroup>
           <thead>
           <tr>

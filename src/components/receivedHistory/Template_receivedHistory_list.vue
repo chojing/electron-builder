@@ -8,11 +8,9 @@
         </p>
       </Tooltip>
     </td>
-    <td>
+    <td class="ellipsis">
       <Tooltip :tooltipText="item.pathname" position="top">
-        <p class="ellipsis-w140">
         {{item.pathname}}
-        </p>
       </Tooltip>
     </td>
     <td>
