@@ -325,7 +325,7 @@ ipcMain.on('ftp-file-upload', async (event, _ftpSendData) => {
     // eslint-disable-next-line no-prototype-builtins
     if (g_windows.hasOwnProperty(parentKey) == false) {
       let windowInfo = new WindowInfo()
-      windowInfo.SetStatusWindow(parentKey, _ftpSendData.targetUrl)
+      windowInfo.SetStatusWindow(_ftpSendData.ftpSite.siteName + _ftpSendData.clientData.transferid, _ftpSendData.targetUrl)
       windowInfo.data = {}
       windowInfo.data.g_ftpSendData = _ftpSendData
       windowInfo.data.g_ftpSendData.event = undefined
