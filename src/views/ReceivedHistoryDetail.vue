@@ -8,10 +8,10 @@
       <div class="send-box h480">
         <table>
           <colgroup>
-            <col width="100px">
-            <col width="170px">
-            <col width="160px">
-            <col width="*">
+            <col width="18%">
+            <col width="18%">
+            <col width="auto">
+            <col width="140px">
           </colgroup>
           <thead>
           <tr>
