@@ -205,6 +205,7 @@ function checkFolderPath (preFolders) {
 FTPStream.prototype.ftpUploadPut = function (curFileStream, curDescPath, callPromiseResult, ftpData) {
   let self = this
   // eslint-disable-next-line prefer-const
+  curDescPath.normalize('NFC')
   self.m_ftpClient.put(curFileStream, curDescPath, false, function (err) {
     if (err) { // error
       log.info(err)
