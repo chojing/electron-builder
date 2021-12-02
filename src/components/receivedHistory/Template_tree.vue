@@ -45,8 +45,10 @@ export default {
         if (node != undefined) {
           if (node.haschild) {
             for (let childnode of node.children) {
-              if (childnode.isserver) {
-                servernodeList.push(childnode)
+              if (childnode != undefined) {
+                if (childnode.isserver) {
+                  servernodeList.push(childnode)
+                }
               }
             }
           }
@@ -69,10 +71,11 @@ export default {
   methods: {
     onClick: function (item) {
       const thishaschild = item.haschild
+      const thisnodetype_code = item.nodetype_code
       if (!this.timeoutId) {
         // 원클릭
         this.timeoutId = setTimeout(() => {
-          if (thishaschild == 1) {
+          if (thishaschild === 1 && thisnodetype_code !== 'target') {
             this.getChildList(item)
           }
           this.timeoutId = null

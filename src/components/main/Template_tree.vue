@@ -8,6 +8,7 @@
            v-bind:data-ftpserverid="item.ftpserverid"
            v-bind:data-ftpsiteid="item.ftpsiteid"
            v-bind:data-nodetype-caption="item.nodetype_caption"
+           v-bind:data-nodetype_code="item.nodetype_code"
            v-bind:data-isabs="item.isabs"
            v-bind:data-isabs_boolean="item.isabs_boolean"
            v-bind:data-name="item.name"
@@ -51,8 +52,10 @@ export default {
         if (node != undefined) {
           if (node.haschild) {
             for (let childnode of node.children) {
-              if (childnode.isserver) {
-                servernodeList.push(childnode)
+              if (childnode != undefined) {
+                if (childnode.isserver) {
+                  servernodeList.push(childnode)
+                }
               }
             }
           }
@@ -83,15 +86,16 @@ export default {
   methods: {
     onClick: function (item, name) {
       const thishaschild = item.haschild
+      const thisnodetype_code = item.nodetype_code
       if (!this.timeoutId) {
         // 원클릭
         this.timeoutId = setTimeout(() => {
-          if (thishaschild == 1) {
+          if (thishaschild === 1 && thisnodetype_code !== 'target') {
             this.getChildList(item)
           }
           this.timeoutId = null
         }, 400)
-      } else if (!thishaschild == 1) {
+      } else if (thishaschild !== 1 && thisnodetype_code === 'target') {
         clearTimeout(this.timeoutId)
         this.fileUploadPopup(item, name)
         this.timeoutId = null
