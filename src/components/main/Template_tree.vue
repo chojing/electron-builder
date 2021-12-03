@@ -86,16 +86,16 @@ export default {
   methods: {
     onClick: function (item, name) {
       const thishaschild = item.haschild
-      const thisnodetype_code = item.nodetype_code
+      // const thisnodetype_code = item.nodetype_code
       if (!this.timeoutId) {
         // 원클릭
         this.timeoutId = setTimeout(() => {
-          if (thishaschild === 1 && thisnodetype_code !== 'target') {
+          if (thishaschild === 1) {
             this.getChildList(item)
           }
           this.timeoutId = null
         }, 400)
-      } else if (thishaschild !== 1 && thisnodetype_code === 'target') {
+      } else if (thishaschild !== 1) {
         clearTimeout(this.timeoutId)
         this.fileUploadPopup(item, name)
         this.timeoutId = null
