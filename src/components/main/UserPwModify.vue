@@ -6,7 +6,7 @@
         <li>
           <div class="flex-center">
             <b>기존 비밀번호</b>
-            <input v-model="userPassword" @input="userPasswordCheckFn" class="flex-1 input-box" placeholder="기존 비밀번호" type="password">
+            <input v-model="userPassword" class="flex-1 input-box" placeholder="기존 비밀번호" type="password">
           </div>
           <em id="errorText1" class="error"></em>
         </li>
