@@ -1,7 +1,7 @@
 <!-- 수신내역 리스트-->
 <template>
-  <tr v-for="item in receivedList" v-bind:key="item.transferid">
-    <td @click="receivedHistoryDetailPopup(item.transfername, item.transferid)" class="targetName ellipsis">
+  <tr v-for="item in receivedList" v-bind:key="item.transferid" @click="receivedHistoryDetailPopup(item.transfername, item.transferid)">
+    <td class="targetName ellipsis">
       <Tooltip :tooltipText="item.transfername" position="top">
         <p>
           {{item.transfername}}
