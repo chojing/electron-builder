@@ -298,20 +298,18 @@ export default {
             // console.log('if ', response.data.results)
 
             for (var target of this.searchList) {
-              if (typeof target.pathnodeid == 'string') {
-                if (target.pathnodeid.startsWith('/' + this.rootNodeId + '/') == true) {
-                  let hasDepth = target.pathname
-                  if (hasDepth !== undefined) {
-                    if (hasDepth.indexOf('>') !== -1) {
-                      var str = hasDepth.split('>')
-                      // console.log('str : ', str)
-                      target.name = str
-                      target.nodename = str[str.length - 1]
-                    }
+              if (typeof target.pathnodeid == 'string' && target.pathnodeid.startsWith('/' + this.rootNodeId + '/') == true) {
+                let hasDepth = target.pathname
+                if (hasDepth !== undefined) {
+                  if (hasDepth.indexOf('>') !== -1) {
+                    var str = hasDepth.split('>')
+                    // console.log('str : ', str)
+                    target.name = str
+                    target.nodename = str[str.length - 1]
                   }
-                } else {
-                  target.isEmergency = 1
                 }
+              } else {
+                target.isEmergency = 1
               }
             }
           } else {
