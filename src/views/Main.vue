@@ -298,7 +298,7 @@ export default {
             // console.log('if ', response.data.results)
 
             for (var target of this.searchList) {
-              if (target.pathnodeid.startsWith('/' + this.rootNodeId + '/') == true) {
+              if (typeof target.pathnodeid == 'string' && target.pathnodeid.startsWith('/' + this.rootNodeId + '/') == true) {
                 let hasDepth = target.pathname
                 if (hasDepth !== undefined) {
                   if (hasDepth.indexOf('>') !== -1) {
