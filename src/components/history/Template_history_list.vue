@@ -1,7 +1,7 @@
 <!-- 전송내역 -->
 <template>
-  <tr v-for="item in transferList" v-bind:key="item.transferid">
-    <td @click="historyDetailPopup(item.transfername, item.transferid)" class="targetName ellipsis">
+  <tr v-for="item in transferList" v-bind:key="item.transferid" @click="historyDetailPopup(item.transfername, item.transferid)">
+    <td class="targetName ellipsis">
       <Tooltip :tooltipText="item.transfername" position="top">
         <p>{{item.transfername}}</p>
       </Tooltip>
