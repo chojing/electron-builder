@@ -90,12 +90,12 @@ export default {
       if (!this.timeoutId) {
         // 원클릭
         this.timeoutId = setTimeout(() => {
-          if (thishaschild === 1) {
+          if (thishaschild == 1) {
             this.getChildList(item)
           }
           this.timeoutId = null
         }, 400)
-      } else if (thishaschild !== 1) {
+      } else if (thishaschild != 1) {
         clearTimeout(this.timeoutId)
         this.fileUploadPopup(item, name)
         this.timeoutId = null
@@ -137,9 +137,15 @@ export default {
       // })
     },
     fileUploadPopup: function (ftpInfo, name) {
+      ipcRenderer.send('WriteLog', 'fileUploadPopup in1')
       console.log(ftpInfo)
       let ftpServerId = ftpInfo.pathftpserverid
+      ipcRenderer.send('WriteLog', 'ftpServerId')
+      ipcRenderer.send('WriteLog', ftpServerId)
       let ftpSiteId = ftpInfo.pathftpsiteid
+      ipcRenderer.send('WriteLog', 'ftpSiteId')
+      ipcRenderer.send('WriteLog', ftpSiteId)
+      ipcRenderer.send('WriteLog', 'fileUploadPopup in2')
       if (ftpServerId == 0 && ftpSiteId == 0) {
         ipcRenderer.send('alert', '조회할 FTP정보가 없습니다.')
       } else if (ftpServerId > 0) {

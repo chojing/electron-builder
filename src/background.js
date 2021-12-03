@@ -809,7 +809,7 @@ ipcMain.on('info', (event, message, resultPath) => {
     }
   })
 })
-ipcMain.on('alert',  (event, message) => {
+ipcMain.on('alert', (event, message) => {
   const options = {
     type: 'warning', // 종류
     buttons: ['확인'], // 버튼 스타일

@@ -84,6 +84,8 @@ export default {
                 if (resultTarget !== undefined) {
                   this.nodeList[i] = resultTarget
                   let hasDepth = resultTarget.pathname
+                  ipcRenderer.send('WriteLog', 'hasDepth')
+                  ipcRenderer.send('WriteLog', hasDepth)
                   if (hasDepth.indexOf('>') !== -1) {
                     var str = hasDepth.split('>')
                     this.nodeList[i].name = str
