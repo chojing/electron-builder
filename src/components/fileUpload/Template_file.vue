@@ -14,7 +14,8 @@
     </div>
     <div class="file-submit-box mt20 user-tel-box" :class="{hide:!isTelUse}">
       <div class="box flex-box">
-        <input :value="this.telValue" class="input-box flex-1" type="text" placeholder="전송 확인 문자 연락처(다중)" v-bind:isTelUse="isTelUse" disabled>
+        <input :value="this.telValue.map((obj) => obj['name'])" class="input-box flex-1"
+               type="text" placeholder="전송 확인 문자 연락처(다중)" v-bind:isTelUse="isTelUse" disabled>
         <button @click="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
       </div>
     </div>
@@ -116,7 +117,18 @@ export default {
         // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
         console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
       } else if (type == 'userTelData') {
-        this.telValue.push(data)
+        data.forEach(userTelData => {
+          if (userTelData !== '') {
+            if (this.telValue.length !== 0) {
+              var memberid = this.telValue.map((obj) => obj['memberid'])
+              if (memberid.indexOf(userTelData.memberid) === -1) {
+                this.telValue.push(userTelData)
+              }
+            } else if (this.telValue.length === 0) {
+              this.telValue.push(userTelData)
+            }
+          }
+        })
         // console.log('담은 데이터', this.telValue)
       } else if (type == 'isFtpSiteCancel') {
         // transfer_tb insert data
