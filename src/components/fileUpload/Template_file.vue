@@ -14,7 +14,8 @@
     </div>
     <div class="file-submit-box mt20 user-tel-box" :class="{hide:!isTelUse}">
       <div class="box flex-box">
-        <input :value="this.telValue" class="input-box flex-1" type="text" placeholder="전송 확인 문자 연락처(다중)" v-bind:isTelUse="isTelUse" disabled>
+        <input :value="this.telValue.map((obj) => obj['name'])" class="input-box flex-1"
+               type="text" placeholder="전송 확인 문자 연락처(다중)" v-bind:isTelUse="isTelUse" disabled>
         <button @click="userInfoPopup" id="user-info-btn"><i class="fas fa-phone-square-alt"></i></button>
       </div>
     </div>
@@ -68,6 +69,7 @@ const FTPSendData = function () {
 
   // sms 정보
 }
+let transfer = {}
 let g_ftpSendData = {}
 export default {
   components: {
@@ -116,25 +118,22 @@ export default {
         // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
         console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
       } else if (type == 'userTelData') {
-        this.telValue.push(data)
+        data.forEach(userTelData => {
+          if (userTelData !== '') {
+            if (this.telValue.length !== 0) {
+              var memberid = this.telValue.map((obj) => obj['memberid'])
+              if (memberid.indexOf(userTelData.memberid) === -1) {
+                this.telValue.push(userTelData)
+              }
+            } else if (this.telValue.length === 0) {
+              this.telValue.push(userTelData)
+            }
+          }
+        })
         // console.log('담은 데이터', this.telValue)
       } else if (type == 'isFtpSiteCancel') {
         // transfer_tb insert data
-        const transfer = {}
-        transfer.isfolder = false
-        transfer.userid = this.$store.state.username
-        transfer.filepath = ''
         transfer.status = 4000
-        transfer.transfername = g_ftpSendData.title
-        transfer.trasnferrequest = g_ftpSendData.comment
-        transfer.filesize = 0
-        for (let idx in g_ftpSendData.fileList) {
-          let item = g_ftpSendData.fileList[idx]
-          transfer.filesize += item.size
-        }
-        if (this.targetFtpInfo.nodeid) {
-          transfer.nodeid = this.targetFtpInfo.nodeid
-        }
         axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
           // console.log('isCancel Success Put : ', response)
         })
@@ -175,11 +174,11 @@ export default {
           if (server.rootpath.indexOf('//') != -1) {
             server.rootpath = server.rootpath.replace('//', '/')
           }
-          console.log('server.rootpath : ', server.rootpath)
+          // console.log('server.rootpath : ', server.rootpath)
         }
 
         // transfer_tb insert data
-        const transfer = {}
+        transfer = {}
         transfer.isfolder = false
         transfer.userid = this.$store.state.username
         transfer.filepath = ''
@@ -187,6 +186,10 @@ export default {
         transfer.transfername = g_ftpSendData.title
         transfer.trasnferrequest = g_ftpSendData.comment
         transfer.filesize = 0
+        for (let idx in g_ftpSendData.fileList) {
+          let item = g_ftpSendData.fileList[idx]
+          transfer.filesize += item.size
+        }
         if (this.targetFtpInfo.nodeid) {
           transfer.nodeid = this.targetFtpInfo.nodeid
         }
@@ -237,21 +240,7 @@ export default {
       this.fileTotal = g_ftpSendData.fileList.length // 전체 파일 진행 개수
 
       // transfer_tb insert data
-      const transfer = {}
-      transfer.isfolder = false
-      transfer.userid = this.$store.state.username
-      transfer.filepath = ''
       transfer.status = 2000
-      transfer.transfername = g_ftpSendData.title
-      transfer.trasnferrequest = g_ftpSendData.comment
-      transfer.filesize = 0
-      for (let idx in g_ftpSendData.fileList) {
-        let item = g_ftpSendData.fileList[idx]
-        transfer.filesize += item.size
-      }
-      if (this.targetFtpInfo.nodeid) {
-        transfer.nodeid = this.targetFtpInfo.nodeid
-      }
 
       if (!data.ftpData.isTotalComplete) {
         if (this.tempCurrentPercent !== parseInt(data.ftpData.totalWorkSize_Percent)) {
@@ -382,20 +371,32 @@ export default {
       this.isUploading = false
       if (errMsg.code === 530) {
         msg = '로그인한 계정 / 비밀번호를 확인해주세요'
-        alert(msg)
+        ipcRenderer.send('alert', msg)
       } else if (errMsg.code == 'EHOSTUNREACH') {
         msg = 'FTP 서버와 연결할 수 없습니다.'
-        alert(msg)
+        ipcRenderer.send('alert', msg)
       } else if (errMsg.code == 600) {
         msg = 'FTP 경로에 문제가 발생했습니다.'
-        alert(msg)
+        ipcRenderer.send('alert', msg)
       } else if (errMsg.code == 'ECONNABORTED') {
         // 잘못된 acitve ip 의심
         msg = 'FTP 서버와 연결이 끊어졌습니다.'
-        alert(msg)
+        ipcRenderer.send('alert', msg)
+      } else if (errMsg.code == 'ENOTFOUND') {
+        msg = '인식할 수 없는 HOST입니다.\n FTP 서버의 HOST를 확인해주세요.'
+        ipcRenderer.send('alert', msg)
+      } else if (errMsg.code == 'ERR_SOCKET_BAD_PORT') {
+        msg = 'PORT번호는 0부터 65535까지의 범위의 숫자로 되어야합니다.\n FTP 서버의 PORT번호를 확인해주세요.'
+        ipcRenderer.send('alert', msg)
       } else {
-        alert(errMsg.message)
+        console.log('errCode : ', errMsg.code)
+        ipcRenderer.send('alert', errMsg.message)
       }
+
+      transfer.status = 4000
+      axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
+        // console.log('isCancel Success Put : ', response)
+      })
     }
   }
 }

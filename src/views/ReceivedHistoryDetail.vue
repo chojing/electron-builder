@@ -118,7 +118,8 @@ export default {
       let severname = this.selectFtpserverInfo.ftpservername
       let filepath = this.selectFtpserverInfo.filepath
       console.log('err', err)
-      alert(severname + '에 ' + filepath + ' 파일 경로가 없습니다.')
+      let msg = severname + '에 ' + filepath + ' 파일 경로가 없습니다.'
+      ipcRenderer.send('alert', msg)
     }
   }
 }

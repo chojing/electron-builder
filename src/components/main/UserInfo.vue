@@ -25,12 +25,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in users" :key="user.memberid">
+            <tr v-for="user in this.users" :key="user.memberid">
               <td>
-                <div class="check"><input type="checkbox" v-model="selected" :value="user.phonenumber" :id="user.memberid"><label :for="user.memberid"></label></div>
+                <div class="check"><input type="checkbox" v-model="selected" :value="user" :id="user.memberid"><label :for="user.memberid"></label></div>
               </td>
               <td class="name">{{user.name}}</td>
               <td class="tel">{{user.phonenumber}}</td>
+            </tr>
+            <tr v-show="isShow">
+              <td colspan="3">조회 결과가 없습니다.</td>
             </tr>
           </tbody>
         </table>
@@ -127,6 +130,7 @@ export default {
           this.isShow = false
         }
       })
+      this.selectAll = false // 전체체크박스 해제
     },
     userAdd: function () {
       if (!this.name) {
@@ -153,25 +157,28 @@ export default {
       }
     },
     userDel: function () {
-      // this.selected.forEach(seleted => {
-      //   this.users.forEach(user => {
-      //     if (user.phonenumber == seleted) {
-      //       let memberid = user.memberid
-      //       let test = {}
-      //       axios.deleteAsyncAxios('/v2/members/' + memberid, test, test, (response) => {
-      //         // console.log('delete', response)
-      //       })
-      //     }
-      //   })
-      // })
-      // this.selected = []
-      // this.getUserList(1)
+      this.selected.forEach(selected => {
+        this.users.forEach(user => {
+          if (user.memberid === selected.memberid) {
+            let memberid = user.memberid
+            axios.deleteAsyncAxios('/v2/members/' + memberid, {}, {}, (response) => {
+              // console.log('delete', response)
+              this.selected = []
+              this.getUserList(1)
+            })
+          }
+        })
+      })
     },
     submit: function () {
-      const data = []
+      let data = []
       this.selected.forEach(userTelData => {
         if (userTelData !== '') {
-          data.push(userTelData)
+          let users = {}
+          users.memberid = userTelData.memberid
+          users.name = userTelData.name
+          users.phonenumber = userTelData.phonenumber
+          data.push(users)
         }
       })
       // key, data, type
@@ -193,13 +200,14 @@ export default {
       set (value) {
         var selected = []
         if (value) {
-          this.users.forEach(function (user) {
-            selected.push(user.phonenumber)
-            console.log('유저번호=id: ' + user.phonenumber)
-            console.log('전체체크한 유저정보: ' + selected)
-          })
+          for (let idx in this.users) {
+            let user = this.users[idx]
+            selected.push(user)
+            // console.log('전체체크한 유저정보: ', selected)
+          }
         }
         this.selected = selected
+        // console.log('this.selected : ', this.selected)
       }
     }
   }
