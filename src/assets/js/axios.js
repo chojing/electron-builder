@@ -154,12 +154,12 @@ async function deleteSyncAxios (url, body, param, callback, fail) {
     contentType = 'application/json; charset=utf-8'
   }
   let result
-  await axios.delete(url, body, {
-    params: param,
+  await axios.delete(url, {
     headers: {
       'Content-Type': contentType,
       Authorization: store.state.apikey
-    }
+    },
+    params: param
   }).then(function (response) {
     result = response.data
   }).catch(function (error) {
@@ -174,12 +174,12 @@ function deleteAsyncAxios (url, body, param, callback, fail) {
   if (body != null && body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
-  axios.delete(url, body, {
-    params: param,
+  axios.delete(url, {
     headers: {
       'Content-Type': contentType,
       Authorization: store.state.apikey
-    }
+    },
+    params: param
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
     else ipcRenderer.send('alert', response)

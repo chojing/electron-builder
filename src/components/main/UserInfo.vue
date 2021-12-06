@@ -157,19 +157,18 @@ export default {
       }
     },
     userDel: function () {
-      // this.selected.forEach(seleted => {
-      //   this.users.forEach(user => {
-      //     if (user.phonenumber == seleted) {
-      //       let memberid = user.memberid
-      //       let test = {}
-      //       axios.deleteAsyncAxios('/v2/members/' + memberid, test, test, (response) => {
-      //         // console.log('delete', response)
-      //       })
-      //     }
-      //   })
-      // })
-      // this.selected = []
-      // this.getUserList(1)
+      this.selected.forEach(selected => {
+        this.users.forEach(user => {
+          if (user.memberid === selected.memberid) {
+            let memberid = user.memberid
+            axios.deleteAsyncAxios('/v2/members/' + memberid, {}, {}, (response) => {
+              // console.log('delete', response)
+              this.selected = []
+              this.getUserList(1)
+            })
+          }
+        })
+      })
     },
     submit: function () {
       let data = []
