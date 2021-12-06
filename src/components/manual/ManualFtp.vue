@@ -5,7 +5,9 @@
       <div class="ftp-info mt20">
         <div class="btn-box right">
           <button @click="newFtpAdd" class="btn h30" id="new-btn" dataname="newBtn" v-show="!isOptionClicked">추가</button>
-          <button @click="usrModifyFtp" class="btn blue h30" id="modify-btn"  dataname="addBtn" v-show="!isOptionClicked">수정</button>
+          <template v-if="Object.keys(this.addSelect).length !== 0">
+            <button @click="usrModifyFtp" class="btn blue h30" id="modify-btn"  dataname="addBtn" v-show="!isOptionClicked">수정</button>
+          </template>
           <button @click="optionCancelClick" class="btn blue h30" id="option-cancel-btn" dataname="optionCancelBtn" v-show="isOptionClicked">취소</button>
         </div>
         <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
