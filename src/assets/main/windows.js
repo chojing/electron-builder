@@ -16,7 +16,7 @@ WindowInfo.prototype.SetStatusWindow = function (_key, _targetUrl) {
   this.width = 500
   this.height = 700
 
-  this.modal = true
+  this.modal = false
 }
 
 exports.WindowInfo = WindowInfo
