@@ -124,7 +124,7 @@ main .user-name p span{padding-left:3px;display: inline-block;vertical-align: mi
 main .target-list{height: 250px;overflow-y: auto;}
 main .target-list ul{padding:5px 15px 0 15px;}
 main .target-list ul.hide{display: none}
-main .target-list ul li{padding: 5px 0 0;}
+main .target-list ul li{padding: 7px 0 0;}
 .favorite-list{font-size: 0;text-align: left;}
 .favorite-list button{margin-bottom: 10px;padding: 4px 0; border-radius: 5px;border: 1px solid #eee;transition: border-color .2s;}
 .favorite-list span{display: inline-block;vertical-align: middle; margin: 0 5px;font-size: 14px;}
@@ -147,12 +147,14 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .target-list ul li{padding:5px 0;}
 .target-list ul li p{position: relative;cursor: pointer;display: inline-block;}
 .target-list > ul p{padding-left: 20px;}
-.target-list > ul p::after{position: absolute;content: '-';left:0;top:0;width: 15px;height: 15px;}
-.target-list > ul li p[data-haschild='1']::after{position: absolute;content: "\f07b";left:0;top:50%;transform: translateY(-50%); width: 12px;height: 15px;font-family: 'Font Awesome 5 Free';font-weight: 900;color:#333;}
+.target-list > ul p::after{position: absolute;content: '\f111';left:0;top:0;width: 15px;height: 15px;font-family: 'Font Awesome 5 Free';font-weight: 900;font-size: 12px;}
+.target-list > ul li p[data-haschild='1']::after{position: absolute;content: "\f07b";left:0;top:48%;transform: translateY(-50%); width: 19px;height: 15px;font-family: 'Font Awesome 5 Free';font-weight: 900;color:#333;font-size:15px;}
 .target-list > ul li p[data-isopen='true'][data-haschild='1']::after{content: "\f07c";}
-.target-list > ul li p[data-isopen='true'][data-haschild='1']{color: rgb(12 92 128);}
-.target-list > ul li p[data-haschild='1'][data-nodetype-caption="SubCell"]::after{color:#777;}
-.target-list > ul li p[data-haschild='1'][data-nodetype-caption="Branch"]::after{color:#ababab;}
+/*.target-list > ul li p[data-isopen='true'][data-haschild='1']{color: rgb(12 92 128);}*/
+.target-list > ul li p[data-nodetype-caption="Cell"]::after{color:#f94144;}
+.target-list > ul li p[data-nodetype-caption="SubCell"]::after{color:#f3722c;}
+.target-list > ul li p[data-nodetype-caption="Branch"]::after{color:#43aa8b;}
+.target-list > ul li p[data-nodetype-caption="Target"]::after{color:#788aa3;font-size: 12px;}
 /** login **/
 .login{width: 100%;height:100vh;padding-top: 100px;background-color:#0073a5;}
 .login-container{margin:50px auto;max-width:500px;}
@@ -262,7 +264,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .history-detaile-container .targetName{font-size: 17px;font-weight: 600;}
 
 .history-container select{padding: 0 5px; width: 100%;height: 40px;border: 1px solid #eee;border-radius: 5px;}
-.history-container table>tbody>tr:hover{background: #a6efff;}
+.history-container table>tbody>tr:hover{background:#ffeb8a;}
 .logoutCheckPop{display:block;position: fixed;top:50%;left:50%;transform: translate(-50%,-50%);padding: 20px 30px;background: #fff;z-index: 9999;box-shadow:1px 11px 20px 9px rgb(0 0 0 / 20%);border-radius: 5px;}
 .logoutCheckPop p{padding-bottom: 20px;}
 .logoutCheckPop.view{display: block;}
