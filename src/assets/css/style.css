@@ -259,8 +259,8 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .pro-bar span.success{background-color: #0082bb;}
 .pro-bar span.fail{background-color: #f11835;}
 .pro-bar b{position: absolute;left: 50%;top: 50%;z-index: 10;transform: translate(-50%,-50%);font-size: 14px;text-shadow: 1px 1px 3px rgb(255 255 255 / 50%);}
-.history-detaile-container .targetName{font-size: 17px;font-weight: 600;}
-
+.history-detail-container .targetName{font-size: 17px;font-weight: 600;}
+.history-detail-container table>tbody>tr:hover{background: #a6efff;}
 .history-container select{padding: 0 5px; width: 100%;height: 40px;border: 1px solid #eee;border-radius: 5px;}
 .history-container table>tbody>tr:hover{background: #a6efff;}
 .logoutCheckPop{display:block;position: fixed;top:50%;left:50%;transform: translate(-50%,-50%);padding: 20px 30px;background: #fff;z-index: 9999;box-shadow:1px 11px 20px 9px rgb(0 0 0 / 20%);border-radius: 5px;}

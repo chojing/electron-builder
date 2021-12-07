@@ -1,5 +1,5 @@
 <template>
-  <section class="history-detaile-container">
+  <section class="history-detail-container">
     <div class="wrap">
       <h4 class="tti">수신내역 상세</h4>
       <p class="targetName mt20">
