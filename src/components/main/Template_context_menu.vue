@@ -27,7 +27,7 @@ export default {
     editFavoritsMenu: function (e) {
       var isFavorits = document.getElementById('favorits-checkbox-id').checked
       var param = {}
-      param.alias = 'tteesstt' // 추후 변경
+      param.alias = '' // 추후 변경
       if (isFavorits) { // 즐겨찾기 추가
         axios.postAsyncAxios('/v2/users/' + this.username + '/favorits/' + this.nodeid, null, param, (response) => {
           // console.log('post', response)
@@ -39,6 +39,7 @@ export default {
           this.$parent.getFavorits()
         })
       }
+      this.$parent.hideContextMenu()
     },
     fileUploadPopup: function () {
       var data = {}
@@ -48,6 +49,7 @@ export default {
       data.name = this.nodename
       data.path = this.nodepath
       this.$parent.fileUploadPopup(data)
+      this.$parent.hideContextMenu()
     }
   }
 }
