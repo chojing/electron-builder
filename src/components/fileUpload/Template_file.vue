@@ -390,6 +390,7 @@ export default {
         ipcRenderer.send('alert', msg)
       } else {
         console.log('errCode : ', errMsg.code)
+        ipcRenderer.send('WriteLog', errMsg.code)
         ipcRenderer.send('alert', errMsg.message)
       }
 

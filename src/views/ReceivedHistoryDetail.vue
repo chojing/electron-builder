@@ -1,5 +1,5 @@
 <template>
-  <section class="history-detaile-container">
+  <section class="history-detail-container">
     <div class="wrap">
       <h4 class="tti">수신내역 상세</h4>
       <p class="targetName mt20">
@@ -76,35 +76,35 @@ export default {
       axios.getAsyncAxios('/v2/transferfiles', param, (response) => {
         this.receivedDetailList = response.data.results
 
-        for (var idx in this.receivedDetailList) {
-          let item = this.receivedDetailList[idx]
-          item.filesize = custom.getFormatBytes(item.filesize)
-          if (item.filename.indexOf('/') !== -1) {
-            let nameStr = item.filename.split('/')
-            for (let i = 1; i < nameStr.length; i++) {
-              if (i != nameStr.length - 1) {
-                item.filepath += ('/' + nameStr[i])
-              } else if (i == (nameStr.length - 1)) {
-                item.filepath += '/'
+        if (this.receivedDetailList.length !== 0) {
+          for (var idx in this.receivedDetailList) {
+            let item = this.receivedDetailList[idx]
+            item.filesize = custom.getFormatBytes(item.filesize)
+            if (item.filename.indexOf('/') !== -1) {
+              let nameStr = item.filename.split('/')
+              for (let i = 1; i < nameStr.length; i++) {
+                if (i != nameStr.length - 1) {
+                  item.filepath += ('/' + nameStr[i])
+                } else if (i == (nameStr.length - 1)) {
+                  item.filepath += '/'
+                }
               }
+              item.filename = nameStr[nameStr.length - 1]
             }
-            item.filename = nameStr[nameStr.length - 1]
+            axios.getAsyncAxios('/v2/ftpservers/' + item.ftpserverid, null, (response) => {
+              let self = this
+              if (self.gIsMac) {
+                item.gIsMac = true
+                item.volume = response.data.result.macvolume
+              } else {
+                item.gIsMac = false
+                item.volume = response.data.result.winvolume
+              }
+            })
           }
-          axios.getAsyncAxios('/v2/ftpservers/' + item.ftpserverid, null, (response) => {
-            let self = this
-            if (self.gIsMac) {
-              item.gIsMac = true
-              item.volume = response.data.result.macvolume
-            } else {
-              item.gIsMac = false
-              item.volume = response.data.result.winvolume
-            }
-          })
-        }
-        if (this.receivedDetailList.length === 0) {
-          this.isShow = true
-        } else {
           this.isShow = false
+        } else if (this.receivedDetailList.length === 0) {
+          this.isShow = true
         }
       })
     },

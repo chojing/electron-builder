@@ -159,6 +159,7 @@ async function deleteSyncAxios (url, body, param, callback, fail) {
       'Content-Type': contentType,
       Authorization: store.state.apikey
     },
+    data: { body },
     params: param
   }).then(function (response) {
     result = response.data
@@ -179,6 +180,7 @@ function deleteAsyncAxios (url, body, param, callback, fail) {
       'Content-Type': contentType,
       Authorization: store.state.apikey
     },
+    data: { body },
     params: param
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)

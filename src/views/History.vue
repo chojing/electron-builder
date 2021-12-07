@@ -83,19 +83,19 @@ export default {
         this.total = response.data.paging.total
         this.limit = response.data.paging.limit
         // console.log('transferList : ', this.transferList)
-        for (var idx in this.transferList) {
-          let item = this.transferList[idx]
-          item.filesize = custom.getFormatBytes(item.filesize)
-          if (item.status >= 2000 && item.status < 3000) {
-            item.dataPer = (parseInt(item.status) - 2000)
-          } else {
-            item.dataPer = 100
+        if (this.transferList.length !== 0) {
+          for (var idx in this.transferList) {
+            let item = this.transferList[idx]
+            item.filesize = custom.getFormatBytes(item.filesize)
+            if (item.status >= 2000 && item.status < 3000) {
+              item.dataPer = (parseInt(item.status) - 2000)
+            } else {
+              item.dataPer = 100
+            }
           }
-        }
-        if (this.transferList.length === 0) {
-          this.isShow = true
-        } else {
           this.isShow = false
+        } else if (this.transferList.length === 0) {
+          this.isShow = true
         }
       }, (err) => {
         clearInterval(this.setTimerInterval)

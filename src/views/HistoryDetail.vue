@@ -1,5 +1,5 @@
 <template>
-  <section class="history-detaile-container">
+  <section class="history-detail-container">
     <div class="wrap">
       <h4 class="tti">전송내역 상세</h4>
       <p class="targetName mt20">
@@ -68,27 +68,26 @@ export default {
       param.transferid = this.transferid
       axios.getAsyncAxios('/v2/transferfiles', param, (response) => {
         this.transferDetailList = response.data.results
-        console.log('transferDetailList : ', this.transferDetailList)
-
-        for (var idx in this.transferDetailList) {
-          let item = this.transferDetailList[idx]
-          item.filesize = custom.getFormatBytes(item.filesize)
-          if (item.filename.indexOf('/') !== -1) {
-            let nameStr = item.filename.split('/')
-            for (let i = 1; i < nameStr.length; i++) {
-              if (i != nameStr.length - 1) {
-                item.filepath += ('/' + nameStr[i])
-              } else if (i == (nameStr.length - 1)) {
-                item.filepath += '/'
+        // console.log('transferDetailList : ', this.transferDetailList)
+        if (this.transferDetailList.length !== 0) {
+          for (var idx in this.transferDetailList) {
+            let item = this.transferDetailList[idx]
+            item.filesize = custom.getFormatBytes(item.filesize)
+            if (item.filename.indexOf('/') !== -1) {
+              let nameStr = item.filename.split('/')
+              for (let i = 1; i < nameStr.length; i++) {
+                if (i != nameStr.length - 1) {
+                  item.filepath += ('/' + nameStr[i])
+                } else if (i == (nameStr.length - 1)) {
+                  item.filepath += '/'
+                }
               }
+              item.filename = nameStr[nameStr.length - 1]
             }
-            item.filename = nameStr[nameStr.length - 1]
           }
-        }
-        if (this.transferDetailList.length === 0) {
-          this.isShow = true
-        } else {
           this.isShow = false
+        } else if (this.transferDetailList.length === 0) {
+          this.isShow = true
         }
       })
     },

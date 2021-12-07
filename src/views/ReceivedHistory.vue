@@ -120,21 +120,25 @@ export default {
         this.receivedList = response.data.results
         this.total = response.data.paging.total
         this.limit = response.data.paging.limit
-        for (var idx in this.receivedList) {
-          let item = this.receivedList[idx]
-          item.filesize = custom.getFormatBytes(item.filesize)
-          if (item.status >= 2000 && item.status < 3000) {
-            item.dataPer = (parseInt(item.status) - 2000)
-          } else {
-            item.dataPer = 100
+        if (this.receivedList.length !== 0) {
+          for (var idx in this.receivedList) {
+            let item = this.receivedList[idx]
+            item.filesize = custom.getFormatBytes(item.filesize)
+            if (item.status >= 2000 && item.status < 3000) {
+              item.dataPer = (parseInt(item.status) - 2000)
+            } else {
+              item.dataPer = 100
+            }
           }
-        }
-        if (this.receivedList.length === 0) {
-          this.isShow = true
-        } else {
           this.isShow = false
+        } else if (this.receivedList.length === 0) {
+          this.isShow = true
         }
         // console.log('this.receivedList', this.receivedList)
+        if (this.selectedNodeid !== null) { // getnodehome 함수에서 오류가 생겨 timer가 없어졌을 경우, 사용자지정조회에서는 timer 지정을 해야할 때
+          clearInterval(this.setTimerInterval)
+          this.setTimer()
+        }
       }, (err) => {
         clearInterval(this.setTimerInterval)
       })
