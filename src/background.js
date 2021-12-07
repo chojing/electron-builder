@@ -829,3 +829,19 @@ ipcMain.on('error', (event, message) => {
   }
   dialog.showMessageBox(null, options)
 })
+
+ipcMain.on('ondragstart', (event, filePath) => {
+  filePath = globalFunk.checkFolderPath(filePath)
+  globalFunk.checkAvailableFile(filePath, (e) => {
+    console.log(e)
+    // send Error
+    if (e !== undefined) {
+      event.sender.send('ondragstart_result', e)
+    }
+  })
+  event.sender.startDrag({
+    file: filePath,
+    // eslint-disable-next-line no-undef
+    icon: _path.join(__static, starIcon)
+  })
+})

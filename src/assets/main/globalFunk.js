@@ -2,6 +2,7 @@
 // const app = electron.app
 // const { Notification } = require('electron')
 const _path = require('path')
+const fs = require('fs')
 // eslint-disable-next-line no-unused-vars
 let g_filter = []
 
@@ -123,7 +124,21 @@ function checkFolderPath (preFolders) {
   return preFolders
 }
 
+function checkAvailableFile (path, cb) {
+  try {
+    const stats = fs.statSync(path)
+    if (stats.isDirectory()) {
+      // console.log(stats)
+    } else {
+      // console.log(stats)
+    }
+  } catch (e) {
+    cb(e)
+  }
+}
+
 exports.NotificationPopUp = NotificationPopUp
 exports.FileData = FileData
 exports.getNowyyyymmddhhiiss = getNowyyyymmddhhiiss
 exports.checkFolderPath = checkFolderPath
+exports.checkAvailableFile = checkAvailableFile
