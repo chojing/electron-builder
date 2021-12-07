@@ -203,6 +203,11 @@ function setError (error) {
       ipcRenderer.send('alert', msg)
       router.push({ name: 'Login' })
       return false
+    } else if (xhr.status === 400) { // 간헐적으로 발생하는 apikey 분실 임시 대응 로직
+      let msg = '에러 \n세션이 끊겼습니다.\n로그인 페이지로 이동합니다.'
+      ipcRenderer.send('alert', msg)
+      router.push({ name: 'Login' })
+      return false
     } else {
       let errorCode = '[ ERROR CODE : ' + xhr.status + ' ]'
       if (xhr.message) {
