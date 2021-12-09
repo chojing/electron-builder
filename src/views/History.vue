@@ -1,7 +1,9 @@
 <template>
   <section class="history-container">
     <div class="wrap">
-      <h4 class="tti mb15">전송내역</h4>
+      <h4 class="tti mb15">전송내역
+        <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
+      </h4>
       <div class="send-box" style="height: 531px">
         <table>
           <colgroup>
@@ -23,7 +25,7 @@
           </tbody>
         </table>
       </div>
-      <div class="paging mt20 mb20">
+      <div class="paging mt10 mb20">
         <pagination class ="pagination" ref="pagination"
                     :pageData="pageSet(total, limit, this.page)"
                     @paging="getTransferList"/>
@@ -110,6 +112,10 @@ export default {
     },
     pageSet: function (total, limit, page) {
       return custom.pageSetting(total, limit, page)
+    },
+    refresh: function () {
+      this.getTransferList(1)
+      // this.$router.go()
     }
   },
   watch: {

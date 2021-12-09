@@ -68,7 +68,10 @@
             </div>
           </div>
         </div>
-        <div class="target-list mt40">
+        <div class="mt10 right">
+          <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
+        </div>
+        <div class="target-list">
           <ul class="one-list" id="targetContainer" @click="hideContextMenu()" @contextmenu.prevent="showContextMenu($event)">
             <templateTree v-bind:nodeList="nodeList" ref="templateTree"/>
           </ul>
@@ -330,6 +333,9 @@ export default {
       targetInput.value = ''
       targetInput.placeholder = '전송타겟을 입력해주세요'
       this.searchList = []
+    },
+    refresh: function () {
+      this.$router.go()
     }
   }
 }

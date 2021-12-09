@@ -1,7 +1,9 @@
 <template>
   <section class="history-container">
     <div class="wrap">
-      <h4 class="tti mb20">수신내역</h4>
+      <h4 class="tti mb20">수신내역
+        <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
+      </h4>
       <div class="btn-box">
         <button id="mainnode" class="btn h30 active" :data-nodeid="this.nodeHome1" v-bind:class="{active:false}" @click="selectNodeHome($event, this.nodeHome1)">home1</button>
         <button id="subnode" class="btn h30" :data-nodeid="this.nodeHome2" @click="selectNodeHome($event, this.nodeHome2)">home2</button>
@@ -28,7 +30,7 @@
           </tbody>
         </table>
       </div>
-      <div class="paging mt20 mb20">
+      <div class="paging mt10 mb20">
         <pagination class ="pagination" ref="pagination"
                   :pageData="pageSet(total, limit, this.page)"
                   @paging="getReceivedList"/>
@@ -193,6 +195,10 @@ export default {
     },
     pageSet: function (total, limit, page) {
       return custom.pageSetting(total, limit, page)
+    },
+    refresh: function () {
+      this.getReceivedList()
+      // this.$router.go()
     }
   },
   watch: {

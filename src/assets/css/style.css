@@ -87,7 +87,8 @@ header .logo{text-align: center;}
 .fixed-bar span a .fa-user-edit{color:navy;}
 .fixed-bar span a .fa-star{color:rgb(22, 124, 219);}
 
-.tti{padding: 20px 0 10px; font-size: 18px !important;font-weight: 500 !important;border-bottom: 2px solid #0082bb;color: #0073a5;}
+.tti{padding: 20px 0 10px; font-size: 18px !important;font-weight: 500 !important;border-bottom: 2px solid #0082bb;color: #0073a5;
+  display: -webkit-box; display: -ms-flexbox;display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify;justify-content: space-between;align-items: center;}
 
 .tab{height: 50px;border: 1px solid #eee;}
 .tab li{width: 50%;font-size: 16px;font-weight:600;text-align: center;cursor: pointer;color: #b8b8b8;}
@@ -107,7 +108,7 @@ header .logo{text-align: center;}
 
 /** pagination **/
 .pagination{display: block;margin: 0;}
-.paging ul {text-align:center;margin:20px 0 30px;display:block;}
+.paging ul {text-align:center;margin:10px 0 30px;display:block;}
 .paging li {width:23px;height:23px;line-height:22px;border-radius:5px;border:1px solid #d8d8d8;display:inline-block;font-size:14px;color: #393939;font-weight:500;margin-right:5px;cursor:pointer;background-color:#fff;transition: background-color .2s, color .2s;}
 .paging li:last-child {margin-right:0;}
 .paging li.active {background-color:#393939;color:#fff;}
@@ -246,7 +247,7 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 .file-drag-box.disabled .drag:after{display: none;}
 .file-drag-box.disabled::after{content: '';position: absolute;top: 0;left:0;right:0;bottom:0;z-index: -1;}
 /*전송내역*/
-.send-box{margin: 20px 0 15px;}
+.send-box{margin: 10px 0 15px;}
 .send-box th{padding: 10px;background-color: #333;border: 1px solid #fff;font-size: 15px;font-weight: normal;color: #fff;}
 .send-box th:first-of-type{border-left: #e9e9e9;}
 .send-box th:last-of-type{border-right: #e9e9e9;}
@@ -293,3 +294,6 @@ main article{padding: 10px 10px 20px; border-radius: 5px;background-color: #f5f5
 /* 수신내역 파일경로 */
 .send-box .filePath{cursor: pointer;}
 .send-box .filePath:hover{color: #0082bb;}
+
+/* 새로고침 버튼 */
+.refresh-btn{padding: 8px;border-radius: 5px; border:1px solid #333;background-color: #fff;}
