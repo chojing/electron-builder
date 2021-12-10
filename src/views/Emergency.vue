@@ -1,7 +1,9 @@
 <template>
   <section class="emergency-container">
     <div class="wrap">
-      <h4 class="tti">긴급전송</h4>
+      <h4 class="tti">긴급전송
+        <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
+      </h4>
       <article class="mt20">
         <div class="search-form">
             <h4>전송 Target</h4>
@@ -182,6 +184,9 @@ export default {
         parent: '',
         modal: false
       })
+    },
+    refresh: function () {
+      this.$router.go()
     }
   }
 }

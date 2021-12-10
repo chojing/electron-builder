@@ -49,11 +49,13 @@ export default {
         let param = {}
         param.nodetype = custom.code.codeToValue(this.c_node_type, 'normal')
         axios.getAsyncAxios('/v2/nodes/tree', param, (response) => {
-          for (let node of response.data.results.children) {
-            node.isopen = true
+          if (Object.keys(response.data.results).length !== 0) {
+            for (let node of response.data.results.children) {
+              node.isopen = true
+            }
+            this.nodeList = response.data.results.children
+            this.rootNodeId = response.data.results.nodeid
           }
-          this.nodeList = response.data.results.children
-          this.rootNodeId = response.data.results.nodeid
         })
       })
     },

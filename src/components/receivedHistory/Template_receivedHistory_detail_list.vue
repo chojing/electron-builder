@@ -1,6 +1,7 @@
 <!-- 수신내역 -->
 <template>
-  <tr v-for="item in receivedDetailList" v-bind:key="item.fileid" draggable="true" @dragstart="startDrag">
+  <tr v-for="item in receivedDetailList" v-bind:key="item.fileid">
+<!--  <tr v-for="item in receivedDetailList" v-bind:key="item.fileid" draggable="true" @dragstart="startDrag">-->
     <td class="ellipsis">
       <Tooltip :tooltipText="item.ftpservername" position="top">
         <p>{{item.ftpservername}}</p>
@@ -46,7 +47,7 @@ export default {
     isShow: Boolean
   },
   created () {
-    ipcRenderer.on('ondragstart_result', this.dragDrop_result)
+    // ipcRenderer.on('ondragstart_result', this.dragDrop_result)
   },
   methods: {
     fileopen: function (item) {
@@ -55,26 +56,27 @@ export default {
       // console.log('path : ', path)
       this.$emit('selectftpserverinfo', item)
       ipcRenderer.send('open-file-explore', path)
-    },
-    startDrag: function (event) {
-      let self = this
-      let idx = event.currentTarget.rowIndex
-      event.preventDefault()
-      console.log(self)
-      let path = ''
-
-      if (idx > 0) {
-        let item = self.receivedDetailList[idx - 1]
-        path = item.volume + item.filepath + item.filename
-      }
-
-      if (path != '') {
-        ipcRenderer.send('ondragstart', path)
-      }
-    },
-    dragDrop_result: function (event, e) {
-      ipcRenderer.send('alert', 'drag & drop out file' + e.message)
     }
+    // ,
+    // startDrag: function (event) {
+    //   let self = this
+    //   let idx = event.currentTarget.rowIndex
+    //   event.preventDefault()
+    //   console.log(self)
+    //   let path = ''
+    //
+    //   if (idx > 0) {
+    //     let item = self.receivedDetailList[idx - 1]
+    //     path = item.volume + item.filepath + item.filename
+    //   }
+    //
+    //   if (path != '') {
+    //     ipcRenderer.send('ondragstart', path)
+    //   }
+    // },
+    // dragDrop_result: function (event, e) {
+    //   ipcRenderer.send('alert', 'drag & drop out file' + e.message)
+    // }
   }
 }
 </script>
