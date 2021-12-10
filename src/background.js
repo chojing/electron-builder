@@ -23,6 +23,7 @@ const WindowInfo = require('./assets/main/windows.js').WindowInfo
 // test
 const FTPInfo_Type1 = require('./assets/main/ftpinfo.js').FTPInfo_Type1
 const FTPInfo_Type2 = require('./assets/main/ftpinfo.js').FTPInfo_Type2
+const FTPInfo_Type3 = require('./assets/main/ftpinfo.js').FTPInfo_Type3
 const _path = require('path')
 const log = require('electron-log')
 const starIcon = 'img/icons/mac/16x16.png'
@@ -444,6 +445,23 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
         log.info(ftpSendData.ftpSite.siteName + ftpSendData.clientData.transferid + ' problem')
       }
       delete g_FTPInfoDic[ftpSendData.ftpSite.siteName + ftpSendData.clientData.transferid]
+    })// end Promise.all
+  } else if (curType == 'loadBalance') {
+    let PromiseResult = []
+    let ftpInfo = new FTPInfo_Type3(ftpSendData.event, ftpSendData.ftpSite)
+    let strKey = ftpSendData.ftpSite.siteName + transferid
+    console.log(strKey)
+    g_FTPInfoDic[ftpSendData.ftpSite.siteName + transferid] = ftpInfo
+    g_FTPInfoDic[ftpSendData.ftpSite.siteName + transferid].connectionType = curType
+    ftpInfo.clientSendData = ftpSendData
+    let result = ftpInfo.RequestFTPWork(_FTPType, 0)
+    PromiseResult.push(result)
+    Promise.all(PromiseResult).then(value => {
+      if (value[0] !== undefined) {
+        delete g_FTPInfoDic[value[0].deleteKey]
+      } else {
+        log.info(ftpSendData.ftpSite.siteName + ftpSendData.clientData.transferid + ' problem')
+      }
     })// end Promise.all
   }
 }

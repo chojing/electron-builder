@@ -248,37 +248,44 @@ function FTPInfo_Type3 () {
 FTPInfo_Type3.prototype = new FTPInfo() // 상속 (관련 함수, 변수 모두 사용 가능)
 FTPInfo_Type3.prototype.RequestFTPWork = async function (_ftpType, _connectionIndex) {
   let self = this
+  return new Promise((resolve, reject) => {
+    let PromiseResult = []
+    let ftpServerFinish = false
+    let ftpServerCnt = this.clientSendData.ftpSite.ftpServerList.length
+    let currentFtpServer = this.clientSendData.ftpSite.ftpServerList[_connectionIndex]
+    let fileList = this.clientSendData.fileList
 
-  let PromiseResult = []
-  let ftpServerFinish = false
-  let ftpServerCnt = this.clientSendData.ftpSite.ftpServerList.length
-  let currentFtpServer = this.clientSendData.ftpSite.ftpServerList[_connectionIndex]
-  let fileList = this.clientSendData.fileList
-
-  _connectionIndex = _connectionIndex + 1
-  if (_connectionIndex == ftpServerCnt) {
-    ftpServerFinish = true
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  let result = await self.doftp(_ftpType, PromiseResult, fileList, currentFtpServer)
-
-  // 모든 upload 가 끝나면 실행됨
-  Promise.all(PromiseResult).then(value => {
-    self.isFinish = true
-    if (value[0] != true) {
-      // 실패했을 시, 다음 ftp가 있으면 연결 // 성공 시, 끝
-      if (ftpServerFinish == true) {
-        log.info(self.clientSendData.ftpSite.siteName + ' is fail!')
-        return false
-      }
-      // Connection List 순차적으로 연결 및 업로드 시도
-      this.RequestFTPWork(_ftpType, _connectionIndex)
-    } else {
-      log.info(self.clientSendData.ftpSite.siteName + ' is Success!')
-      return true
+    _connectionIndex = _connectionIndex + 1
+    if (_connectionIndex == ftpServerCnt) {
+      ftpServerFinish = true
     }
-  })
+
+    // eslint-disable-next-line no-unused-vars
+    let result = self.doftp(_ftpType, PromiseResult, fileList, currentFtpServer)
+
+    // 모든 upload 가 끝나면 실행됨
+    Promise.all(PromiseResult).then(value => {
+      self.isFinish = true
+      let isSuccess = false
+      if (value[0] != true) {
+      // 실패했을 시, 다음 ftp가 있으면 연결 // 성공 시, 끝
+        if (ftpServerFinish == true) {
+          log.info(self.clientSendData.ftpSite.siteName + ' is fail!')
+          return false
+        }
+        // Connection List 순차적으로 연결 및 업로드 시도
+        this.RequestFTPWork(_ftpType, _connectionIndex)
+      } else {
+        isSuccess = true
+        log.info(self.clientSendData.ftpSite.siteName + ' is Success!')
+        let result = {
+          isSuccess: isSuccess,
+          deleteKey: self.clientSendData.ftpSite.siteName + self.clientSendData.clientData.transferid
+        }
+        resolve(result)
+      }
+    })
+  })// end Promise
 }
 
 function FTPData (_type, _file, _desPath, _fileName) {
@@ -325,4 +332,5 @@ function FTPData (_type, _file, _desPath, _fileName) {
 
 exports.FTPInfo_Type1 = FTPInfo_Type1
 exports.FTPInfo_Type2 = FTPInfo_Type2
+exports.FTPInfo_Type3 = FTPInfo_Type3
 exports.FTPInfo = FTPInfo

@@ -70,17 +70,18 @@ FTPStream.prototype.connect = function (_ftpConnectConfig) {
     self.m_ftpClient.on('close', () => {
       self.isFTPConnection = false
       log.info('ftp close')
-      // reject("close");
+      reject('close')
     })
     self.m_ftpClient.on('end', () => {
       self.isFTPConnection = false
       log.info('ftp end')
-      // reject("end");
+      reject('end')
     })
     self.m_ftpClient.on('error', (err) => {
       self.isFTPConnection = false
       log.error('ftp err', err)
       self.emit('error', _ftpConnectConfig, err)
+      reject(err.message)
     })
 
     this.m_ftpClient.connect(config)
