@@ -2,7 +2,7 @@
   <section class="history-detail-container">
     <div class="wrap">
       <h4 class="tti">수신내역 상세</h4>
-      <p class="targetName mt20">
+      <p class="targetName mt10">
         전송명  :  {{ transfername }}
       </p>
       <div class="send-box h480">
@@ -26,7 +26,7 @@
           </tbody>
         </table>
       </div>
-      <button @click="cancel" type="button" id="cancel" class="btn h40 m-auto">확인</button>
+      <button @click="cancel" type="button" id="cancel" class="btn h30 m-auto">확인</button>
     </div>
   </section>
 </template>

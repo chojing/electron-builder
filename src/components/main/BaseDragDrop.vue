@@ -1,11 +1,11 @@
 <template>
   <div>
       <h4>전송제목</h4>
-      <div class="file-tti-box mb40">
+      <div class="file-tti-box mb30">
         <input class="input-box" type="text" value="" ref="title" :disabled='isDisabled' @change="onChange">
       </div>
       <h4>Optional(요청내역)</h4>
-      <div class="file-list-box mb20">
+      <div class="file-list-box mb25">
         <textarea ref="comment" :disabled='isDisabled' @change="onChange"></textarea>
       </div>
       <div class="flex-center">
@@ -17,7 +17,7 @@
           <label for="folder" class="btn h30">폴더선택</label>
         </div>
       </div>
-      <div class="file-drag-box mb20" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop" :class="isDisabled ? 'disabled' : ''">
+      <div class="file-drag-box mb15" @dragover.prevent @dragenter.prevent @drop.prevent="onDrop" :class="isDisabled ? 'disabled' : ''">
         <div class="drag">
           <div v-for="fileItem in fileListVue" :key="fileItem.index" class="fileName">
             <span>{{fileItem.fileName}}</span>

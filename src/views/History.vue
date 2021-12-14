@@ -1,10 +1,10 @@
 <template>
   <section class="history-container">
-    <div class="wrap">
-      <h4 class="tti mb15">전송내역
+    <div class="wrap pb60">
+      <h4 class="tti">전송내역
         <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
       </h4>
-      <div class="send-box" style="height: 531px">
+      <div class="send-box">
         <table>
           <colgroup>
             <col width="18%">
@@ -52,7 +52,7 @@ export default {
       transferList: [],
       page: 1,
       total: null,
-      limit: 10,
+      limit: 11,
       isShow: false
     }
   },

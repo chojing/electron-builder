@@ -9,11 +9,12 @@
            v-bind:data-isabs="item.isabs"
            v-bind:data-isabs_boolean="item.isabs_boolean"
            v-bind:data-name="item.name"
+           v-bind:data-pathname="item.pathname"
            v-bind:data-isserver="item.isserver"
            v-bind:data-isopen="item.isopen"
            >{{item.name}}</p>
         <ul v-if="item.haschild" :class="{hide:!item.isopen}">
-          <templateTree @selectedNodeid="selectedNodeid" v-bind:nodeList="item.children"/>
+          <templateTree @selectedData="selectedData" v-bind:nodeList="item.children"/>
         </ul>
       </li>
     </template>
@@ -81,7 +82,10 @@ export default {
           this.timeoutId = null
         }, 400)
       } else {
-        this.selectedNodeid(item.nodeid)
+        let data = {}
+        data.nodeid = item.nodeid
+        data.nodename = item.pathname
+        this.selectedData(data)
         clearTimeout(this.timeoutId)
         this.timeoutId = null
       }
@@ -121,8 +125,8 @@ export default {
       //   axios.setError(error.response.data)
       // })
     },
-    selectedNodeid: function (nodeid) {
-      this.$emit('selectedNodeid', nodeid)
+    selectedData: function (data) {
+      this.$emit('selectedData', data)
     }
   }
 }

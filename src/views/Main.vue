@@ -2,7 +2,7 @@
   <main id="mainView">
     <div class="wrap">
       <article class="user-favorite main-border">
-        <h4>즐겨찾기</h4>
+        <h4 class="mb5">즐겨찾기</h4>
         <div class="favorite-list">
           <div class="fa-item-link flex-column">
             <button v-for="item in favoritsList" v-bind:key="item.nodeid" @dblclick="this.fileUploadPopup(item)" @click.prevent>
@@ -58,7 +58,7 @@
         </div>
       </article>
       <article>
-        <div class="mt15 flex-center">
+        <div class="flex-center">
           <h4>전송 Target</h4>
           <div class="search-btn">
             <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>

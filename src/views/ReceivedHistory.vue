@@ -1,15 +1,15 @@
 <template>
   <section class="history-container">
-    <div class="wrap">
-      <h4 class="tti mb20">수신내역
+    <div class="wrap pb60">
+      <h4 class="tti mb10">수신내역
         <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
       </h4>
       <div class="btn-box">
-        <button id="mainnode" class="btn h30 active" :data-nodeid="this.nodeHome1" v-bind:class="{active:false}" @click="selectNodeHome($event, this.nodeHome1)">home1</button>
-        <button id="subnode" class="btn h30" :data-nodeid="this.nodeHome2" @click="selectNodeHome($event, this.nodeHome2)">home2</button>
+        <button id="mainnode" class="btn h30 active" :data-nodeid="this.nodeHome1" v-bind:class="{active:false}" @click="selectNodeHome($event, this.nodeHome1)"></button>
+        <button id="subnode" class="btn h30" :data-nodeid="this.nodeHome2" @click="selectNodeHome($event, this.nodeHome2)"></button>
         <button id="usernode" class="btn h30" @click="selectNodeHome($event)">사용자지정</button>
       </div>
-      <div class="send-box" style="height: 484px">
+      <div class="send-box">
         <table>
           <colgroup>
             <col width="18%">
@@ -30,7 +30,7 @@
           </tbody>
         </table>
       </div>
-      <div class="paging mt10 mb20">
+      <div class="paging">
         <pagination class ="pagination" ref="pagination"
                   :pageData="pageSet(total, limit, this.page)"
                   @paging="getReceivedList"/>
@@ -62,7 +62,7 @@ export default {
       receivedList: [],
       page: 1,
       total: null,
-      limit: 9,
+      limit: 10,
       isShow: false,
       isActive: false
     }
@@ -85,6 +85,8 @@ export default {
         usernodeBtn.classList.add('active')
         mainnodeBtn.classList.remove('active')
         subnodeBtn.classList.remove('active')
+        usernodeBtn.innerText = '사용자지정'
+        usernodeBtn.innerText += ' : ' + data.nodename
         this.selectedNodeid = data.nodeid
         this.getReceivedList(1)
       } else if (type == 'closeUserAppointed') {
@@ -95,6 +97,17 @@ export default {
       axios.getAsyncAxios('/v2/users/' + this.$store.state.username, null, (response) => {
         self.nodeHome1 = response.data.result.metaset.result.mainnodeid
         self.nodeHome2 = response.data.result.metaset.result.subnodeid
+
+        axios.getAsyncAxios('/v2/nodes/' + self.nodeHome1, null, (response) => {
+          console.log('mainnode : ', response.data.result)
+          let home1Name = response.data.result.pathname + '>' + response.data.result.name
+          document.getElementById('mainnode').innerText = home1Name
+        })
+        axios.getAsyncAxios('/v2/nodes/' + self.nodeHome2, null, (response) => {
+          console.log('subnode : ', response.data.result)
+          let home2Name = response.data.result.pathname + '>' + response.data.result.name
+          document.getElementById('subnode').innerText = home2Name
+        })
         self.selectedNodeid = self.nodeHome1
         self.getReceivedList(1)
       }, (err) => {
@@ -155,11 +168,13 @@ export default {
         mainnodeBtn.classList.add('active')
         subnodeBtn.classList.remove('active')
         usernodeBtn.classList.remove('active')
+        usernodeBtn.innerText = '사용자지정'
       } else if (e.target.id === subnodeBtn.id) {
         this.selectedNodeid = nodeid
         subnodeBtn.classList.add('active')
         mainnodeBtn.classList.remove('active')
         usernodeBtn.classList.remove('active')
+        usernodeBtn.innerText = '사용자지정'
       } else if (e.target.id === usernodeBtn.id) {
         this.userAppointedPopup()
         isUsernode = false

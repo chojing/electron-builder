@@ -2,9 +2,9 @@
   <section id="userAppointed-container">
     <div class="wrap">
       <h4 class="tti mb15">사용자 지정 수신 내역</h4>
-      <div class="target-list mt20">
+      <div class="target-list mt10">
         <ul class="one-list" id="targetContainer">
-          <templateTree @selectedNodeid="selectResult" :nodeList="nodeList" ref="templateTree"/>
+          <templateTree @selectedData="selectResult" :nodeList="nodeList" ref="templateTree"/>
         </ul>
       </div>
     </div>
@@ -59,10 +59,11 @@ export default {
         })
       })
     },
-    selectResult: function (nodeid) {
+    selectResult: function (item) {
       let self = this
       let data = {}
-      data.nodeid = nodeid
+      data.nodeid = item.nodeid
+      data.nodename = item.nodename
       ipcRenderer.send('sendData', self.parentKey, data, 'selectUserAppointed')
       ipcRenderer.send('closeWindow', self.g_curWindowKey)
     },

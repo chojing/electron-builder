@@ -4,7 +4,7 @@
       <h4 class="tti">수동 FTP
         <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
       </h4>
-      <article class="mt20">
+      <article class="mt10">
         <div class="search-form">
           <div class="flex-center">
             <h4>전송 Target</h4>
@@ -12,7 +12,7 @@
             <button class="btn h30" @click="manualFtpPopup">관리</button>
           </div>
         </div>
-        <div class="target-list h500" style="background: #f5f5f5;border-radius: 5px;">
+        <div class="target-list h500 mt10" style="background: #f5f5f5;border-radius: 5px;">
           <ul class="one-list">
             <li v-for="item in targetFtpList" v-bind:key="item.ftpserferid" @dblclick="this.fileUploadPopup(item)">
               <p>{{item.name}}</p>
