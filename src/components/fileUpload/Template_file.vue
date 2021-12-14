@@ -282,9 +282,6 @@ export default {
       if (site) {
         ftpSite.siteName = site.name
         ftpSite.connectionType = site.mode_code
-        // test
-        ftpSite.connectionType = 'sequential'
-        // end
       } else {
         ftpSite.siteName = 'konanSite'
         ftpSite.connectionType = 'sequential'

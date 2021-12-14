@@ -76,7 +76,8 @@ FTPInfo.prototype.SendMessage = function (_ftpData, _curFtpServer, _type, _errMs
     if (_type == 'error') {
       let errObj = {
         message: _errMsg.message,
-        code: _errMsg.code
+        code: _errMsg.code,
+        ftpData: _ftpData
       }
       if (self.event.sender.isDestroyed() == false) {
         self.event.sender.send('ftp-error', errObj)

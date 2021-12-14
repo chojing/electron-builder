@@ -57,6 +57,7 @@ export default {
     let self = this
     ipcRenderer.on('receiveData', self.init)
     ipcRenderer.on('ftp-result', self.ftpResult)
+    ipcRenderer.on('ftp-error', this.ftpError)
   },
   methods: {
     init: function (event, key, data, type) {
@@ -82,6 +83,9 @@ export default {
 
       // start FTP
       ipcRenderer.send('ftp-file-upload-start')
+    },
+    ftpError: function (event, data) {
+      console.log(data)
     },
     ftpResult: function (event, data) {
       // console.log('ftpResult', data)
