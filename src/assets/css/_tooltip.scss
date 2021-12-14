@@ -137,7 +137,7 @@ $gray: #495057;
     }
     &[position^="top"]::before {
       bottom: auto !important;
-      top:70%;
+      top:76%;
       border-bottom-color:$gray !important;
       transform: rotate(180deg) !important;
     }

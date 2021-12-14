@@ -34,10 +34,10 @@ async function login (id, password) {
 async function getSyncAxios (url, param, fail) {
   let result
   await axios.get(url, {
-    params: param,
     headers: {
       Authorization: store.state.apikey
-    }
+    },
+    params: param
   }).then(function (response) {
     result = response.data
   }).catch(function (error) {
@@ -50,10 +50,10 @@ async function getSyncAxios (url, param, fail) {
 }
 function getAsyncAxios (url, param, callback, fail) {
   axios.get(url, {
-    params: param,
     headers: {
       Authorization: store.state.apikey
-    }
+    },
+    params: param
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
     else ipcRenderer.send('alert', response)
@@ -71,11 +71,11 @@ async function postSyncAxios (url, body, param, callback, fail) {
   }
   let result
   await axios.post(url, body, {
-    params: param,
     headers: {
       'Content-Type': contentType,
       Authorization: store.state.apikey
-    }
+    },
+    params: param
   }).then(function (response) {
     result = response.data
   }).catch(function (error) {
@@ -91,11 +91,11 @@ function postAsyncAxios (url, body, param, callback, fail) {
     contentType = 'application/json; charset=utf-8'
   }
   axios.post(url, body, {
-    params: param,
     headers: {
       'Content-Type': contentType,
       Authorization: store.state.apikey
-    }
+    },
+    params: param
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
     else ipcRenderer.send('alert', response)
@@ -113,11 +113,11 @@ async function putSyncAxios (url, body, param, callback, fail) {
   }
   let result
   await axios.put(url, body, {
-    params: param,
     headers: {
       'Content-Type': contentType,
       Authorization: store.state.apikey
-    }
+    },
+    params: param
   }).then(function (response) {
     result = response.data
   }).catch(function (error) {
@@ -133,11 +133,11 @@ function putAsyncAxios (url, body, param, callback, fail) {
     contentType = 'application/json; charset=utf-8'
   }
   axios.put(url, body, {
-    params: param,
     headers: {
       'Content-Type': contentType,
       Authorization: store.state.apikey
-    }
+    },
+    params: param
   }).then(function (response) {
     if (typeof callback === 'function') callback(response)
     else ipcRenderer.send('alert', response)

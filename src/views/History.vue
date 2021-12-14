@@ -10,7 +10,7 @@
             <col width="18%">
             <col width="auto">
             <col width="18%">
-            <col width="140px">
+            <col width="100px">
           </colgroup>
           <thead>
           <tr>

@@ -1,22 +1,10 @@
 <template>
   <main id="mainView">
     <div class="wrap">
-      <h2>Anywhere 통합전송시스템</h2>
-      <div class="head-top mt20">
-        <div>
-          <div class="user-name flex-box flex-center">
-            <p><i class="fas fa-user"></i> {{username}} <span>({{realname}})</span></p>
-            <div class="btn-box">
-              <button id="pwModify" class="btn h30" @click="pwModify">비밀번호 변경</button>
-              <button id="logoutBtn" class="btn h30" @click="logoutCheck">Logout</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="user-favorite">
+      <article class="user-favorite main-border">
         <h4>즐겨찾기</h4>
         <div class="favorite-list">
-          <div class="fa-item-link fa-item flex-column">
+          <div class="fa-item-link flex-column">
             <button v-for="item in favoritsList" v-bind:key="item.nodeid" @dblclick="this.fileUploadPopup(item)" @click.prevent>
               <template v-if="Array.isArray(item.name)">
                 <template v-for="item in item.name" v-bind:key="item">
@@ -29,17 +17,17 @@
             </button>
           </div>
         </div>
-      </div>
-      <article class="mt20">
+      </article>
+      <article class="main-border">
         <div class="search-form">
           <div class="flex-center">
-            <h4>전송 Target</h4>
-            <div class="search-btn"><button id='searchButton' @click="this.searchBtnClick" :aria-pressed="active ? 'true' : 'false'"><i class="fas fa-search"></i></button></div>
+            <h4>검색</h4>
+            <div class="search-btn"><button id='searchButton' @click="this.targetSearch"><i class="fas fa-search"></i></button></div>
           </div>
-          <div class="search-box mt10 mb20" :class="{show:active}">
+          <div class="search-box mt10">
             <input id='targetSearchInput' @keyup.enter="this.targetSearch" type="text" placeholder="전송타겟을 입력해주세요">
             <div class="favorite-list">
-              <div class="fa-item-link fa-item flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
+              <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
                 <template v-for="list in searchList" v-bind:key="list.nodeid">
                   <div v-if="!list.isEmergency" :data-nodeid="list.nodeid" :data-haschild="list.haschild"
                        :data-pathftpserverid="list.pathftpserverid" :data-pathftpsiteid="list.pathftpsiteid"
@@ -68,8 +56,13 @@
             </div>
           </div>
         </div>
-        <div class="mt10 right">
-          <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
+      </article>
+      <article>
+        <div class="mt15 flex-center">
+          <h4>전송 Target</h4>
+          <div class="search-btn">
+            <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
+          </div>
         </div>
         <div class="target-list">
           <ul class="one-list" id="targetContainer" @click="hideContextMenu()" @contextmenu.prevent="showContextMenu($event)">
@@ -78,14 +71,6 @@
         </div>
       </article>
     </div>
-    <div class="logoutCheckPop" v-show="isLogoutCheck">
-      <p>로그아웃 하시겠습니까?</p>
-      <div class="btn-box">
-        <button class="btn h30" @click="logout">확인</button>
-        <button class="btn h30 blue" @click="logoutCancel">취소</button>
-      </div>
-    </div>
-    <div class="bg view" v-show="isLogoutCheck"></div>
   </main>
   <templateMenu/>
   <templateContextMenu :nodeid="nodeid" :username="username" :nodename="nodename" :nodepath="nodepath"
@@ -126,7 +111,6 @@ export default {
       nodename: null,
       nodepath: null,
       isMain: true,
-      active: false,
       isSearch: false,
       isUserPwModifyClose: false,
       isLogoutCheck: false,
@@ -278,6 +262,11 @@ export default {
     targetSearch: async function () {
       let self = this
       const targetInput = document.getElementById('targetSearchInput')
+      if (targetInput.value === '') {
+        this.searchList = []
+        this.isSearch = false
+        return false
+      }
       if (self.c_node_type == []) {
         await self.nodeCodeSearch()
       }
@@ -325,14 +314,6 @@ export default {
         }
         this.isSearch = true
       })
-    },
-    searchBtnClick: function () {
-      this.active = !this.active
-      this.isSearch = false
-      const targetInput = document.getElementById('targetSearchInput')
-      targetInput.value = ''
-      targetInput.placeholder = '전송타겟을 입력해주세요'
-      this.searchList = []
     },
     refresh: function () {
       this.$router.go()

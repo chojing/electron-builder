@@ -224,11 +224,21 @@ export default {
             // transfer_file_tb insert data
             const transferFile = {}
             transferFile.transferid = this.transferid
-            transferFile.filename = item.fileName
             transferFile.filesize = item.size
             for (let idy in g_ftpSendData.ftpSite.ftpServerList) {
               let server = g_ftpSendData.ftpSite.ftpServerList[idy]
               transferFile.filepath = server.rootpath
+            }
+            if (item.fileName.indexOf('/') !== -1) {
+              let nameStr = item.fileName.split('/')
+              for (let i = 1; i < nameStr.length; i++) {
+                if (i != nameStr.length - 1) {
+                  transferFile.filepath += ('/' + nameStr[i])
+                } else if (i == (nameStr.length - 1)) {
+                  transferFile.filepath += '/'
+                }
+              }
+              transferFile.filename = nameStr[nameStr.length - 1]
             }
             // 전송상세내역 추가
             axios.postAsyncAxios('/v2/transferfiles', JSON.stringify(transferFile), null, (response) => {})
