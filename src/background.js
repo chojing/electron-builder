@@ -446,7 +446,7 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
       }
       delete g_FTPInfoDic[ftpSendData.ftpSite.siteName + ftpSendData.clientData.transferid]
     })// end Promise.all
-  } else if (curType == 'loadBalance') {
+  } else if (curType == 'roundrobin') {
     let PromiseResult = []
     let ftpInfo = new FTPInfo_Type3(ftpSendData.event, ftpSendData.ftpSite)
     let strKey = ftpSendData.ftpSite.siteName + transferid
