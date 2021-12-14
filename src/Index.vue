@@ -7,4 +7,5 @@
 
 <style>
   @import "assets/css/style.css";
+  @import "assets/css/font.css";
 </style>

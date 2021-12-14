@@ -117,12 +117,18 @@ export default {
         })
         // const curFtpServer = { host: data.value.userhost, port: data.value.userport, user: data.value.userid, password: data.value.userpw, serverName: data.value.username, homeDir: data.value.userdir }
         console.log('ftp 정보 : ', custom.proxy2map(this.targetFtpInfo))
-      } else if (type == 'userTelData') {
+      } else if (type == 'userTelData') { /* 전송 확인 문자 연락처 팝업에서 전화번호 추가 후 logic */
+        if (data.length === 0) {
+          this.telValue = []
+        }
         data.forEach(userTelData => {
           if (userTelData !== '') {
             if (this.telValue.length !== 0) {
               var memberid = this.telValue.map((obj) => obj['memberid'])
               if (memberid.indexOf(userTelData.memberid) === -1) {
+                this.telValue.push(userTelData)
+              } else if (memberid.indexOf(userTelData.memberid) !== -1) {
+                this.telValue = []
                 this.telValue.push(userTelData)
               }
             } else if (this.telValue.length === 0) {
@@ -131,7 +137,7 @@ export default {
           }
         })
         // console.log('담은 데이터', this.telValue)
-      } else if (type == 'isFtpSiteCancel') {
+      } else if (type == 'isFtpSiteCancel') { /* ftpSite 전송 진행 팝업에서 전송취소를 누른 후 logic */
         // transfer_tb insert data
         transfer.status = 4000
         axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
@@ -349,9 +355,15 @@ export default {
       }
     },
     userInfoPopup: function () {
-      const data = {
-        parentKey: this.selfKey
-      }
+      const data = {}
+      data.parentKey = this.selfKey
+      let item = []
+      this.telValue.forEach(userTelData => {
+        let users = {}
+        users.memberid = userTelData.memberid
+        item.push(users)
+      })
+      data.telValue = item
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
         url: 'UserInfo',

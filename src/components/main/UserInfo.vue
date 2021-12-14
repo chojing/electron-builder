@@ -27,7 +27,10 @@
           <tbody>
             <tr v-for="user in this.users" :key="user.memberid">
               <td>
-                <div class="check"><input type="checkbox" v-model="selected" :value="user" :id="user.memberid"><label :for="user.memberid"></label></div>
+                <div class="check">
+                    <input type="checkbox" v-model="selected" :value="user" :id="user.memberid">
+                    <label :for="user.memberid"></label>
+                </div>
               </td>
               <td class="name">{{user.name}}</td>
               <td class="tel">{{user.phonenumber}}</td>
@@ -83,6 +86,7 @@ export default {
       phonenumber: '',
       users: [],
       selected: [],
+      telValue: [],
       page: 1,
       total: null,
       limit: 5,
@@ -97,8 +101,10 @@ export default {
     init: function (event, key, data, type) {
       if (type == 'init') {
         // console.log('부모키', data)
-        console.log('apikey : ', this.$store.state.apikey)
         this.parentKey = data.parentKey
+        if (data.telValue.length !== 0) {
+          this.telValue = data.telValue
+        }
         // eslint-disable-next-line camelcase
         this.g_curWindowKey = key
         this.getUserList(1)
@@ -128,6 +134,19 @@ export default {
           this.isShow = true
         } else {
           this.isShow = false
+        }
+        let selected = []
+        if (this.telValue.length !== 0) {
+          this.telValue.forEach(checked => {
+            if (this.users.length !== 0) {
+              this.users.forEach(user => {
+                if (checked.memberid === user.memberid) {
+                  selected.push(user)
+                }
+              })
+            }
+          })
+          this.selected = selected
         }
       })
       this.selectAll = false // 전체체크박스 해제
@@ -172,15 +191,17 @@ export default {
     },
     submit: function () {
       let data = []
-      this.selected.forEach(userTelData => {
-        if (userTelData !== '') {
+      if (this.selected.length > 0) {
+        this.selected.forEach(userTelData => {
+          // if (userTelData !== '') {
           let users = {}
           users.memberid = userTelData.memberid
           users.name = userTelData.name
           users.phonenumber = userTelData.phonenumber
           data.push(users)
-        }
-      })
+          // }
+        })
+      }
       // key, data, type
       ipcRenderer.send('sendData', this.parentKey, data, 'userTelData')
       ipcRenderer.send('closeWindow', this.g_curWindowKey)

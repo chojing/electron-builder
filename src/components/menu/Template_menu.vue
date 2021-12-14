@@ -1,29 +1,52 @@
 <template>
   <div class="fixed-bar">
     <div class="wrap flex-center">
-      <span>
-        <router-link to="/main"> <i class="fas fa-folder"></i></router-link>
-      </span>
-      <span>
-         <router-link to="/history"><i class="fas fa-upload"></i></router-link>
-      </span>
-      <span>
-         <router-link to="/receivedHistory"><i class="fas fa-download"></i></router-link>
-      </span>
-      <span>
-          <router-link to="/emergency"> <i class="fas fa-exclamation-triangle"></i></router-link>
-      </span>
-      <span>
-          <router-link to="/manual"> <i class="fas fa-file-upload"></i> </router-link>
-      </span>
+        <div>
+          <Tooltip :tooltipText="'메인'">
+            <router-link to="/main" :class="{active : this.$route.name === 'Main'}">
+              <i class="fas fa-folder"/>
+            </router-link>
+          </Tooltip>
+        </div>
+      <div>
+        <Tooltip :tooltipText="'전송내역'">
+          <router-link to="/history" :class="{active : this.$route.name === 'History'}">
+             <i class="fas fa-upload"/>
+           </router-link>
+        </Tooltip>
+      </div>
+      <div>
+        <Tooltip :tooltipText="'상세내역'">
+          <router-link to="/receivedHistory" :class="{active : this.$route.name === 'ReceivedHistory'}">
+            <i class="fas fa-download"/>
+          </router-link>
+        </Tooltip>
+      </div>
+      <div>
+        <Tooltip :tooltipText="'긴급전송'">
+          <router-link to="/emergency" :class="{active : this.$route.name === 'Emergency'}">
+            <i class="fas fa-exclamation-triangle"/>
+          </router-link>
+        </Tooltip>
+      </div>
+      <div>
+        <Tooltip :tooltipText="'설정'">
+          <router-link to="/manual" :class="{active : this.$route.name === 'Manual'}">
+            <i class="fas fa-cog"/>
+          </router-link>
+        </Tooltip>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-
+import Tooltip from '@/components/Tooltip'
 export default {
-  name: 'template_menu'
+  name: 'template_menu',
+  components: {
+    Tooltip
+  }
 }
 
 </script>
