@@ -1,10 +1,9 @@
 <template>
-  <section class="userInfo-container pd40">
+  <section class="userInfo-container pb10">
     <div class="wrap">
       <div class="info-box">
-        <div class="btn-box mb20">
-          <button @click="active = !active" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue addUser">+</button>
-         <button @click="userDel" type="button" class="btn deleteUser">-</button>
+        <div class="mt20 mb20">
+          <h4>전송 확인 문자 연락처</h4>
         </div>
         <table class="mb20">
           <colgroup>
@@ -52,20 +51,6 @@
       </div>
     </div>
   </section>
-
-  <div class="bg" :class="{view:active}"></div>
-  <div class="user-info-add" :class="{view:active}">
-    <div class="inner">
-      <button @click="active = false" class="close"><i class="fas fa-times"></i></button>
-      <div class="box flex-box mb20">
-        <input v-model="name" ref="usernameInput" type="text" placeholder="이름" id="info-name" class="name">
-        <input v-model="phonenumber" ref="usertelInput" type="tel" placeholder="연락처" id="info-tel">
-      </div>
-      <div class="btn-box">
-        <button @click="userAdd" id="addCheck" class="btn" type="button" >추가</button>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -78,7 +63,6 @@ export default {
   },
   data () {
     return {
-      active: false,
       g_curWindowKey: '',
       parentKey: '',
       user: '',
@@ -89,7 +73,7 @@ export default {
       telValue: [],
       page: 1,
       total: null,
-      limit: 5,
+      limit: 6,
       isShow: false
     }
   },
@@ -150,44 +134,6 @@ export default {
         }
       })
       this.selectAll = false // 전체체크박스 해제
-    },
-    userAdd: function () {
-      if (!this.name) {
-        ipcRenderer.send('alert', '이름을 입력해주세요.')
-        this.$refs.usernameInput.focus()
-      } else if (!this.phonenumber) {
-        ipcRenderer.send('alert', '연락처를 입력해주세요.')
-        this.$refs.usertelInput.focus()
-      } else if (!/^[a-z0-9_-]{8,13}$/.test(this.phonenumber)) {
-        ipcRenderer.send('alert', '숫자만 입력해주세요.(8~13자리)')
-        this.$refs.usertelInput.focus()
-      } else {
-        this.active = false
-        let body = {
-          name: this.name,
-          phonenumber: this.phonenumber,
-          userid: this.$store.state.username
-        }
-        axios.postAsyncAxios('/v2/members', JSON.stringify(body), null, (response) => {
-          this.getUserList(1)
-        })
-        this.name = ''
-        this.phonenumber = ''
-      }
-    },
-    userDel: function () {
-      this.selected.forEach(selected => {
-        this.users.forEach(user => {
-          if (user.memberid === selected.memberid) {
-            let memberid = user.memberid
-            axios.deleteAsyncAxios('/v2/members/' + memberid, {}, {}, (response) => {
-              // console.log('delete', response)
-              this.selected = []
-              this.getUserList(1)
-            })
-          }
-        })
-      })
     },
     submit: function () {
       let data = []

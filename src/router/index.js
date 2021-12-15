@@ -49,7 +49,11 @@ const routes = [
   {
     path: '/manual',
     name: 'Manual',
-    component: () => import('../views/Manual')
+    component: () => import('../views/Manual'),
+    children: [
+      { path: '/user', name: 'UserManage', component: () => import('../components/manual/Template_manualUser') },
+      { path: '/ftp', name: 'FTPManage', component: () => import('../components/manual/Template_manualFtp') }
+    ]
   },
   {
     path: '/manualFtp',

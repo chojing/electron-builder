@@ -1,25 +1,14 @@
 <template>
   <section class="file-container">
     <div class="wrap">
-      <h4 class="tti">수동 FTP
+      <div class="tti manual-tti">
+        <ul class = "tabMenu">
+          <li @click="goUser" :class="{active:this.active}"><p>내 정보</p></li>
+          <li @click="goFtp" :class="{active:!this.active}"><p>수동 FTP</p></li>
+        </ul>
         <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
-      </h4>
-      <article class="mt10">
-        <div class="search-form">
-          <div class="flex-center">
-            <h4>전송 Target</h4>
-            <!--modify-->
-            <button class="btn h30" @click="manualFtpPopup">관리</button>
-          </div>
-        </div>
-        <div class="target-list h500 mt10" style="background: #f5f5f5;border-radius: 5px;">
-          <ul class="one-list">
-            <li v-for="item in targetFtpList" v-bind:key="item.ftpserferid" @dblclick="this.fileUploadPopup(item)">
-              <p>{{item.name}}</p>
-            </li>
-          </ul>
-        </div>
-      </article>
+      </div>
+      <router-view ref="manual"/>
     </div>
   </section>
   <templateMenu/>
@@ -27,9 +16,8 @@
 
 <script>
 import templateMenu from '@/components/menu/Template_menu'
-const { ipcRenderer, axios, custom } = require('@/assets/js/include.js')
 export default {
-  name: 'Manual',
+  name: 'ManualFTP',
   components: {
     templateMenu
   },
@@ -37,76 +25,30 @@ export default {
     return {
       g_windowIndex: 0,
       selfKey: 'main',
-      targetFtpList: [],
-      isManualFtpClose: false
+      active: Boolean
     }
   },
   mounted () {
-    this.getList()
-  },
-  created () {
-    console.log('start!')
-    // const self = this
-    ipcRenderer.on('receiveData', this.init)
+    this.goUser()
   },
   methods: {
     init: function (event, key, data, type) {
-      if (type == 'isManualFtpClose') {
-        this.isManualFtpClose = data
-        if (this.isManualFtpClose) {
-          this.getList()
-        }
-      }
     },
-    getList: function () {
-      this.targetFtpList = []
-      const param = {}
-      const condition = {}
-      condition.owner = this.$store.state.username
-      condition.ismanual = 1
-      param.condition = condition
-      const sort = {}
-      sort.createtime = 'desc'
-      param.sort = sort
-      param.limit = 0
-      param.offset = 0
-      axios.getAsyncAxios('/v2/ftpservers', param, (response) => {
-        this.targetFtpList = response.data.results
-      })
+    goUser: function () {
+      this.active = true
+      this.$router.push('user')
     },
-    manualFtpPopup: function () {
-      const data = {
-        parentKey: this.selfKey
-      }
-      ipcRenderer.send('openWindow', {
-        key: ++this.g_windowIndex,
-        url: 'ManualFtp',
-        data: data,
-        width: 600,
-        height: 700,
-        parent: '',
-        modal: false
-      })
-    },
-    fileUploadPopup: function (ftpInfoItem) {
-      let data = {}
-      data.serverlist = [ftpInfoItem]
-      data.site = null
-      data.isSite = false
-      ipcRenderer.send('openWindow', {
-        key: ++this.g_windowIndex,
-        url: 'ManualFileUpload',
-        data: custom.proxy2map(data),
-        width: 500,
-        height: 700,
-        parent: '',
-        modal: false
-      })
-      console.log(ftpInfoItem)
+    goFtp: function () {
+      this.active = false
+      this.$router.push('ftp')
     },
     refresh: function () {
-      this.getList()
-      // this.$router.go()
+      let curRouteName = this.$route.name
+      if (curRouteName === 'UserManage') {
+        this.$router.go()
+      } else if (curRouteName === 'FTPManage') {
+        this.$route.matched[1].instances.default.getList()
+      }
     }
   }
 }

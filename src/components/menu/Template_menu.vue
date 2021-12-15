@@ -31,9 +31,10 @@
       </div>
       <div>
         <Tooltip :tooltipText="'설정'">
-          <router-link to="/manual" :class="{active : this.$route.name === 'Manual'}">
+          <p @click="this.$route.matched[0].name === 'Manual' ? this.$router.go() : this.$router.push('/manual')"
+                       :class="{active : this.$route.matched[0].name === 'Manual'}">
             <i class="fas fa-cog"/>
-          </router-link>
+          </p>
         </Tooltip>
       </div>
     </div>

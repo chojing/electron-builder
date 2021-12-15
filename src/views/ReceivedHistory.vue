@@ -5,8 +5,8 @@
         <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
       </h4>
       <div class="btn-box">
-        <button id="mainnode" class="btn h30 active" :data-nodeid="this.nodeHome1" v-bind:class="{active:false}" @click="selectNodeHome($event, this.nodeHome1)"></button>
-        <button id="subnode" class="btn h30" :data-nodeid="this.nodeHome2" @click="selectNodeHome($event, this.nodeHome2)"></button>
+        <button id="mainnode" class="btn h30 active" :data-nodeid="this.nodeHome1" v-bind:class="{active:false}" @click="selectNodeHome($event, this.nodeHome1)">home1</button>
+        <button id="subnode" class="btn h30" :data-nodeid="this.nodeHome2" @click="selectNodeHome($event, this.nodeHome2)">home2</button>
         <button id="usernode" class="btn h30" @click="selectNodeHome($event)">사용자지정</button>
       </div>
       <div class="send-box">
@@ -100,13 +100,17 @@ export default {
 
         axios.getAsyncAxios('/v2/nodes/' + self.nodeHome1, null, (response) => {
           console.log('mainnode : ', response.data.result)
-          let home1Name = response.data.result.pathname + '>' + response.data.result.name
-          document.getElementById('mainnode').innerText = home1Name
+          if (response.data.result !== null) {
+            let home1Name = response.data.result.pathname + '>' + response.data.result.name
+            document.getElementById('mainnode').innerText = home1Name
+          }
         })
         axios.getAsyncAxios('/v2/nodes/' + self.nodeHome2, null, (response) => {
           console.log('subnode : ', response.data.result)
-          let home2Name = response.data.result.pathname + '>' + response.data.result.name
-          document.getElementById('subnode').innerText = home2Name
+          if (response.data.result !== null) {
+            let home2Name = response.data.result.pathname + '>' + response.data.result.name
+            document.getElementById('subnode').innerText = home2Name
+          }
         })
         self.selectedNodeid = self.nodeHome1
         self.getReceivedList(1)

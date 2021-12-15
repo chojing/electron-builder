@@ -5,9 +5,9 @@
       <div class="send-box h480">
         <table>
           <colgroup>
-            <col width="18%">
+            <col width="20%">
             <col width="auto">
-            <col width="140px">
+            <col width="100px">
           </colgroup>
           <thead>
           <tr>
@@ -98,7 +98,6 @@ export default {
       }
       // transfer_tb insert data
       const transfer = {}
-      transfer.isfolder = false
       transfer.userid = self.$store.state.username
       transfer.filepath = ''
       transfer.status = 2000

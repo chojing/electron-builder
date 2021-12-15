@@ -203,6 +203,13 @@ function setError (error) {
       ipcRenderer.send('alert', msg)
       router.push({ name: 'Login' })
       return false
+    } else if (xhr.message === 'ID 또는 비밀번호를 다시 확인하세요. 등록되지 않은 ID이거나, 아이디 또는 비밀번호를 잘못 입력하셨습니다') {
+      let msg = ''
+      if (xhr.message) {
+        msg = xhr.message
+      }
+      ipcRenderer.send('alert', msg)
+      router.push({ name: 'Login' })
     } else if (xhr.status === 400) { // 간헐적으로 발생하는 apikey 분실 임시 대응 로직
       let msg = '에러 \n세션이 끊겼습니다.\n로그인 페이지로 이동합니다.'
       ipcRenderer.send('alert', msg)

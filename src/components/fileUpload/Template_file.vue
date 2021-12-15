@@ -185,7 +185,6 @@ export default {
 
         // transfer_tb insert data
         transfer = {}
-        transfer.isfolder = false
         transfer.userid = this.$store.state.username
         transfer.filepath = ''
         transfer.status = 1000

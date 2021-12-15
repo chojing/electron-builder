@@ -9,9 +9,9 @@
         <table>
           <colgroup>
             <col width="18%">
-            <col width="18%">
+            <col width="20%">
             <col width="auto">
-            <col width="140px">
+            <col width="100px">
           </colgroup>
           <thead>
           <tr>
