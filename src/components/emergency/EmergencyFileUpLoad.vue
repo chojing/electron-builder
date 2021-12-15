@@ -1,7 +1,7 @@
 <template>
   <section class="file-container pb40">
     <div class="wrap">
-      <h4 class="tti">긴급전송 FTP</h4>
+      <h4 class="tti mb20">긴급전송 FTP</h4>
       <Template_file v-bind:isTelUse="isTelUse"/>
     </div>
   </section>
