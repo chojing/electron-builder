@@ -16,7 +16,7 @@
         </Tooltip>
       </div>
       <div>
-        <Tooltip :tooltipText="'상세내역'">
+        <Tooltip :tooltipText="'수신내역'">
           <router-link to="/receivedHistory" :class="{active : this.$route.name === 'ReceivedHistory'}">
             <i class="fas fa-download"/>
           </router-link>
