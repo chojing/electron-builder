@@ -88,16 +88,16 @@ export default {
   methods: {
     onClick: function (item, name) {
       const thishaschild = item.haschild
-      // const thisnodetype_code = item.nodetype_code
+      const thisnodetype_code = item.nodetype_code
       if (!this.timeoutId) {
         // 원클릭
         this.timeoutId = setTimeout(() => {
-          if (thishaschild == 1) {
+          if (thishaschild == 1 && thisnodetype_code !== 'target') {
             this.getChildList(item)
           }
           this.timeoutId = null
         }, 400)
-      } else if (thishaschild != 1) {
+      } else if (thishaschild != 1 && thisnodetype_code === 'target') {
         clearTimeout(this.timeoutId)
         if (item.isinheritance === 0) {
           item.nodepath = item.path
