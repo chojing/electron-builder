@@ -133,7 +133,7 @@ export default {
         key: ++this.g_windowIndex,
         url: 'UserPwModify',
         data: data,
-        width: 400,
+        width: 420,
         height: 365,
         parent: '',
         modal: true
