@@ -234,7 +234,6 @@ export default {
         return this.users ? this.selected.length === this.users.length : false
       },
       set (value) {
-        console.log('dhdhdhd')
         var selected = []
         if (value) {
           for (let idx in this.users) {
