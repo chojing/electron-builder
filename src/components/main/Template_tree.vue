@@ -7,6 +7,8 @@
            v-bind:data-haschild="item.haschild"
            v-bind:data-ftpserverid="item.ftpserverid"
            v-bind:data-ftpsiteid="item.ftpsiteid"
+           v-bind:data-isinheritance="item.isinheritance"
+           v-bind:data-pathinheritance="item.pathinheritance"
            v-bind:data-nodetype-caption="item.nodetype_caption"
            v-bind:data-nodetype_code="item.nodetype_code"
            v-bind:data-isabs="item.isabs"
@@ -97,13 +99,17 @@ export default {
         }, 400)
       } else if (thishaschild != 1) {
         clearTimeout(this.timeoutId)
+        if (item.isinheritance === 0) {
+          item.nodepath = item.path
+        } else if (item.isinheritance === 1) {
+          item.nodepath = item.pathinheritance
+        }
         this.fileUploadPopup(item, name)
         this.timeoutId = null
       }
     },
     getChildList: function (item) {
       if (item.isopen == true) {
-        console.log('click')
         item.isopen = false
         return false
       } else if (item.isopen == undefined || item.isopen == false) {
@@ -156,7 +162,7 @@ export default {
           if (ftpInfo.nodeid) {
             data.nodeid = ftpInfo.nodeid
           }
-          data.nodepath = ftpInfo.path
+          data.nodepath = ftpInfo.nodepath
           data.isSite = false
           this.callFileUploadPopup(data)
         })
@@ -170,7 +176,7 @@ export default {
             if (ftpInfo.nodeid) {
               data.nodeid = ftpInfo.nodeid
             }
-            data.nodepath = ftpInfo.path
+            data.nodepath = ftpInfo.nodepath
             data.isSite = true
             this.callFileUploadPopup(data)
           })

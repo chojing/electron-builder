@@ -231,7 +231,6 @@ export default {
   computed: {
     selectAll: {
       get () {
-        console.log('GET')
         return this.users ? this.selected.length === this.users.length : false
       },
       set (value) {

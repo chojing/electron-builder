@@ -140,6 +140,7 @@ export default {
       } else if (type == 'isFtpSiteCancel') { /* ftpSite 전송 진행 팝업에서 전송취소를 누른 후 logic */
         // transfer_tb insert data
         transfer.status = 4000
+        transfer.transferendtime = custom.get_now_yyyymmddhhiiss()
         axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
           // console.log('isCancel Success Put : ', response)
         })
@@ -186,6 +187,7 @@ export default {
         // transfer_tb insert data
         transfer = {}
         transfer.userid = this.$store.state.username
+        transfer.transfertype = g_ftpSendData.ftpSite.transfertype
         transfer.filepath = ''
         transfer.status = 1000
         transfer.transfername = g_ftpSendData.title
@@ -202,9 +204,9 @@ export default {
         // 전송내역 추가
         axios.postAsyncAxios('/v2/transfers', JSON.stringify(transfer), null, (response) => {
           // console.log('post : ', response)
-          self.transferid = response.data.transferid
+          self.transferid = response.data.pkvalue
           g_ftpSendData.clientData = {}
-          g_ftpSendData.clientData.transferid = response.data.transferid
+          g_ftpSendData.clientData.transferid = response.data.pkvalue
           if (self.isSite) {
             g_ftpSendData.targetUrl = 'FtpSiteTransferProgress'
             g_ftpSendData.clientData.parentKey = this.selfKey
@@ -256,13 +258,16 @@ export default {
 
       // transfer_tb insert data
       transfer.status = 2000
-
+      if (data.ftpData.startTime === data.ftpData.curTime) {
+        transfer.transferstarttime = custom.get_now_yyyymmddhhiiss()
+      }
       if (!data.ftpData.isTotalComplete) {
         if (this.tempCurrentPercent !== parseInt(data.ftpData.totalWorkSize_Percent)) {
           this.tempCurrentPercent = parseInt(data.ftpData.totalWorkSize_Percent)
           transfer.status += parseInt(data.ftpData.totalWorkSize_Percent)
           if (data.ftpData.totalWorkSize_Percent == 100) {
             transfer.status = 3000
+            transfer.transferendtime = custom.get_now_yyyymmddhhiiss()
           }
 
           // console.log(this.transferid)
@@ -283,6 +288,7 @@ export default {
       if (data.ftpData.isCancel == true) {
         console.log('Cancel Complete')
         transfer.status = 4000
+        transfer.transferendtime = custom.get_now_yyyymmddhhiiss()
         axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
         //   console.log('isCancel Success Put : ', response)
         })
@@ -413,6 +419,7 @@ export default {
       }
 
       transfer.status = 4000
+      transfer.transferendtime = custom.get_now_yyyymmddhhiiss()
       axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
         // console.log('isCancel Success Put : ', response)
       })

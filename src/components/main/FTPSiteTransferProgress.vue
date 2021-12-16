@@ -7,7 +7,7 @@
           <colgroup>
             <col width="20%">
             <col width="auto">
-            <col width="100px">
+            <col width="140px">
           </colgroup>
           <thead>
           <tr>
@@ -46,6 +46,7 @@ export default {
       ftpResultData: [],
       transferid: null,
       nodeid: null,
+      isRoundRobin: false,
       isUploading: true,
       isUploadComplete: false,
       isResponse: false,
@@ -79,6 +80,9 @@ export default {
       }
       this.transferid = data.g_ftpSendData.clientData.transferid
       this.nodeid = data.g_ftpSendData.clientData.nodeid
+      if (data.g_ftpSendData.ftpSite.connectionType === 'roundrobin') {
+        this.isRoundRobin = true
+      }
       // console.log('data', data)
 
       // start FTP
@@ -99,8 +103,12 @@ export default {
       // transfer_tb insert data
       const transfer = {}
       transfer.userid = self.$store.state.username
+      transfer.transfertype = self.g_ftpSendData.ftpSite.transfertype
       transfer.filepath = ''
       transfer.status = 2000
+      if (data.ftpData.startTime === data.ftpData.curTime) {
+        transfer.transferstarttime = custom.get_now_yyyymmddhhiiss()
+      }
       transfer.transfername = self.g_ftpSendData.title
       transfer.trasnferrequest = self.g_ftpSendData.comment
       transfer.filesize = 0
@@ -112,38 +120,64 @@ export default {
         transfer.nodeid = self.nodeid
       }
 
-      serverResultList[data.ftpServer.name].totalPercent = data.ftpData.totalWorkSize_Percent
-      let total = 0
-      for (var idx in serverResultList) {
-        total += parseInt(serverResultList[idx].totalPercent)
-      }
-
-      let sitePercent = 0
-      if (total === 0) {
-        sitePercent = 0
-      } else {
-        sitePercent = total / self.g_ftpSendData.ftpSite.ftpServerList.length
-      }
-      if (!data.ftpData.isTotalComplete || Math.floor(sitePercent) !== 100) {
-        if (self.tempCurrentPercent !== Math.floor(sitePercent)) {
-          self.tempCurrentPercent = Math.floor(sitePercent)
-          transfer.status += Math.floor(sitePercent)
-          if (sitePercent == 100) {
-            transfer.status = 3000
-          }
-
-          // console.log('transfer.status : ', transfer.status, ' sitePercent : ', sitePercent)
-          if ((!self.isResponse && self.transferid != null && !self.isCancel) || Math.floor(sitePercent) == 100) {
-            self.isResponse = true
-            axios.putAsyncAxios('/v2/transfers/' + self.transferid, JSON.stringify(transfer), null, (response) => {
-              // console.log('Success Put : ', response)
-              self.isResponse = false
-            })
-          }
+      if (!self.isRoundRobin) {
+        serverResultList[data.ftpServer.name].totalPercent = data.ftpData.totalWorkSize_Percent
+        let total = 0
+        for (var idx in serverResultList) {
+          total += parseInt(serverResultList[idx].totalPercent)
         }
-      } else if (data.ftpData.isTotalComplete && Math.floor(sitePercent) === 100) {
-        self.isUploadComplete = true
-        self.isUploading = false
+
+        let sitePercent = 0
+        if (total === 0) {
+          sitePercent = 0
+        } else {
+          sitePercent = total / self.g_ftpSendData.ftpSite.ftpServerList.length
+        }
+        if (!data.ftpData.isTotalComplete || Math.floor(sitePercent) !== 100) {
+          if (self.tempCurrentPercent !== Math.floor(sitePercent)) {
+            self.tempCurrentPercent = Math.floor(sitePercent)
+            transfer.status += Math.floor(sitePercent)
+            if (sitePercent == 100) {
+              transfer.status = 3000
+              transfer.transferendtime = custom.get_now_yyyymmddhhiiss()
+            }
+
+            // console.log('transfer.status : ', transfer.status, ' sitePercent : ', sitePercent)
+            if ((!self.isResponse && self.transferid != null && !self.isCancel) || Math.floor(sitePercent) == 100) {
+              self.isResponse = true
+              axios.putAsyncAxios('/v2/transfers/' + self.transferid, JSON.stringify(transfer), null, (response) => {
+                // console.log('Success Put : ', response)
+                self.isResponse = false
+              })
+            }
+          }
+        } else if (data.ftpData.isTotalComplete && Math.floor(sitePercent) === 100) {
+          self.isUploadComplete = true
+          self.isUploading = false
+        }
+      } else if (self.isRoundRobin) { // connectionType이 라운드로빈일 경우
+        if (!data.ftpData.isTotalComplete) {
+          if (self.tempCurrentPercent !== parseInt(data.ftpData.totalWorkSize_Percent)) {
+            self.tempCurrentPercent = parseInt(data.ftpData.totalWorkSize_Percent)
+            transfer.status += parseInt(data.ftpData.totalWorkSize_Percent)
+            if (data.ftpData.totalWorkSize_Percent == 100) {
+              transfer.status = 3000
+              transfer.transferendtime = custom.get_now_yyyymmddhhiiss()
+            }
+
+            // console.log(this.transferid)
+            if ((!self.isResponse && self.transferid != null && !self.isCancel) || data.ftpData.totalWorkSize_Percent == 100) {
+              self.isResponse = true
+              axios.putAsyncAxios('/v2/transfers/' + self.transferid, JSON.stringify(transfer), null, (response) => {
+                // console.log('Success Put : ', response)
+                self.isResponse = false
+              })
+            }
+          }
+        } else if (data.ftpData.isTotalComplete) {
+          self.isUploadComplete = true
+          self.isUploading = false
+        }
       }
     },
     doCancel: function () {

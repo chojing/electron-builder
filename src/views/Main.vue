@@ -31,7 +31,8 @@
                 <template v-for="list in searchList" v-bind:key="list.nodeid">
                   <div v-if="!list.isEmergency" :data-nodeid="list.nodeid" :data-haschild="list.haschild"
                        :data-pathftpserverid="list.pathftpserverid" :data-pathftpsiteid="list.pathftpsiteid"
-                       :data-name="list.nodename" :data-path="list.path"
+                       :data-name="list.nodename" :data-isinheritance="list.isinheritance"
+                       :data-path="list.path" :data-pathinheritance="list.pathinheritance"
                        @contextmenu.prevent="showContextMenu($event)">
                     <button @dblclick="this.fileUploadPopup(list)">
                       <template v-if="Array.isArray(list.name)">
@@ -229,13 +230,21 @@ export default {
           this.pathftpserverid = parseInt(e.target.dataset.pathftpserverid)
           this.pathftpsiteid = parseInt(e.target.dataset.pathftpsiteid)
           this.nodename = e.target.dataset.name
-          this.nodepath = e.target.dataset.path
+          if (e.target.dataset.isinheritance == 0) {
+            this.nodepath = e.target.dataset.path
+          } else if (e.target.dataset.isinheritance == 1) {
+            this.nodepath = e.target.dataset.pathinheritance
+          }
         } else if ((e.currentTarget.dataset.haschild == 0 && e.currentTarget.dataset.nodeid)) {
           this.nodeid = e.currentTarget.dataset.nodeid
           this.pathftpserverid = parseInt(e.currentTarget.dataset.pathftpserverid)
           this.pathftpsiteid = parseInt(e.currentTarget.dataset.pathftpsiteid)
           this.nodename = e.currentTarget.dataset.name
-          this.nodepath = e.currentTarget.dataset.path
+          if (e.currentTarget.dataset.isinheritance == 0) {
+            this.nodepath = e.currentTarget.dataset.path
+          } else if (e.currentTarget.dataset.isinheritance == 1) {
+            this.nodepath = e.currentTarget.dataset.pathinheritance
+          }
         }
         var userFavorits = this.favoritsList.map((obj) => obj['nodeid'])
         for (var idx in userFavorits) {
@@ -256,6 +265,11 @@ export default {
         name = item.name[item.name.length - 1]
       } else {
         name = item.name
+      }
+      if (item.isinheritance == 0) {
+        item.nodepath = item.path
+      } else if (item.isinheritance == 1) {
+        item.nodepath = item.pathinheritance
       }
       this.$refs.templateTree.fileUploadPopup(item, name)
     },

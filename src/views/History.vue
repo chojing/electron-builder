@@ -15,8 +15,8 @@
           <thead>
           <tr>
             <th>전송명</th>
-            <th>수신처</th>
-            <th>파일크기</th>
+            <th>전송처</th>
+            <th>전송종료시간</th>
             <th>전송상태</th>
           </tr>
           </thead>
@@ -94,6 +94,7 @@ export default {
             } else {
               item.dataPer = 100
             }
+            item.transferendtime = custom.convertDate(item.transferendtime)
           }
           this.isShow = false
         } else if (this.transferList.length === 0) {

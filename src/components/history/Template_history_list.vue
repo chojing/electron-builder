@@ -12,8 +12,8 @@
       </Tooltip>
     </td>
     <td class="ellipsis">
-      <Tooltip :tooltipText="item.filesize" position="top">
-        <p>{{item.filesize}}</p>
+      <Tooltip :tooltipText="item.transferendtime+''" position="top">
+        <p>{{item.transferendtime}}</p>
       </Tooltip>
     </td>
     <td>

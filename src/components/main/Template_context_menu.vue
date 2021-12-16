@@ -47,7 +47,7 @@ export default {
       data.pathftpsiteid = this.pathftpsiteid
       data.nodeid = this.nodeid
       data.name = this.nodename
-      data.path = this.nodepath
+      data.nodepath = this.nodepath
       this.$parent.fileUploadPopup(data)
       this.$parent.hideContextMenu()
     }

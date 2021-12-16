@@ -13,7 +13,8 @@
             <template v-for="item in nodeList" v-bind:key="item.nodeid">
               <div :data-nodeid="item.nodeid" :data-haschild="item.haschild"
                    :data-pathftpserverid="item.pathftpserverid" :data-pathftpsiteid="item.pathftpsiteid"
-                   :data-name="item.nodename" :data-path="item.path"
+                   :data-name="item.nodename" :data-isinheritance="item.isinheritance"
+                   :data-path="item.path" :data-pathinheritance="item.pathinheritance"
                    @contextmenu.prevent="showContextMenu($event)">
                 <button @dblclick="this.fileUploadPopup(item)" @click.prevent>
                   <template v-if="Array.isArray(item.name)">
@@ -123,6 +124,11 @@ export default {
       let ftpServerId = ftpInfo.pathftpserverid
       let ftpSiteId = ftpInfo.pathftpsiteid
       let paramData = {}
+      if (ftpInfo.isinheritance == 0) {
+        ftpInfo.nodepath = ftpInfo.path
+      } else if (ftpInfo.isinheritance == 1) {
+        ftpInfo.nodepath = ftpInfo.pathinheritance
+      }
       if (ftpServerId == 0 && ftpSiteId == 0) {
         ipcRenderer.send('alert', '조회할 FTP정보가 없습니다.')
       } else if (ftpServerId > 0) {
@@ -131,7 +137,7 @@ export default {
           if (ftpInfo.nodeid) {
             paramData.nodeid = ftpInfo.nodeid
           }
-          paramData.nodepath = ftpInfo.path
+          paramData.nodepath = ftpInfo.nodepath
           paramData.isSite = false
           this.callFileUploadPopup(paramData)
         })
@@ -144,7 +150,7 @@ export default {
             if (ftpInfo.nodeid) {
               paramData.nodeid = ftpInfo.nodeid
             }
-            paramData.nodepath = ftpInfo.path
+            paramData.nodepath = ftpInfo.nodepath
             paramData.isSite = true
             this.callFileUploadPopup(paramData)
           })
@@ -166,7 +172,11 @@ export default {
           this.pathftpserverid = parseInt(e.currentTarget.dataset.pathftpserverid)
           this.pathftpsiteid = parseInt(e.currentTarget.dataset.pathftpsiteid)
           this.nodename = e.currentTarget.dataset.name
-          this.nodepath = e.currentTarget.dataset.path
+          if (e.currentTarget.dataset.isinheritance == 0) {
+            this.nodepath = e.currentTarget.dataset.path
+          } else if (e.currentTarget.dataset.isinheritance == 1) {
+            this.nodepath = e.currentTarget.dataset.pathinheritance
+          }
         }
         menu.classList.add('active')
       }
