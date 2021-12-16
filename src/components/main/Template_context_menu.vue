@@ -4,8 +4,8 @@
       전송
     </li>
     <li class = "favorits-menu-list" :nodeid="nodeid" v-show="isMain">
+      <input id = "favorits-checkbox-id" type="checkbox" class ="mr5" @click="editFavoritsMenu($event)"/>
       즐겨찾기
-      <input id = "favorits-checkbox-id" type="checkbox" class ="ml10" @click="editFavoritsMenu($event)"/>
     </li>
   </ul>
 </template>
