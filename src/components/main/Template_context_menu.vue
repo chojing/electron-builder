@@ -1,6 +1,7 @@
 <template>
   <ul id = "favorits-menu">
     <li class = "favorits-menu-list" :nodeid="nodeid" @click="fileUploadPopup">
+      <i class="fas fa-circle mr5"></i>
       전송
     </li>
     <li class = "favorits-menu-list" :nodeid="nodeid" v-show="isMain">
