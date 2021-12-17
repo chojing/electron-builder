@@ -171,6 +171,7 @@ main article{padding: 5px 10px 10px /*border-radius: 5px;background-color: #f5f5
 /*.target-list > ul li p[data-nodetype-caption="Branch"]::after{color:#43aa8b;}*/
 .target-list > ul li p[data-nodetype-caption="FtpServer"]::after{color: #f94144}
 .target-list > ul li p[data-nodetype-caption="Target"]::after{color: #f9c74f;font-size: 12px;}
+.target-list > ul li p[data-ismanual="1"]::after{color: #f9c74f;font-size: 13px;}
 /** login **/
 .login{width: 100%;height:100vh;padding-top: 100px;background-color:#0073a5;}
 .login-container{margin:50px auto;max-width:500px;}
