@@ -87,7 +87,7 @@ export default {
       // eslint-disable-next-line no-unused-expressions
       this.ftpSite // FTPSite
 
-      // sms 정보
+      // 멤버 정보
     }
     getApiKey()
     async function getApiKey () {
