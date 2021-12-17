@@ -47,6 +47,7 @@ export default {
       transferid: '',
       selectFtpserverInfo: '',
       gIsMac: false,
+      volume: '',
       receivedDetailList: [],
       receivedDetailNameList: [],
       isShow: false
@@ -85,9 +86,11 @@ export default {
               if (self.gIsMac) {
                 item.gIsMac = true
                 item.volume = response.data.result.macvolume
+                this.volume = response.data.result.macvolume
               } else {
                 item.gIsMac = false
                 item.volume = response.data.result.winvolume
+                this.volume = response.data.result.winvolume
               }
             })
           }
@@ -104,10 +107,18 @@ export default {
       ipcRenderer.send('closeWindow', this.g_curWindowKey)
     },
     ftpError: function (event, err) {
+      let volume = this.volume
       let severname = this.selectFtpserverInfo.ftpservername
       let filepath = this.selectFtpserverInfo.filepath
       console.log('err', err)
-      let msg = severname + '에 ' + filepath + ' 파일 경로가 없습니다.'
+      let fullpath = volume + filepath
+      if (this.gIsMac) {
+        fullpath = fullpath.replaceAll('/', '\\')
+      } else {
+        fullpath = fullpath.replaceAll('/', '\\')
+        fullpath = fullpath.replaceAll('\\\\', '\\')
+      }
+      let msg = severname + '에 ' + fullpath + ' 파일 경로가 없습니다.'
       ipcRenderer.send('alert', msg)
     }
   }
