@@ -5,8 +5,8 @@
         <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
       </h4>
       <div class="btn-box">
-        <button id="mainnode" class="btn h30 active" :data-nodeid="this.nodeHome1" v-bind:class="{active:false}" @click="selectNodeHome($event, this.nodeHome1)">home1</button>
-        <button id="subnode" class="btn h30" :data-nodeid="this.nodeHome2" @click="selectNodeHome($event, this.nodeHome2)">home2</button>
+        <button id="mainnode" class="btn h30 active" :data-nodeid="this.nodeHome1" v-bind:class="{active:false}" @click="selectNodeHome($event, this.nodeHome1)">home1(미지정)</button>
+        <button id="subnode" class="btn h30" :data-nodeid="this.nodeHome2" @click="selectNodeHome($event, this.nodeHome2)">home2(미지정)</button>
         <button id="usernode" class="btn h30" @click="selectNodeHome($event)">사용자지정</button>
       </div>
       <div class="send-box">

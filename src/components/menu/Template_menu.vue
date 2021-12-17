@@ -30,7 +30,7 @@
         </Tooltip>
       </div>
       <div>
-        <Tooltip :tooltipText="'설정'">
+        <Tooltip :tooltipText="'부가기능'">
           <p @click="this.$route.matched[0].name === 'Manual' ? '' : this.$router.push('/manual')"
                        :class="{active : this.$route.matched[0].name === 'Manual'}">
             <i class="fas fa-cog"/>

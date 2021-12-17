@@ -4,7 +4,7 @@
       <div class="file-tti-box mb30">
         <input class="input-box" type="text" value="" ref="title" :disabled='isDisabled' @change="onChange">
       </div>
-      <h4>Optional(요청내역)</h4>
+      <h4>Optional(상세내역)</h4>
       <div class="file-list-box mb25">
         <textarea ref="comment" :disabled='isDisabled' @change="onChange"></textarea>
       </div>

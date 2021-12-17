@@ -67,7 +67,7 @@ const FTPSendData = function () {
   // eslint-disable-next-line no-unused-expressions
   this.ftpSite // FTPSite
 
-  // sms 정보
+  // 멤버 정보
 }
 let transfer = {}
 let g_ftpSendData = {}

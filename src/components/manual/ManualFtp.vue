@@ -3,17 +3,20 @@
     <div class="wrap">
       <h4 class="tti">수동 FTP 관리</h4>
       <div class="ftp-info mt20">
-        <div class="btn-box right">
+        <div class="btn-box right mb10">
           <button @click="newFtpAdd" class="btn h30" id="new-btn" dataname="newBtn" v-show="!isOptionClicked">추가</button>
           <template v-if="Object.keys(this.addSelect).length !== 0">
             <button @click="usrModifyFtp" class="btn blue h30" id="modify-btn"  dataname="addBtn" v-show="!isOptionClicked">수정</button>
           </template>
           <button @click="optionCancelClick" class="btn blue h30" id="option-cancel-btn" dataname="optionCancelBtn" v-show="isOptionClicked">취소</button>
         </div>
-        <select id="selectFtp" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
-          <option v-for="item in addSelect" :key="item.index">{{item.name}}</option>
-          <option v-if="!isDisabled">사용자 지정</option>
-        </select>
+        <div class="list flex-center">
+          <b>FTP명</b>
+          <select id="selectFtp" class="flex-1" @change="selected" v-model="ftpSelected" :disabled='!isDisabled'>
+            <option v-for="item in addSelect" :key="item.index">{{item.name}}</option>
+            <option v-if="!isDisabled">사용자 지정</option>
+          </select>
+        </div>
         <div class="list flex-center">
           <b>서버명</b>
           <div class="flex-1">

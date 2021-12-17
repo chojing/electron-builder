@@ -11,7 +11,7 @@
     <div class = "userInfo-container">
       <div class="info-box">
         <div class="flex-center mt10 mb10">
-          <h4>SMS 관리</h4>
+          <h4>멤버 관리</h4>
           <div class="btn-box">
             <button @click="active = !active" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue h30 addUser">+</button>
             <button @click="userDel" type="button" class="btn h30 deleteUser">-</button>
@@ -99,7 +99,7 @@ export default {
       isUserPwModifyClose: false,
       isLogoutCheck: false,
       rootNodeId: 0,
-      /* SMS관리 */
+      /* 멤버관리 */
       user: '',
       name: '',
       phonenumber: '',
@@ -157,7 +157,7 @@ export default {
     goTo: function (page) {
       this.$router.push(page)
     },
-    /* SMS 관리 */
+    /* 멤버 관리 */
     getUserList: function (page) {
       if (page == null) {
         this.page = 1

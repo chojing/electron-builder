@@ -21,7 +21,7 @@
       <article class="main-border">
         <div class="search-form">
           <div class="flex-center">
-            <h4>검색</h4>
+            <h4>전송타겟검색</h4>
             <div class="search-btn"><button id='searchButton' @click="this.targetSearch"><i class="fas fa-search"></i></button></div>
           </div>
           <div class="search-box mt10">
@@ -60,7 +60,7 @@
       </article>
       <article>
         <div class="flex-center">
-          <h4>전송 Target</h4>
+          <h4><i class="fas fa-circle mr5 target-circle"></i>전송 Target</h4>
           <div class="search-btn">
             <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
           </div>
