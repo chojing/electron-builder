@@ -126,9 +126,10 @@ main .search-form h4{padding: 0; color: #333 !important; font-size: 15px;}
 .paging {position:relative;}
 
 /** main **/
-main{padding: 15px 0 100px;}
+main{padding: 0px 0 100px;}
 main h2{text-align: center;font-size: 20px;color: #0073a5;}
 main h4{ font-size: 15px;font-weight: 600;}
+main .tti { padding: 6px 0 15px !important;}
 .target-circle{font-size: 12px;color:#f9c74f;}
 main .head-top{padding:10px; border: 1px solid #eee;border-radius: 5px;}
 .user-name p{font-size: 15px;}
@@ -349,3 +350,5 @@ main article{padding: 5px 10px 10px /*border-radius: 5px;background-color: #f5f5
 .tabMenu li.active p{
   color:#eeeeee;
 }
+.hide{display: none}
+.show{display: block;}

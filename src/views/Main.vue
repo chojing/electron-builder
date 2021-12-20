@@ -1,13 +1,14 @@
 <template>
   <main id="mainView">
     <div class="wrap">
-      <h4 class="tti mb10">전송</h4>
+      <h4 class="tti mt10 mb5">전송</h4>
       <article class="user-favorite main-border">
         <h4 class="mb5">즐겨찾기</h4>
         <div class="favorite-list">
           <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
             <template v-for="item in favoritsList" v-bind:key="item.nodeid">
-              <div :data-nodeid="item.nodeid" :data-pathftpserverid="item.pathftpserverid" :data-pathftpsiteid="item.pathftpsiteid"
+              <div :data-nodeid="item.nodeid" :data-favorits="item.favorits"
+                   :data-pathftpserverid="item.pathftpserverid" :data-pathftpsiteid="item.pathftpsiteid"
                    :data-name="item.nodename" :data-isinheritance="item.isinheritance"
                    :data-path="item.path" :data-pathinheritance="item.pathinheritance"
                    @contextmenu.prevent="showContextMenu($event)">
@@ -37,7 +38,7 @@
             <div class="favorite-list">
               <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
                 <template v-for="list in searchList" v-bind:key="list.nodeid">
-                  <div v-if="!list.isEmergency" :data-nodeid="list.nodeid"
+                  <div v-if="!list.isEmergency" :data-nodeid="list.nodeid" :data-favorits = "list.favorits"
                        :data-pathftpserverid="list.pathftpserverid" :data-pathftpsiteid="list.pathftpsiteid"
                        :data-name="list.nodename" :data-isinheritance="list.isinheritance"
                        :data-path="list.path" :data-pathinheritance="list.pathinheritance"
@@ -83,7 +84,8 @@
   </main>
   <templateMenu/>
   <templateContextMenu :nodeid="nodeid" :username="username" :nodename="nodename" :nodepath="nodepath"
-                       :pathftpserverid="pathftpserverid" :pathftpsiteid="pathftpsiteid" :isMain="isMain"/>
+                       :pathftpserverid="pathftpserverid" :pathftpsiteid="pathftpsiteid" :isFavorits="Boolean(this.isFavorits)"
+                       :isMain="isMain"/>
 </template>
 <script>
 import templateTree from '@/components/main/Template_tree'
@@ -119,6 +121,7 @@ export default {
       pathftpsiteid: null,
       nodename: null,
       nodepath: null,
+      isFavorits: false,
       isMain: true,
       isSearch: false,
       isUserPwModifyClose: false,
@@ -167,7 +170,6 @@ export default {
     getFavorits: function () {
       axios.getAsyncAxios('/v2/users/' + this.username + '/favorits', null, (response) => {
         this.favoritsList = response.data.results
-        console.log('response.data.results', response.data.results)
         if (this.favoritsList.length !== 0) {
           var favorits = this.favoritsList.map((obj) => obj['name'])
           // console.log('favorits : ', favorits)
@@ -182,13 +184,19 @@ export default {
               }
             }
           }
+          for (var idy in this.favoritsList) {
+            let item = this.favoritsList[idy]
+            item.favorits = true
+          }
         }
         // console.log('favoritsList : ', this.favoritsList)
       })
     },
     showContextMenu: function (e) {
       this.nodeid = ''
-      document.getElementById('favorits-checkbox-id').checked = false
+      // document.getElementById('favorits-checkbox-id').checked = false
+      this.isFavorits = null
+      e.target.dataset.favorits = false
       if (e.currentTarget.nodeid == undefined || e.target.dataset.nodeid == undefined) {
         this.hideContextMenu()
       }
@@ -207,6 +215,9 @@ export default {
           } else if (e.target.dataset.isinheritance == 1) {
             this.nodepath = e.target.dataset.pathinheritance
           }
+          this.isFavorits = e.target.dataset.favorits
+          console.log('isFavorits ,', this.isFavorits)
+          console.log('e.target.dataset.favorits ,', e.target.dataset.favorits)
         } else if ((e.currentTarget.dataset.nodeid)) {
           this.nodeid = e.currentTarget.dataset.nodeid
           this.pathftpserverid = parseInt(e.currentTarget.dataset.pathftpserverid)
@@ -217,12 +228,15 @@ export default {
           } else if (e.currentTarget.dataset.isinheritance == 1) {
             this.nodepath = e.currentTarget.dataset.pathinheritance
           }
+          this.isFavorits = e.currentTarget.dataset.favorits
         }
         var userFavorits = this.favoritsList.map((obj) => obj['nodeid'])
         for (var idx in userFavorits) {
           let favoritsNodeid = userFavorits[idx]
           if (this.nodeid == favoritsNodeid) {
-            document.getElementById('favorits-checkbox-id').checked = true
+            // document.getElementById('favorits-checkbox-id').checked = true
+            e.target.dataset.favorits = true
+            this.isFavorits = e.target.dataset.favorits
           }
         }
         menu.classList.add('active')
@@ -292,6 +306,15 @@ export default {
                 }
               } else {
                 target.isEmergency = 1
+              }
+              var userFavorits = this.favoritsList.map((obj) => obj['nodeid'])
+              for (var idx in userFavorits) {
+                let favoritsNodeid = userFavorits[idx]
+                if (target.nodeid == favoritsNodeid) {
+                  target.favorits = true
+                } else {
+                  target.favorits = false
+                }
               }
             }
           } else {
