@@ -15,8 +15,7 @@
 
 <script>
 import Template_file from '@/components/fileUpload/Template_file'
-const electron = window.require('electron')
-const ipcRenderer = electron.ipcRenderer
+const { ipcRenderer } = require('@/assets/js/include.js')
 
 export default {
   name: 'FileUpLoad',
