@@ -13,8 +13,10 @@
         <div class="flex-center mt10 mb10">
           <h4>멤버 관리</h4>
           <div class="btn-box">
-            <button @click="active = !active" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue h30 addUser">+</button>
-            <button @click="userDel" type="button" class="btn h30 deleteUser">-</button>
+<!--            <button @click="active = !active" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue h30 addUser">추가</button>-->
+            <button @click="userAddActive" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue h30 addUser">추가</button>
+            <button @click="userModifyActive" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue h30 addUser">편집</button>
+            <button @click="userDel" type="button" class="btn h30 deleteUser">삭제</button>
           </div>
         </div>
         <table class="mb20">
@@ -72,10 +74,11 @@
         <button @click="active = false" class="close"><i class="fas fa-times"></i></button>
         <div class="box flex-box mb20">
           <input v-model="name" ref="usernameInput" type="text" placeholder="이름" id="info-name" class="name">
-          <input v-model="phonenumber" ref="usertelInput" type="tel" placeholder="연락처" id="info-tel">
+          <input v-model="phonenumber" ref="usertelInput" type="tel" placeholder="연락처" id="info-tel" maxlength="13">
         </div>
         <div class="btn-box">
-          <button @click="userAdd" id="addCheck" class="btn" type="button" >추가</button>
+          <button @click="userAdd" id="addCheck" class="btn" type="button" v-show="isNew">추가</button>
+          <button @click="userAdd" class="btn" type="button" v-show="!isNew">수정</button>
         </div>
       </div>
     </div>
@@ -106,6 +109,8 @@ export default {
       users: [],
       selected: [],
       active: false,
+      isNew: true,
+      memberid: '',
       page: 1,
       total: null,
       limit: 10,
@@ -186,6 +191,12 @@ export default {
       })
       this.selectAll = false // 전체체크박스 해제
     },
+    userAddActive: function () {
+      this.name = ''
+      this.phonenumber = ''
+      this.active = true
+      this.isNew = true
+    },
     userAdd: function () {
       if (!this.name) {
         ipcRenderer.send('alert', '이름을 입력해주세요.')
@@ -203,11 +214,32 @@ export default {
           phonenumber: this.phonenumber,
           userid: this.$store.state.username
         }
-        axios.postAsyncAxios('/v2/members', JSON.stringify(body), null, (response) => {
-          this.getUserList(1)
-        })
+        if (this.isNew) {
+          axios.postAsyncAxios('/v2/members', JSON.stringify(body), null, (response) => {
+            this.getUserList(1)
+          })
+        } else if (!this.isNew) {
+          body.memberid = this.memberid
+          axios.putAsyncAxios('/v2/members/' + this.memberid, JSON.stringify(body), null, (response) => {
+            this.getUserList(this.page)
+          })
+        }
         this.name = ''
         this.phonenumber = ''
+      }
+    },
+    userModifyActive: function () {
+      this.isNew = false
+      if (this.selected.length === 0) {
+        ipcRenderer.send('alert', '편집할 연락처를 선택해주세요.')
+      } else if (this.selected.length !== 1) {
+        ipcRenderer.send('alert', '연락처 편집은 단일 선택만 가능합니다.')
+      } else {
+        let item = custom.proxy2map(this.selected)
+        this.name = item[0].name
+        this.phonenumber = item[0].phonenumber
+        this.memberid = item[0].memberid
+        this.active = true
       }
     },
     userDel: function () {
