@@ -12,7 +12,7 @@
 </template>
 
 <script>
-const axios = require('@/assets/js/axios.js')
+const { ipcRenderer, axios } = require('@/assets/js/include.js')
 export default {
   name: 'Template_favorits_menu',
   props: {
@@ -32,11 +32,15 @@ export default {
       if (isFavorits) { // 즐겨찾기 추가
         axios.postAsyncAxios('/v2/users/' + this.username + '/favorits/' + this.nodeid, null, param, (response) => {
           // console.log('post', response)
+          let msg = '즐겨찾기가 추가되었습니다.'
+          ipcRenderer.send('alert', msg)
           this.$parent.getFavorits()
         })
       } else if (!isFavorits) { // 즐겨찾기 삭제
         axios.deleteAsyncAxios('/v2/users/' + this.username + '/favorits/' + this.nodeid, null, null, (response) => {
           // console.log('delete', response)
+          let msg = '즐겨찿기가 해제되었습니다.'
+          ipcRenderer.send('alert', msg)
           this.$parent.getFavorits()
         })
       }

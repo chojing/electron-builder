@@ -1,20 +1,28 @@
 <template>
   <main id="mainView">
     <div class="wrap">
+      <h4 class="tti mb10">전송</h4>
       <article class="user-favorite main-border">
         <h4 class="mb5">즐겨찾기</h4>
         <div class="favorite-list">
-          <div class="fa-item-link flex-column">
-            <button v-for="item in favoritsList" v-bind:key="item.nodeid" @dblclick="this.fileUploadPopup(item)" @click.prevent>
-              <template v-if="Array.isArray(item.name)">
-                <template v-for="item in item.name" v-bind:key="item">
-                  <span>{{item}}</span>
-                </template>
-              </template>
-              <template v-else>
-                <span>{{item.name}}</span>
-              </template>
-            </button>
+          <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
+            <template v-for="item in favoritsList" v-bind:key="item.nodeid">
+              <div :data-nodeid="item.nodeid" :data-pathftpserverid="item.pathftpserverid" :data-pathftpsiteid="item.pathftpsiteid"
+                   :data-name="item.nodename" :data-isinheritance="item.isinheritance"
+                   :data-path="item.path" :data-pathinheritance="item.pathinheritance"
+                   @contextmenu.prevent="showContextMenu($event)">
+                <button @dblclick="this.fileUploadPopup(item)" @click.prevent>
+                  <template v-if="Array.isArray(item.name)">
+                    <template v-for="item in item.name" v-bind:key="item">
+                      <span>{{item}}</span>
+                    </template>
+                  </template>
+                  <template v-else>
+                    <span>{{item.name}}</span>
+                  </template>
+                </button>
+              </div>
+            </template>
           </div>
         </div>
       </article>
@@ -29,7 +37,7 @@
             <div class="favorite-list">
               <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
                 <template v-for="list in searchList" v-bind:key="list.nodeid">
-                  <div v-if="!list.isEmergency" :data-nodeid="list.nodeid" :data-haschild="list.haschild"
+                  <div v-if="!list.isEmergency" :data-nodeid="list.nodeid"
                        :data-pathftpserverid="list.pathftpserverid" :data-pathftpsiteid="list.pathftpsiteid"
                        :data-name="list.nodename" :data-isinheritance="list.isinheritance"
                        :data-path="list.path" :data-pathinheritance="list.pathinheritance"
@@ -124,44 +132,6 @@ export default {
   },
   methods: {
     init: function (event, key, data, type) {
-      if (type == 'isUserPwModifyClose') {
-        this.isUserPwModifyClose = data
-        if (this.isUserPwModifyClose) {
-          this.logout()
-        }
-      }
-    },
-    pwModify: function () {
-      const data = {
-        parentKey: this.selfKey
-      }
-      ipcRenderer.send('openWindow', {
-        key: ++this.g_windowIndex,
-        url: 'UserPwModify',
-        data: data,
-        width: 350,
-        height: 400,
-        parent: '',
-        modal: true
-      })
-      ipcRenderer.once('receiveData', this.init)
-    },
-    logoutCheck: function () {
-      this.isLogoutCheck = true
-    },
-    logout: function () {
-      console.trace()
-      this.$store.commit('commitApikey', '')
-      axios.deleteAsyncAxios('/v2/users/apikey', null, null, (response) => {
-        ipcRenderer.send('alert', '로그아웃 되었습니다.')
-        this.goTo('Login?Logout')
-      })
-    },
-    logoutCancel: function () {
-      this.isLogoutCheck = false
-    },
-    goTo: function (page) {
-      this.$router.push(page)
     },
     updateOnlineStatus: function () {
       if (navigator.onLine == true) {
@@ -197,6 +167,7 @@ export default {
     getFavorits: function () {
       axios.getAsyncAxios('/v2/users/' + this.username + '/favorits', null, (response) => {
         this.favoritsList = response.data.results
+        console.log('response.data.results', response.data.results)
         if (this.favoritsList.length !== 0) {
           var favorits = this.favoritsList.map((obj) => obj['name'])
           // console.log('favorits : ', favorits)
@@ -207,6 +178,7 @@ export default {
                 var str = hasDepth.split('>')
                 // console.log('str : ', str)
                 this.favoritsList[idx].name = str
+                this.favoritsList[idx].nodename = str[str.length - 1]
               }
             }
           }
@@ -220,12 +192,12 @@ export default {
       if (e.currentTarget.nodeid == undefined || e.target.dataset.nodeid == undefined) {
         this.hideContextMenu()
       }
-      if ((e.target.dataset.haschild == 0 && e.target.dataset.nodeid) ||
-        (e.currentTarget.dataset.haschild == 0 && e.currentTarget.dataset.nodeid)) {
+      if ((e.target.dataset.nodeid && e.target.dataset.nodetype_code === 'target') ||
+        (e.currentTarget.dataset.nodeid)) {
         var menu = document.getElementById('favorits-menu')
         menu.style.left = e.pageX + 'px'
         menu.style.top = e.pageY + 'px'
-        if (e.target.dataset.haschild == 0 && e.target.dataset.nodeid) {
+        if (e.target.dataset.nodeid && e.target.dataset.nodetype_code === 'target') {
           this.nodeid = e.target.dataset.nodeid
           this.pathftpserverid = parseInt(e.target.dataset.pathftpserverid)
           this.pathftpsiteid = parseInt(e.target.dataset.pathftpsiteid)
@@ -235,7 +207,7 @@ export default {
           } else if (e.target.dataset.isinheritance == 1) {
             this.nodepath = e.target.dataset.pathinheritance
           }
-        } else if ((e.currentTarget.dataset.haschild == 0 && e.currentTarget.dataset.nodeid)) {
+        } else if ((e.currentTarget.dataset.nodeid)) {
           this.nodeid = e.currentTarget.dataset.nodeid
           this.pathftpserverid = parseInt(e.currentTarget.dataset.pathftpserverid)
           this.pathftpsiteid = parseInt(e.currentTarget.dataset.pathftpsiteid)

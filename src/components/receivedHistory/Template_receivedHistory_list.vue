@@ -1,6 +1,11 @@
 <!-- 수신내역 리스트-->
 <template>
   <tr v-for="item in receivedList" v-bind:key="item.transferid" @click="receivedHistoryDetailPopup(item.transfername, item.transferid)">
+    <td class="ellipsis">
+      <Tooltip :tooltipText="item.userid_realname" position="top">
+        <p>{{item.userid_realname}}</p>
+      </Tooltip>
+    </td>
     <td class="targetName ellipsis">
       <Tooltip :tooltipText="item.transfername" position="top">
         <p>
@@ -11,11 +16,6 @@
     <td class="ellipsis">
       <Tooltip :tooltipText="item.pathname" position="top">
         <p>{{item.pathname}}</p>
-      </Tooltip>
-    </td>
-    <td class="ellipsis">
-      <Tooltip :tooltipText="item.userid_realname" position="top">
-        <p>{{item.userid_realname}}</p>
       </Tooltip>
     </td>
     <td>
