@@ -11,6 +11,7 @@
       <ul class="one-list">
         <li v-for="item in targetFtpList" v-bind:key="item.ftpserverid"
             :class="{active:this.selectedFtpId === item.ftpserverid}"
+            @click="selectedFtp(item.ftpserverid)"
             @dblclick="this.fileUploadPopup(item)" :data-ismanual="item.ismanual">
           <p v-bind:data-ismanual="item.ismanual" :data-ftpserverid="item.ftpserverid">
             {{item.name}}
@@ -98,6 +99,9 @@ export default {
         modal: false
       })
       console.log(ftpInfoItem)
+    },
+    selectedFtp: function (ftpid) {
+      this.selectedFtpId = ftpid
     }
   }
 }
