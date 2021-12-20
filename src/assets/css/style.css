@@ -352,3 +352,9 @@ main article{padding: 5px 10px 10px /*border-radius: 5px;background-color: #f5f5
 }
 .hide{display: none}
 .show{display: block;}
+.transfer-request {
+  overflow: auto;
+  height: 200px;
+  border-radius: 5px;border: 1px solid #eee;font-size: 13px;line-height: 1.6
+}
+.transfer-request p{white-space: pre-line}

@@ -1,6 +1,8 @@
 <!-- 수신내역 리스트-->
 <template>
-  <tr v-for="item in receivedList" v-bind:key="item.transferid" @click="receivedHistoryDetailPopup(item.transfername, item.transferid)">
+  <tr v-for="item in receivedList" v-bind:key="item.transferid" :data-transferid="item.transferid"
+      @click="receivedHistoryDetailPopup(item.transfername, item.transferid)"
+      @contextmenu.prevent="showContextMenu($event)">
     <td class="ellipsis">
       <Tooltip :tooltipText="item.userid_realname" position="top">
         <p>{{item.userid_realname}}</p>
@@ -56,6 +58,9 @@ export default {
   },
   methods: {
     init: function (event, key, data) {},
+    showContextMenu: function (e) {
+      this.$parent.showContextMenu(e)
+    },
     receivedHistoryDetailPopup: function (transfername, transferid) {
       const data = {
         parentKey: this.g_curWindowKey,

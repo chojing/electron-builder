@@ -64,8 +64,6 @@ export default {
       this.$parent.fileUploadPopup(data)
       this.$parent.hideContextMenu()
     }
-  },
-  watch: {
   }
 }
 </script>

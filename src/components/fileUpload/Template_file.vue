@@ -179,7 +179,7 @@ export default {
             server.rootpath = server.rootpath + '/' + rootpathTitle
           }
           if (server.rootpath.indexOf('//') != -1) {
-            server.rootpath = server.rootpath.replace('//', '/')
+            server.rootpath = server.rootpath.replaceAll(/[/]{2,}/g, '/')
           }
           console.log('server.rootpath : ', server.rootpath)
         }
@@ -228,7 +228,7 @@ export default {
             transferFile.filesize = item.size
             for (let idy in g_ftpSendData.ftpSite.ftpServerList) {
               let server = g_ftpSendData.ftpSite.ftpServerList[idy]
-              transferFile.filepath = server.rootpath
+              transferFile.filepath = server.rootpath.replace(server.ogRootpath, '')
             }
             if (item.fileName.indexOf('/') !== -1) {
               let nameStr = item.fileName.split('/')

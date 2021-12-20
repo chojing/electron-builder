@@ -119,6 +119,11 @@ const routes = [
     path: '/userAppointed',
     name: 'UserAppointed',
     component: () => import('../components/receivedHistory/Template_userAppointed')
+  },
+  {
+    path: '/transferRequest',
+    name: 'TransferRequest',
+    component: () => import('../components/receivedHistory/transferRequest')
   }
 ]
 

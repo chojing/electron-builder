@@ -38,17 +38,20 @@
     </div>
   </section>
   <templateMenu/>
+  <templateContextMenu :receivedList="receivedList" :transferid="transferid" />
 </template>
 
 <script>
 import templateReceivedHistory from '@/components/receivedHistory/Template_receivedHistory_list'
 import templateMenu from '@/components/menu/Template_menu'
+import templateContextMenu from '@/components/receivedHistory/Template_context_menu'
 import pagination from '@/components/includes/Template_pagination'
 const { axios, custom, ipcRenderer } = require('@/assets/js/include.js')
 export default {
   components: {
     templateReceivedHistory,
     templateMenu,
+    templateContextMenu,
     pagination
   },
   data () {
@@ -60,6 +63,7 @@ export default {
       nodeHome2: null,
       selectedNodeid: null,
       receivedList: [],
+      transferid: null,
       page: 1,
       total: null,
       limit: 16,
@@ -134,7 +138,6 @@ export default {
       param.sort = sort
       param.limit = this.limit
       param.offset = (this.page - 1) * this.limit
-
       axios.getAsyncAxios('/v2/transfers', param, (response) => {
         this.receivedList = response.data.results
         this.total = response.data.paging.total
@@ -190,6 +193,16 @@ export default {
       if (isUsernode) {
         this.getReceivedList(1)
       }
+    },
+    showContextMenu: function (e) {
+      this.transferid = e.currentTarget.dataset.transferid
+      var menu = document.getElementById('favorits-menu')
+      menu.style.left = e.pageX + 'px'
+      menu.style.top = e.pageY + 'px'
+      menu.classList.add('active')
+    },
+    hideContextMenu: function () {
+      document.getElementById('favorits-menu').classList.remove('active')
     },
     userAppointedPopup: function () {
       const data = {
