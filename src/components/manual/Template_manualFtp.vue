@@ -10,7 +10,7 @@
     <div class="target-list h500 mt10" style="background: #f5f5f5;border-radius: 5px;">
       <ul class="one-list">
         <li v-for="item in targetFtpList" v-bind:key="item.ftpserferid" @dblclick="this.fileUploadPopup(item)">
-          <p>{{item.name}}</p>
+          <p v-bind:data-ismanual="item.ismanual">{{item.name}}</p>
         </li>
       </ul>
     </div>
