@@ -74,7 +74,7 @@ export default {
     }
   },
   created () {
-    // this.getNodeHome()
+    this.getNodeHome()
     ipcRenderer.on('receiveData', this.init)
     ipcRenderer.on('open-file-explore-error', this.ftpError)
   },
