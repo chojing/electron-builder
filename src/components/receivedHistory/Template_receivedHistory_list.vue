@@ -62,6 +62,7 @@ export default {
       this.$parent.showContextMenu(e)
     },
     receivedHistoryDetailPopup: function (transfername, transferid) {
+      this.$parent.hideContextMenu()
       const data = {
         parentKey: this.g_curWindowKey,
         transfername: transfername,

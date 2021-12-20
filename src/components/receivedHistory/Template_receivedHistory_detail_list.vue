@@ -7,7 +7,9 @@
         <p>{{item.ftpservername}}</p>
       </Tooltip>
     </td>
-    <td @click="fileopen(item)" class="filePath ellipsis">
+<!--    <td @click="fileopen(item)" class="filePath ellipsis">-->
+<!--    <td class="filePath ellipsis">-->
+    <td class="ellipsis">
       <Tooltip :tooltipText="item.filepath" position="top">
         <p>
         {{item.filepath}}
@@ -52,8 +54,8 @@ export default {
   methods: {
     fileopen: function (item) {
       // console.log('gIsMac : ', item.gIsMac, ' Volume : ', item.volume, ' filepath : ', item.filepath)
-      let path = item.volume + item.filepath
-      // console.log('path : ', path)
+      let path = item.volume + '/' + item.filepath
+      console.log('item.volume : ', item.volume, ' item.filepath', item.filepath)
       this.$emit('selectftpserverinfo', item)
       ipcRenderer.send('open-file-explore', path)
     }

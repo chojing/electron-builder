@@ -1,6 +1,6 @@
 <template>
   <section class="history-container">
-    <div class="wrap pb60">
+    <div class="wrap pb60" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
       <h4 class="tti mb10">수신내역
         <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
       </h4>
@@ -38,7 +38,7 @@
     </div>
   </section>
   <templateMenu/>
-  <templateContextMenu :receivedList="receivedList" :transferid="transferid" />
+  <templateContextMenu :receivedList="receivedList" :transferid="transferid" :gIsMac="gIsMac" @selecttransferinfo="selectResult"/>
 </template>
 
 <script>
@@ -64,9 +64,11 @@ export default {
       selectedNodeid: null,
       receivedList: [],
       transferid: null,
+      gIsMac: false,
+      selectTransferInfo: '',
       page: 1,
       total: null,
-      limit: 16,
+      limit: 15,
       isShow: false,
       isActive: false
     }
@@ -74,6 +76,7 @@ export default {
   created () {
     this.getNodeHome()
     ipcRenderer.on('receiveData', this.init)
+    ipcRenderer.on('open-file-explore-error', this.ftpError)
   },
   mounted () {
     this.setTimer()
@@ -94,6 +97,10 @@ export default {
         this.selectedNodeid = data.nodeid
         this.getReceivedList(1)
       } else if (type == 'closeUserAppointed') {
+      }
+      var agent = window.navigator.userAgent.toLowerCase()
+      if (agent.indexOf('mac') != -1 || agent.indexOf('macintosh') != -1) {
+        this.gIsMac = true
       }
     },
     getNodeHome: function () {
@@ -199,7 +206,9 @@ export default {
       var menu = document.getElementById('favorits-menu')
       menu.style.left = e.pageX + 'px'
       menu.style.top = e.pageY + 'px'
-      menu.classList.add('active')
+      if (e.currentTarget.dataset.transferid) {
+        menu.classList.add('active')
+      }
     },
     hideContextMenu: function () {
       document.getElementById('favorits-menu').classList.remove('active')
@@ -231,6 +240,26 @@ export default {
     refresh: function () {
       this.getReceivedList()
       // this.$router.go()
+    },
+    selectResult: function (val) {
+      this.selectTransferInfo = val
+      console.log('val : ', val)
+    },
+    ftpError: function (event, err) {
+      let volume = this.selectTransferInfo.volume
+      // let severname = this.selectTransferInfo.ftpservername
+      // let rootpath = this.selectTransferInfo.rootpath
+      let filepath = this.selectTransferInfo.filepath
+      let fullpath = volume + '/' + filepath
+      if (this.gIsMac) {
+        fullpath = fullpath.replaceAll('\\', '/')
+        fullpath = fullpath.replaceAll(/[/]{2,}/g, '/')
+      } else {
+        fullpath = fullpath.replaceAll('/', '\\')
+        fullpath = fullpath.replaceAll('\\\\', '\\')
+      }
+      let msg = fullpath + ' 파일 경로가 없습니다.'
+      ipcRenderer.send('alert', msg)
     }
   },
   watch: {
