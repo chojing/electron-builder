@@ -1,5 +1,5 @@
 <template ref="manualFtp">
-  <article class="mt10">
+  <article class="manualFtp mt10">
     <div class="search-form">
       <div class="flex-center">
         <h4>전송 Target</h4>
@@ -9,8 +9,12 @@
     </div>
     <div class="target-list h500 mt10" style="background: #f5f5f5;border-radius: 5px;">
       <ul class="one-list">
-        <li v-for="item in targetFtpList" v-bind:key="item.ftpserferid" @dblclick="this.fileUploadPopup(item)">
-          <p v-bind:data-ismanual="item.ismanual">{{item.name}}</p>
+        <li v-for="item in targetFtpList" v-bind:key="item.ftpserverid"
+            :class="{active:this.selectedFtpId === item.ftpserverid}"
+            @dblclick="this.fileUploadPopup(item)" :data-ismanual="item.ismanual">
+          <p v-bind:data-ismanual="item.ismanual" :data-ftpserverid="item.ftpserverid">
+            {{item.name}}
+          </p>
         </li>
       </ul>
     </div>
@@ -27,6 +31,7 @@ export default {
       g_windowIndex: 0,
       selfKey: 'main',
       targetFtpList: [],
+      selectedFtpId: '',
       isManualFtpClose: false
     }
   },
@@ -45,6 +50,7 @@ export default {
           this.getList()
         }
       }
+      this.selectedFtpId = ''
     },
     getList: function () {
       this.targetFtpList = []
@@ -77,6 +83,7 @@ export default {
       })
     },
     fileUploadPopup: function (ftpInfoItem) {
+      this.selectedFtpId = ftpInfoItem.ftpserverid
       let data = {}
       data.serverlist = [ftpInfoItem]
       data.site = null
