@@ -74,7 +74,7 @@ export default {
     }
   },
   created () {
-    this.getNodeHome()
+    // this.getNodeHome()
     ipcRenderer.on('receiveData', this.init)
     ipcRenderer.on('open-file-explore-error', this.ftpError)
   },
@@ -83,6 +83,10 @@ export default {
   },
   methods: {
     init: function (event, key, data, type) {
+      var agent = window.navigator.userAgent.toLowerCase()
+      if (agent.indexOf('mac') != -1 || agent.indexOf('macintosh') != -1) {
+        this.gIsMac = true
+      }
       if (type == 'init') {
         this.getNodeHome()
       } else if (type == 'selectUserAppointed') {
@@ -97,10 +101,6 @@ export default {
         this.selectedNodeid = data.nodeid
         this.getReceivedList(1)
       } else if (type == 'closeUserAppointed') {
-      }
-      var agent = window.navigator.userAgent.toLowerCase()
-      if (agent.indexOf('mac') != -1 || agent.indexOf('macintosh') != -1) {
-        this.gIsMac = true
       }
     },
     getNodeHome: function () {
@@ -243,7 +243,7 @@ export default {
     },
     selectResult: function (val) {
       this.selectTransferInfo = val
-      console.log('val : ', val)
+      // console.log('val : ', val)
     },
     ftpError: function (event, err) {
       let volume = this.selectTransferInfo.volume

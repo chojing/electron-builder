@@ -6,7 +6,7 @@
     </li>
     <li class = "favorits-menu-list" @click="fileopen">
       <i class="fas fa-folder-open mr5"></i>
-        파일열기
+      폴더열기
     </li>
   </ul>
 </template>
@@ -24,7 +24,8 @@ export default {
   data () {
     return {
       g_curWindowKey: 0,
-      selfKey: 'main'
+      selfKey: 'main',
+      selected: ''
     }
   },
   methods: {
@@ -44,8 +45,8 @@ export default {
         key: ++this.g_windowIndex,
         url: 'TransferRequest',
         data: data,
-        width: 420,
-        height: 365,
+        width: 440,
+        height: 385,
         parent: '',
         modal: true
       })
@@ -56,18 +57,21 @@ export default {
       if (this.receivedList.length !== 0) {
         for (let idx in this.receivedList) {
           let item = this.receivedList[idx]
-          if (item.transferid == this.transferid) {
-            if (this.gIsMac) {
-              item.volume = item.macvolume
-              path = item.macvolume + '/' + item.filepath
-            } else {
-              item.volume = item.winvolume
-              path = item.winvolume + '\\' + item.filepath
-            }
-            this.$emit('selecttransferinfo', item)
-            ipcRenderer.send('open-file-explore', path)
+          if (item.transferid === parseInt(this.transferid)) {
+            this.selected = item
             break
           }
+        }
+        if (this.selected.length !== 0) {
+          if (this.gIsMac) {
+            this.selected.volume = this.selected.macvolume
+            path = this.selected.macvolume + '/' + this.selected.filepath
+          } else {
+            this.selected.volume = this.selected.winvolume
+            path = this.selected.winvolume + '\\' + this.selected.filepath
+          }
+          this.$emit('selecttransferinfo', this.selected)
+          ipcRenderer.send('open-file-explore', path)
         }
       }
       this.$parent.hideContextMenu()
