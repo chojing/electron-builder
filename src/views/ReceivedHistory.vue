@@ -62,7 +62,7 @@ export default {
       receivedList: [],
       page: 1,
       total: null,
-      limit: 10,
+      limit: 16,
       isShow: false,
       isActive: false
     }

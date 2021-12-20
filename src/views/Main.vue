@@ -194,9 +194,7 @@ export default {
     },
     showContextMenu: function (e) {
       this.nodeid = ''
-      // document.getElementById('favorits-checkbox-id').checked = false
       this.isFavorits = null
-      e.target.dataset.favorits = false
       if (e.currentTarget.nodeid == undefined || e.target.dataset.nodeid == undefined) {
         this.hideContextMenu()
       }
@@ -215,9 +213,7 @@ export default {
           } else if (e.target.dataset.isinheritance == 1) {
             this.nodepath = e.target.dataset.pathinheritance
           }
-          this.isFavorits = e.target.dataset.favorits
-          console.log('isFavorits ,', this.isFavorits)
-          console.log('e.target.dataset.favorits ,', e.target.dataset.favorits)
+          this.isFavorits = false
         } else if ((e.currentTarget.dataset.nodeid)) {
           this.nodeid = e.currentTarget.dataset.nodeid
           this.pathftpserverid = parseInt(e.currentTarget.dataset.pathftpserverid)
@@ -228,15 +224,14 @@ export default {
           } else if (e.currentTarget.dataset.isinheritance == 1) {
             this.nodepath = e.currentTarget.dataset.pathinheritance
           }
-          this.isFavorits = e.currentTarget.dataset.favorits
+          this.isFavorits = false
         }
         var userFavorits = this.favoritsList.map((obj) => obj['nodeid'])
         for (var idx in userFavorits) {
           let favoritsNodeid = userFavorits[idx]
           if (this.nodeid == favoritsNodeid) {
-            // document.getElementById('favorits-checkbox-id').checked = true
             e.target.dataset.favorits = true
-            this.isFavorits = e.target.dataset.favorits
+            this.isFavorits = true
           }
         }
         menu.classList.add('active')

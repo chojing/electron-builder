@@ -4,12 +4,13 @@
       <i class="fas fa-circle mr5"></i>
       전송
     </li>
-    <li class = "favorits-menu-list" :nodeid="nodeid" :isFavorits="isFavorits" v-show="isMain" @click="editFavoritsMenu($event)">
+    <li class = "favorits-menu-list" :nodeid="nodeid" v-show="isMain" @click="editFavoritsMenu($event)">
 <!--      <input id = "favorits-checkbox-id" type="checkbox" class ="mr5"/>-->
-      <template :class="{hide : isFavorits, show : !isFavorits}">
+      <i class="fas fa-circle mr5"></i>
+      <template :class="{hide : !isFavorits, show : isFavorits}">
         즐겨찾기 해제
       </template>
-      <template :class="{hide : !isFavorits, show : isFavorits}">
+      <template :class="{hide : isFavorits, show : !isFavorits}">
         즐겨찾기 추가
       </template>
     </li>
