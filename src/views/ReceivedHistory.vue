@@ -110,16 +110,18 @@ export default {
         self.nodeHome2 = response.data.result.metaset.result.subnodeid
 
         axios.getAsyncAxios('/v2/nodes/' + self.nodeHome1, null, (response) => {
-          console.log('mainnode : ', response.data.result)
+          // console.log('mainnode : ', response.data.result)
           if (response.data.result !== null) {
-            let home1Name = response.data.result.pathname + '>' + response.data.result.name
+            let home1Name = response.data.result.pathname
+            // let home1Name = response.data.result.pathname + '>' + response.data.result.name
             document.getElementById('mainnode').innerText = home1Name
           }
         })
         axios.getAsyncAxios('/v2/nodes/' + self.nodeHome2, null, (response) => {
-          console.log('subnode : ', response.data.result)
+          // console.log('subnode : ', response.data.result)
           if (response.data.result !== null) {
-            let home2Name = response.data.result.pathname + '>' + response.data.result.name
+            let home2Name = response.data.result.pathname
+            // let home2Name = response.data.result.pathname + '>' + response.data.result.name
             document.getElementById('subnode').innerText = home2Name
           }
         })
