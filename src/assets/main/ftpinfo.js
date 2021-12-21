@@ -43,9 +43,11 @@ FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _current
 
   self.ftpStreamList[ftpStreamKey] = curFtpStream
   let totalSize = 0
+  log.info('==받은 파일 리스트==')
   for (let j = 0; j < _fileList.length; j++) {
     let curFile = _fileList[j]
     let curPath = curFile.path
+    log.info(curPath)
     let curFileName = curFile.fileName
     let ftpData = new FTPData(_ftpType, curFile, desFolderPath, curFileName)
 
@@ -55,6 +57,7 @@ FTPInfo.prototype.doftp = function (_ftpType, PromiseResult, _fileList, _current
     // 전체 사이즈 체킹
     totalSize += curFile.size
   }
+  log.info('==============')
   curFtpStream.totalWorkSize = totalSize
   curFtpStream.totalWorkIndex = _fileList.length
   let result = self.ftpStreamList[ftpStreamKey].work(_fileList, ftpServer, 0).catch(
