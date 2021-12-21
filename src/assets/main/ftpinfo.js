@@ -185,6 +185,13 @@ FTPInfo_Type1.prototype.RequestFTPWork = async function (_ftpType, _connectionIn
       let isSuccess = false
       if (value[0] != true) { // fail
         log.info(self.clientSendData.ftpSite.siteName + ' is fail!')
+
+        let result = {
+          isSuccess: isSuccess,
+          deleteKey: self.clientSendData.ftpSite.siteName + self.clientSendData.clientData.transferid
+        }
+        resolve(result)
+        return
       } else { // success
         log.info(self.clientSendData.ftpSite.siteName + ' is Success!')
         isSuccess = true
@@ -192,6 +199,7 @@ FTPInfo_Type1.prototype.RequestFTPWork = async function (_ftpType, _connectionIn
 
       // next job start
       if (ftpServerFinish == false) {
+        // 캔슬이라면 타면 안됨
         this.RequestFTPWork(_ftpType, _connectionIndex)
       } else {
         let result = {
@@ -227,6 +235,8 @@ FTPInfo_Type2.prototype.RequestFTPWork = async function (_ftpType, _FTPSendData,
         if (value[i] != true) { // 실패
           log.error(curName + ' is fail!')
           result = value[i]
+          reject(result)
+          return false
         } else {
           log.info(curName + ' is Success!')
         }

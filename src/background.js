@@ -530,6 +530,7 @@ function ftpCancel (_FtpInfo, _cancelInfo) {
     log.info('Cancel Fail! Job is already done.')
   }
   let KeyList = Object.keys(_FtpInfo.ftpStreamList)
+
   for (let i = 0; i < KeyList.length; i++) {
     let tmpResult = _FtpInfo.ftpStreamList[KeyList[i]].cancel(_cancelInfo)
     if (tmpResult == false) {
