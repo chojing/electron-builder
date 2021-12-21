@@ -65,10 +65,10 @@ export default {
         if (this.selected.length !== 0) {
           if (this.gIsMac) {
             this.selected.volume = this.selected.macvolume
-            path = this.selected.macvolume + '/' + this.selected.filepath
+            path = this.selected.macvolume + this.selected.rootpath + this.selected.filepath
           } else {
             this.selected.volume = this.selected.winvolume
-            path = this.selected.winvolume + '\\' + this.selected.filepath
+            path = this.selected.winvolume + this.selected.rootpath + this.selected.filepath
           }
           this.$emit('selecttransferinfo', this.selected)
           ipcRenderer.send('open-file-explore', path)
