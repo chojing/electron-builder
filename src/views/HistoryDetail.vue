@@ -66,6 +66,11 @@ export default {
       this.transferDetailList = []
       const param = {}
       param.transferid = this.transferid
+      const sort = {}
+      // sort.transferid = 'desc'
+      sort.ftpserverid = 'asc'
+      sort.filename = 'asc'
+      param.sort = sort
       axios.getAsyncAxios('/v2/transferfiles', param, (response) => {
         this.transferDetailList = response.data.results
         // console.log('transferDetailList : ', this.transferDetailList)

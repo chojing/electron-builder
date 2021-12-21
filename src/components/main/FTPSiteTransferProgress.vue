@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="btn-box center pt20">
-      <button v-on:click = "doCancel" class="btn h30" v-show="isUploading&&!isUploadComplete">전송취소</button>
+      <button v-on:click = "doCancel(true)" class="btn h30" v-show="isUploading&&!isUploadComplete">전송취소</button>
       <button v-on:click = "doClose" class="btn h30" v-show="!isUploading&&isUploadComplete">전송완료</button>
     </div>
   </section>
@@ -33,6 +33,7 @@
 import templateProgress from '@/components/main/Template_ftpSiteTransferProgress_list'
 const { axios, ipcRenderer, custom } = require('@/assets/js/include.js')
 let serverResultList = {}
+let transfer = {}
 export default {
   components: {
     templateProgress
@@ -88,9 +89,6 @@ export default {
       // start FTP
       ipcRenderer.send('ftp-file-upload-start')
     },
-    ftpError: function (event, data) {
-      console.log(data)
-    },
     ftpResult: function (event, data) {
       // console.log('ftpResult', data)
       let self = this
@@ -101,7 +99,6 @@ export default {
         }
       }
       // transfer_tb insert data
-      const transfer = {}
       transfer.userid = self.$store.state.username
       transfer.transfertype = self.g_ftpSendData.ftpSite.transfertype
       transfer.filepath = ''
@@ -180,7 +177,7 @@ export default {
         }
       }
     },
-    doCancel: function () {
+    doCancel: function (flag) {
       console.log('cancel Test!')
       let self = this
       self.isCancel = true
@@ -194,17 +191,76 @@ export default {
         isDelete: isFileDelete,
         path: undefined // type 이 path일 경우만 기재
       }
+      console.log('cancel info : ', custom.proxy2map(cancelInfo))
       ipcRenderer.send('ftp-cancel', custom.proxy2map(cancelInfo))
-
       console.log('cancel request!')
-      ipcRenderer.send('sendData', self.parentKey, null, 'isFtpSiteCancel')
-      ipcRenderer.send('closeWindow', self.g_curWindowKey)
+      if (flag) {
+        ipcRenderer.send('sendData', self.parentKey, null, 'isFtpSiteCancel')
+        ipcRenderer.send('closeWindow', self.g_curWindowKey)
+      } else if (!flag) {
+        let msg = '전송 실패하였습니다.'
+        ipcRenderer.send('alert', msg)
+      }
     },
     doClose: function () {
       let self = this
       if (self.isUploading == false && self.isUploadComplete == true) {
         ipcRenderer.send('closeWindow', self.g_curWindowKey)
         ipcRenderer.send('closeWindow', self.parentKey)
+      }
+    },
+    ftpError: function (event, errMsg) {
+      console.log(errMsg)
+      let msg = ''
+      if (errMsg.code === 530) {
+        msg = '로그인한 계정 / 비밀번호를 확인해주세요'
+        ipcRenderer.send('alert', msg)
+      } else if (errMsg.code == 'EHOSTUNREACH') {
+        msg = 'FTP 서버와 연결할 수 없습니다.'
+        ipcRenderer.send('alert', msg)
+      } else if (errMsg.code == 600) {
+        msg = 'FTP 경로에 문제가 발생했습니다.'
+        ipcRenderer.send('alert', msg)
+      } else if (errMsg.code == 'ECONNABORTED') {
+        // 잘못된 acitve ip 의심
+        msg = 'FTP 서버와 연결이 끊어졌습니다.'
+        ipcRenderer.send('alert', msg)
+      } else if (errMsg.code == 'ENOTFOUND') {
+        msg = '인식할 수 없는 HOST입니다.\n FTP 서버의 HOST를 확인해주세요.'
+        ipcRenderer.send('alert', msg)
+      } else if (errMsg.code == 'ERR_SOCKET_BAD_PORT') {
+        msg = 'PORT번호는 0부터 65535까지의 범위의 숫자로 되어야합니다.\n FTP 서버의 PORT번호를 확인해주세요.'
+        ipcRenderer.send('alert', msg)
+      } else {
+        console.log('errCode : ', errMsg.code)
+        if (errMsg.message !== undefined && !this.isRoundRobin) {
+          ipcRenderer.send('alert', errMsg.message)
+        } else if (errMsg.code !== undefined || errMsg.code !== null) {
+          ipcRenderer.send('WriteLog', errMsg.code)
+        }
+      }
+      let errLogMsg = ''
+      if (errMsg.message !== undefined) {
+        errLogMsg = 'ftpErrorFTPInfoLog ::: host : ' + errMsg.ftpData.host + ' name : ' + errMsg.ftpData.name +
+        ' rootPath : ' + errMsg.ftpData.rootpath + ' message : ' + errMsg.message
+        ipcRenderer.send('WriteLog', errLogMsg)
+      }
+      let self = this
+      if (!self.isRoundRobin) {
+        if (errMsg.message !== undefined) {
+          self.doCancel(false)
+          transfer.status = 4000
+          transfer.transferendtime = custom.get_now_yyyymmddhhiiss()
+          axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
+            self.isUploadComplete = true
+            self.isUploading = false
+            // console.log('CancelError AXIOS', response)
+          })
+          for (let server of self.g_ftpSendData.ftpSite.ftpServerList) {
+            axios.postAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + server.ftpserverid, null, null, (response) => {
+            })
+          }
+        }
       }
     }
   }

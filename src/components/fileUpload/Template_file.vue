@@ -414,8 +414,17 @@ export default {
         ipcRenderer.send('alert', msg)
       } else {
         console.log('errCode : ', errMsg.code)
-        ipcRenderer.send('WriteLog', errMsg.code)
-        ipcRenderer.send('alert', errMsg.message)
+        if (errMsg.message !== undefined) {
+          ipcRenderer.send('alert', errMsg.message)
+        } else if (errMsg.code !== undefined || errMsg.code !== null) {
+          ipcRenderer.send('WriteLog', errMsg.code)
+        }
+      }
+      let errLogMsg = ''
+      if (errMsg.message !== undefined) {
+        errLogMsg = 'ftpErrorFTPInfoLog ::: host : ' + errMsg.ftpData.host + ' name : ' + errMsg.ftpData.name +
+        ' rootPath : ' + errMsg.ftpData.rootpath + ' message : ' + errMsg.message
+        ipcRenderer.send('WriteLog', errLogMsg)
       }
 
       transfer.status = 4000
