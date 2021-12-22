@@ -114,7 +114,9 @@ export default {
           if (response.data.result !== null) {
             let home1Name = response.data.result.pathname
             // let home1Name = response.data.result.pathname + '>' + response.data.result.name
-            document.getElementById('mainnode').innerText = home1Name
+            if (home1Name !== null) {
+              document.getElementById('mainnode').innerText = home1Name
+            }
           }
         })
         axios.getAsyncAxios('/v2/nodes/' + self.nodeHome2, null, (response) => {
@@ -122,7 +124,9 @@ export default {
           if (response.data.result !== null) {
             let home2Name = response.data.result.pathname
             // let home2Name = response.data.result.pathname + '>' + response.data.result.name
-            document.getElementById('subnode').innerText = home2Name
+            if (home2Name !== null) {
+              document.getElementById('subnode').innerText = home2Name
+            }
           }
         })
         self.selectedNodeid = self.nodeHome1
@@ -248,6 +252,7 @@ export default {
       // console.log('val : ', val)
     },
     ftpError: function (event, err) {
+      console.log('err ', err)
       let volume = this.selectTransferInfo.volume
       // let severname = this.selectTransferInfo.ftpservername
       // let rootpath = this.selectTransferInfo.rootpath
@@ -261,7 +266,7 @@ export default {
         fullpath = fullpath.replaceAll('\\\\', '\\')
       }
       let msg = fullpath + ' 파일 경로가 없습니다.'
-      if (volume !== undefined || fullpath !== undefined) {
+      if (volume !== undefined && fullpath !== undefined) {
         ipcRenderer.send('alert', msg)
       }
     }
