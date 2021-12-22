@@ -195,6 +195,8 @@ function checkFolderPath (preFolders) {
   while (flag == true) {
     if (preFolders.indexOf('//') != -1) {
       preFolders = preFolders.replace('//', '/')
+    } else if (preFolders.indexOf('\\') != -1) {
+      preFolders = preFolders.replaceAll('\\', '/')
     } else {
       flag = false
     }
@@ -322,12 +324,12 @@ FTPStream.prototype.doCheckRecursive_work = function (_ftpData, _curFileStream, 
 }
 FTPStream.prototype.downloadFolderOpen = async function (_path, cb) {
   try {
+    _path = checkFolderPath(_path)
     const stats = fs.statSync(_path)
     console.log(stats)
     if (stats.isDirectory()) {
-      _path = checkFolderPath(_path)
       shell.openPath(_path)
-        .than(function () {
+        .then(value => {
           let result = {
             message: 'success'
           }
