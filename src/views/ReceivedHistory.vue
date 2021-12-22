@@ -74,17 +74,20 @@ export default {
   },
   created () {
     this.getNodeHome()
+    this.gIsMacCheck()
     ipcRenderer.on('receiveData', this.init)
   },
   mounted () {
     this.setTimer()
   },
   methods: {
-    init: function (event, key, data, type) {
+    gIsMacCheck: function () {
       var agent = window.navigator.userAgent.toLowerCase()
       if (agent.indexOf('mac') != -1 || agent.indexOf('macintosh') != -1) {
         this.gIsMac = true
       }
+    },
+    init: function (event, key, data, type) {
       if (type == 'init') {
         this.getNodeHome()
       } else if (type == 'selectUserAppointed') {

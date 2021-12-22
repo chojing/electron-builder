@@ -81,7 +81,7 @@ export default {
       this.$parent.hideContextMenu()
     },
     ftpResult: function (event, result) {
-      console.log('result ', result)
+      // console.log('result ', result)
       let volume = this.selected.volume
       // let severname = this.selectTransferInfo.ftpservername
       let rootpath = this.selected.rootpath
@@ -95,8 +95,10 @@ export default {
         fullpath = fullpath.replaceAll('\\\\', '\\')
       }
       let msg = fullpath + ' 파일 경로가 없습니다.'
-      if (volume !== undefined && fullpath !== undefined) {
-        ipcRenderer.send('alert', msg)
+      if (result !== 'success') {
+        if (volume !== undefined && fullpath !== undefined) {
+          ipcRenderer.send('alert', msg)
+        }
       }
     }
   }
