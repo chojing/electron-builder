@@ -252,6 +252,7 @@ export default {
       // console.log('val : ', val)
     },
     ftpError: function (event, err) {
+      console.log('err ', err)
       let volume = this.selectTransferInfo.volume
       // let severname = this.selectTransferInfo.ftpservername
       // let rootpath = this.selectTransferInfo.rootpath
