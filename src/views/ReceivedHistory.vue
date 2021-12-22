@@ -261,7 +261,9 @@ export default {
         fullpath = fullpath.replaceAll('\\\\', '\\')
       }
       let msg = fullpath + ' 파일 경로가 없습니다.'
-      ipcRenderer.send('alert', msg)
+      if (volume !== undefined || fullpath !== undefined) {
+        ipcRenderer.send('alert', msg)
+      }
     }
   },
   watch: {
