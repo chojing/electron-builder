@@ -66,10 +66,13 @@ export default {
         if (this.gIsMac) {
           this.selected.volume = this.selected.macvolume
           path = this.selected.macvolume + this.selected.rootpath + this.selected.filepath
+          path = path.replaceAll('\\', '/')
+          path = path.replaceAll(/[/]{2,}/g, '/')
         } else if (!this.gIsMac) {
           this.selected.volume = this.selected.winvolume
-          console.log('this.selected.winvolume', this.selected.winvolume)
           path = this.selected.winvolume + this.selected.rootpath + this.selected.filepath
+          path = path.replaceAll('/', '\\')
+          path = path.replaceAll('\\\\', '\\')
         }
         this.$emit('selecttransferinfo', this.selected)
         ipcRenderer.send('open-file-explore', path)
