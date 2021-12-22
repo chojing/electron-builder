@@ -467,9 +467,9 @@ function FTPConnectTypeBranch_new (_FTPType, ftpSendData) {
 }
 ipcMain.on('open-file-explore', (event, path) => {
   let ftpStream = new FTPStream()
-  ftpStream.downloadFolderOpen(path, e => {
-    log.info(e)
-    event.sender.send('open-file-explore-error', e.message)
+  ftpStream.downloadFolderOpen(path, result => {
+    log.info(result)
+    event.sender.send('open-file-explore-result', result.message)
   })
 })
 
