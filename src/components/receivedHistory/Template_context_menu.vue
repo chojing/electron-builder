@@ -25,7 +25,7 @@ export default {
     return {
       g_curWindowKey: 0,
       selfKey: 'main',
-      selected: ''
+      selected: {}
     }
   },
   methods: {
@@ -62,7 +62,7 @@ export default {
             break
           }
         }
-        if (this.selected.length !== 0) {
+        if (Object.keys(this.selected).length !== 0) {
           if (this.gIsMac) {
             this.selected.volume = this.selected.macvolume
             path = this.selected.macvolume + this.selected.rootpath + this.selected.filepath
