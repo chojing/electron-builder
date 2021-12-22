@@ -54,6 +54,7 @@ export default {
     },
     fileopen: function () {
       let path = ''
+      this.selected = {}
       if (this.receivedList.length !== 0) {
         for (let idx in this.receivedList) {
           let item = this.receivedList[idx]
@@ -62,17 +63,15 @@ export default {
             break
           }
         }
-        if (Object.keys(this.selected).length !== 0) {
-          if (this.gIsMac) {
-            this.selected.volume = this.selected.macvolume
-            path = this.selected.macvolume + this.selected.rootpath + this.selected.filepath
-          } else {
-            this.selected.volume = this.selected.winvolume
-            path = this.selected.winvolume + this.selected.rootpath + this.selected.filepath
-          }
-          this.$emit('selecttransferinfo', this.selected)
-          ipcRenderer.send('open-file-explore', path)
+        if (this.gIsMac) {
+          this.selected.volume = this.selected.macvolume
+          path = this.selected.macvolume + this.selected.rootpath + this.selected.filepath
+        } else {
+          this.selected.volume = this.selected.winvolume
+          path = this.selected.winvolume + this.selected.rootpath + this.selected.filepath
         }
+        this.$emit('selecttransferinfo', this.selected)
+        ipcRenderer.send('open-file-explore', path)
       }
       this.$parent.hideContextMenu()
     }
