@@ -326,9 +326,16 @@ FTPStream.prototype.downloadFolderOpen = async function (_path, cb) {
     console.log(stats)
     if (stats.isDirectory()) {
       _path = checkFolderPath(_path)
-      shell.openPath(_path).catch(e => {
-        cb(e)
-      })
+      shell.openPath(_path)
+        .than(function () {
+          let result = {
+            message: 'success'
+          }
+          cb(result)
+        })
+        .catch(e => {
+          cb(e)
+        })
     } else {
       let result = { message: 'not folder' }
       cb(result)
