@@ -268,12 +268,11 @@ export default {
           if (data.ftpData.totalWorkSize_Percent == 100) {
             transfer.status = 3000
             transfer.transferendtime = custom.get_now_yyyymmddhhiiss()
-            for (let server of g_ftpSendData.ftpSite.ftpServerList) { // transferftp_tb에 status 업데이트
-              const param = {}
-              param.status = 3000
-              axios.putAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + server.ftpserverid, null, param, (response) => {
-              })
-            }
+            let successFtpServerid = data.ftpServer.ftpserverid
+            const param = {}
+            param.status = 3000
+            axios.putAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + successFtpServerid, null, param, (response) => {
+            })
           }
 
           // console.log(this.transferid)
@@ -421,7 +420,8 @@ export default {
       } else {
         console.log('errCode : ', errMsg.code)
         if (errMsg.message !== undefined) {
-          ipcRenderer.send('alert', errMsg.message)
+          let msg = '전송 실패하였습니다. \n' + errMsg.message
+          ipcRenderer.send('alert', msg)
         } else if (errMsg.code !== undefined || errMsg.code !== null) {
           ipcRenderer.send('WriteLog', errMsg.code)
         }
@@ -432,6 +432,13 @@ export default {
         ' rootPath : ' + errMsg.ftpData.rootpath + ' message : ' + errMsg.message
         ipcRenderer.send('WriteLog', errLogMsg)
       }
+
+      // transferftp_tb에 status 업데이트
+      let errFtpServerid = errMsg.ftpData.ftpserverid
+      const param = {}
+      param.status = 4000
+      axios.putAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + errFtpServerid, null, param, (response) => {
+      })
 
       transfer.status = 4000
       transfer.transferendtime = custom.get_now_yyyymmddhhiiss()
