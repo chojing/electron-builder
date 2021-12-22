@@ -38,7 +38,7 @@
     </div>
   </section>
   <templateMenu/>
-  <templateContextMenu :receivedList="receivedList" :transferid="transferid" :gIsMac="gIsMac" @selecttransferinfo="selectResult"/>
+  <templateContextMenu :receivedList="receivedList" :transferid="transferid" :gIsMac="gIsMac"/>
 </template>
 
 <script>
@@ -65,7 +65,6 @@ export default {
       receivedList: [],
       transferid: null,
       gIsMac: false,
-      selectTransferInfo: '',
       page: 1,
       total: null,
       limit: 15,
@@ -245,10 +244,6 @@ export default {
     refresh: function () {
       this.getReceivedList()
       // this.$router.go()
-    },
-    selectResult: function (val) {
-      this.selectTransferInfo = val
-      // console.log('val : ', val)
     }
   },
   watch: {

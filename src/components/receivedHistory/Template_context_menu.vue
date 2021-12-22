@@ -66,8 +66,9 @@ export default {
         if (this.gIsMac) {
           this.selected.volume = this.selected.macvolume
           path = this.selected.macvolume + this.selected.rootpath + this.selected.filepath
-        } else {
+        } else if (!this.gIsMac) {
           this.selected.volume = this.selected.winvolume
+          console.log('this.selected.winvolume', this.selected.winvolume)
           path = this.selected.winvolume + this.selected.rootpath + this.selected.filepath
         }
         this.$emit('selecttransferinfo', this.selected)
@@ -76,13 +77,13 @@ export default {
       }
       this.$parent.hideContextMenu()
     },
-    ftpResult: function (event, err) {
-      console.log('err ', err)
-      let volume = this.selectTransferInfo.volume
+    ftpResult: function (event, result) {
+      console.log('result ', result)
+      let volume = this.selected.volume
       // let severname = this.selectTransferInfo.ftpservername
-      // let rootpath = this.selectTransferInfo.rootpath
-      let filepath = this.selectTransferInfo.filepath
-      let fullpath = volume + '/' + filepath
+      let rootpath = this.selected.rootpath
+      let filepath = this.selected.filepath
+      let fullpath = volume + rootpath + filepath
       if (this.gIsMac) {
         fullpath = fullpath.replaceAll('\\', '/')
         fullpath = fullpath.replaceAll(/[/]{2,}/g, '/')

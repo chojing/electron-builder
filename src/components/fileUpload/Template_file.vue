@@ -268,6 +268,12 @@ export default {
           if (data.ftpData.totalWorkSize_Percent == 100) {
             transfer.status = 3000
             transfer.transferendtime = custom.get_now_yyyymmddhhiiss()
+            for (let server of g_ftpSendData.ftpSite.ftpServerList) { // transferftp_tb에 status 업데이트
+              const param = {}
+              param.status = 3000
+              axios.putAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + server.ftpserverid, null, param, (response) => {
+              })
+            }
           }
 
           // console.log(this.transferid)
