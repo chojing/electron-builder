@@ -137,6 +137,12 @@ export default {
             if (sitePercent == 100) {
               transfer.status = 3000
               transfer.transferendtime = custom.get_now_yyyymmddhhiiss()
+              for (let server of self.g_ftpSendData.ftpSite.ftpServerList) { // transferftp_tb에 status 업데이트
+                const param = {}
+                param.status = 3000
+                axios.putAsyncAxios('/v2/transfers/' + self.transferid + '/ftpservers/' + server.ftpserverid, null, param, (response) => {
+                })
+              }
             }
 
             // console.log('transfer.status : ', transfer.status, ' sitePercent : ', sitePercent)
@@ -160,6 +166,11 @@ export default {
             if (data.ftpData.totalWorkSize_Percent == 100) {
               transfer.status = 3000
               transfer.transferendtime = custom.get_now_yyyymmddhhiiss()
+              let successFtpServerid = data.ftpServer.ftpserverid
+              const param = {}
+              param.status = 3000
+              axios.putAsyncAxios('/v2/transfers/' + self.transferid + '/ftpservers/' + successFtpServerid, null, param, (response) => {
+              })
             }
 
             // console.log(this.transferid)
@@ -246,20 +257,31 @@ export default {
         ipcRenderer.send('WriteLog', errLogMsg)
       }
       let self = this
-      if (!self.isRoundRobin) {
+
+      if (!self.isRoundRobin) { // 라운드로빈이 아닐 경우 transfer_tb에 status 실패로 업데이트
         if (errMsg.message !== undefined) {
           self.doCancel(false)
+          for (let server of self.g_ftpSendData.ftpSite.ftpServerList) { // transferftp_tb에 status 업데이트
+            const param = {}
+            param.status = 4000
+            axios.putAsyncAxios('/v2/transfers/' + self.transferid + '/ftpservers/' + server.ftpserverid, null, param, (response) => {
+            })
+          }
           transfer.status = 4000
           transfer.transferendtime = custom.get_now_yyyymmddhhiiss()
-          axios.putAsyncAxios('/v2/transfers/' + this.transferid, JSON.stringify(transfer), null, (response) => {
+          axios.putAsyncAxios('/v2/transfers/' + self.transferid, JSON.stringify(transfer), null, (response) => {
             self.isUploadComplete = true
             self.isUploading = false
             // console.log('CancelError AXIOS', response)
           })
-          for (let server of self.g_ftpSendData.ftpSite.ftpServerList) {
-            axios.postAsyncAxios('/v2/transfers/' + this.transferid + '/ftpservers/' + server.ftpserverid, null, null, (response) => {
-            })
-          }
+        }
+      } else if (self.isRoundRobin) {
+        if (errMsg.message !== undefined) {
+          let errFtpServerid = errMsg.ftpData.ftpserverid
+          const param = {}
+          param.status = 4000
+          axios.putAsyncAxios('/v2/transfers/' + self.transferid + '/ftpservers/' + errFtpServerid, null, param, (response) => {
+          })
         }
       }
     }

@@ -108,7 +108,7 @@ function postAsyncAxios (url, body, param, callback, fail) {
 
 async function putSyncAxios (url, body, param, callback, fail) {
   let contentType = 'application/x-www-form-urlencoded; charset=UTF-8'
-  if (body.length > 0) {
+  if (body != null && body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
   let result
@@ -129,7 +129,7 @@ async function putSyncAxios (url, body, param, callback, fail) {
 }
 function putAsyncAxios (url, body, param, callback, fail) {
   let contentType = 'application/x-www-form-urlencoded; charset=UTF-8'
-  if (body.length > 0) {
+  if (body != null && body.length > 0) {
     contentType = 'application/json; charset=utf-8'
   }
   axios.put(url, body, {
