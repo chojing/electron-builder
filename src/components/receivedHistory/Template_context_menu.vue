@@ -72,8 +72,28 @@ export default {
         }
         this.$emit('selecttransferinfo', this.selected)
         ipcRenderer.send('open-file-explore', path)
+        ipcRenderer.once('open-file-explore-result', this.ftpResult)
       }
       this.$parent.hideContextMenu()
+    },
+    ftpResult: function (event, err) {
+      console.log('err ', err)
+      let volume = this.selectTransferInfo.volume
+      // let severname = this.selectTransferInfo.ftpservername
+      // let rootpath = this.selectTransferInfo.rootpath
+      let filepath = this.selectTransferInfo.filepath
+      let fullpath = volume + '/' + filepath
+      if (this.gIsMac) {
+        fullpath = fullpath.replaceAll('\\', '/')
+        fullpath = fullpath.replaceAll(/[/]{2,}/g, '/')
+      } else {
+        fullpath = fullpath.replaceAll('/', '\\')
+        fullpath = fullpath.replaceAll('\\\\', '\\')
+      }
+      let msg = fullpath + ' 파일 경로가 없습니다.'
+      if (volume !== undefined && fullpath !== undefined) {
+        ipcRenderer.send('alert', msg)
+      }
     }
   }
 }

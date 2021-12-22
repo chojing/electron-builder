@@ -55,7 +55,7 @@ export default {
   },
   created () {
     ipcRenderer.on('receiveData', this.init)
-    ipcRenderer.on('open-file-explore-error', this.ftpError)
+    // ipcRenderer.on('open-file-explore-error', this.ftpError)
   },
   methods: {
     init: function (event, key, data) {

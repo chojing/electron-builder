@@ -76,7 +76,6 @@ export default {
   created () {
     this.getNodeHome()
     ipcRenderer.on('receiveData', this.init)
-    ipcRenderer.on('open-file-explore-error', this.ftpError)
   },
   mounted () {
     this.setTimer()
@@ -250,25 +249,6 @@ export default {
     selectResult: function (val) {
       this.selectTransferInfo = val
       // console.log('val : ', val)
-    },
-    ftpError: function (event, err) {
-      console.log('err ', err)
-      let volume = this.selectTransferInfo.volume
-      // let severname = this.selectTransferInfo.ftpservername
-      // let rootpath = this.selectTransferInfo.rootpath
-      let filepath = this.selectTransferInfo.filepath
-      let fullpath = volume + '/' + filepath
-      if (this.gIsMac) {
-        fullpath = fullpath.replaceAll('\\', '/')
-        fullpath = fullpath.replaceAll(/[/]{2,}/g, '/')
-      } else {
-        fullpath = fullpath.replaceAll('/', '\\')
-        fullpath = fullpath.replaceAll('\\\\', '\\')
-      }
-      let msg = fullpath + ' 파일 경로가 없습니다.'
-      if (volume !== undefined && fullpath !== undefined) {
-        ipcRenderer.send('alert', msg)
-      }
     }
   },
   watch: {
