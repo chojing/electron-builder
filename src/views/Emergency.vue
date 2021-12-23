@@ -159,7 +159,6 @@ export default {
     },
     showContextMenu: function (e) {
       this.nodeid = ''
-      document.getElementById('favorits-checkbox-id').checked = false
       if (e.currentTarget.dataset.nodeid == undefined) {
         this.hideContextMenu()
       }

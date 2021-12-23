@@ -76,6 +76,7 @@ export default {
       param.transferid = this.transferid
       const sort = {}
       // sort.transferid = 'desc'
+      sort.status = 'asc'
       sort.ftpserverid = 'asc'
       sort.filename = 'asc'
       param.sort = sort
