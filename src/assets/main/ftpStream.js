@@ -144,10 +144,6 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
   } else {
     // create readStream
     // eslint-disable-next-line prefer-const
-    log.info('ftp 파일 업로드 시작')
-    log.info('ftp 스트림 패스 : ' + curPath)
-    log.info('ftp 사이즈 : ' + ftpData.curMaxFileSize)
-    log.info('ftp 도착경로 : ' + ftpData.destPath)
     let curFileStream = fs.createReadStream(curPath, { emitClose: true })
     self.m_CurrentStream = curFileStream
     if (curFileStream === undefined) {
@@ -173,7 +169,7 @@ FTPStream.prototype.upload = async function (ftpData, callPromiseResult) {
         self.m_ftpClient.mkdir(preFolders, true, function (err) {
           if (err) {
             if (err.code == '550') {
-              console.log('폴더있음!')
+              log.info(err)
               self.ftpUploadPut(curFileStream, curDescPath, callPromiseResult, ftpData)
             } else {
               let error = new Error()
@@ -209,9 +205,15 @@ function checkFolderPath (preFolders) {
 }
 FTPStream.prototype.ftpUploadPut = function (curFileStream, curDescPath, callPromiseResult, ftpData) {
   let self = this
+  if (curDescPath.startsWith('/') == false) {
+    curDescPath = '/' + curDescPath
+  }
   // eslint-disable-next-line prefer-const
+  log.info('ftp put 시작')
+  log.info('curDesPath : ' + curDescPath)
   self.m_ftpClient.put(curFileStream, curDescPath, false, function (err) {
     if (err) { // error
+      log.info('ftp put Error')
       log.info(err)
       callPromiseResult('reject', err)
       self.doError(curFileStream, ftpData, err, callPromiseResult)
@@ -322,12 +324,6 @@ FTPStream.prototype.doCheckRecursive_work = function (_ftpData, _curFileStream, 
   callPromiseResult('resolve', self.work(self.worklist, self.m_ftpConnectConfig, nextIndex).catch(
     function (error) {
       log.info('ftpStream_upload Error!!!')
-      log.info('==ftpData 정보==')
-      log.info(_ftpData)
-      log.info('ftp 스트림 패스 : ' + _ftpData.srcPath)
-      log.info('ftp 사이즈 : ' + _ftpData.curMaxFileSize)
-      log.info('ftp 도착경로 : ' + _ftpData.destPath)
-      log.info('====')
       log.info(error)
     })
   )
