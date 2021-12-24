@@ -66,16 +66,31 @@ export default {
       this.parentKey = data.g_ftpSendData.clientData.parentKey
       this.g_curWindowKey = key
       this.g_ftpSendData = data.g_ftpSendData
-      for (let idx in data.g_ftpSendData.ftpSite.ftpServerList) {
-        let server = data.g_ftpSendData.ftpSite.ftpServerList[idx]
-        serverResultList[server.name] = { totalPercent: 0 }
-        for (let idy in data.g_ftpSendData.fileList) {
-          let item = data.g_ftpSendData.fileList[idy]
+      // for (let idx in data.g_ftpSendData.ftpSite.ftpServerList) { // 서버별로 정렬
+      //   let server = data.g_ftpSendData.ftpSite.ftpServerList[idx]
+      //   serverResultList[server.name] = { totalPercent: 0 }
+      //   for (let idy in data.g_ftpSendData.fileList) {
+      //     let item = data.g_ftpSendData.fileList[idy]
+      //     let obj = {}
+      //     obj.ftpserverid = server.ftpserverid
+      //     obj.ftpservername = server.name
+      //     obj.fileName = item.fileName
+      //     obj.dataPer = 0
+      //     // console.log('obj : ', obj)
+      //     this.ftpResultData.push(obj)
+      //   }
+      // }
+      for (let idy in data.g_ftpSendData.fileList) { // 파일명별로 정렬
+        let item = data.g_ftpSendData.fileList[idy]
+        for (let idx in data.g_ftpSendData.ftpSite.ftpServerList) {
+          let server = data.g_ftpSendData.ftpSite.ftpServerList[idx]
+          serverResultList[server.name] = { totalPercent: 0 }
           let obj = {}
           obj.ftpserverid = server.ftpserverid
           obj.ftpservername = server.name
           obj.fileName = item.fileName
           obj.dataPer = 0
+          // console.log('obj : ', obj)
           this.ftpResultData.push(obj)
         }
       }
