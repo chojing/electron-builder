@@ -1,7 +1,7 @@
 <!-- 수신내역 리스트-->
 <template>
   <tr v-for="item in receivedList" v-bind:key="item.transferid" :data-transferid="item.transferid"
-      @click="receivedHistoryDetailPopup(item.transfername, item.transferid)"
+      @click="receivedHistoryDetailPopup(item.transfername, item.transferid, item.transfertype_code)"
       @contextmenu.prevent="showContextMenu($event)">
     <td class="ellipsis">
       <Tooltip :tooltipText="item.userid_realname" position="top">
@@ -61,12 +61,13 @@ export default {
     showContextMenu: function (e) {
       this.$parent.showContextMenu(e)
     },
-    receivedHistoryDetailPopup: function (transfername, transferid) {
+    receivedHistoryDetailPopup: function (transfername, transferid, transfertype_code) {
       this.$parent.hideContextMenu()
       const data = {
         parentKey: this.g_curWindowKey,
         transfername: transfername,
-        transferid: transferid
+        transferid: transferid,
+        transfertype_code: transfertype_code
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,

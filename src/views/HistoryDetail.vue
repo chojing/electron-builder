@@ -44,8 +44,10 @@ export default {
       g_windowIndex: 0,
       parentKey: '',
       g_curWindowKey: '',
+      c_ftp_transfer_type: [],
       transfername: '',
       transferid: '',
+      transfertype_code: '',
       transferDetailList: [],
       transferDetailNameList: [],
       isShow: false
@@ -58,8 +60,10 @@ export default {
     init: function (event, key, data) {
       this.transfername = data.transfername
       this.transferid = data.transferid
+      this.transfertype_code = data.transfertype_code
       this.parentKey = data.parentKey
       this.g_curWindowKey = key
+      // console.log('data :', data)
       this.getTransferDetailList()
     },
     getTransferDetailList: function () {
@@ -75,10 +79,28 @@ export default {
       axios.getAsyncAxios('/v2/transferfiles', param, (response) => {
         this.transferDetailList = response.data.results
         // console.log('transferDetailList : ', this.transferDetailList)
+        let count = 0
         if (this.transferDetailList.length !== 0) {
           for (var idx in this.transferDetailList) {
             let item = this.transferDetailList[idx]
             item.filesize = custom.getFormatBytes(item.filesize)
+            if (this.transfertype_code === 'roundrobin') {
+              if (item.status === 3000) {
+                count++
+                // console.log('===', item)
+              }
+            }
+          }
+          // 라운드 로빈일 경우, 성공한 건이 있으면 성공한 서버만 출력 / 성공한 건이 없으면 실패한 내역 전체 출력
+          if (this.transfertype_code === 'roundrobin' && count !== 0 && count > 0) { // 성공 했을 경우
+            for (let i = 0; i < this.transferDetailList.length; i++) {
+              // eslint-disable-next-line no-prototype-builtins
+              // let hasStatus = item.hasOwnProperty('status')
+              let hasStatus = Object.keys(this.transferDetailList[i]).includes('status')
+              if (!hasStatus || this.transferDetailList[i].status === 4000) {
+                this.transferDetailList.splice([i])
+              }
+            }
           }
           this.isShow = false
         } else if (this.transferDetailList.length === 0) {

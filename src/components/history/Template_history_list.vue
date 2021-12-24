@@ -1,6 +1,6 @@
 <!-- 전송내역 -->
 <template>
-  <tr v-for="item in transferList" v-bind:key="item.transferid" @click="historyDetailPopup(item.transfername, item.transferid)">
+  <tr v-for="item in transferList" v-bind:key="item.transferid" @click="historyDetailPopup(item.transfername, item.transferid, item.transfertype_code)">
     <td class="targetName ellipsis">
       <Tooltip :tooltipText="item.transfername" position="top">
         <p>{{item.transfername}}</p>
@@ -54,11 +54,12 @@ export default {
   },
   methods: {
     init: function (event, key, data) {},
-    historyDetailPopup: function (transfername, transferid) {
+    historyDetailPopup: function (transfername, transferid, transfertype_code) {
       const data = {
         parentKey: this.g_curWindowKey,
         transfername: transfername,
-        transferid: transferid
+        transferid: transferid,
+        transfertype_code: transfertype_code
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,

@@ -45,6 +45,7 @@ export default {
       g_curWindowKey: '',
       transfername: '',
       transferid: '',
+      transfertype_code: '',
       selectFtpserverInfo: '',
       gIsMac: false,
       volume: '',
@@ -61,6 +62,7 @@ export default {
     init: function (event, key, data) {
       this.transfername = data.transfername
       this.transferid = data.transferid
+      this.transfertype_code = data.transfertype_code
       this.parentKey = data.parentKey
       this.g_curWindowKey = key
       var agent = window.navigator.userAgent.toLowerCase()
@@ -83,6 +85,7 @@ export default {
       axios.getAsyncAxios('/v2/transferfiles', param, (response) => {
         this.receivedDetailList = response.data.results
 
+        let count = 0
         if (this.receivedDetailList.length !== 0) {
           for (var idx in this.receivedDetailList) {
             let item = this.receivedDetailList[idx]
@@ -99,6 +102,23 @@ export default {
                 this.volume = response.data.result.winvolume
               }
             })
+            if (this.transfertype_code === 'roundrobin') {
+              if (item.status === 3000) {
+                count++
+                // console.log('===', item)
+              }
+            }
+          }
+          // 라운드 로빈일 경우, 성공한 건이 있으면 성공한 서버만 출력 / 성공한 건이 없으면 실패한 내역 전체 출력
+          if (this.transfertype_code === 'roundrobin' && count !== 0 && count > 0) { // 성공 했을 경우
+            for (let i = 0; i < this.receivedDetailList.length; i++) {
+              // eslint-disable-next-line no-prototype-builtins
+              // let hasStatus = item.hasOwnProperty('status')
+              let hasStatus = Object.keys(this.receivedDetailList[i]).includes('status')
+              if (!hasStatus || this.receivedDetailList[i].status === 4000) {
+                this.receivedDetailList.splice([i])
+              }
+            }
           }
           this.isShow = false
         } else if (this.receivedDetailList.length === 0) {

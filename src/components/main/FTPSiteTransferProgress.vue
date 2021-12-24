@@ -100,7 +100,7 @@ export default {
       }
       // transfer_tb insert data
       transfer.userid = self.$store.state.username
-      transfer.transfertype = self.g_ftpSendData.ftpSite.transfertype
+      transfer.transfertype = self.g_ftpSendData.ftpSite.connectionType
       transfer.filepath = ''
       transfer.status = 2000
       if (data.ftpData.startTime === data.ftpData.curTime) {

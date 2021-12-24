@@ -187,7 +187,7 @@ export default {
         // transfer_tb insert data
         transfer = {}
         transfer.userid = this.$store.state.username
-        transfer.transfertype = g_ftpSendData.ftpSite.transfertype
+        transfer.transfertype = g_ftpSendData.ftpSite.connectionType
         transfer.filepath = ''
         transfer.status = 1000
         transfer.transfername = g_ftpSendData.title
