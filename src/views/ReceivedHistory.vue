@@ -21,7 +21,7 @@
           <tr>
             <th>전송자</th>
             <th>전송명</th>
-            <th>수신처</th>
+            <th>받은 곳</th>
             <th>전송상태</th>
           </tr>
           </thead>

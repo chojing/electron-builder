@@ -11,7 +11,7 @@
     <div class = "userInfo-container">
       <div class="info-box">
         <div class="flex-center mt10 mb10">
-          <h4>멤버 관리</h4>
+          <h4>내 연락처 관리</h4>
           <div class="btn-box">
 <!--            <button @click="active = !active" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue h30 addUser">추가</button>-->
             <button @click="userAddActive" :aria-pressed="active ? 'true' : 'false'" type="button" class="btn blue h30 addUser">추가</button>

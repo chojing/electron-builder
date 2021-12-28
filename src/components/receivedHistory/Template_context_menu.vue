@@ -2,11 +2,11 @@
   <ul id = "favorits-menu">
     <li class = "favorits-menu-list" @click="showTransferRequest">
       <i class="fas fa-envelope-open-text mr5"></i>
-      요청내역
+      요청 상세 내역 보기
     </li>
     <li class = "favorits-menu-list" @click="fileopen">
       <i class="fas fa-folder-open mr5"></i>
-      폴더열기
+      받은 파일(폴더)로 이동
     </li>
   </ul>
 </template>

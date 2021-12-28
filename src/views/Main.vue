@@ -34,7 +34,7 @@
             <div class="search-btn"><button id='searchButton' @click="this.targetSearch"><i class="fas fa-search"></i></button></div>
           </div>
           <div class="search-box mt10">
-            <input id='targetSearchInput' @keyup.enter="this.targetSearch" type="text" placeholder="전송타겟을 입력해주세요">
+            <input id='targetSearchInput' @keyup.enter="this.targetSearch" type="text" placeholder="검색">
             <div class="favorite-list">
               <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
                 <template v-for="list in searchList" v-bind:key="list.nodeid">

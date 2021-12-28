@@ -2,7 +2,7 @@
   <div class="backBtn" draggable="false" @click="$router.go(-1)"><i class="fas fa-arrow-left"></i></div>
   <section class="file-container">
     <div class="wrap">
-      <h4 class="tti">수동 FTP</h4>
+      <h4 class="tti">사용자 FTP</h4>
       <article class="mt20">
         <div class="search-form">
           <div class="flex-center">
