@@ -11,7 +11,9 @@ export default createStore({
     realname: null,
     userid: null,
     autologin: false,
-    apikey: null
+    apikey: null,
+    nodeid: null,
+    nodename: null
   },
   mutations: {
     commitServer (state, server) {
@@ -36,6 +38,12 @@ export default createStore({
     commitApikey (state, apikey) {
       state.apikey = apikey
     },
+    commitNodeid (state, nodeid) {
+      state.nodeid = nodeid
+    },
+    commitNodename (state, nodename) {
+      state.nodename = nodename
+    },
     clear (state) {
       state = {
         server: null,
@@ -43,7 +51,9 @@ export default createStore({
         realname: null,
         userid: null,
         autologin: false,
-        apikey: null
+        apikey: null,
+        nodeid: null,
+        nodename: null
       }
     }
   },
@@ -65,6 +75,12 @@ export default createStore({
     },
     setApikey (context, apikey) {
       context.commit('commitApikey', apikey)
+    },
+    setNodeid (context, nodeid) {
+      context.commit('commitNodeid', nodeid)
+    },
+    setNodename (context, nodename) {
+      context.commit('commitNodename', nodename)
     },
     clearStore (context) {
       context.commit('clear')

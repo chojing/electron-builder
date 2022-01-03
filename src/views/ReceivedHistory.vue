@@ -79,6 +79,7 @@ export default {
   },
   mounted () {
     this.setTimer()
+    console.log('페이지이동 후 값 확인:', this.$store.state.nodeid)
   },
   methods: {
     gIsMacCheck: function () {
@@ -100,7 +101,11 @@ export default {
         usernodeBtn.innerText = '사용자지정'
         usernodeBtn.innerText += ' : ' + data.nodename
         this.selectedNodeid = data.nodeid
-        this.getReceivedList(1)
+        // this.getReceivedList(1)
+        this.$store.state.nodeid = data.nodeid
+        this.$store.state.nodename = data.nodename
+        console.log('$store nodeid:', this.$store.state.nodeid)
+        console.log('$store nodename:', this.$store.state.nodename)
       } else if (type == 'closeUserAppointed') {
       }
     },
@@ -189,15 +194,26 @@ export default {
         mainnodeBtn.classList.add('active')
         subnodeBtn.classList.remove('active')
         usernodeBtn.classList.remove('active')
-        usernodeBtn.innerText = '사용자지정'
+        if (this.$store.state.nodename === null) {
+          usernodeBtn.innerText = '사용자지정 '
+        } else {
+          usernodeBtn.innerText = '사용자지정 : ' + this.$store.state.nodename
+        }
       } else if (e.target.id === subnodeBtn.id) {
         this.selectedNodeid = nodeid
         subnodeBtn.classList.add('active')
         mainnodeBtn.classList.remove('active')
         usernodeBtn.classList.remove('active')
-        usernodeBtn.innerText = '사용자지정'
+        if (this.$store.state.nodename === null) {
+          usernodeBtn.innerText = '사용자지정 '
+        } else {
+          usernodeBtn.innerText = '사용자지정 : ' + this.$store.state.nodename
+        }
       } else if (e.target.id === usernodeBtn.id) {
-        this.userAppointedPopup()
+        if (this.$store.state.nodeid === null) {
+          this.userAppointedPopup()
+        }
+        console.log('state 사용자지정:', this.$store.state.nodeid)
         isUsernode = false
         // usernodeBtn.classList.add('active')
         // mainnodeBtn.classList.remove('active')
