@@ -4,7 +4,7 @@
       <div class="tti manual-tti">
         <ul class = "tabMenu">
           <li @click="goUser" :class="{active:this.active}"><p>내 정보</p></li>
-          <li @click="goFtp" :class="{active:!this.active}"><p>수동(FTP)</p></li>
+          <li @click="goFtp" :class="{active:!this.active}"><p>사용자(FTP)</p></li>
         </ul>
         <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
       </div>
