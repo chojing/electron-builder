@@ -15,7 +15,7 @@
             <template v-for="item in favoritsList" v-bind:key="item.nodeid">
               <div :data-nodeid="item.nodeid" :data-favorits="item.favorits"
                    :data-pathftpserverid="item.pathftpserverid" :data-pathftpsiteid="item.pathftpsiteid"
-                   :data-name="item.nodename" :data-isinheritance="item.isinheritance"
+                   :data-name="item.nodename" :data-isinheritance="item.isinheritance" :data-pathname="item.pathname"
                    :data-path="item.path" :data-pathinheritance="item.pathinheritance"
                    @contextmenu.prevent="showContextMenu($event)">
                 <button @dblclick="this.fileUploadPopup(item)" @click.prevent>
@@ -46,7 +46,7 @@
                 <template v-for="list in searchList" v-bind:key="list.nodeid">
                   <div v-if="!list.isEmergency" :data-nodeid="list.nodeid" :data-favorits = "list.favorits"
                        :data-pathftpserverid="list.pathftpserverid" :data-pathftpsiteid="list.pathftpsiteid"
-                       :data-name="list.nodename" :data-isinheritance="list.isinheritance"
+                       :data-name="list.nodename" :data-isinheritance="list.isinheritance" :data-pathname="list.pathname"
                        :data-path="list.path" :data-pathinheritance="list.pathinheritance"
                        @contextmenu.prevent="showContextMenu($event)">
                     <button @dblclick="this.fileUploadPopup(list)">
@@ -97,7 +97,7 @@
     <div class="bg view" v-show="isLogoutCheck"></div>
   </main>
   <templateMenu/>
-  <templateContextMenu :nodeid="nodeid" :username="username" :nodename="nodename" :nodepath="nodepath"
+  <templateContextMenu :nodeid="nodeid" :username="username" :pathname="pathname" :nodepath="nodepath"
                        :pathftpserverid="pathftpserverid" :pathftpsiteid="pathftpsiteid" :isFavorits="Boolean(this.isFavorits)"
                        :isMain="isMain"/>
 </template>
@@ -133,7 +133,7 @@ export default {
       nodeid: null,
       pathftpserverid: null,
       pathftpsiteid: null,
-      nodename: null,
+      pathname: null,
       nodepath: null,
       isFavorits: false,
       isMain: true,
@@ -206,6 +206,7 @@ export default {
           for (var idx in favorits) {
             let hasDepth = favorits[idx]
             if (hasDepth !== undefined) {
+              this.favoritsList[idx].pathname = hasDepth
               if (hasDepth.indexOf('>') !== -1) {
                 var str = hasDepth.split('>')
                 // console.log('str : ', str)
@@ -233,22 +234,22 @@ export default {
         var menu = document.getElementById('favorits-menu')
         menu.style.left = e.pageX + 'px'
         menu.style.top = e.pageY + 'px'
-        if (e.target.dataset.nodeid && e.target.dataset.nodetype_code === 'target') {
+        if (e.target.dataset.nodeid && e.target.dataset.nodetype_code === 'target') { /* 노드 트리 클릭 시 */
           this.nodeid = e.target.dataset.nodeid
           this.pathftpserverid = parseInt(e.target.dataset.pathftpserverid)
           this.pathftpsiteid = parseInt(e.target.dataset.pathftpsiteid)
-          this.nodename = e.target.dataset.name
+          this.pathname = e.target.dataset.pathname
           if (e.target.dataset.isinheritance == 0) {
             this.nodepath = e.target.dataset.path
           } else if (e.target.dataset.isinheritance == 1) {
             this.nodepath = e.target.dataset.pathinheritance
           }
           this.isFavorits = false
-        } else if ((e.currentTarget.dataset.nodeid)) {
+        } else if ((e.currentTarget.dataset.nodeid)) { /* 즐겨찾기, 전송타겟검색 클릭 시 */
           this.nodeid = e.currentTarget.dataset.nodeid
           this.pathftpserverid = parseInt(e.currentTarget.dataset.pathftpserverid)
           this.pathftpsiteid = parseInt(e.currentTarget.dataset.pathftpsiteid)
-          this.nodename = e.currentTarget.dataset.name
+          this.pathname = e.currentTarget.dataset.pathname
           if (e.currentTarget.dataset.isinheritance == 0) {
             this.nodepath = e.currentTarget.dataset.path
           } else if (e.currentTarget.dataset.isinheritance == 1) {
@@ -272,11 +273,12 @@ export default {
     },
     fileUploadPopup: function (item) {
       let name = ''
-      if (Array.isArray(item.name)) {
-        name = item.name[item.name.length - 1]
-      } else {
-        name = item.name
-      }
+      // if (Array.isArray(item.name)) {
+      //   name = item.name[item.name.length - 1]
+      // } else {
+      //   name = item.name
+      // }
+      name = item.pathname
       if (item.isinheritance == 0) {
         item.nodepath = item.path
       } else if (item.isinheritance == 1) {

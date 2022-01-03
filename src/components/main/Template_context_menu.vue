@@ -26,7 +26,7 @@ export default {
     nodeid: String,
     pathftpserverid: Number,
     pathftpsiteid: Number,
-    nodename: String,
+    pathname: String,
     nodepath: String,
     isFavorits: Boolean,
     isMain: Boolean
@@ -59,7 +59,7 @@ export default {
       data.pathftpserverid = this.pathftpserverid
       data.pathftpsiteid = this.pathftpsiteid
       data.nodeid = this.nodeid
-      data.name = this.nodename
+      data.pathname = this.pathname
       data.nodepath = this.nodepath
       this.$parent.fileUploadPopup(data)
       this.$parent.hideContextMenu()

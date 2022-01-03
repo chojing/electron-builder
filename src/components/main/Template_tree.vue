@@ -2,7 +2,7 @@
   <div>
     <template v-for="item in nodeList" v-bind:key="item">
       <li v-if="item != undefined">
-        <p @click="this.onClick(item, item.name)"
+        <p @click="this.onClick(item, item.pathname)"
            v-bind:data-nodeid="item.nodeid"
            v-bind:data-haschild="item.haschild"
            v-bind:data-ftpserverid="item.ftpserverid"
@@ -13,6 +13,7 @@
            v-bind:data-nodetype_code="item.nodetype_code"
            v-bind:data-isabs="item.isabs"
            v-bind:data-isabs_boolean="item.isabs_boolean"
+           v-bind:data-pathname="item.pathname"
            v-bind:data-name="item.name"
            v-bind:data-path="item.path"
            v-bind:data-isserver="item.isserver"
@@ -158,7 +159,7 @@ export default {
         axios.getAsyncAxios('/v2/ftpservers/' + ftpServerId, null, (response) => {
           let data = {}
           data.serverlist = [response.data.result]
-          data.nodename = name
+          data.pathname = name
           if (ftpInfo.nodeid) {
             data.nodeid = ftpInfo.nodeid
           }
@@ -172,7 +173,7 @@ export default {
           data.site = response.data.result
           axios.getAsyncAxios('/v2/ftpsites/' + ftpSiteId + '/ftpservers', null, (response) => {
             data.serverlist = response.data.results
-            data.nodename = name
+            data.pathname = name
             if (ftpInfo.nodeid) {
               data.nodeid = ftpInfo.nodeid
             }
