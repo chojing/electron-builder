@@ -10,7 +10,7 @@
       </div>
       <article class="user-favorite main-border">
         <h4 class="mt5 mb5">즐겨찾기</h4>
-        <div class="favorite-list">
+        <div class="favorite-list" :class="{active : this.favoritsList.length !== 0 && this.favoritsList.length >= 3}">
           <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
             <template v-for="item in favoritsList" v-bind:key="item.nodeid">
               <div :data-nodeid="item.nodeid" :data-favorits="item.favorits"
@@ -43,7 +43,7 @@
             <div class="search-btn"><button id='searchButton' @click="this.targetSearch"><i class="fas fa-search"></i></button></div>
           </div>
           <div class="search-box">
-            <div class="favorite-list">
+            <div class="favorite-list" :class="{active : this.searchList.length !== 0 && this.searchList.length >= 3}">
               <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
                 <template v-for="list in searchList" v-bind:key="list.nodeid">
                   <div v-if="!list.isEmergency" :data-nodeid="list.nodeid" :data-favorits = "list.favorits"

@@ -115,7 +115,8 @@ main .search-form h4{padding: 0; color: #333 !important; font-size: 15px;}
 /*.search-form .search-box.show{display: block;}*/
 .search-form .search-box input{padding: 0 5px;width: 100%;height: 35px;border:1px solid #eee;border-radius: 5px;}
 .search-form .search-box .favorite-list span:last-of-type::before{display: none;}
-.main-search-box {width: 77%;}
+/*main .search-form {width: 531px;}*/
+.main-search-box {width: calc(100% - 130px);}
 .main-search-box input{padding: 0 5px;width: 100%;height: 35px;border:1px solid #eee;border-radius: 5px;}
 /** pagination **/
 .pagination{display: block;margin: 0;}
@@ -146,6 +147,8 @@ main .target-list ul li{padding: 7px 0 0;}
 .favorite-list span::after{content: '>';display: inline-block;vertical-align: middle;margin-left: 5px; font-size: 12px;color: #0073a5;font-weight: 500;}
 .favorite-list span:last-of-type:after{display: none;}
 .favorite-list span:last-of-type::before{content: '';display: inline-block;vertical-align: baseline;width: 10px;height: 10px;margin-right: 2px;background:url('../images/star-solid.svg') no-repeat center 0/100% auto;}
+main .favorite-list{overflow-y: auto}
+main .favorite-list.active{height: 90px;}
 main .favorite-list .fa-item{margin: 0 0 10px;}
 main .favorite-list button:hover,
 .emergency-container .favorite-list button:hover{border-color: #0073a5;}
