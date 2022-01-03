@@ -11,6 +11,7 @@ async function login (id, password) {
   axios.defaults.baseURL = store.state.server
   await axios.post('/v2/users/apikey', null, {
     params: {
+      clienttype: 27, // 웹 26, 앱 27
       username: id,
       password: password
     },
