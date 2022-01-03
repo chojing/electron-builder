@@ -101,7 +101,7 @@ export default {
         usernodeBtn.innerText = '사용자지정'
         usernodeBtn.innerText += ' : ' + data.nodename
         this.selectedNodeid = data.nodeid
-        // this.getReceivedList(1)
+        this.getReceivedList(1)
         this.$store.state.nodeid = data.nodeid
         this.$store.state.nodename = data.nodename
         console.log('$store nodeid:', this.$store.state.nodeid)
@@ -212,13 +212,16 @@ export default {
       } else if (e.target.id === usernodeBtn.id) {
         if (this.$store.state.nodeid === null) {
           this.userAppointedPopup()
+          return false
+        } else {
+          this.selectedNodeid = nodeid
+          usernodeBtn.classList.add('active')
+          mainnodeBtn.classList.remove('active')
+          subnodeBtn.classList.remove('active')
+          // isUsernode = true
         }
         console.log('state 사용자지정:', this.$store.state.nodeid)
         isUsernode = false
-        // usernodeBtn.classList.add('active')
-        // mainnodeBtn.classList.remove('active')
-        // subnodeBtn.classList.remove('active')
-        // isUsernode = true
       }
       if (isUsernode) {
         this.getReceivedList(1)
