@@ -47,7 +47,7 @@ header .logo{text-align: center;}
 .h480{height: 460px;overflow: hidden;overflow-y: auto;}
 .h500{height: 500px;overflow: hidden;overflow-y: auto;}
 /*button*/
-.btn{margin-left: 10px;display: inline-block;vertical-align: top;padding: 0 10px;min-width: 50px;height: 100%;border-radius: 10px;background-color: #eee;font-size:13pz; transition: background-color .2s, color .2s;}
+.btn{margin-left: 10px;display: inline-block;vertical-align: top;padding: 0 10px;min-width: 50px;height: 100%;border-radius: 10px;background-color: #eee;font-size:13px; transition: background-color .2s, color .2s;}
 .btn:hover,
 .btn.active{background-color: #222;color: #fff;}
 .btn.blue{background-color: #9dc1d1;}
