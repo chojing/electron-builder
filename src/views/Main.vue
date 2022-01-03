@@ -1,9 +1,15 @@
 <template>
   <main id="mainView">
     <div class="wrap">
-      <h4 class="tti mt10 mb5">전송</h4>
+      <h4 class="tti mt10">전송</h4>
+      <article class="user-name flex-box flex-center main-border">
+        <p><i class="fas fa-user"></i>&ensp;{{username}} <span>({{realname}})</span></p>
+        <div class="btn-box">
+          <button id="logoutBtn" class="btn h30" @click="logoutCheck">Logout</button>
+        </div>
+      </article>
       <article class="user-favorite main-border">
-        <h4 class="mb5">즐겨찾기</h4>
+        <h4 class="mt5 mb5">즐겨찾기</h4>
         <div class="favorite-list">
           <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
             <template v-for="item in favoritsList" v-bind:key="item.nodeid">
@@ -81,6 +87,14 @@
         </div>
       </article>
     </div>
+    <div class="logoutCheckPop" v-show="isLogoutCheck">
+      <p>로그아웃 하시겠습니까?</p>
+      <div class="btn-box">
+        <button class="btn h30" @click="logout">확인</button>
+        <button class="btn h30 blue" @click="logoutCancel">취소</button>
+      </div>
+    </div>
+    <div class="bg view" v-show="isLogoutCheck"></div>
   </main>
   <templateMenu/>
   <templateContextMenu :nodeid="nodeid" :username="username" :nodename="nodename" :nodepath="nodepath"
@@ -124,7 +138,6 @@ export default {
       isFavorits: false,
       isMain: true,
       isSearch: false,
-      isUserPwModifyClose: false,
       isLogoutCheck: false,
       rootNodeId: 0
     }
@@ -150,6 +163,23 @@ export default {
         ipcRenderer.send('alert', '네트워크 연결이 끊어졌습니다')
         isOnline = false
       }
+    },
+    logoutCheck: function () {
+      this.isLogoutCheck = true
+    },
+    logout: function () {
+      console.trace()
+      this.$store.commit('commitApikey', '')
+      axios.deleteAsyncAxios('/v2/users/apikey', null, null, (response) => {
+        ipcRenderer.send('alert', '로그아웃 되었습니다.')
+        this.goTo('Login?Logout')
+      })
+    },
+    logoutCancel: function () {
+      this.isLogoutCheck = false
+    },
+    goTo: function (page) {
+      this.$router.push(page)
     },
     getTree: function () {
       axios.getAsyncAxios('/v2/node/code', {}, (response) => {

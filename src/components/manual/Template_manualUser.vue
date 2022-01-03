@@ -4,7 +4,6 @@
         <p><i class="fas fa-user"></i>&ensp;{{username}} <span>({{realname}})</span></p>
         <div class="btn-box">
           <button id="pwModify" class="btn h30" @click="pwModify">비밀번호 변경</button>
-          <button id="logoutBtn" class="btn h30" @click="logoutCheck">Logout</button>
         </div>
       </div>
     </div>
@@ -60,14 +59,6 @@
                     @paging="getUserList"/>
       </div>
     </div>
-    <div class="logoutCheckPop" v-show="isLogoutCheck">
-      <p>로그아웃 하시겠습니까?</p>
-      <div class="btn-box">
-        <button class="btn h30" @click="logout">확인</button>
-        <button class="btn h30 blue" @click="logoutCancel">취소</button>
-      </div>
-    </div>
-    <div class="bg view" v-show="isLogoutCheck"></div>
     <div class="bg" :class="{view:active}"></div>
     <div class="user-info-add" :class="{view:active}">
       <div class="inner">
@@ -100,7 +91,6 @@ export default {
       c_node_type: [],
       isMain: true,
       isUserPwModifyClose: false,
-      isLogoutCheck: false,
       rootNodeId: 0,
       /* 멤버관리 */
       user: '',
@@ -145,9 +135,6 @@ export default {
       })
       ipcRenderer.once('receiveData', this.init)
     },
-    logoutCheck: function () {
-      this.isLogoutCheck = true
-    },
     logout: function () {
       console.trace()
       this.$store.commit('commitApikey', '')
@@ -155,9 +142,6 @@ export default {
         ipcRenderer.send('alert', '로그아웃 되었습니다.')
         this.goTo('Login?Logout')
       })
-    },
-    logoutCancel: function () {
-      this.isLogoutCheck = false
     },
     goTo: function (page) {
       this.$router.push(page)
