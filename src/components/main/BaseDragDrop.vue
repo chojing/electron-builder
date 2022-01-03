@@ -1,15 +1,15 @@
 <template>
   <div>
-      <h4>전송제목</h4>
+      <h4>전송명 *</h4>
       <div class="file-tti-box mb30">
-        <input class="input-box" type="text" value="" ref="title" :disabled='isDisabled' @change="onChange">
+        <input class="input-box" type="text" value="" placeholder="전송명으로 폴더를 생성합니다" ref="title" :disabled='isDisabled' @change="onChange">
       </div>
-      <h4>Optional(상세내역)</h4>
+      <h4>요청 상세 내역 (optional)</h4>
       <div class="file-list-box mb25">
         <textarea ref="comment" :disabled='isDisabled' @change="onChange"></textarea>
       </div>
       <div class="flex-center">
-        <h4>파일(폴더) 전송</h4>
+        <h4>파일(폴더) 전송 *</h4>
         <div class="file-select mb10">
           <input type="file" id="file" name="file" @change="onUpload" multiple/>
           <label for="file" class="btn h30">파일선택</label>

@@ -2,7 +2,7 @@
   <div class="fixed-bar">
     <div class="wrap flex-center">
         <div>
-          <Tooltip :tooltipText="'메인'">
+          <Tooltip :tooltipText="'파일 전송하기'">
             <router-link to="/main" :class="{active : this.$route.name === 'Main'}">
               <i class="fas fa-folder"/>
             </router-link>
@@ -30,7 +30,7 @@
         </Tooltip>
       </div>
       <div>
-        <Tooltip :tooltipText="'부가기능'">
+        <Tooltip :tooltipText="'설정 및 부가기능'">
           <p @click="this.$route.matched[0].name === 'Manual' ? '' : this.$router.push('/manual')"
                        :class="{active : this.$route.matched[0].name === 'Manual'}">
             <i class="fas fa-cog"/>

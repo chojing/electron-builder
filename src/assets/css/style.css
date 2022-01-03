@@ -129,11 +129,11 @@ main .search-form h4{padding: 0; color: #333 !important; font-size: 15px;}
 main{padding: 0px 0 100px;}
 main h2{text-align: center;font-size: 20px;color: #0073a5;}
 main h4{ font-size: 15px;font-weight: 600;}
-main .tti { padding: 6px 0 15px !important;}
+main .tti { padding: 3px 0 12px !important;}
 .target-circle{font-size: 12px;color:#f9c74f;}
 main .head-top{padding:10px; border: 1px solid #eee;border-radius: 5px;}
-.user-name p{font-size: 15px;}
-.user-name p span{padding-left:3px;display: inline-block;vertical-align: middle;font-size: 15px;}
+.user-name p{font-size: 14px;}
+.user-name p span{padding-left:3px;display: inline-block;vertical-align: middle;font-size: 14px;}
 main .target-list{}
 main .target-list ul{padding: 0 15px;}
 main .target-list ul.hide{display: none}
@@ -239,7 +239,7 @@ main article{padding: 5px 10px 10px /*border-radius: 5px;background-color: #f5f5
 .user-info-add .box .name{width: 100px;margin-right: 10px;}
 .user-info-add .btn-box{height: 30px;text-align: right;}
 .close{position: absolute;top:10px;right:10px;z-index: 1;font-size: 16px;}
-/*수동 FTP*/
+/*사용자 FTP*/
 .manual-ftp-container{}
 .manual-ftp-container .ftp-info{}
 .manual-ftp-container .ftp-info select{margin: 20px 0;padding: 0 5px; width: 100%;height: 40px;border: 1px solid #eee;border-radius: 5px; font-size: 13px}

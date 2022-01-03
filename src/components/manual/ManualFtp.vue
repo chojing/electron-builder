@@ -1,7 +1,7 @@
 <template>
   <section class="manual-ftp-container">
     <div class="wrap">
-      <h4 class="tti">수동 FTP 관리</h4>
+      <h4 class="tti">사용자 FTP 관리</h4>
       <div class="ftp-info mt20">
         <div class="btn-box right mb10">
           <button @click="newFtpAdd" class="btn h30" id="new-btn" dataname="newBtn" v-show="!isOptionClicked">추가</button>
@@ -97,7 +97,7 @@ export default {
       g_curWindowKey: '',
       parentKey: '',
       c_ftpmode: [],
-      // 수동 FTP 입력값
+      // 사용자 FTP 입력값
       ftpInfo: {
         ftpserverid: '',
         name: '',
