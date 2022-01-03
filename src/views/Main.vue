@@ -1,13 +1,13 @@
 <template>
   <main id="mainView">
     <div class="wrap">
-      <h4 class="tti mt10">전송</h4>
-      <article class="user-name flex-box flex-center main-border">
-        <p><i class="fas fa-user"></i>&ensp;{{username}} <span>({{realname}})</span></p>
-        <div class="btn-box">
+      <div class="user-name flex-center main-border">
+        <h4 class="main-tti mt10">전송</h4>
+        <div class="btn-box flex-center">
+          <p><i class="fas fa-user"></i>&ensp;{{username}} <span>({{realname}})</span></p>
           <button id="logoutBtn" class="btn h30" @click="logoutCheck">Logout</button>
         </div>
-      </article>
+      </div>
       <article class="user-favorite main-border">
         <h4 class="mt5 mb5">즐겨찾기</h4>
         <div class="favorite-list">
@@ -34,13 +34,15 @@
         </div>
       </article>
       <article class="main-border">
-        <div class="search-form">
+        <div class="search-form mt5">
           <div class="flex-center">
             <h4>전송타겟검색</h4>
+            <div class="main-search-box">
+              <input id='targetSearchInput' class="mr10" @keyup.enter="this.targetSearch" type="text" placeholder="검색">
+            </div>
             <div class="search-btn"><button id='searchButton' @click="this.targetSearch"><i class="fas fa-search"></i></button></div>
           </div>
-          <div class="search-box mt10">
-            <input id='targetSearchInput' @keyup.enter="this.targetSearch" type="text" placeholder="검색">
+          <div class="search-box">
             <div class="favorite-list">
               <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
                 <template v-for="list in searchList" v-bind:key="list.nodeid">

@@ -115,7 +115,8 @@ main .search-form h4{padding: 0; color: #333 !important; font-size: 15px;}
 /*.search-form .search-box.show{display: block;}*/
 .search-form .search-box input{padding: 0 5px;width: 100%;height: 35px;border:1px solid #eee;border-radius: 5px;}
 .search-form .search-box .favorite-list span:last-of-type::before{display: none;}
-
+.main-search-box {width: 77%;}
+.main-search-box input{padding: 0 5px;width: 100%;height: 35px;border:1px solid #eee;border-radius: 5px;}
 /** pagination **/
 .pagination{display: block;margin: 0;}
 .paging ul {text-align:center;margin:15px 0;display:block;}
@@ -129,12 +130,13 @@ main .search-form h4{padding: 0; color: #333 !important; font-size: 15px;}
 main{padding: 0px 0 100px;}
 main h2{text-align: center;font-size: 20px;color: #0073a5;}
 main h4{ font-size: 15px;font-weight: 600;}
-main .tti { padding: 3px 0 12px !important;}
+.main-tti{padding: 3px 0 12px; font-size: 18px !important;font-weight: 500 !important; color: #6cb7d4;
+  display: -webkit-box; display: -ms-flexbox;display: flex;-webkit-box-pack: justify; -ms-flex-pack: justify;justify-content: space-between;align-items: center;}
 .target-circle{font-size: 12px;color:#f9c74f;}
 main .head-top{padding:10px; border: 1px solid #eee;border-radius: 5px;}
 .user-name p{font-size: 14px;}
 .user-name p span{padding-left:3px;display: inline-block;vertical-align: middle;font-size: 14px;}
-main .target-list{}
+main .target-list{height: 250px;overflow-y: auto;}
 main .target-list ul{padding: 0 15px;}
 main .target-list ul.hide{display: none}
 main .target-list ul li{padding: 7px 0 0;}
@@ -360,3 +362,5 @@ main article{padding: 5px 10px 10px /*border-radius: 5px;background-color: #f5f5
   border-radius: 5px;border: 1px solid #eee;font-size: 13px;line-height: 1.6
 }
 .transfer-request p{white-space: pre-line}
+
+main .user-name .btn-box p {display: inline-block}

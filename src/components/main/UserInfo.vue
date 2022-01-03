@@ -3,7 +3,7 @@
     <div class="wrap">
       <div class="info-box">
         <div class="mt20 mb20">
-          <h4>전송 확인 문자 연락처</h4>
+          <h4>내 연락처</h4>
         </div>
         <table class="mb20">
           <colgroup>
