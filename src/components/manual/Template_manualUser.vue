@@ -15,6 +15,7 @@ export default {
   data () {
     return {
       g_windowIndex: 0,
+      selfKey: 'main',
       /* 비밀번호 변경, 로그아웃 */
       username: this.$store.state.username,
       realname: this.$store.state.realname,
