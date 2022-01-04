@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import store from '@/store/index'
 import templateReceivedHistory from '@/components/receivedHistory/Template_receivedHistory_list'
 import templateMenu from '@/components/menu/Template_menu'
 import templateContextMenu from '@/components/receivedHistory/Template_context_menu'
@@ -84,7 +85,6 @@ export default {
     } else {
       document.getElementById('usernode').innerText = '사용자지정 : ' + this.$store.state.nodename
     }
-    console.log('페이지이동 후 nodeid 확인:', this.$store.state.nodeid)
   },
   methods: {
     gIsMacCheck: function () {
@@ -107,8 +107,8 @@ export default {
         usernodeBtn.innerText += ' : ' + data.nodename
         this.selectedNodeid = data.nodeid
         this.getReceivedList(1)
-        this.$store.state.nodeid = data.nodeid
-        this.$store.state.nodename = data.nodename
+        store.commit('commitNodeid', data.nodeid)
+        store.commit('commitNodename', data.nodename)
       } else if (type == 'closeUserAppointed') {
       }
     },
@@ -204,17 +204,15 @@ export default {
         usernodeBtn.classList.remove('active')
       } else if (e.target.id === usernodeBtn.id) {
         this.selectedNodeid = nodeid
-        if (this.$store.state.nodeid === null) {
+        if (this.$store.state.nodeid === null || usernodeBtn.classList.contains('active')) {
           this.userAppointedPopup()
           return false
         } else {
           usernodeBtn.classList.add('active')
           mainnodeBtn.classList.remove('active')
           subnodeBtn.classList.remove('active')
-          // isUsernode = true
+          this.getReceivedList(1)
         }
-        // console.log('state 사용자지정:', this.$store.state.nodeid)
-        // console.log('state nodename:', this.$store.state.nodename)
         isUsernode = false
       }
       if (isUsernode) {

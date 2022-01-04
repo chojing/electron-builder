@@ -5,7 +5,7 @@
         <ul class = "tabMenu">
           <li @click="goUser" :class="{active:this.$route.name === 'UserManage'}"><p>내 정보</p></li>
           <li @click="goTel" :class="{active:this.$route.name === 'UserTel'}"><p>내 연락처</p></li>
-          <li @click="goFtp" :class="{active:this.$route.name === 'FTPManage'}"><p>사용자(FTP)</p></li>
+          <li @click="goFtp" :class="{active:this.$route.name === 'FTPManage'}"><p>사용자FTP</p></li>
         </ul>
         <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
       </div>
