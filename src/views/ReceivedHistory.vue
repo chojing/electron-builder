@@ -7,7 +7,7 @@
       <div class="btn-box">
         <button id="mainnode" class="btn h30 active" :data-nodeid="this.nodeHome1" v-bind:class="{active:false}" @click="selectNodeHome($event, this.nodeHome1)">home1(미지정)</button>
         <button id="subnode" class="btn h30" :data-nodeid="this.nodeHome2" @click="selectNodeHome($event, this.nodeHome2)">home2(미지정)</button>
-        <button id="usernode" class="btn h30" @click="selectNodeHome($event)">사용자지정</button>
+        <button id="usernode" class="btn h30" @click="selectNodeHome($event)"></button>
       </div>
       <div class="send-box">
         <table>
@@ -79,6 +79,11 @@ export default {
   },
   mounted () {
     this.setTimer()
+    if (this.$store.state.nodename === null) {
+      document.getElementById('usernode').innerText = '사용자지정'
+    } else {
+      document.getElementById('usernode').innerText = '사용자지정 : ' + this.$store.state.nodename
+    }
     console.log('페이지이동 후 값 확인:', this.$store.state.nodeid)
   },
   methods: {
@@ -194,21 +199,11 @@ export default {
         mainnodeBtn.classList.add('active')
         subnodeBtn.classList.remove('active')
         usernodeBtn.classList.remove('active')
-        if (this.$store.state.nodename === null) {
-          usernodeBtn.innerText = '사용자지정 '
-        } else {
-          usernodeBtn.innerText = '사용자지정 : ' + this.$store.state.nodename
-        }
       } else if (e.target.id === subnodeBtn.id) {
         this.selectedNodeid = nodeid
         subnodeBtn.classList.add('active')
         mainnodeBtn.classList.remove('active')
         usernodeBtn.classList.remove('active')
-        if (this.$store.state.nodename === null) {
-          usernodeBtn.innerText = '사용자지정 '
-        } else {
-          usernodeBtn.innerText = '사용자지정 : ' + this.$store.state.nodename
-        }
       } else if (e.target.id === usernodeBtn.id) {
         if (this.$store.state.nodeid === null) {
           this.userAppointedPopup()
@@ -221,6 +216,7 @@ export default {
           // isUsernode = true
         }
         console.log('state 사용자지정:', this.$store.state.nodeid)
+        console.log('state nodename:', this.$store.state.nodename)
         isUsernode = false
       }
       if (isUsernode) {
