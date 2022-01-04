@@ -1,6 +1,6 @@
 <template>
   <main id="mainView">
-    <div class="wrap">
+    <div class="wrap pb60">
       <div class="user-name flex-center main-border">
         <h4 class="main-tti mt10">전송</h4>
         <div class="btn-box flex-center">

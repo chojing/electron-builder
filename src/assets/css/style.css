@@ -139,7 +139,7 @@ main h4{ font-size: 15px;font-weight: 600;}
 main .head-top{padding:10px; border: 1px solid #eee;border-radius: 5px;}
 .user-name p{font-size: 14px;}
 .user-name p span{padding-left:3px;display: inline-block;vertical-align: middle;font-size: 14px;}
-main .target-list{height: 250px;overflow-y: auto;}
+main .target-list{height: 280px;overflow-y: auto;}
 main .target-list ul{padding: 0 15px;}
 main .target-list ul.hide{display: none}
 main .target-list ul li{padding: 7px 0 0;}
