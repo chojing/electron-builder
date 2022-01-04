@@ -92,7 +92,7 @@ header .logo{text-align: center;}
 .fixed-bar div span::before{display: none !important;}
 .fixed-bar div span::after{left:50%!important;top:50%!important;bottom:auto!important;transform: translate(-50%,-50%)!important;}
 
-
+.fixed-bar div img{width: 35px;}
 /*.fixed-bar span a .fa-folder{color:rgb(2, 121, 95);}*/
 /*.fixed-bar span a .fa-upload{color:#0073a5;}*/
 /*.fixed-bar span a .fa-download{color:#0073a5;}*/
