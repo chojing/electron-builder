@@ -95,6 +95,8 @@ export default {
       if (urlLogout === 'Login?Logout') {
         console.log('logout 성공')
         console.log('inputReset', loginInfoReset)
+        this.$store.state.nodeid = null
+        this.$store.state.nodename = null
         ipcRenderer.send('login-write', loginInfoReset)
       }
     },
