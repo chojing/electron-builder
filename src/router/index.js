@@ -52,7 +52,8 @@ const routes = [
     component: () => import('../views/Manual'),
     children: [
       { path: '/user', name: 'UserManage', component: () => import('../components/manual/Template_manualUser') },
-      { path: '/ftp', name: 'FTPManage', component: () => import('../components/manual/Template_manualFtp') }
+      { path: '/ftp', name: 'FTPManage', component: () => import('../components/manual/Template_manualFtp') },
+      { path: '/userTel', name: 'UserTel', component: () => import('../components/manual/Template_manualTel') }
     ]
   },
   {
@@ -64,6 +65,11 @@ const routes = [
     path: '/manualFileUpload',
     name: 'ManualFileUpload',
     component: () => import('../components/manual/ManualFileUpload')
+  },
+  {
+    path: '/userPwModify',
+    name: 'UserPwModify',
+    component: () => import('../components/manual/UserPwModify')
   },
   {
     path: '/history',
@@ -104,11 +110,6 @@ const routes = [
     path: '/userInfo',
     name: 'UserInfo',
     component: () => import('../components/main/UserInfo')
-  },
-  {
-    path: '/userPwModify',
-    name: 'UserPwModify',
-    component: () => import('../components/main/UserPwModify')
   },
   {
     path: '/ftpSiteTransferProgress',

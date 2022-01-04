@@ -72,8 +72,8 @@ export default {
     },
     newPasswordCheckFn: function () {
       const ERROR_TEXT_2 = document.getElementById('errorText2')
-      console.log('기존', this.newPassword)
-      console.log('새비번', this.newPasswordCheck)
+      // console.log('기존', this.newPassword)
+      // console.log('새비번', this.newPasswordCheck)
       if (!/^[a-z0-9_-]{3,13}$/.test(this.newPassword)) {
         ERROR_TEXT_2.style.display = 'block'
         ERROR_TEXT_2.innerHTML = '최소 3자리 이상 입력해주세요.'
@@ -104,7 +104,7 @@ export default {
         param.oldpassword = this.userPw
         param.password = this.newPassword
         param.realname = this.userRealname
-        console.log('비번 일치', param)
+        // console.log('비번 일치', param)
         axios.putAsyncAxios('/v2/users/' + name + '/' + 'password', '', param, function (response) {
           ipcRenderer.send('alert', '비밀번호가 변경되었습니다.')
           const data = true
