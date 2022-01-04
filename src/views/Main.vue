@@ -43,7 +43,7 @@
             <div class="search-btn"><button id='searchButton' @click="this.targetSearch"><i class="fas fa-search"></i></button></div>
           </div>
           <div class="search-box">
-            <div class="favorite-list" :class="{active : this.searchList.length !== 0 && this.searchList.length >= 3}">
+            <div class="favorite-list" :class="{active : this.searchList.length !== 0, search :isSearch}">
               <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
                 <template v-for="list in searchList" v-bind:key="list.nodeid">
                   <div v-if="!list.isEmergency" :data-nodeid="list.nodeid" :data-favorits = "list.favorits"
@@ -75,7 +75,7 @@
           </div>
         </div>
       </article>
-      <article>
+      <article class="tree" :class="{active : this.searchList.length === 0}">
         <div class="flex-center">
           <h4><i class="fas fa-circle mr5 target-circle"></i>전송 Target</h4>
           <div class="search-btn">

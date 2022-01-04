@@ -117,6 +117,9 @@ main .search-form h4{padding: 0; color: #333 !important; font-size: 15px;}
 .search-form .search-box{display: block;}
 /*.search-form .search-box.show{display: block;}*/
 .search-form .search-box input{padding: 0 5px;width: 100%;height: 35px;border:1px solid #eee;border-radius: 5px;}
+.search-form .search-box .favorite-list{max-height: 0; transition: max-height 0.7s;}
+.search-form .search-box .favorite-list.search{max-height: 28px; height: unset;}
+.search-form .search-box .favorite-list.active{max-height: 1080px; height: unset;}
 .search-form .search-box .favorite-list span:last-of-type::before{display: none;}
 /*main .search-form {width: 531px;}*/
 .main-search-box {width: calc(100% - 130px);}
@@ -149,11 +152,21 @@ main .target-list ul li{padding: 7px 0 0;}
 .favorite-list span::after{content: '>';display: inline-block;vertical-align: middle;margin-left: 5px; font-size: 12px;color: #0073a5;font-weight: 500;}
 .favorite-list span:last-of-type:after{display: none;}
 .favorite-list span:last-of-type::before{content: '';display: inline-block;vertical-align: baseline;width: 10px;height: 10px;margin-right: 2px;background:url('../images/star-solid.svg') no-repeat center 0/100% auto;}
-main .favorite-list{overflow-y: auto}
+main .favorite-list{overflow-y: auto;}
 main .favorite-list.active{height: 90px;}
 main .favorite-list .fa-item{margin: 0 0 10px;}
 main .favorite-list button:hover,
 .emergency-container .favorite-list button:hover{border-color: #0073a5;}
+article.tree{
+  max-height: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: max-height 0.7s;
+}
+article.tree.active{
+  max-height: 300px;
+  padding: 5px 10px 10px;
+}
 /*긴급전송*/
 .emergency-container{}
 .emergency-container .favorite-list span:last-of-type::before{display: none;}
