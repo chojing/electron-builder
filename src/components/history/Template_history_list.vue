@@ -30,7 +30,7 @@
       </div>
     </td>
   </tr>
-  <tr v-show="isShow">
+  <tr v-show="isShow" class="no-result">
     <td colspan="4">조회 결과가 없습니다.</td>
   </tr>
 </template>

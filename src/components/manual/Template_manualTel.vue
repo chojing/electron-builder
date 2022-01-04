@@ -39,7 +39,7 @@
               <td class="name">{{user.name}}</td>
               <td class="tel">{{user.phonenumber}}</td>
             </tr>
-            <tr v-show="isShow">
+            <tr v-show="isShow" class="no-result">
               <td colspan="3">조회 결과가 없습니다.</td>
             </tr>
           </tbody>
