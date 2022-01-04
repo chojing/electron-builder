@@ -227,18 +227,22 @@ export default {
       }
     },
     userDel: function () {
-      this.selected.forEach(selected => {
-        this.users.forEach(user => {
-          if (user.memberid === selected.memberid) {
-            let memberid = user.memberid
-            axios.deleteAsyncAxios('/v2/members/' + memberid, {}, {}, (response) => {
-              // console.log('delete', response)
-              this.selected = []
-              this.getUserList(1)
-            })
-          }
+      if (this.selected.length === 0) {
+        ipcRenderer.send('alert', '삭제할 연락처를 선택해주세요.')
+      } else {
+        this.selected.forEach(selected => {
+          this.users.forEach(user => {
+            if (user.memberid === selected.memberid) {
+              let memberid = user.memberid
+              axios.deleteAsyncAxios('/v2/members/' + memberid, {}, {}, (response) => {
+                // console.log('delete', response)
+                this.selected = []
+                this.getUserList(1)
+              })
+            }
+          })
         })
-      })
+      }
     },
     pageSet: function (total, limit, page) {
       return custom.pageSetting(total, limit, page)
