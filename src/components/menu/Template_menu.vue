@@ -12,15 +12,15 @@
         <Tooltip :tooltipText="'전송내역'">
           <router-link to="/history" :class="{active : this.$route.name === 'History'}">
 <!--             <i class="fas fa-upload"/>-->
-             <img alt="history" src="@/assets/images/menu-history.png">
-           </router-link>
+            <img alt="received" src="@/assets/images/menu-send.png">
+          </router-link>
         </Tooltip>
       </div>
       <div>
         <Tooltip :tooltipText="'수신내역'">
           <router-link to="/receivedHistory" :class="{active : this.$route.name === 'ReceivedHistory'}">
 <!--            <i class="fas fa-download"/>-->
-            <img alt="received" src="@/assets/images/menu-received.png">
+          <img alt="history" src="@/assets/images/menu-received.png">
           </router-link>
         </Tooltip>
       </div>
