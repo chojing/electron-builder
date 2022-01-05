@@ -39,10 +39,17 @@
             <input v-model="ftpInfo.rootpath" type="text" class="input-box">
           </div>
         </div>
-        <div class="list flex-center">
+        <div class="list flex-center mode">
           <b>Proxy</b>
           <div class="flex-1">
-            <input v-model="ftpInfo.proxy" type="text" class="input-box">
+            <div class="radio-input">
+              <input v-model="ftpInfo.proxy" value="proxy-y" type="radio" name="proxy" id="proxy-y">
+              <label for="proxy-y"> YES</label>
+            </div>
+            <div class="radio-input">
+              <input v-model="ftpInfo.proxy" value="proxy-n" type="radio" name="proxy" id="proxy-n">
+              <label for="proxy-n"> NO</label>
+            </div>
           </div>
         </div>
         <div class="list flex-center mode">
@@ -134,12 +141,12 @@ export default {
       this.ftpInfo.username = ''
       this.ftpInfo.password = ''
       this.ftpInfo.rootpath = ''
-      this.ftpInfo.proxy = ''
+      this.ftpInfo.proxy = 'proxy-y'
       this.ftpInfo.mode = 'normal'
       this.ftpInfo.ftpserverid = '-1'
     },
     setModify: function (ftpInfo) {
-      console.log(ftpInfo)
+      // console.log(ftpInfo)
       this.ftpInfo.name = ftpInfo.name
       this.ftpInfo.host = ftpInfo.host
       this.ftpInfo.port = ftpInfo.port
@@ -181,16 +188,15 @@ export default {
       ftpInfoData.owner = this.ftpInfo.owner
       ftpInfoData.macvolume = this.ftpInfo.macvolume
       ftpInfoData.winvolume = this.ftpInfo.winvolume
-      console.log('ftpInfoData : ', ftpInfoData.mode)
       if (this.ftpInfo.ftpserverid > 0) { // 수정
-        console.log('수정 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
+        // console.log('수정 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
         axios.putAsyncAxios('/v2/ftpservers/' + JSON.stringify(this.ftpInfo.ftpserverid), JSON.stringify(ftpInfoData), null, (response) => {
           // console.log('put', response)
           ipcRenderer.send('alert', 'Ftp서버 수정이 완료되었습니다.')
           this.cancel()
         })
       } else { // 추가
-        console.log('추가 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
+        // console.log('추가 ftpserverid확인 : ', this.ftpInfo.ftpserverid)
         axios.postAsyncAxios('/v2/ftpservers', JSON.stringify(ftpInfoData), null, (response) => {
           // console.log('post', response)
           ipcRenderer.send('alert', 'Ftp서버 추가가 완료되었습니다.')

@@ -53,10 +53,8 @@ export default {
         this.isManualFtpClose = data
         if (this.isManualFtpClose) {
           this.getList()
-          console.log('slshsh')
         }
       }
-      this.selectedFtpId = ''
     },
     getList: function () {
       this.targetFtpList = []
@@ -107,12 +105,11 @@ export default {
       })
     },
     deleteManualFtp: function () {
-      let ftpInfo = this.selectedFtpInfo
-      if (!ftpInfo) {
+      if (!this.selectedFtpInfo.ftpserverid) {
         ipcRenderer.send('alert', '삭제할 FTP서버를 선택해주세요.')
         return false
       }
-      axios.deleteAsyncAxios('/v2/ftpservers/' + ftpInfo.ftpserverid, null, null, (response) => {
+      axios.deleteAsyncAxios('/v2/ftpservers/' + this.selectedFtpInfo.ftpserverid, null, null, (response) => {
         // console.log('delete', response)
         let msg = '선택한 FTP서버가 삭제가 완료되었습니다.'
         ipcRenderer.send('alert', msg)

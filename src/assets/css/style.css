@@ -199,6 +199,13 @@ main article{padding: 5px 10px 10px /*border-radius: 5px;background-color: #f5f5
 .login{width: 100%;height:100vh;padding-top: 100px;background-color:#0073a5;}
 .login-container{margin:50px auto;max-width:500px;}
 .login-container #json-id{padding:20px 0;width: 100%;border-radius: 10px;background-color: rgb(49, 49, 49);font-size: 14px;text-align: center;font-weight: normal;color:#fff;}
+.login p{
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 23px;
+  font-weight: 600;
+  color: white;
+  vertical-align: bottom;}
 .auto-login{margin:20px 0;}
 .auto-login label{font-size: 14px;line-height: 1;color: #fff;}
 .auto-login input{margin-left: 5px; vertical-align: middle;}
@@ -270,6 +277,7 @@ main article{padding: 5px 10px 10px /*border-radius: 5px;background-color: #f5f5
 .manual-ftp-container .ftp-info .list .input-box{width: 100%;}
 .manual-ftp-container .ftp-info .list.mode .flex-1{display: flex;align-items: center;}
 .manual-ftp-container .ftp-info .list.mode .radio-input{margin-right: 20px;font-size: 13px;}
+.manual-ftp-container .ftp-info .list.mode input{vertical-align: middle;}
 .manual-ftp-container .ftp-info .list.mode .radio-input label{cursor: pointer;}
 /* focus */
 .manual-ftp-container .ftp-info .list .input-box:focus,
