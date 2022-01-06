@@ -21,6 +21,7 @@
     "chartjs": "^0.3.24",
     "core-js": "^3.18.3",
     "electron-log": "^4.4.1",
+    "electron-updater": "^4.6.1",
     "ftp": "^0.3.10",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
