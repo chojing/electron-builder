@@ -30,9 +30,11 @@ const log = require('electron-log')
 const customIcon = 'img/icons/arrow16x16.png'
 
 autoUpdater.logger = log
-autoUpdater.logger.transports.file.level = 'info'
-autoUpdater.setFeedURL('http://10.10.18.178:80')
+autoUpdater.logger.transports.file.level = 'debug'
+autoUpdater.setFeedURL('http://10.10.18.178')
 
+var testvalue = autoUpdater.getFeedURL()
+console.log(testvalue)
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
 let g_windows = {}
