@@ -7,7 +7,7 @@
       <div class="btn-box">
         <button id="mainnode" class="btn h30 active" :data-nodeid="this.nodeHome1" v-bind:class="{active:false}" @click="selectNodeHome($event, this.nodeHome1)">home1(미지정)</button>
         <button id="subnode" class="btn h30" :data-nodeid="this.nodeHome2" @click="selectNodeHome($event, this.nodeHome2)">home2(미지정)</button>
-        <button id="usernode" class="btn h30" @click="selectNodeHome($event)">사용자지정</button>
+        <button id="usernode" class="btn h30" :data-nodeid="this.$store.state.nodeid" @click="selectNodeHome($event, this.$store.state.nodeid)"></button>
       </div>
       <div class="send-box">
         <table>
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import store from '@/store/index'
 import templateReceivedHistory from '@/components/receivedHistory/Template_receivedHistory_list'
 import templateMenu from '@/components/menu/Template_menu'
 import templateContextMenu from '@/components/receivedHistory/Template_context_menu'
@@ -79,6 +80,11 @@ export default {
   },
   mounted () {
     this.setTimer()
+    if (this.$store.state.nodename === null) {
+      document.getElementById('usernode').innerText = '사용자지정'
+    } else {
+      document.getElementById('usernode').innerText = '사용자지정 : ' + this.$store.state.nodename
+    }
   },
   methods: {
     gIsMacCheck: function () {
@@ -101,6 +107,8 @@ export default {
         usernodeBtn.innerText += ' : ' + data.nodename
         this.selectedNodeid = data.nodeid
         this.getReceivedList(1)
+        store.commit('commitNodeid', data.nodeid)
+        store.commit('commitNodename', data.nodename)
       } else if (type == 'closeUserAppointed') {
       }
     },
@@ -189,20 +197,23 @@ export default {
         mainnodeBtn.classList.add('active')
         subnodeBtn.classList.remove('active')
         usernodeBtn.classList.remove('active')
-        usernodeBtn.innerText = '사용자지정'
       } else if (e.target.id === subnodeBtn.id) {
         this.selectedNodeid = nodeid
         subnodeBtn.classList.add('active')
         mainnodeBtn.classList.remove('active')
         usernodeBtn.classList.remove('active')
-        usernodeBtn.innerText = '사용자지정'
       } else if (e.target.id === usernodeBtn.id) {
-        this.userAppointedPopup()
+        this.selectedNodeid = nodeid
+        if (this.$store.state.nodeid === null || usernodeBtn.classList.contains('active')) {
+          this.userAppointedPopup()
+          return false
+        } else {
+          usernodeBtn.classList.add('active')
+          mainnodeBtn.classList.remove('active')
+          subnodeBtn.classList.remove('active')
+          this.getReceivedList(1)
+        }
         isUsernode = false
-        // usernodeBtn.classList.add('active')
-        // mainnodeBtn.classList.remove('active')
-        // subnodeBtn.classList.remove('active')
-        // isUsernode = true
       }
       if (isUsernode) {
         this.getReceivedList(1)

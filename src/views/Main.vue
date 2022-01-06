@@ -1,15 +1,21 @@
 <template>
   <main id="mainView">
-    <div class="wrap">
-      <h4 class="tti mt10 mb5">전송</h4>
+    <div class="wrap pb60">
+      <div class="user-name flex-center main-border">
+        <h4 class="main-tti mt10">전송</h4>
+        <div class="btn-box flex-center">
+          <p><i class="fas fa-user"></i>&ensp;{{username}} <span>({{realname}})</span></p>
+          <button id="logoutBtn" class="btn h30" @click="logoutCheck">Logout</button>
+        </div>
+      </div>
       <article class="user-favorite main-border">
-        <h4 class="mb5">즐겨찾기</h4>
-        <div class="favorite-list">
+        <h4 class="mt5 mb5">즐겨찾기</h4>
+        <div class="favorite-list" :class="{active : this.favoritsList.length !== 0 && this.favoritsList.length >= 3}">
           <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
             <template v-for="item in favoritsList" v-bind:key="item.nodeid">
               <div :data-nodeid="item.nodeid" :data-favorits="item.favorits"
                    :data-pathftpserverid="item.pathftpserverid" :data-pathftpsiteid="item.pathftpsiteid"
-                   :data-name="item.nodename" :data-isinheritance="item.isinheritance"
+                   :data-name="item.nodename" :data-isinheritance="item.isinheritance" :data-pathname="item.pathname"
                    :data-path="item.path" :data-pathinheritance="item.pathinheritance"
                    @contextmenu.prevent="showContextMenu($event)">
                 <button @dblclick="this.fileUploadPopup(item)" @click.prevent>
@@ -28,19 +34,21 @@
         </div>
       </article>
       <article class="main-border">
-        <div class="search-form">
+        <div class="search-form mt5">
           <div class="flex-center">
             <h4>전송타겟검색</h4>
+            <div class="main-search-box">
+              <input id='targetSearchInput' class="mr10" @keyup.enter="this.targetSearch" type="text" placeholder="검색">
+            </div>
             <div class="search-btn"><button id='searchButton' @click="this.targetSearch"><i class="fas fa-search"></i></button></div>
           </div>
-          <div class="search-box mt10">
-            <input id='targetSearchInput' @keyup.enter="this.targetSearch" type="text" placeholder="검색">
-            <div class="favorite-list">
+          <div class="search-box">
+            <div class="favorite-list" :class="{active : this.searchList.length !== 0, search :isSearch}">
               <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
                 <template v-for="list in searchList" v-bind:key="list.nodeid">
                   <div v-if="!list.isEmergency" :data-nodeid="list.nodeid" :data-favorits = "list.favorits"
                        :data-pathftpserverid="list.pathftpserverid" :data-pathftpsiteid="list.pathftpsiteid"
-                       :data-name="list.nodename" :data-isinheritance="list.isinheritance"
+                       :data-name="list.nodename" :data-isinheritance="list.isinheritance" :data-pathname="list.pathname"
                        :data-path="list.path" :data-pathinheritance="list.pathinheritance"
                        @contextmenu.prevent="showContextMenu($event)">
                     <button @dblclick="this.fileUploadPopup(list)">
@@ -67,7 +75,7 @@
           </div>
         </div>
       </article>
-      <article>
+      <article class="tree" :class="{active : this.searchList.length === 0}">
         <div class="flex-center">
           <h4><i class="fas fa-circle mr5 target-circle"></i>전송 Target</h4>
           <div class="search-btn">
@@ -81,9 +89,17 @@
         </div>
       </article>
     </div>
+    <div class="logoutCheckPop" v-show="isLogoutCheck">
+      <p>로그아웃 하시겠습니까?</p>
+      <div class="btn-box">
+        <button class="btn h30" @click="logout">확인</button>
+        <button class="btn h30 blue" @click="logoutCancel">취소</button>
+      </div>
+    </div>
+    <div class="bg view" v-show="isLogoutCheck"></div>
   </main>
   <templateMenu/>
-  <templateContextMenu :nodeid="nodeid" :username="username" :nodename="nodename" :nodepath="nodepath"
+  <templateContextMenu :nodeid="nodeid" :username="username" :pathname="pathname" :nodepath="nodepath"
                        :pathftpserverid="pathftpserverid" :pathftpsiteid="pathftpsiteid" :isFavorits="Boolean(this.isFavorits)"
                        :isMain="isMain"/>
 </template>
@@ -119,12 +135,11 @@ export default {
       nodeid: null,
       pathftpserverid: null,
       pathftpsiteid: null,
-      nodename: null,
+      pathname: null,
       nodepath: null,
       isFavorits: false,
       isMain: true,
       isSearch: false,
-      isUserPwModifyClose: false,
       isLogoutCheck: false,
       rootNodeId: 0
     }
@@ -151,6 +166,23 @@ export default {
         isOnline = false
       }
     },
+    logoutCheck: function () {
+      this.isLogoutCheck = true
+    },
+    logout: function () {
+      console.trace()
+      this.$store.commit('commitApikey', '')
+      axios.deleteAsyncAxios('/v2/users/apikey', null, null, (response) => {
+        ipcRenderer.send('alert', '로그아웃 되었습니다.')
+        this.goTo('Login?Logout')
+      })
+    },
+    logoutCancel: function () {
+      this.isLogoutCheck = false
+    },
+    goTo: function (page) {
+      this.$router.push(page)
+    },
     getTree: function () {
       axios.getAsyncAxios('/v2/node/code', {}, (response) => {
         this.c_node_type = response.data.c_node_type
@@ -176,6 +208,7 @@ export default {
           for (var idx in favorits) {
             let hasDepth = favorits[idx]
             if (hasDepth !== undefined) {
+              this.favoritsList[idx].pathname = hasDepth
               if (hasDepth.indexOf('>') !== -1) {
                 var str = hasDepth.split('>')
                 // console.log('str : ', str)
@@ -203,22 +236,22 @@ export default {
         var menu = document.getElementById('favorits-menu')
         menu.style.left = e.pageX + 'px'
         menu.style.top = e.pageY + 'px'
-        if (e.target.dataset.nodeid && e.target.dataset.nodetype_code === 'target') {
+        if (e.target.dataset.nodeid && e.target.dataset.nodetype_code === 'target') { /* 노드 트리 클릭 시 */
           this.nodeid = e.target.dataset.nodeid
           this.pathftpserverid = parseInt(e.target.dataset.pathftpserverid)
           this.pathftpsiteid = parseInt(e.target.dataset.pathftpsiteid)
-          this.nodename = e.target.dataset.name
+          this.pathname = e.target.dataset.pathname
           if (e.target.dataset.isinheritance == 0) {
             this.nodepath = e.target.dataset.path
           } else if (e.target.dataset.isinheritance == 1) {
             this.nodepath = e.target.dataset.pathinheritance
           }
           this.isFavorits = false
-        } else if ((e.currentTarget.dataset.nodeid)) {
+        } else if ((e.currentTarget.dataset.nodeid)) { /* 즐겨찾기, 전송타겟검색 클릭 시 */
           this.nodeid = e.currentTarget.dataset.nodeid
           this.pathftpserverid = parseInt(e.currentTarget.dataset.pathftpserverid)
           this.pathftpsiteid = parseInt(e.currentTarget.dataset.pathftpsiteid)
-          this.nodename = e.currentTarget.dataset.name
+          this.pathname = e.currentTarget.dataset.pathname
           if (e.currentTarget.dataset.isinheritance == 0) {
             this.nodepath = e.currentTarget.dataset.path
           } else if (e.currentTarget.dataset.isinheritance == 1) {
@@ -242,11 +275,12 @@ export default {
     },
     fileUploadPopup: function (item) {
       let name = ''
-      if (Array.isArray(item.name)) {
-        name = item.name[item.name.length - 1]
-      } else {
-        name = item.name
-      }
+      // if (Array.isArray(item.name)) {
+      //   name = item.name[item.name.length - 1]
+      // } else {
+      //   name = item.name
+      // }
+      name = item.pathname
       if (item.isinheritance == 0) {
         item.nodepath = item.path
       } else if (item.isinheritance == 1) {

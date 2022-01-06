@@ -4,14 +4,18 @@
       <div class="flex-center">
         <h4>전송 Target</h4>
         <!--modify-->
-        <button class="btn h30" @click="manualFtpPopup">관리</button>
+        <div>
+          <button class="btn blue h30" @click="manualFtpPopup('add')">추가</button>
+          <button class="btn blue h30" @click="manualFtpPopup('modify')">편집</button>
+          <button class="btn h30" @click="deleteManualFtp">삭제</button>
+        </div>
       </div>
     </div>
     <div class="target-list h500 mt10" style="background: #f5f5f5;border-radius: 5px;">
       <ul class="one-list">
         <li v-for="item in targetFtpList" v-bind:key="item.ftpserverid"
-            :class="{active:this.selectedFtpId === item.ftpserverid}"
-            @click="selectedFtp(item.ftpserverid)"
+            :class="{active:this.selectedFtpInfo.ftpserverid === item.ftpserverid}"
+            @click="selectedFtp(item)"
             @dblclick="this.fileUploadPopup(item)" :data-ismanual="item.ismanual">
           <p v-bind:data-ismanual="item.ismanual" :data-ftpserverid="item.ftpserverid">
             {{item.name}}
@@ -32,7 +36,7 @@ export default {
       g_windowIndex: 0,
       selfKey: 'main',
       targetFtpList: [],
-      selectedFtpId: '',
+      selectedFtpInfo: {},
       isManualFtpClose: false
     }
   },
@@ -40,7 +44,7 @@ export default {
     this.getList()
   },
   created () {
-    console.log('start!')
+    // console.log('start!')
     ipcRenderer.on('receiveData', this.init)
   },
   methods: {
@@ -51,7 +55,6 @@ export default {
           this.getList()
         }
       }
-      this.selectedFtpId = ''
     },
     getList: function () {
       this.targetFtpList = []
@@ -67,11 +70,29 @@ export default {
       param.offset = 0
       axios.getAsyncAxios('/v2/ftpservers', param, (response) => {
         this.targetFtpList = response.data.results
+        if (this.selectedFtpInfo) {
+          if (Object.keys(response.data.results).length !== 0) {
+            for (let idx in this.targetFtpList) {
+              let item = this.targetFtpList[idx]
+              if (this.selectedFtpInfo.ftpserverid === item.ftpserverid) {
+                this.selectedFtp(item)
+                break
+              }
+            }
+          }
+        }
       })
     },
-    manualFtpPopup: function () {
-      const data = {
-        parentKey: this.selfKey
+    manualFtpPopup: function (type) {
+      if (type === 'modify' && !this.selectedFtpInfo.ftpserverid) {
+        ipcRenderer.send('alert', '편집할 FTP서버를 선택해주세요.')
+        return false
+      }
+      const data = {}
+      data.parentKey = this.selfKey
+      data.type = type
+      if (this.selectedFtpInfo) {
+        data.selectedFtpInfo = custom.proxy2map(this.selectedFtpInfo)
       }
       ipcRenderer.send('openWindow', {
         key: ++this.g_windowIndex,
@@ -81,6 +102,18 @@ export default {
         height: 700,
         parent: '',
         modal: false
+      })
+    },
+    deleteManualFtp: function () {
+      if (!this.selectedFtpInfo.ftpserverid) {
+        ipcRenderer.send('alert', '삭제할 FTP서버를 선택해주세요.')
+        return false
+      }
+      axios.deleteAsyncAxios('/v2/ftpservers/' + this.selectedFtpInfo.ftpserverid, null, null, (response) => {
+        // console.log('delete', response)
+        let msg = '선택한 FTP서버가 삭제가 완료되었습니다.'
+        ipcRenderer.send('alert', msg)
+        this.getList()
       })
     },
     fileUploadPopup: function (ftpInfoItem) {
@@ -100,9 +133,12 @@ export default {
       })
       console.log(ftpInfoItem)
     },
-    selectedFtp: function (ftpid) {
-      this.selectedFtpId = ftpid
+    selectedFtp: function (item) {
+      this.selectedFtpInfo = item
     }
+  },
+  unmounted () {
+    ipcRenderer.off('receiveData', this.init)
   }
 }
 </script>

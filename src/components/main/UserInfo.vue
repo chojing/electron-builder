@@ -3,7 +3,7 @@
     <div class="wrap">
       <div class="info-box">
         <div class="mt20 mb20">
-          <h4>전송 확인 문자 연락처</h4>
+          <h4>내 연락처</h4>
         </div>
         <table class="mb20">
           <colgroup>
@@ -34,7 +34,7 @@
               <td class="name">{{user.name}}</td>
               <td class="tel">{{user.phonenumber}}</td>
             </tr>
-            <tr v-show="isShow">
+            <tr v-show="isShow" class="no-result">
               <td colspan="3">조회 결과가 없습니다.</td>
             </tr>
           </tbody>
