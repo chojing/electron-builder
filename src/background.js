@@ -6,6 +6,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import { logConfig } from './assets/main/logConfig.js'
 // eslint-disable-next-line no-unused-vars
 const { Menu, Tray, MenuItem, dialog } = require('electron')
+const { autoUpdater } = require('electron-updater')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 const net = require('net')
@@ -26,7 +27,10 @@ const FTPInfo_Type2 = require('./assets/main/ftpinfo.js').FTPInfo_Type2
 const FTPInfo_Type3 = require('./assets/main/ftpinfo.js').FTPInfo_Type3
 const _path = require('path')
 const log = require('electron-log')
-const starIcon = 'img/icons/mac/16x16.png'
+const starIcon = 'img/icons/arrow.png'
+
+autoUpdater.logger = log
+autoUpdater.logger.transports.file.level = 'info'
 
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
@@ -62,6 +66,28 @@ async function createWindow () {
     },
     // eslint-disable-next-line no-undef
     icon: _path.join(__static, starIcon)
+  })
+
+  autoUpdater.on('checking-for-update', () => {
+    sendStatusToWindow('Checking for update...')
+  })
+  autoUpdater.on('update-available', (info) => {
+    sendStatusToWindow('Update available.')
+  })
+  autoUpdater.on('update-not-available', (info) => {
+    sendStatusToWindow('Update not available.')
+  })
+  autoUpdater.on('error', (err) => {
+    sendStatusToWindow('Error in auto-updater. ' + err)
+  })
+  autoUpdater.on('download-progress', (progressObj) => {
+    let log_message = 'Download speed: ' + progressObj.bytesPerSecond
+    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%'
+    log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
+    sendStatusToWindow(log_message)
+  })
+  autoUpdater.on('update-downloaded', (info) => {
+    sendStatusToWindow('Update downloaded')
   })
 
   gWin.on('minimize', function (event) {
@@ -107,6 +133,12 @@ async function createWindow () {
   let windowKey = 'main'
   g_windows[windowKey] = gWin
   log.info('create main window end')
+}
+
+function sendStatusToWindow (text) {
+  console.log(text)
+  // log.info(text)
+  // win.webContents.send('message', text)
 }
 
 function RunTray () {
@@ -204,7 +236,7 @@ app.whenReady().then(() => {
     RunTray()
     g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
     createWindow()
-
+    autoUpdater.checkForUpdatesAndNotify()
     // Mac OS 를 위한 코드
     app.on('activate', function () {
       if (BrowserWindow.getAllWindows().length === 0) createWindow()
