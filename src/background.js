@@ -27,10 +27,11 @@ const FTPInfo_Type2 = require('./assets/main/ftpinfo.js').FTPInfo_Type2
 const FTPInfo_Type3 = require('./assets/main/ftpinfo.js').FTPInfo_Type3
 const _path = require('path')
 const log = require('electron-log')
-const starIcon = 'img/icons/arrow.png'
+const customIcon = 'img/icons/arrow16x16.png'
 
 autoUpdater.logger = log
 autoUpdater.logger.transports.file.level = 'info'
+autoUpdater.setFeedURL("http://10.10.18.178:80")
 
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
@@ -65,14 +66,14 @@ async function createWindow () {
       webSecurity: false // false로 지정하면 same-origin 정책을 비활성화
     },
     // eslint-disable-next-line no-undef
-    icon: _path.join(__static, starIcon)
+    icon: _path.join(__static, customIcon)
   })
 
   autoUpdater.on('checking-for-update', () => {
     sendStatusToWindow('Checking for update...')
   })
   autoUpdater.on('update-available', (info) => {
-    sendStatusToWindow('Update available.')
+    f('Update available.')
   })
   autoUpdater.on('update-not-available', (info) => {
     sendStatusToWindow('Update not available.')
@@ -144,7 +145,7 @@ function sendStatusToWindow (text) {
 function RunTray () {
   let tray = new Tray(
     // eslint-disable-next-line no-undef
-    _path.resolve(__static, 'img/icons/mac/16x16.png')
+    _path.resolve(__static, customIcon)
   )
   tray.on('double-click', function () {
     if (!gWin.isShow) {
@@ -236,7 +237,9 @@ app.whenReady().then(() => {
     RunTray()
     g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
     createWindow()
-    autoUpdater.checkForUpdatesAndNotify()
+    autoUpdater.checkForUpdatesAndNotify().catch(e => {
+      console.log(e)
+    })
     // Mac OS 를 위한 코드
     app.on('activate', function () {
       if (BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -691,7 +694,7 @@ function WindowCreate (event, windowInfo) {
       contextIsolation: false
     },
     // eslint-disable-next-line no-undef
-    icon: _path.join(__static, starIcon)
+    icon: _path.join(__static, customIcon)
   })
   window.on('close', function (event) {
     delete g_windows[key]
@@ -893,6 +896,6 @@ ipcMain.on('ondragstart', (event, filePath) => {
   event.sender.startDrag({
     file: filePath,
     // eslint-disable-next-line no-undef
-    icon: _path.join(__static, starIcon)
+    icon: _path.join(__static, customIcon)
   })
 })
