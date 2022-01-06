@@ -8,6 +8,7 @@ import { logConfig } from './assets/main/logConfig.js'
 const { Menu, Tray, MenuItem, dialog } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const fs = require('fs')
 
 const net = require('net')
 
@@ -48,7 +49,6 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 async function createWindow () {
-  log.info('start SBSPDS')
   // checkPortPing('10.10.18.28', 21, 2500)
   gWin = new BrowserWindow({
     width: 600,
@@ -605,9 +605,13 @@ ipcMain.on('login-read', event => {
   }
   lastloginInfo.server = properties.server
   log.info('NODE_ENV', lastloginInfo)
+  fs.stat('./', (err, stats) => {
+    if (err) throw err
 
-  event.sender.send('login-read-result', lastloginInfo)
-
+    // The timestamp when the file is created
+    lastloginInfo.buildTime = stats.ctime
+    event.sender.send('login-read-result', lastloginInfo)
+  })
   const filterFolderPath = getUserHome() + KONAN_ROOT_FOLDER
   let filterPath = filterFolderPath + '//filterData.json'
   const filterData = g_JSON.ReadUserJSON(filterPath)

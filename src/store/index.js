@@ -13,7 +13,8 @@ export default createStore({
     autologin: false,
     apikey: null,
     nodeid: null,
-    nodename: null
+    nodename: null,
+    buildTime: null
   },
   mutations: {
     commitServer (state, server) {
@@ -44,6 +45,9 @@ export default createStore({
     commitNodename (state, nodename) {
       state.nodename = nodename
     },
+    commitBuildTime (state, buildTime) {
+      state.buildTime = buildTime
+    },
     clear (state) {
       state = {
         server: null,
@@ -53,7 +57,8 @@ export default createStore({
         autologin: false,
         apikey: null,
         nodeid: null,
-        nodename: null
+        nodename: null,
+        buildTime: null
       }
     }
   },
@@ -81,6 +86,9 @@ export default createStore({
     },
     setNodename (context, nodename) {
       context.commit('commitNodename', nodename)
+    },
+    setBuildTime (context, buildTime) {
+      context.commit('commitBuildTime', buildTime)
     },
     clearStore (context) {
       context.commit('clear')
