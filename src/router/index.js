@@ -52,8 +52,9 @@ const routes = [
     component: () => import('../views/Manual'),
     children: [
       { path: '/user', name: 'UserManage', component: () => import('../components/manual/Template_manualUser') },
+      { path: '/userTel', name: 'UserTel', component: () => import('../components/manual/Template_manualTel') },
       { path: '/ftp', name: 'FTPManage', component: () => import('../components/manual/Template_manualFtp') },
-      { path: '/userTel', name: 'UserTel', component: () => import('../components/manual/Template_manualTel') }
+      { path: '/helpDesk', name: 'HelpDesk', component: () => import('../components/manual/Template_manualHelpDesk') }
     ]
   },
   {
