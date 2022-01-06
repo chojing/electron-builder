@@ -43,11 +43,11 @@
           <b>Proxy</b>
           <div class="flex-1">
             <div class="radio-input">
-              <input v-model="ftpInfo.proxy" value="proxy-y" type="radio" name="proxy" id="proxy-y">
+              <input v-model="ftpInfo.proxy" value="1" type="radio" name="proxy" id="proxy-y">
               <label for="proxy-y"> YES</label>
             </div>
             <div class="radio-input">
-              <input v-model="ftpInfo.proxy" value="proxy-n" type="radio" name="proxy" id="proxy-n">
+              <input v-model="ftpInfo.proxy" value="0" type="radio" name="proxy" id="proxy-n">
               <label for="proxy-n"> NO</label>
             </div>
           </div>
@@ -141,7 +141,7 @@ export default {
       this.ftpInfo.username = ''
       this.ftpInfo.password = ''
       this.ftpInfo.rootpath = ''
-      this.ftpInfo.proxy = 'proxy-y'
+      this.ftpInfo.proxy = '1'
       this.ftpInfo.mode = 'normal'
       this.ftpInfo.ftpserverid = '-1'
     },

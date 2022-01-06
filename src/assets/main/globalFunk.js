@@ -68,7 +68,7 @@ FileData.prototype.getFilePathInfo = function (_FilePath, _searchType) {
 
 function NotificationPopUp () {
   // eslint-disable-next-line no-undef
-  this.iconPath = _path.resolve(__static, 'img/icons/mac/16x16.png')
+  this.iconPath = _path.resolve(__static, 'img/icons/arrow16x16.png')
   this.subTitle = 'subTitle'
 }
 
