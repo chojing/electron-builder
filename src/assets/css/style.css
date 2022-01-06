@@ -373,22 +373,23 @@ main .user-name .btn-box p {display: inline-block}
 #main-target {position: relative; height: 415px;}
 #main-target .con{position: absolute;top:0;left:0;right: 0;z-index: 1;padding:5px 0 0;}
 #main-target .con .fa-item-link{height: 415px;overflow-y: auto;}
-#main-target  .tree{
+#main-target .tree{
   /*display: block;*/
   max-height: 0;
   overflow: hidden;
   padding: 0px 10px;
   transition: max-height 0.4s;
 }
-#main-target  .tree.active{
+#main-target .tree.active{
   max-height: 415px;
   padding: 0px 10px;
 }
-#main-target  .tree.search{
+#main-target .tree.search{
   display: none;
 }
-#main-target .search-form .search-box{max-height: 0; overflow: hidden; padding: 0; transition: max-height 0.4s ease 0.5s;}
+#main-target .search-form .search-box{max-height: 0; overflow: hidden; padding: 0; transition: max-height 0.4s ease 0.4s;}
 #main-target .search-form .search-box.active{max-height: 415px; height: unset;}
+#main-target .search-form .search-box.search{transition: unset;}
 
 @media screen and (min-height: 700px){
   .user-list{height: 100vh;}

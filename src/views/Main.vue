@@ -48,7 +48,7 @@
         </div>
         <div id ="main-target">
           <div class="search-form con">
-            <div class="search-box" :class="{active : this.searchList.length !== 0 || isSearch}">
+            <div class="search-box" :class="{active : this.searchList.length !== 0 || isSearch, search:!isSearch}">
               <div class="favorite-list">
                 <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
                   <template v-for="list in searchList" v-bind:key="list.nodeid">
