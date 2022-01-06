@@ -5,7 +5,7 @@ module.exports = {
         productName: 'SBS_PDS_Anywhere',
         asar: true,
         win: {
-          target: ['zip', 'nsis'],
+          target: ['zip', 'nsis', 'Squirrel'],
           icon: './public/img/icons/win/star.ico',
           requestedExecutionLevel: 'requireAdministrator'
         },
@@ -20,17 +20,20 @@ module.exports = {
           installerIcon: './public/img/icons/win/star.ico',
           uninstallerIcon: './public/img/icons/win/star.ico'
         },
+        "squirrelWindows":{
+
+        },
         linux: {
           target: ['AppImage', 'deb', 'rpm', 'zip', 'tar.gz']
         },
         mac: {
           type: 'distribution',
-          target: ['pkg', 'dmg'],
+          target: ['pkg', 'dmg', 'zip'],
           // eslint-disable-next-line no-template-curly-in-string
           artifactName: '${productName}-${version}-${os}.${ext}',
           category: 'public.app-category.utilities',
           provisioningProfile: 'embedded.provisionprofile',
-          icon: './public/img/icons/mac/star.icns'
+          icon: './public/img/icons/mac/arrow.icns'
         }
       }
     }
