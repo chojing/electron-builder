@@ -6,6 +6,7 @@
           <li @click="goUser" :class="{active:this.$route.name === 'UserManage'}"><p>내 정보</p></li>
           <li @click="goTel" :class="{active:this.$route.name === 'UserTel'}"><p>내 연락처</p></li>
           <li @click="goFtp" :class="{active:this.$route.name === 'FTPManage'}"><p>사용자FTP</p></li>
+          <li @click="goHelpDesk" :class="{active:this.$route.name === 'HelpDesk'}"><p>고객센터</p></li>
         </ul>
         <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
       </div>
@@ -42,6 +43,9 @@ export default {
     },
     goFtp: function () {
       this.$router.push('ftp')
+    },
+    goHelpDesk: function () {
+      this.$router.push('helpDesk')
     },
     refresh: function () {
       let curRouteName = this.$route.name
