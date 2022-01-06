@@ -5,8 +5,8 @@ module.exports = {
         productName: 'SBS_PDS_Anywhere',
         asar: true,
         win: {
-          target: ['zip', 'nsis', 'Squirrel'],
-          icon: './public/img/icons/win/star.ico',
+          target: ['zip', 'nsis'],
+          icon: './public/img/icons/win/arrow.ico',
           requestedExecutionLevel: 'requireAdministrator'
         },
         nsis: {
@@ -17,11 +17,8 @@ module.exports = {
             'ko_KR'
           ],
           language: '1042',
-          installerIcon: './public/img/icons/win/star.ico',
-          uninstallerIcon: './public/img/icons/win/star.ico'
-        },
-        "squirrelWindows":{
-
+          installerIcon: './public/img/icons/win/arrow.ico',
+          uninstallerIcon: './public/img/icons/win/arrow.ico'
         },
         linux: {
           target: ['AppImage', 'deb', 'rpm', 'zip', 'tar.gz']
@@ -34,7 +31,8 @@ module.exports = {
           category: 'public.app-category.utilities',
           provisioningProfile: 'embedded.provisionprofile',
           icon: './public/img/icons/mac/arrow.icns'
-        }
+        },
+        publish: null
       }
     }
   },

@@ -31,7 +31,7 @@ const customIcon = 'img/icons/arrow16x16.png'
 
 autoUpdater.logger = log
 autoUpdater.logger.transports.file.level = 'info'
-autoUpdater.setFeedURL("http://10.10.18.178:80")
+autoUpdater.setFeedURL('http://10.10.18.178:80')
 
 // #region main global value
 const KONAN_ROOT_FOLDER = '//.konan'
@@ -73,7 +73,7 @@ async function createWindow () {
     sendStatusToWindow('Checking for update...')
   })
   autoUpdater.on('update-available', (info) => {
-    f('Update available.')
+    sendStatusToWindow('Update available.')
   })
   autoUpdater.on('update-not-available', (info) => {
     sendStatusToWindow('Update not available.')
