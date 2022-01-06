@@ -33,59 +33,60 @@
           </div>
         </div>
       </article>
-      <article class="main-border">
-        <div class="search-form mt5">
-          <div class="flex-center">
-            <h4>전송타겟검색</h4>
-            <div class="main-search-box">
-              <input id='targetSearchInput' class="mr10" @keyup.enter="this.targetSearch" type="text" placeholder="검색">
-            </div>
-            <div class="search-btn"><button id='searchButton' @click="this.targetSearch"><i class="fas fa-search"></i></button></div>
-          </div>
-          <div class="search-box">
-            <div class="favorite-list" :class="{active : this.searchList.length !== 0, search :isSearch}">
-              <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
-                <template v-for="list in searchList" v-bind:key="list.nodeid">
-                  <div v-if="!list.isEmergency" :data-nodeid="list.nodeid" :data-favorits = "list.favorits"
-                       :data-pathftpserverid="list.pathftpserverid" :data-pathftpsiteid="list.pathftpsiteid"
-                       :data-name="list.nodename" :data-isinheritance="list.isinheritance" :data-pathname="list.pathname"
-                       :data-path="list.path" :data-pathinheritance="list.pathinheritance"
-                       @contextmenu.prevent="showContextMenu($event)">
-                    <button @dblclick="this.fileUploadPopup(list)">
-                      <template v-if="Array.isArray(list.name)">
-                        <template v-for="item in list.name" v-bind:key="item">
-                          <span>
-                            {{item}}
-                          </span>
-                        </template>
-                      </template>
-                      <template v-else>
-                        <span>
-                          {{list.name}}
-                        </span>
-                      </template>
-                    </button>
-                  </div>
-                </template>
-                <template v-if="(Object.keys(this.searchList).length === 0) && isSearch">
-                  <span>검색 결과가 없습니다.</span>
-                </template>
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
-      <article class="tree" :class="{active : this.searchList.length === 0}">
+      <article>
         <div class="flex-center">
           <h4><i class="fas fa-circle mr5 target-circle"></i>전송 Target</h4>
+          <div class="main-search-box ml10">
+            <input id='targetSearchInput' @keyup.enter="this.targetSearch" type="text" placeholder="검색">
+          </div>
+          <div class="search-btn">
+            <button id='searchButton' @click="this.targetSearch"><i class="fas fa-search"></i></button>
+          </div>
           <div class="search-btn">
             <button class="refresh-btn" @click="refresh"><i class="fas fa-sync-alt"></i></button>
           </div>
         </div>
-        <div class="target-list">
-          <ul class="one-list" id="targetContainer" @click="hideContextMenu()" @contextmenu.prevent="showContextMenu($event)">
-            <templateTree v-bind:nodeList="nodeList" ref="templateTree"/>
-          </ul>
+        <div id ="main-target">
+          <div class="search-form con">
+            <div class="search-box" :class="{active : this.searchList.length !== 0 || isSearch}">
+              <div class="favorite-list">
+                <div class="fa-item-link flex-column" @click="hideContextMenu()" @contextmenu.prevent.self="hideContextMenu">
+                  <template v-for="list in searchList" v-bind:key="list.nodeid">
+                    <div v-if="!list.isEmergency" :data-nodeid="list.nodeid" :data-favorits = "list.favorits"
+                         :data-pathftpserverid="list.pathftpserverid" :data-pathftpsiteid="list.pathftpsiteid"
+                         :data-name="list.nodename" :data-isinheritance="list.isinheritance" :data-pathname="list.pathname"
+                         :data-path="list.path" :data-pathinheritance="list.pathinheritance"
+                         @contextmenu.prevent="showContextMenu($event)">
+                      <button @dblclick="this.fileUploadPopup(list)">
+                        <template v-if="Array.isArray(list.name)">
+                          <template v-for="item in list.name" v-bind:key="item">
+                          <span>
+                            {{item}}
+                          </span>
+                          </template>
+                        </template>
+                        <template v-else>
+                        <span>
+                          {{list.name}}
+                        </span>
+                        </template>
+                      </button>
+                    </div>
+                  </template>
+                  <template v-if="(Object.keys(this.searchList).length === 0) && isSearch">
+                    <span>검색 결과가 없습니다.</span>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tree con" :class="{active : this.searchList.length === 0 && !isSearch}">
+            <div class="target-list">
+              <ul class="one-list" id="targetContainer" @click="hideContextMenu()" @contextmenu.prevent="showContextMenu($event)">
+                <templateTree v-bind:nodeList="nodeList" ref="templateTree"/>
+              </ul>
+            </div>
+          </div>
         </div>
       </article>
     </div>
@@ -132,6 +133,7 @@ export default {
       favoritsList: [],
       searchList: [],
       nodeList: [],
+      /* 즐겨찾기 */
       nodeid: null,
       pathftpserverid: null,
       pathftpsiteid: null,
@@ -204,16 +206,17 @@ export default {
         this.favoritsList = response.data.results
         if (this.favoritsList.length !== 0) {
           var favorits = this.favoritsList.map((obj) => obj['name'])
-          // console.log('favorits : ', favorits)
-          for (var idx in favorits) {
-            let hasDepth = favorits[idx]
-            if (hasDepth !== undefined) {
-              this.favoritsList[idx].pathname = hasDepth
-              if (hasDepth.indexOf('>') !== -1) {
-                var str = hasDepth.split('>')
-                // console.log('str : ', str)
-                this.favoritsList[idx].name = str
-                this.favoritsList[idx].nodename = str[str.length - 1]
+          if (favorits.length !== 0) {
+            for (var idx in favorits) {
+              let hasDepth = favorits[idx]
+              if (hasDepth !== undefined) {
+                this.favoritsList[idx].pathname = hasDepth
+                if (hasDepth.indexOf('>') !== -1) {
+                  var str = hasDepth.split('>')
+                  // console.log('str : ', str)
+                  this.favoritsList[idx].name = str
+                  this.favoritsList[idx].nodename = str[str.length - 1]
+                }
               }
             }
           }
@@ -354,7 +357,10 @@ export default {
       })
     },
     refresh: function () {
-      this.$router.go()
+      this.searchList = []
+      this.isSearch = false
+      const targetInput = document.getElementById('targetSearchInput')
+      targetInput.value = ''
     }
   }
 }
