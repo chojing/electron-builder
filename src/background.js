@@ -26,13 +26,18 @@ const WindowInfo = require('./assets/main/windows.js').WindowInfo
 const FTPInfo_Type1 = require('./assets/main/ftpinfo.js').FTPInfo_Type1
 const FTPInfo_Type2 = require('./assets/main/ftpinfo.js').FTPInfo_Type2
 const FTPInfo_Type3 = require('./assets/main/ftpinfo.js').FTPInfo_Type3
-const _path = require('path')
+const _path = require('path') 
 const log = require('electron-log')
 const customIcon = 'img/icons/arrow16x16.png'
+const ymlPath = 'properties/dev-app-update.yml'
 
 autoUpdater.logger = log
 autoUpdater.logger.transports.file.level = 'debug'
-autoUpdater.setFeedURL('http://10.10.18.178')
+//autoUpdater.setFeedURL('http://10.10.18.178')
+if(isDevelopment){
+  let testvalue = _path.resolve(__static, ymlPath)
+  autoUpdater.updateConfigPath = _path.resolve(__static, ymlPath)
+}
 
 var testvalue = autoUpdater.getFeedURL()
 console.log(testvalue)
@@ -139,7 +144,7 @@ async function createWindow () {
 }
 
 function sendStatusToWindow (text) {
-  console.log(text)
+  log.debug(text)
   // log.info(text)
   // win.webContents.send('message', text)
 }
@@ -239,7 +244,8 @@ app.whenReady().then(() => {
     RunTray()
     g_NotificationPopUp.show('sbspds-anywhere', 'Start!')
     createWindow()
-    autoUpdater.checkForUpdatesAndNotify().catch(e => {
+    //autoUpdater.setFeedURL('10.10.18.178:80/release')
+    autoUpdater.checkForUpdates().catch(e => {
       console.log(e)
     })
     // Mac OS 를 위한 코드
